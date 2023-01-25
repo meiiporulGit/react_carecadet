@@ -14,7 +14,7 @@ import {
   TablePagination,
   TableRow,
   Typography,
-  Grid
+  Grid,
 } from "@mui/material";
 import { toast } from "react-toastify";
 import { ViewInfo } from "../../Redux/ProviderRedux/serviceViewSlice";
@@ -26,15 +26,20 @@ const ServiceView = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
 
-  const dispatch=useAppDispatch()
-  const navigate=useNavigate()
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const providerID = useAppSelector((state) => state.providerAuth.login.userID);
   const orgID = useAppSelector(
     (state) => state.providerOrganization.orgEditData
   );
-
   useEffect(() => {
+    getData();
+  }, []);
+  // setInterval(() => {
+  //   getData();
+  // }, 60000);
+  const getData = () => {
     axiosPrivate
       .get(
         `/pathPricelist/getPathByProvider?providerID=${providerID}&OrganizationID=${orgID[0].organizationID}`
@@ -43,17 +48,15 @@ const ServiceView = () => {
         setPathData(res.data.data);
         console.log(res.data);
       });
-  }, []);
-
-  const viewOnClick=(path:any)=>{
-    if(path.status==="Pending"){
-     toast.error("not verified")
-    }else{
-        dispatch(ViewInfo(path))
-        navigate("/provider/serviceView/publishservice")
+  };
+  const viewOnClick = (path: any) => {
+    if (path.status === "Pending") {
+      toast.error("not verified");
+    } else {
+      dispatch(ViewInfo(path));
+      navigate("/provider/serviceView/publishservice");
     }
-
-  }
+  };
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     page: number
@@ -82,7 +85,7 @@ const ServiceView = () => {
           <Typography>{path.status}</Typography>
         </Paper>
       ))} */}
-         <Grid container item sx={{ justifyContent: "center" }}>
+      <Grid container item sx={{ justifyContent: "center" }}>
         <Table sx={{ maxWidth: "100%" }}>
           <TableHead sx={{ backgroundColor: "secondary.light" }}>
             <TableRow>
@@ -113,52 +116,50 @@ const ServiceView = () => {
               >
                 Actions
               </TableCell>
-          
             </TableRow>
           </TableHead>
 
           <TableBody>
             {(rowsPerPage > 0
-              ? pathData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              ? pathData.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                )
               : pathData
-            ).map((dataPath:any) => (
-              <TableRow key={dataPath.providerID}>
+            ).map((dataPath: any,i:any) => (
+              <TableRow key={i}>
                 <TableCell sx={{ fontSize: "0.8rem", textAlign: "center" }}>
                   {dataPath.providerID}
                 </TableCell>
                 <TableCell sx={{ fontSize: "0.8rem", textAlign: "center" }}>
                   {dataPath.filePath.split("/")[2]}
                 </TableCell>
-                
-              
-               
+
                 <TableCell sx={{ textAlign: "center" }}>
                   <Buttoncomponent
-                  type="button"
-                  disable={dataPath.status==="verified"?false:true}
-                  variant="contained"
-                 
-                  size="large"
-                  sx={{
-                    backgroundColor: dataPath.status==="verified"?"green":"red",
-                    width: "12vw",
-                    color: "#fff",
-                    "&:hover": {
-                      color: "secondary.dark",
-                      border: "1px solid blue",
-                    },
-                  
-                  }}
+                    type="button"
+                    disable={dataPath.status === "verified" ? false : true}
+                    variant="contained"
+                    size="large"
+                    sx={{
+                      backgroundColor:
+                        dataPath.status === "verified" ? "green" : "red",
+                      width: "12vw",
+                      color: "#fff",
+                      "&:hover": {
+                        color: "secondary.dark",
+                        border: "1px solid blue",
+                      },
+                    }}
                     onClick={() => {
-                      viewOnClick(dataPath)
+                      viewOnClick(dataPath);
                       // dispatch(facilityInfo(facility));
                       // dispatch(editButton())
                       // navigate("/provider/facility/update");
                     }}
                   >
-                   { dataPath.status}
+                    {dataPath.status}
                   </Buttoncomponent>
-                 
                 </TableCell>
               </TableRow>
             ))}
