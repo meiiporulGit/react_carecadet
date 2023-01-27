@@ -14,5 +14,7 @@ jobs:
         password: Qwerty@123
         port: 33056
         script: |
-          cd /home/linuxadmin/Projects/Healthlens/react_carecadet/carecadet
+          cd /home/linuxadmin/Projects/Healthlens/react_carecadet
+          git pull origin main
+          cd carecadet
           bash ./script.sh
