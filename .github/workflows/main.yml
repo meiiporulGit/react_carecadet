@@ -1,0 +1,16 @@
+name: remote ssh command
+on: [push]
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: 210.18.155.251
+        username: linuxadmin
+        password: Qwerty@123
+        port: 33056
+        script: ./home/linuxadmin/Projects/Healthlens/react_carecadet/carecadet/script.sh
