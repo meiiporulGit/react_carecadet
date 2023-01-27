@@ -16,4 +16,5 @@ jobs:
         script: |
           cd /home/linuxadmin/Projects/Healthlens/react_carecadet
           git pull origin main
-          bash ./carecadet/script.sh
+          cd carecadet
+          bash ./script.sh
