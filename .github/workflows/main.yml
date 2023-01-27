@@ -13,4 +13,6 @@ jobs:
         username: linuxadmin
         password: Qwerty@123
         port: 33056
-        script: ./home/linuxadmin/Projects/Healthlens/react_carecadet/carecadet/script.sh
+        script: |
+          cd /home/linuxadmin/Projects/Healthlens/react_carecadet/carecadet
+          bash ./script.sh
