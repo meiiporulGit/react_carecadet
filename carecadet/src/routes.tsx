@@ -36,6 +36,8 @@ import LoginPatient from "./Pages/LoginSignup/LoginPatient";
 import SignupPatient from "./Pages/LoginSignup/SignupPatient";
 import ServiceView from "./Pages/serviceView/ServiceView";
 import PublishService from "./Pages/serviceView/PublishService";
+import Search from "./Pages/Home/Search";
+import PublishCsv from "./Pages/serviceView/PublishCsv";
 
 interface Route {
   key: string;
@@ -216,6 +218,13 @@ export const providerRoutespages: Array<Route> = [
     path: "/provider/serviceView/serviceView",
     enabled: true,
     component: ServiceView,
+  },
+  {
+    key: "serviceViewPublish",
+    title: "serviceViewPublish",
+    path: "/provider/serviceView/publishcsv",
+    enabled: true,
+    component: PublishCsv,
   },
   {
     key: "publishservice",
@@ -421,5 +430,11 @@ export const homePage:Array<Route>=[
     path: "/provider/home",
     enabled: true,
     component:Providerhomepage,
+  },
+  {
+    key: "providerSearch",
+    path: "/provider/search",
+    enabled: true,
+    component:Search,
   },
 ]

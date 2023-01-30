@@ -57,6 +57,9 @@ const ServiceView = () => {
       navigate("/provider/serviceView/publishservice");
     }
   };
+  const onPublish=()=>{
+    navigate("/provider/serviceView/publishcsv")
+  }
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     page: number
@@ -72,6 +75,25 @@ const ServiceView = () => {
   };
   return (
     <Box sx={{ backgroundColor: "primary.light", padding: "1.8rem" }}>
+      <Grid container item justifyContent={"flex-end"} mb={"1rem"}>
+        <Buttoncomponent type="button"  variant="contained"
+        size="large"
+        color="primary"
+        onClick={onPublish}
+        sx={{
+          mt: 2,
+          backgroundColor: "secondary.dark",
+          width: "10vw",
+          color: "#fff",
+          "&:hover": {
+            color: "secondary.dark",
+            border: "1px solid blue",
+           
+          },
+        }}>
+          Publish CSV
+        </Buttoncomponent>
+      </Grid>
       {/* {pathData.map((path: any, i: any) => (
         <Paper
           elevation={3}

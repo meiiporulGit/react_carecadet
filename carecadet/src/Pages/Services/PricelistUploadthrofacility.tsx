@@ -19,6 +19,7 @@ import { axiosPrivate } from "../../axios/axios";
 // import { parse } from "csv-parse/browser/esm/sync";
 import { orgid } from "../../Redux/ProviderRedux/orgSlice";
 import { toast } from "react-toastify";
+import { ContentPasteSearchOutlined } from "@mui/icons-material";
 type cvsItem = {
   id: string;
   SNo: string;
@@ -30,21 +31,118 @@ export default function PricelistUploadthroFacility() {
   const [csvData, setCsvData] = useState<cvsItem[]>([]);
   const [filename, setFilename] = useState("");
   const [pageSize, setPagesize] = useState(5);
+  const [columns, setColumns] = useState<any>([]);
+  const [unknownHeader,setUnknownHeader]=useState<boolean>(false)
   const navigate = useNavigate();
 
-  const data = useAppSelector
-(state=>state.providerAuth.login);
- 
+  const data = useAppSelector((state) => state.providerAuth.login);
+
   console.log(data, "dat");
   console.log(csvData, "checkd");
   // organizationID: select.organizationID,
 
-  const orgid = useAppSelector((state) => state.providerOrganization.orgEditData);
+  const orgid = useAppSelector(
+    (state) => state.providerOrganization.orgEditData
+  );
   console.log("orgid", orgid[0].organizationID);
-  const facilityinput = useAppSelector((state) => state.providerService.serviceData);
-  const emailData=useAppSelector(state=>state.providerAuth.login)
+  const facilityinput = useAppSelector(
+    (state) => state.providerService.serviceData
+  );
+  const emailData = useAppSelector((state) => state.providerAuth.login);
   console.log(facilityinput, "facip");
 
+  const knownObj = [
+    {
+      headerName: "ServiceCode",
+      headerType: "string",
+      maxLength: 32,
+    },
+    {
+      headerName: "SNo",
+      headerType: "string",
+      maxLength: 32,
+    },
+    {
+      headerName: "DiagnosisTestorServiceName",
+      headerType: "string",
+      maxLength: 32,
+    },
+
+    {
+      headerName: "OrganisationPrices",
+      headerType: "string",
+      maxLength: 32,
+    },
+    {
+      headerName: "FacilityPrices",
+      headerType: "string",
+      maxLength: 32,
+    },
+  ];
+
+  const usdPrice: GridColTypeDef = {
+    type: "number",
+    width: 130,
+    // valueFormatter: ({ value }) => currencyFormatter.format(value),
+    valueFormatter: (params: GridValueFormatterParams<number>) => {
+      if (params.value == null) {
+        return "";
+      }
+
+      const valueFormatted = Number(params.value).toLocaleString();
+      return `$ ${valueFormatted} `;
+    },
+    cellClassName: "font-tabular-nums",
+  };
+
+  const columnsFormat: GridColumns = [
+    {
+      field: "SNo",
+      headerName: "S.No",
+      editable: false,
+      width: 100,
+    },
+    {
+      field: "ServiceCode",
+      headerName: "Service Code",
+      editable: true,
+      width: 100,
+    },
+    {
+      field: "DiagnosisTestorServiceName",
+      headerName: "Diagnosis Test/Service Name",
+      editable: true,
+      width: 350,
+    },
+    {
+      field: "FacilityName",
+      headerName: "Facility Name",
+      editable: false,
+      width: 100,
+    },
+    {
+      field: "OrganisationPrices",
+      headerName: "Organisation Prices",
+      editable: true,
+      width: 100,
+      align: "right",
+      ...usdPrice,
+    },
+    {
+      field: "FacilityNPI",
+      headerName: "FacilityNPI",
+      editable: false,
+      width: 100,
+    },
+    {
+      field: "FacilityPrices",
+      headerName: "Facility Prices",
+      editable: true,
+      width: 100,
+      align: "right",
+      ...usdPrice,
+    },
+  ];
 
   const onCellEditCommit = (cellData: any) => {
     const { id, field, value } = cellData;
@@ -86,104 +184,63 @@ export default function PricelistUploadthroFacility() {
     currency: "USD",
   });
 
-  const usdPrice: GridColTypeDef = {
-    type: "number",
-    width: 130,
-    // valueFormatter: ({ value }) => currencyFormatter.format(value),
-    valueFormatter: (params: GridValueFormatterParams<number>) => {
-      if (params.value == null) {
-        return "";
-      }
-
-      const valueFormatted = Number(params.value).toLocaleString();
-      return `$ ${valueFormatted} `;
-    },
-    cellClassName: "font-tabular-nums",
-  };
-
-  const columns: GridColumns = [
-    {
-      field: "SNo",
-      headerName: "S.No",
-      editable: true,
-      width: 100,
-    },
-    {
-      field: "ServiceCode",
-      headerName: "Service Code",
-      editable: true,
-      width: 100,
-    },
-    {
-      field: "DiagnosisTestorServiceName",
-      headerName: "Diagnosis Test/Service Name",
-      editable: true,
-      width: 350,
-    },
-    {
-      field: "FacilityName",
-      headerName: "Facility Name",
-      editable: true,
-      width: 100,
-    },
-    {
-      field: "Organisationid",
-      headerName: "Organisation ID",
-      editable: true,
-      width: 100,
-    },
-    {
-      field: "OrganisationPrices",
-      headerName: "Organisation Prices",
-      editable: true,
-      width: 100,
-      align: "right",
-      ...usdPrice,
-    },
-    {
-      field: "FacilityNPI",
-      headerName: "FacilityNPI",
-      editable: true,
-      width: 100,
-    },
-    {
-      field: "FacilityPrices",
-      headerName: "Facility Prices",
-      editable: true,
-      width: 100,
-      align: "right",
-      ...usdPrice,
-    },
-  ];
-
   function csvJSON(csv: any) {
     console.log("csvdata");
     var lines = csv.split("\r\n");
 
-    var result = [];
-
     var headers = lines[0].split(",");
-    console.log(headers, "headers");
-    const facilityNPI = facilityinput.facilityNPI;
-    const facilityName = facilityinput.facilityName;
+    // console.log(headers, "headers");["sno","facilityPrices"]
+    var result = [];
+    console.log(facilityinput, "fi");
+    var facilityNPI = facilityinput.facilityNPI;
+    var facilityName = facilityinput.facilityName;
+    console.log(facilityNPI, facilityName);
     for (var i = 1; i < lines.length - 1; i++) {
       var obj: any = {};
       var currentline = lines[i].split(",");
-      obj["FacilityName"] = facilityName;
-      obj["FacilityNPI"] = facilityNPI;
+
       obj["Organisationid"] = orgid[0].organizationID;
       for (var j = 0; j < headers.length; j++) {
         obj[headers[j]] = currentline[j];
       }
-      console.log("facilityNPI", facilityNPI);
-      console.log("facilityName", facilityName);
+      obj["FacilityName"] = facilityName;
+      obj["FacilityNPI"] = facilityNPI;
       result.push(obj);
-      // data:{$push:[{result , facilityNPI}]}
     }
-    // console.log(result,"res")
     setCsvData(result);
-    //return result; //JavaScript object
-    return JSON.stringify(result); //JSON
+
+    var validateHeaders = knownObj.map((d) => d.headerName);
+    const knownHeaders = validateHeaders.filter((element) =>
+      headers.includes(element)
+    );
+    const isMatched =
+      knownHeaders.length === validateHeaders.length &&
+      knownHeaders.every((value, index) => value === validateHeaders[index]);
+    // console.log(validateHeaders,"validateHeaders")
+    if (validateHeaders.length === headers.length && isMatched) {
+      setUnknownHeader(false)
+      setColumns(columnsFormat);
+      return JSON.stringify(result);
+    } else {
+      // setFilename("")
+      // toast.error("format not match");
+      // return { message: "error" };
+      setUnknownHeader(true)
+      headers.push("FacilityName", "FacilityNPI");
+      console.log(headers, "headers");
+      const unknownFormat = headers.map((da: any) => ({
+        field: da,
+        headerName: da,
+        editable: false,
+        width: 100,
+      }));
+
+      setColumns(unknownFormat);
+
+      return JSON.stringify(result);
+    }
+
+    // console.log(result,"res")
   }
 
   const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -229,8 +286,32 @@ export default function PricelistUploadthroFacility() {
     // if(output){
     //    let formData = new FormData();
     //  formData.append("screenshot", output);
-    let datacheck = { name: filename, csv: csvData,emailData:emailData,organizationID:orgid[0].organizationID };
-    axiosPrivate
+    let datacheck = {
+      name: filename,
+      csv: csvData,
+      emailData: emailData,
+      organizationID: orgid[0].organizationID,
+    };
+    if(unknownHeader){
+     
+      setUnknownHeader(false)
+      axiosPrivate
+      .post(
+        "http://localhost:5200/unknownHeaderPricelist",
+        datacheck
+      
+      )
+      .then((res) => {
+        setColumns([])
+        setCsvData([])
+        toast.success(res.data.message);
+      })
+      .catch((err) => {
+        console.log(err, "cdfjdk");
+        toast.error(err.message);
+      });
+    }else{
+      axiosPrivate
       .post(
         "http://localhost:5200/uploadPricelist",
         datacheck
@@ -241,12 +322,16 @@ export default function PricelistUploadthroFacility() {
         // }
       )
       .then((res) => {
-        console.log("Success ", res);
-        toast.success(res.data.message)
-      }).catch(err=>{
-        console.log(err,"cdfjdk")
-        toast.error(err.message)
+        setColumns([])
+       setCsvData([])
+        toast.success(res.data.message);
       })
+      .catch((err) => {
+        console.log(err, "cdfjdk");
+        toast.error(err.message);
+      });
+    }
+    
   };
 
   const onSubmit = (e: any) => {
@@ -279,7 +364,7 @@ export default function PricelistUploadthroFacility() {
           backgroundColor: "primary.light",
           padding: "1.5rem",
           borderRadius: "15px",
-          height: "88.8vh",
+          // height: "88.8vh",
 
           "&::-webkit-scrollbar": {
             width: 20,
@@ -296,7 +381,7 @@ export default function PricelistUploadthroFacility() {
           // height: "88.8vh",
         }}
       >
-        <Typography
+        {/* <Typography
           variant="h6"
           textAlign={"right"}
           justifyItems={"right"}
@@ -312,7 +397,7 @@ export default function PricelistUploadthroFacility() {
             height: "3px",
             backgroundColor: "darkgray",
           }}
-        />
+        /> */}
         {/* <Grid container item xs={12} justifyContent="left">
           <Button
             variant="outlined"
@@ -387,47 +472,51 @@ export default function PricelistUploadthroFacility() {
           {/* service pricelist.csv in <i>src dir</i> */}
           <Box>{filename}</Box>
         </Box>
-        <DataGrid
-          autoHeight
-          rows={csvData}
-          columns={columns}
-          getRowId={(row: any) => row.SNo}
-          pagination={true}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize: number) => setPagesize(newPageSize)}
-          rowsPerPageOptions={[5, 10, 20]}
-          onCellEditCommit={onCellEditCommit}
-          // initialState={{
-          //   pagination: {
-          //     pageSize: 100
-          //   }
-          // }}
-          // hideFooter
-          sx={{ mt: 1 }}
-        />
-        <Box sx={{ display: "flex", gap: "1.5rem" }}>
-          <Buttoncomponent
-            type="submit"
-            variant="contained"
-            size="large"
-            color="primary"
-            onClick={upload}
-            sx={{
-              mt: 2,
-              backgroundColor: "secondary.dark",
-              width: "10vw",
-              color: "#fff",
-              "&:hover": {
-                color: "secondary.dark",
-                border: "1px solid blue",
-                letterSpacing: "0.2rem",
-                fontSize: "1rem",
-              },
-            }}
-          >
-            Save
-          </Buttoncomponent>
-          {/* <Buttoncomponent
+        {columns.length !== 0 ? (
+          <>
+            <DataGrid
+              autoHeight
+              rows={csvData}
+              columns={columns}
+              getRowId={(row: any) => row.SNo}
+              pagination={true}
+              pageSize={pageSize}
+              onPageSizeChange={(newPageSize: number) =>
+                setPagesize(newPageSize)
+              }
+              rowsPerPageOptions={[5, 10, 20]}
+              onCellEditCommit={onCellEditCommit}
+              // initialState={{
+              //   pagination: {
+              //     pageSize: 100
+              //   }
+              // }}
+              // hideFooter
+              sx={{ mt: 1 }}
+            />
+            <Box sx={{ display: "flex", gap: "1.5rem" }}>
+              <Buttoncomponent
+                type="submit"
+                variant="contained"
+                size="large"
+                color="primary"
+                onClick={upload}
+                sx={{
+                  mt: 2,
+                  backgroundColor: "secondary.dark",
+                  width: "10vw",
+                  color: "#fff",
+                  "&:hover": {
+                    color: "secondary.dark",
+                    border: "1px solid blue",
+                    letterSpacing: "0.2rem",
+                    fontSize: "1rem",
+                  },
+                }}
+              >
+                Save
+              </Buttoncomponent>
+              {/* <Buttoncomponent
             type="submit"
             variant="contained"
             size="large"
@@ -448,7 +537,9 @@ export default function PricelistUploadthroFacility() {
           >
             Publish
           </Buttoncomponent> */}
-        </Box>
+            </Box>
+          </>
+        ) : null}
       </Paper>
     </>
   );
