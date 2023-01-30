@@ -52,6 +52,8 @@ const ServiceView = () => {
   const viewOnClick = (path: any) => {
     if (path.status === "Pending") {
       toast.error("not verified");
+    }else if(path.status === "published"){
+      toast.error("already published");
     } else {
       dispatch(ViewInfo(path));
       navigate("/provider/serviceView/publishservice");
@@ -160,12 +162,12 @@ const ServiceView = () => {
                 <TableCell sx={{ textAlign: "center" }}>
                   <Buttoncomponent
                     type="button"
-                    disable={dataPath.status === "verified" ? false : true}
+                    disable={dataPath.status === "verified" || "published" ? false : true}
                     variant="contained"
                     size="large"
                     sx={{
                       backgroundColor:
-                        dataPath.status === "verified" ? "green" : "red",
+                        dataPath.status === "verified" ? "orange" : "green",
                       width: "12vw",
                       color: "#fff",
                       "&:hover": {
