@@ -2,10 +2,31 @@ import React from "react";
 // import { Route, RouteProps, Navigate, useLocation } from "react-router";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import SideNavBar from "../component/SideNav/SideNavComp";
-import { Box, Grid, Paper, Typography, Link } from "@mui/material";
+import { Box, Grid, Paper, Typography, Link,Button,MenuItem,Menu } from "@mui/material";
 
 import { useAppSelector, useAppDispatch } from "../Redux/Hook";
 import { refresh } from "../Redux/ProviderRedux/LoginSlice";
+
+import { Formik, Form, ErrorMessage ,Field} from "formik";
+ 
+import * as Yup from "yup";
+import {Select} from "@mui/material";
+import SelectField from "../Components/Select";
+
+import {InputLabel} from '@mui/material';
+import {FormControl} from '@mui/material';
+import {NativeSelect} from '@mui/material';
+
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+
+import ListItemText from '@mui/material/ListItemText';
+import Collapse from '@mui/material/Collapse';
+
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+
+
 
 type Props = {
   children: React.ReactNode;
@@ -14,6 +35,7 @@ type Props = {
 const HomePage = ({ children,getData }: Props) => {
   // const dispatch = useAppDispatch();
   // dispatch(refresh());
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const navigate=useNavigate()
   const location = useLocation().pathname.split("/")[1];
   //   const path = location === "" ? "patient" : location;
@@ -22,16 +44,42 @@ const HomePage = ({ children,getData }: Props) => {
   );
 
   const providerUser=useAppSelector(state=>state.providerAuth.providerLogoutButton)
-  
+//   const options = [
+//     { value: "Provider", item: "Provider" },
+//     { value: "Patient", item: "Patient" },
+//     { value: "Payer", item: "Payer" },
+//   ];
 
-React.useEffect(()=>{
-    if(patientUser){
-    navigate("/patient/checkPage")
-    }
-    if(providerUser){
-        navigate("/provider/facility/viewFacility")
-    }
-},[getData])
+//  const handleChange=(e:any)=>{
+//   navigate(`/${e.target.value}`)
+
+//  }
+//   interface forminitialValues {
+//     userType: string;
+//   }
+
+
+//   const initialValues: forminitialValues = {
+//     userType:""
+//   }
+
+//   const validationSchema = Yup.object().shape({
+//     userType: Yup.string().required("Required"),}
+//   )  
+
+//   const onSubmit = (values: forminitialValues, actions: any) => {
+//     const userdata = {
+//       userType:values.userType}
+//     }
+
+// React.useEffect(()=>{
+//     if(patientUser){
+//     navigate("/patient/checkPage")
+//     }
+//     if(providerUser){
+//         navigate("/provider/facility/viewFacility")
+//     }
+// },[getData])
 
   // let isAuth=true
   //   return !authUser && path==="patient" ? (
@@ -40,9 +88,96 @@ React.useEffect(()=>{
   //     <Navigate to="/patient/checkPage" replace />
   //   );
 
+  // return (
+  //   <Box sx={{ backgroundColor: "primary.light", padding: "1.8rem" }}>
+    
+  // const [open, setOpen] = React.useState(true);
+
+  // const handleClick = () => {
+  //   setOpen(!open);
+  // };
+  const open = Boolean(anchorEl);
+  const handleClick = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   return (
-    <Box sx={{ backgroundColor: "primary.light", padding: "1.8rem" }}>
-      <Typography
+
+<Box>
+<Box sx={{ backgroundColor: "primary.light", padding: "1.8rem",display:"flex" }}>
+<Typography
+   variant="h3"
+   sx={{
+     display: "flex",
+    //  color: "#728AB7",
+    color:"black",
+    //  fontWeight: "bold",
+     // padding: "20px",
+     marginBottom: "15px",
+     mt:"150px",
+     ml:"150px"
+   }}
+ >
+   {/* I am <Box sx={{ color: "#4D77FF" }}>Provider/Employer</Box> */}
+   I am a
+ </Typography>
+
+ <Button sx={{mt:"150px",
+         ml:"20px"}}
+   aria-controls={open ? 'basic-menu' : undefined}
+   aria-haspopup="true"
+   aria-expanded={open ? 'true' : undefined}
+   onClick={handleClick}
+ >
+   {/* Provider */}
+   <Typography
+     variant="h4"
+     sx={{
+       color: "#4D77FF",                    
+       "&:hover": {
+         color: "blue",
+         textDecoration:'underline',
+         
+       },
+     }}
+   >{location===""?"Patient":"Provider"}
+   
+   </Typography>
+ </Button>
+ <Menu
+   id="basic-menu"
+   anchorEl={anchorEl}
+   open={open}
+   onClose={handleClose}
+   MenuListProps={{
+     'aria-labelledby': 'basic-button',
+   }}
+   PaperProps={{
+     style: {
+       width: '20ch',
+     },
+   }}
+ >
+   <Link component={NavLink} to="/" color="black" underline="none">
+     <MenuItem onClick={handleClose}>Patient</MenuItem> </Link>
+     <Link component={NavLink} to="/provider/home" color="black" underline="none">
+       <MenuItem onClick={handleClose}>Provider</MenuItem></Link>
+
+ </Menu>
+
+</Box>
+{children} 
+</Box>
+
+
+);}
+
+
+
+
+     {/* <Typography
         variant="h3"
         sx={{
           display: "flex",
@@ -95,11 +230,11 @@ React.useEffect(()=>{
             Provider
           </Typography>
         </Link>
-      </Typography>
-      {children}
-    </Box>
-  );
-};
+      </Typography>  */}
+     {/* {children} */}
+    // </Box>
+//   );
+// };
 
 export default HomePage;
 
