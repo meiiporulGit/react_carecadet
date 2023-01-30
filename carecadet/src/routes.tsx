@@ -19,7 +19,7 @@ import Servicelandingpage from "./Pages/Services/servicelandpage";
 import ServiceViewPage from "./Pages/Services/serviceview";
 import ServiceEditpage from "./Pages/Services/ServiceEditpage";
 import PricelistthroFacility from "./Pages/Services/pricelistthrofacility";
-import PricelistUploadthroFacility from "./Pages/Services/PricelistUploadthrofacility"
+import PricelistUploadthroFacility from "./Pages/Services/PricelistUploadthrofacility";
 
 import Login from "./Pages/LoginSignup/Login";
 import Home from "./Pages/testPages/Home";
@@ -36,6 +36,8 @@ import LoginPatient from "./Pages/LoginSignup/LoginPatient";
 import SignupPatient from "./Pages/LoginSignup/SignupPatient";
 import ServiceView from "./Pages/serviceView/ServiceView";
 import PublishService from "./Pages/serviceView/PublishService";
+import Search from "./Pages/Home/Search";
+import PublishCsv from "./Pages/serviceView/PublishCsv";
 
 interface Route {
   key: string;
@@ -71,6 +73,14 @@ export const navRoutes: Array<Route> = [
   //   enabled: true,
   //   component: Payer,
   // },
+  {
+    key: "services",
+    title: "Services",
+    path: "/services",
+    color: "services",
+    enabled: true,
+    component: Patienthomepage,
+  },
   {
     key: "contact",
     title: "Contact",
@@ -142,7 +152,6 @@ export const providerLogin: Array<Route> = [
   //   enabled: true,
   //   component: Home,
   // },
-  
 
   // {
   //   key: "contact",
@@ -216,6 +225,13 @@ export const providerRoutespages: Array<Route> = [
     path: "/provider/serviceView/serviceView",
     enabled: true,
     component: ServiceView,
+  },
+  {
+    key: "serviceViewPublish",
+    title: "serviceViewPublish",
+    path: "/provider/serviceView/publishcsv",
+    enabled: true,
+    component: PublishCsv,
   },
   {
     key: "publishservice",
@@ -358,7 +374,6 @@ export const patientLogin: Array<Route> = [
     enabled: true,
     component: SignupPatient,
   },
-
 ];
 
 export const patientRoutes: Array<Route> = [
@@ -409,7 +424,7 @@ export const commonHome: Array<Route> = [
   },
 ];
 
-export const homePage:Array<Route>=[
+export const homePage: Array<Route> = [
   {
     key: "patientHome",
     path: "/",
@@ -420,6 +435,18 @@ export const homePage:Array<Route>=[
     key: "providerHome",
     path: "/provider/home",
     enabled: true,
-    component:Providerhomepage,
+    component: Providerhomepage,
   },
-]
+  {
+    key: "providerSearch",
+    path: "/provider/search",
+    enabled: true,
+    component: Search,
+  },
+  {
+    key: "services",
+    path: "/services",
+    enabled: true,
+    component: Patienthomepage,
+  },
+];

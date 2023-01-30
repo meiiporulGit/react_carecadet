@@ -26,12 +26,10 @@ type cvsItem = {
   GridAlignment: "left" | "right" | "center";
 };
 
-export default function PricelistUpload() {
+export default function PublishCsv() {
   const [csvData, setCsvData] = useState<cvsItem[]>([]);
   const [filename, setFilename] = useState("");
   const [pageSize, setPagesize] = useState(5);
-  const [columns, setColumns] = useState<any>([]);
-  const [unknownHeader,setUnknownHeader]=useState<boolean>(false)
   const navigate = useNavigate();
 
   const data = useAppSelector(
@@ -49,53 +47,33 @@ export default function PricelistUpload() {
     (state) => state.providerService.serviceData
   );
   console.log("facilitydetail", facilityinput);
-
-  const knownObj = [
-    {
-      headerName: "ServiceCode",
-      headerType: "string",
-      maxLength: 32,
-    },
-    {
-      headerName: "SNo",
-      headerType: "string",
-      maxLength: 32,
-    },
-    {
-      headerName: "DiagnosisTestorServiceName",
-      headerType: "string",
-      maxLength: 32,
-    },
-
-    {
-      headerName: "OrganisationPrices",
-      headerType: "string",
-      maxLength: 32,
-    },
-    {
-      headerName: "FacilityPrices",
-      headerType: "string",
-      maxLength: 32,
-    },
-    {
-      headerName: "FacilityName",
-      headerType: "string",
-      maxLength: 32,
-    },
-    {
-      headerName: "FacilityNPI",
-      headerType: "string",
-      maxLength: 32,
-    },
-  ];
   const onCellEditCommit = (cellData: any) => {
     const { id, field, value } = cellData;
     console.log(cellData);
     let r = csvData.map((data) => {
       if (data.SNo === id) {
-       
+        // if (field === "Sno") {
+        //   return { ...data, value: value };
+        // }
         return { ...data, [field]: value };
-        
+        // if (field === "Service Code") {
+        //   return { ...data, ["Service Code"]: value };
+        // }
+        // if (field === "Diagnosis Test/Service Name") {
+        //   return { ...data, ["Diagnosis Test/Service Name"]: value };
+        // }
+        // if (field === "Organisation Prices") {
+        //   return { ...data, ["Organisation Prices"]: value };
+        // }
+        // if (field === "Facility 1 Prices") {
+        //   return { ...data, ["Facility 1 Prices"]: value };
+        // }
+        // if (field === "Facility 2 Prices") {
+        //   return { ...data, ["Facility 2 Prices"]: value };
+        // }
+        // if (field === "Facility 3 Prices") {
+        //   return { ...data, ["Facility 3 Prices"]: value };
+        // }
       }
 
       return data;
@@ -124,7 +102,7 @@ export default function PricelistUpload() {
     cellClassName: "font-tabular-nums",
   };
 
-  const columnsFormat: GridColumns = [
+  const columns: GridColumns = [
     {
       field: "SNo",
       headerName: "S.No",
@@ -143,7 +121,12 @@ export default function PricelistUpload() {
       editable: true,
       width: 350,
     },
- 
+    {
+      field: "Organisationid",
+      headerName: "Organisation ID",
+      editable: true,
+      width: 100,
+    },
     {
       field: "FacilityName",
       headerName: "FacilityName",
@@ -182,53 +165,26 @@ export default function PricelistUpload() {
 
     var headers = lines[0].split(",");
     console.log(headers, "headers");
-    const facilityNPI = facilityinput.facilityNPI;
-    const facilityName = facilityinput.facilityName;
+    // const facilityNPI = facilityinput.facilityNPI;
+    // const facilityName = facilityinput.facilityName;
     for (var i = 1; i < lines.length - 1; i++) {
       var obj: any = {};
       var currentline = lines[i].split(",");
-    
-      obj["Organisationid"] = orgid[0].organizationID;
+    //   obj["FacilityName"] = facilityName;
+    //   obj["FacilityNPI"] = facilityNPI;
+    //   obj["Organisationid"] = orgid[0].organizationID;
       for (var j = 0; j < headers.length; j++) {
         obj[headers[j]] = currentline[j];
       }
-    
+    //   console.log("facilityNPI", facilityNPI);
 
       result.push(obj);
       // data:{$push:[{result , facilityNPI}]}
     }
     // console.log(result,"res")
     setCsvData(result);
-    var validateHeaders = knownObj.map((d) => d.headerName);
-    const knownHeaders = validateHeaders.filter((element) =>
-      headers.includes(element)
-    );
-    const isMatched =
-      knownHeaders.length === validateHeaders.length &&
-      knownHeaders.every((value, index) => value === validateHeaders[index]);
-    // console.log(validateHeaders,"validateHeaders")
-    if (validateHeaders.length === headers.length && isMatched) {
-      setUnknownHeader(false)
-      setColumns(columnsFormat);
-      return JSON.stringify(result);
-    } else {
-      // setFilename("")
-      // toast.error("format not match");
-      // return { message: "error" };
-      setUnknownHeader(true)
-      
-      console.log(headers, "headers");
-      const unknownFormat = headers.map((da: any) => ({
-        field: da,
-        headerName: da,
-        editable: false,
-        width: 100,
-      }));
-
-      setColumns(unknownFormat);
-
-      return JSON.stringify(result);
-    }
+    //return result; //JavaScript object
+    return JSON.stringify(result); //JSON
   }
 
   const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -275,33 +231,8 @@ export default function PricelistUpload() {
     // if(output){
     //    let formData = new FormData();
     //  formData.append("screenshot", output);
-    let datacheck = { name: filename, csv: csvData,fileType:"Multiple facility upload", emailData: data ,organizationID:orgid[0].organizationID};
-    if(unknownHeader){
-     
-      setUnknownHeader(false)
-      axiosPrivate
-      .post(
-        "http://localhost:5200/unknownHeaderPricelist",
-        datacheck
-        // {
-        //   headers: {
-        //     "Content-Type": "multipart/form-data",
-        //   },
-        // }
-      )
-      .then((res) => {
-        console.log("Success ", res);
-        setColumns([])
-        setCsvData([])
-        
-        toast.success(res.data.message);
-      })
-      .catch((err) => {
-        console.log(err, "cdfjdk");
-        toast.error(err.message);
-      });
-    }else{
-      axiosPrivate
+    let datacheck = { name: filename, csv: csvData, emailData: data ,organizationID:orgid[0].organizationID};
+    axiosPrivate
       .post(
         "http://localhost:5200/uploadPricelist",
         datacheck
@@ -312,16 +243,15 @@ export default function PricelistUpload() {
         // }
       )
       .then((res) => {
-        console.log("Success ", res);
-        setColumns([])
         setCsvData([])
-        toast.success(res.data.message);
-      })
-      .catch((err) => {
-        console.log(err, "cdfjdk");
-        toast.error(err.message);
-      });
-    }
+        toast.success(res.data.message)
+        navigate("/provider/serviceView/serviceView");
+        // alert("success");
+      
+      }).catch(err=>{
+        console.log(err,"checkerror")
+        toast.error(err.message)
+     }) 
   };
 
   const onSubmit = (e: any) => {
@@ -335,7 +265,7 @@ export default function PricelistUpload() {
       .then((res) => {
         console.log("Success ", res);
         // alert("success");
-        navigate("/provider/service/listService");
+        navigate("/provider/serviceView/serviceView");
       }).catch(err=>{
          console.log(err,"checkerror")
          toast.error(err.data.message)
@@ -457,7 +387,6 @@ export default function PricelistUpload() {
           {/* service pricelist.csv in <i>src dir</i> */}
           <Box>{filename}</Box>
         </Box>
-        {columns.length !== 0 ?<>
         <DataGrid
           autoHeight
           rows={csvData}
@@ -496,7 +425,7 @@ export default function PricelistUpload() {
               },
             }}
           >
-            Save
+          Save
           </Buttoncomponent>
           {/* <Buttoncomponent
             type="submit"
@@ -519,7 +448,7 @@ export default function PricelistUpload() {
           >
             Publish
           </Buttoncomponent> */}
-        </Box></>:null}
+        </Box>
       </Paper>
     </>
   );

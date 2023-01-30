@@ -15,7 +15,7 @@ import { toast } from 'react-toastify'
 const PublishService = () => {
 
     const navigate=useNavigate()
-
+    const orgID=useAppSelector(state=>state.providerOrganization.orgEditData)
     const viewData=useAppSelector(state=>state.providerServiceView.ViewData)
     const [csvData,setCsvData]=useState<any>([])
     const [pageSize, setPagesize] = useState(5);
@@ -112,7 +112,7 @@ const PublishService = () => {
 
       const onSubmit = (e: any) => {
         e.preventDefault();
-       let datacheck = { csv: csvData };
+       let datacheck = { csv: csvData,emailData:{orgID:orgID[0].organizationID,file:viewData} };
         axiosPrivate.post("http://localhost:5200/publishPricelist", datacheck)
           .then((res) => {
             toast.success(res.data.message)

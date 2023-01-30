@@ -18,9 +18,11 @@ import {organizationReducer} from "./ProviderRedux/orgSlice";
 import { serviceReducer } from "./ProviderRedux/serviceSlice";
 import { patientLoginReducer } from "./PatientRedux/patientAuth";
 import { serviceViewReducer } from "./ProviderRedux/serviceViewSlice";
+import { homeReducer } from "./ProviderRedux/HomeSlice";
 
 
 const reducers = combineReducers({
+  homeReducer:homeReducer,
   providerAuth: loginReducer,
   providerOrganization: organizationReducer,
   providerFacility: facilityReducer,
