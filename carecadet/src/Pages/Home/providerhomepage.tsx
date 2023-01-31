@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -21,7 +21,7 @@ import {
   CardMedia,
   MenuItem,
   Menu,
-  Link,
+  
 } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
@@ -365,7 +365,7 @@ const Providerhomepage = () => {
                     letterSpacing: "0.2rem",
                   }}
                 >
-                  Help Patients find you
+                HELP PATIENTS FIND YOU
                 </Typography>
                 <Typography
                   sx={{ padding: "10px", fontSize: "1rem", mt: "15px" }}
@@ -382,7 +382,7 @@ const Providerhomepage = () => {
                 item
               >
                 <Grid item xs={3}>
-                  {/* <Link  to="/provider/urgentcarelogin" style={{textDecoration:"none"}}> */}
+                  <Link to="/provider/urgentcarelogin" style={{textDecoration:"none"}}>
                   <Card
                     raised
                     sx={{
@@ -410,10 +410,10 @@ const Providerhomepage = () => {
                       </Typography>
                     </CardContent>
                   </Card>
-                  {/* </Link> */}
+                  </Link>
                 </Grid>
                 <Grid item xs={3}>
-                  {/* <Link style={{textDecoration:"none"}}to="/provider/dentalcarelogin" > */}
+                  <Link style={{textDecoration:"none"}}to="/provider/dentalcarelogin" >
                   <Card
                     raised
                     sx={{
@@ -441,10 +441,10 @@ const Providerhomepage = () => {
                       </Typography>
                     </CardContent>
                   </Card>
-                  {/* </Link> */}
+                  </Link>
                 </Grid>
                 <Grid item xs={3}>
-                  {/* <Link style={{textDecoration:"none"}}to="/provider/labcarelogin" > */}
+                  <Link style={{textDecoration:"none"}}to="/provider/labcarelogin" >
                   <Card
                     raised
                     sx={{
@@ -472,10 +472,10 @@ const Providerhomepage = () => {
                       </Typography>
                     </CardContent>
                   </Card>
-                  {/* </Link> */}
+                  </Link>
                 </Grid>
                 <Grid item xs={3}>
-                  {/* <Link style={{textDecoration:"none"}}to="/provider/otherslogin" > */}
+                  <Link style={{textDecoration:"none"}}to="/provider/otherslogin" >
                   <Card
                     raised
                     sx={{
@@ -503,7 +503,7 @@ const Providerhomepage = () => {
                       </Typography>
                     </CardContent>
                   </Card>
-                  {/* </Link> */}
+                  </Link>
                 </Grid>
               </Grid>
             </Grid>
