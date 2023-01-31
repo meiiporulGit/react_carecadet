@@ -1,6 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
-import { Formik, Form, ErrorMessage, Field,FormikProps } from "formik";
+import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import {
@@ -11,8 +10,6 @@ import {
   Select,
   IconButton,
   Button,
-  Autocomplete,
-  AutocompleteRenderInputParams,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +17,6 @@ import { toast } from "react-toastify";
 
 //redux store
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
-
 
 //components
 import FormTextField from "../../Components/Textfield";
@@ -42,32 +38,21 @@ interface forminitialValues {
   zipCode: string;
   contact: string;
   email: string;
- 
 }
-interface Props {
-  formik:FormikProps<forminitialValues>
-}
+
 const options = [
-  { value: "1- Primary care", item: "1- Primary care" },
-  { value: "2- Urgent Care", item: "2- Urgent Care" },
-  { value: "3- Dentist Office", item: "3- Dentist Office" },
-  {value:"4- Imaging and Laboratory",item: "4- Imaging and Laboratory"},
-  {value:"5- Hospital and 5- Others",item:"5- Hospital and 5- Others"}
-  
+  { value: "Type1", item: "Type1" },
+  { value: "Type2", item: "Type2" },
+  { value: "Type3", item: "Type3" },
 ];
 
 export default function CreateFacility() {
-  const [query,setQuery] = useState([]);
-  console.log(query,'q')
-  const [info,setInfo]=useState([])
-  console.log(info,'query')
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const data = useAppSelector(state => state.providerAuth.login);
-  console.log("datafaciltiy", data);
-  const orgid = useAppSelector((state) => state.providerOrganization.orgEditData);
-  console.log('orgiddd', orgid)
+  const data = useAppSelector(state=>state.providerAuth.login);
   const orgID=useAppSelector((state) => state.providerOrganization.orgEditData);
+  console.log("data", orgID);
+
   const initialValues: forminitialValues = {
     providerID: data.userID,
     organizationID:orgID[0].organizationID,
@@ -81,21 +66,7 @@ export default function CreateFacility() {
     zipCode: "",
     contact: "",
     email: "",
-   
   };
-
-
-  useEffect(() => {
-
-    const fetchUsers = async() =>{
-      await axiosPrivate.get(`http://localhost:5200/facility/findfacilityNPI`)
-      .then (res => {setInfo(res.data);
-      setQuery(res.data)})
-    }
-    fetchUsers()
-  }, [])
-
-  
 
   const validationSchema = Yup.object().shape({
     facilityName: Yup.string().required("Required"),
@@ -128,16 +99,29 @@ export default function CreateFacility() {
       email: values.email,
       contact: values.contact,
     };
-    alert(JSON.stringify(facilitydata, null, 2));
+    // alert(JSON.stringify(facilitydata, null, 2));
     actions.resetForm({
-      values: initialValues,
+      values: {
+        facilityNPI: "",
+        facilityName: "",
+        facilityType: " ",
+        addressLine1: "",
+        addressLine2: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        email: "",
+        contact: "",
+      },
     });
     axiosPrivate
       .post("http://localhost:5200/facility/createFacility", facilitydata)
       .then((res) => {
+        // alert('success')
         toast.success(res.data.message);
         console.log("resfacilitypost", res.data);
         dispatch(tabValueNav(1));
+        // dispatch(editButton())
         navigate("/provider/facility/viewFacility");
       })
       .catch((err) => {
@@ -151,19 +135,58 @@ export default function CreateFacility() {
       sx={{
         backgroundColor: "primary.light",
         padding: "1.8rem",
-      
+        // borderRadius: "15px",
+        // m:"0 1em 1em 1em"
       }}
     >
+      {/* <Typography
+                variant="h6"
+                textAlign={"right"}
+                justifyItems={"right"}
+                sx={{ color: "Black" }}
+                margin={"10px"}
+                marginBottom={"5px"}
+            >
+                Hello {data.userID},
+            </Typography>
+            <div
+                style={{
+                    marginBottom: "10px",
+                    flex: 1,
+                    height: "3px",
+                    backgroundColor: "darkgray",
+                }}
+            /> */}
+      {/* <Grid container item xs={12} justifyContent="left">
+                
+                <Button
+                    variant="outlined"
+                    type="button"
+                    onClick={() => { 
+                        dispatch(tabValueNav(1))
+                        navigate("/providerlanding") }}
+                    sx={{
+                        backgroundColor: "secondary.dark",
+                        width: "8vw",
 
+                        marginBottom: "0.5rem",
+                        color: "#fff",
+                        "&:hover": {
+                            color: "secondary.dark",
+                            border: "1px solid blue",
+                        },
+                    }}
+                    startIcon={<ArrowBackIcon fontSize="large" />}>
+                    BACK
+                </Button>
+            </Grid> */}
 
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={onSubmit}
       >
-        {({ handleChange, values, setFieldValue,handleBlur }) => (
-     
-           <Form>
+        <Form>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography
@@ -179,9 +202,7 @@ export default function CreateFacility() {
                 Add Facility Information
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={12} 
-          
-            >
+            <Grid item xs={12} sm={12}>
               <Typography
                 sx={{
                   fontSize: "1rem",
@@ -190,53 +211,26 @@ export default function CreateFacility() {
                   mb: "0.3rem",
                 }}
               >
-               Search Facility NPI
+                Facility NPI
               </Typography>
-    
-             <Field
-              name="facilityNPI"
-              component={Autocomplete}
-               options = {info}
-               loading={info.length === 0}
-               getOptionLabel={(option: any) => option.facilityNPI || option}         
-              freeSolo    
-             
-              onChange={(e: any, value: any) => {
-                setFieldValue("facilityName",value !== null ? value.facilityName :"");
-                setFieldValue("facilityNPI",value !== null ? value.facilityNPI : "");
-              
-                setFieldValue("addressLine1", value !== null ? value.addressLine1 : "");
-                setFieldValue("addressLine2",value !== null ? value.addressLine2 : "");
-                setFieldValue("city", value !== null ? value.city : "");
-                setFieldValue ("state", value !== null ? value.state : "");
-                setFieldValue ("zipCode", value !== null ? value.zipCode : "");
-                setFieldValue("email", value !== null ? value.email : "");
-                setFieldValue ("contact", value !== null ? value.contact : "")
-                             }}
-               renderInput={(params: AutocompleteRenderInputParams) => (
-                <TextField
-                  {...params}
-                  name="facilityNPI"
-                  label="Search Facility NPI"
-                  onChange={handleChange}
-                   variant="outlined"
-                  sx={{
-                    ".MuiFormLabel-root ": {
-                      letterSpacing: "0.2rem",
-                      fontSize: "0.8rem",
-                    },
-                    ".MuiInputLabel-shrink": {
-                      letterSpacing: 0,
-                    },
-                    "& .MuiAutocomplete-popupIndicator": { transform: "none" }                  
-                  }}
-                />
-              )}
-            />
-
-            
+              <FormTextField
+                container={TextField}
+                label="Facility NPI"
+                name="facilityNPI"
+                placeholder="Facility NPI"
+                type="text"
+                fullWidth={true}
+                sx={{
+                  ".MuiFormLabel-root ": {
+                    letterSpacing: "0.2rem",
+                    fontSize: "0.8rem",
+                  },
+                  ".MuiInputLabel-shrink": {
+                    letterSpacing: 0,
+                  },
+                }}
+              />
             </Grid>
-         
             <Grid item xs={12} sm={6}>
               <Typography
                 sx={{
@@ -255,7 +249,6 @@ export default function CreateFacility() {
                 placeholder="FacilityName"
                 type="text"
                 fullWidth={true}
-                
                 sx={{
                   ".MuiFormLabel-root ": {
                     letterSpacing: "0.2rem",
@@ -283,7 +276,6 @@ export default function CreateFacility() {
                 Facility Type
               </Typography>
               <SelectField
-              // defaultValue = ''
                 container={Select}
                 name="facilityType"
                 label="Facility Type"
@@ -519,9 +511,6 @@ export default function CreateFacility() {
             </Grid>
           </Grid>
         </Form>
-        
-        )}
-       
       </Formik>
     </Paper>
   );
