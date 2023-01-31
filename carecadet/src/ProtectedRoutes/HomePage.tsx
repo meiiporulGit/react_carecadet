@@ -37,7 +37,7 @@ const HomePage = ({ children,getData }: Props) => {
   // dispatch(refresh());
   const [anchorEl, setAnchorEl] = React.useState(null);
   const navigate=useNavigate()
-  const location = useLocation().pathname.split("/")[1];
+  const location = useLocation().pathname.split("/");
   //   const path = location === "" ? "patient" : location;
   const patientUser = useAppSelector(
     (state) => state.patientAuth.patientLogoutButton
@@ -116,16 +116,16 @@ const HomePage = ({ children,getData }: Props) => {
     //  fontWeight: "bold",
      // padding: "20px",
      marginBottom: "15px",
-     mt:"150px",
-     ml:"150px"
+     mt:location[2]==="search"?0:"150px",
+     ml:location[2]==="search"?0:"150px"
    }}
  >
    {/* I am <Box sx={{ color: "#4D77FF" }}>Provider/Employer</Box> */}
    I am a
  </Typography>
 
- <Button sx={{mt:"150px",
-         ml:"20px"}}
+ <Button sx={{mt:location[2]==="search"?"-5px":"145px",
+         ml:location[2]==="search"?1:1}}
    aria-controls={open ? 'basic-menu' : undefined}
    aria-haspopup="true"
    aria-expanded={open ? 'true' : undefined}
@@ -135,14 +135,15 @@ const HomePage = ({ children,getData }: Props) => {
    <Typography
      variant="h4"
      sx={{
-       color: "#4D77FF",                    
+       color: "#4D77FF",  
+       textDecoration:'underline',                  
        "&:hover": {
          color: "blue",
-         textDecoration:'underline',
+         
          
        },
      }}
-   >{location===""?"Patient":"Provider"}
+   >{location[1]===""?"Patient":"Provider"}
    
    </Typography>
  </Button>
