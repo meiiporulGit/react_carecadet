@@ -18,6 +18,8 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { axiosPrivate } from "../../axios/axios";
 // import { parse } from "csv-parse/browser/esm/sync";
 import { orgid } from "../../Redux/ProviderRedux/orgSlice";
+import { facilitynameInfo } from "../../Redux/ProviderRedux/serviceSlice";
+import { store } from "../../Redux/Store";
 import { toast } from "react-toastify";
 type cvsItem = {
   id: string;
@@ -31,7 +33,7 @@ export default function PricelistUpload() {
   const [filename, setFilename] = useState("");
   const [pageSize, setPagesize] = useState(5);
   const [columns, setColumns] = useState<any>([]);
-  const [unknownHeader,setUnknownHeader]=useState<boolean>(false)
+  const [unknownHeader, setUnknownHeader] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const data = useAppSelector(
@@ -46,7 +48,7 @@ export default function PricelistUpload() {
   );
   console.log("orgid", orgid[0].organizationID);
   const facilityinput = useAppSelector(
-    (state) => state.providerService.serviceData
+    (state) => state.providerService.facilityData
   );
   console.log("facilitydetail", facilityinput);
 
@@ -93,9 +95,7 @@ export default function PricelistUpload() {
     console.log(cellData);
     let r = csvData.map((data) => {
       if (data.SNo === id) {
-       
         return { ...data, [field]: value };
-        
       }
 
       return data;
@@ -143,7 +143,7 @@ export default function PricelistUpload() {
       editable: true,
       width: 350,
     },
- 
+
     {
       field: "FacilityName",
       headerName: "FacilityName",
@@ -187,18 +187,32 @@ export default function PricelistUpload() {
     for (var i = 1; i < lines.length - 1; i++) {
       var obj: any = {};
       var currentline = lines[i].split(",");
-    
+      console.log("currentline", currentline);
+      let storefacility = facilityinput.filter(
+        (data: any) => data.facilityNPI === currentline[4]
+      );
+      console.log(storefacility, "storefacility");
+      // if(storefacility[0]===undefined)
+      // {
+      //   toast.error(`${currentline[4]} is Invalid NPI`)
+      // }
+      var finalfacility =
+        storefacility[0] == undefined
+          ? "Facility name unavailable"
+          : storefacility[0].facilityName;
+      obj["FacilityName"] = finalfacility;
+
       obj["Organisationid"] = orgid[0].organizationID;
       for (var j = 0; j < headers.length; j++) {
         obj[headers[j]] = currentline[j];
       }
-    
 
       result.push(obj);
       // data:{$push:[{result , facilityNPI}]}
     }
     // console.log(result,"res")
     setCsvData(result);
+    // return JSON.stringify(result); 
     var validateHeaders = knownObj.map((d) => d.headerName);
     const knownHeaders = validateHeaders.filter((element) =>
       headers.includes(element)
@@ -208,15 +222,15 @@ export default function PricelistUpload() {
       knownHeaders.every((value, index) => value === validateHeaders[index]);
     // console.log(validateHeaders,"validateHeaders")
     if (validateHeaders.length === headers.length && isMatched) {
-      setUnknownHeader(false)
+      setUnknownHeader(false);
       setColumns(columnsFormat);
       return JSON.stringify(result);
     } else {
       // setFilename("")
       // toast.error("format not match");
       // return { message: "error" };
-      setUnknownHeader(true)
-      
+      setUnknownHeader(true);
+
       console.log(headers, "headers");
       const unknownFormat = headers.map((da: any) => ({
         field: da,
@@ -275,52 +289,57 @@ export default function PricelistUpload() {
     // if(output){
     //    let formData = new FormData();
     //  formData.append("screenshot", output);
-    let datacheck = { name: filename, csv: csvData,fileType:"Multiple facility upload", emailData: data ,organizationID:orgid[0].organizationID};
-    if(unknownHeader){
-     
-      setUnknownHeader(false)
+    let datacheck = {
+      name: filename,
+      csv: csvData,
+      fileType: "Multiple facility upload",
+      emailData: data,
+      organizationID: orgid[0].organizationID,
+    };
+    if (unknownHeader) {
+      setUnknownHeader(false);
       axiosPrivate
-      .post(
-        "http://localhost:5200/unknownHeaderPricelist",
-        datacheck
-        // {
-        //   headers: {
-        //     "Content-Type": "multipart/form-data",
-        //   },
-        // }
-      )
-      .then((res) => {
-        console.log("Success ", res);
-        setColumns([])
-        setCsvData([])
-        
-        toast.success(res.data.message);
-      })
-      .catch((err) => {
-        console.log(err, "cdfjdk");
-        toast.error(err.message);
-      });
-    }else{
+        .post(
+          "http://localhost:5200/unknownHeaderPricelist",
+          datacheck
+          // {
+          //   headers: {
+          //     "Content-Type": "multipart/form-data",
+          //   },
+          // }
+        )
+        .then((res) => {
+          console.log("Success ", res);
+          setColumns([]);
+          setCsvData([]);
+
+          toast.success(res.data.message);
+        })
+        .catch((err) => {
+          console.log(err, "cdfjdk");
+          toast.error(err.message);
+        });
+    } else {
       axiosPrivate
-      .post(
-        "http://localhost:5200/uploadPricelist",
-        datacheck
-        // {
-        //   headers: {
-        //     "Content-Type": "multipart/form-data",
-        //   },
-        // }
-      )
-      .then((res) => {
-        console.log("Success ", res);
-        setColumns([])
-        setCsvData([])
-        toast.success(res.data.message);
-      })
-      .catch((err) => {
-        console.log(err, "cdfjdk");
-        toast.error(err.message);
-      });
+        .post(
+          "http://localhost:5200/uploadPricelist",
+          datacheck
+          // {
+          //   headers: {
+          //     "Content-Type": "multipart/form-data",
+          //   },
+          // }
+        )
+        .then((res) => {
+          console.log("Success ", res);
+          setColumns([]);
+          setCsvData([]);
+          toast.success(res.data.message);
+        })
+        .catch((err) => {
+          console.log(err, "cdfjdk");
+          toast.error(err.message);
+        });
     }
   };
 
@@ -330,16 +349,17 @@ export default function PricelistUpload() {
     //    let formData = new FormData();
     //  formData.append("screenshot", output);
     let datacheck = { name: filename, csv: csvData };
-    axiosPrivate.post(
-        "http://localhost:5200/publishPricelist",datacheck)
+    axiosPrivate
+      .post("http://localhost:5200/publishPricelist", datacheck)
       .then((res) => {
         console.log("Success ", res);
         // alert("success");
         navigate("/provider/service/listService");
-      }).catch(err=>{
-         console.log(err,"checkerror")
-         toast.error(err.data.message)
-      }) 
+      })
+      .catch((err) => {
+        console.log(err, "checkerror");
+        toast.error(err.data.message);
+      });
   };
   return (
     <>
@@ -457,48 +477,51 @@ export default function PricelistUpload() {
           {/* service pricelist.csv in <i>src dir</i> */}
           <Box>{filename}</Box>
         </Box>
-        {columns.length !== 0 ?<>
-        <DataGrid
-          autoHeight
-          rows={csvData}
-          columns={columns}
-          getRowId={(row: any) => row.SNo}
-          pagination={true}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize: number) => setPagesize(newPageSize)}
-          rowsPerPageOptions={[5, 10, 20]}
-          onCellEditCommit={onCellEditCommit}
-          // initialState={{
-          //   pagination: {
-          //     pageSize: 100
-          //   }
-          // }}
-          // hideFooter
-          sx={{ mt: 1 }}
-        />
-        <Box sx={{ display: "flex", gap: "1.5rem" }}>
-          <Buttoncomponent
-            type="submit"
-            variant="contained"
-            size="large"
-            color="primary"
-            onClick={upload}
-            sx={{
-              mt: 2,
-              backgroundColor: "secondary.dark",
-              width: "10vw",
-              color: "#fff",
-              "&:hover": {
-                color: "secondary.dark",
-                border: "1px solid blue",
-                letterSpacing: "0.2rem",
-                fontSize: "1rem",
-              },
-            }}
-          >
-            Save
-          </Buttoncomponent>
-          {/* <Buttoncomponent
+        {columns.length !== 0 ? (
+          <>
+            <DataGrid
+              autoHeight
+              rows={csvData}
+              columns={columns}
+              getRowId={(row: any) => row.SNo}
+              pagination={true}
+              pageSize={pageSize}
+              onPageSizeChange={(newPageSize: number) =>
+                setPagesize(newPageSize)
+              }
+              rowsPerPageOptions={[5, 10, 20]}
+              onCellEditCommit={onCellEditCommit}
+              // initialState={{
+              //   pagination: {
+              //     pageSize: 100
+              //   }
+              // }}
+              // hideFooter
+              sx={{ mt: 1 }}
+            />
+            <Box sx={{ display: "flex", gap: "1.5rem" }}>
+              <Buttoncomponent
+                type="submit"
+                variant="contained"
+                size="large"
+                color="primary"
+                onClick={upload}
+                sx={{
+                  mt: 2,
+                  backgroundColor: "secondary.dark",
+                  width: "10vw",
+                  color: "#fff",
+                  "&:hover": {
+                    color: "secondary.dark",
+                    border: "1px solid blue",
+                    letterSpacing: "0.2rem",
+                    fontSize: "1rem",
+                  },
+                }}
+              >
+                Save
+              </Buttoncomponent>
+              {/* <Buttoncomponent
             type="submit"
             variant="contained"
             size="large"
@@ -519,7 +542,9 @@ export default function PricelistUpload() {
           >
             Publish
           </Buttoncomponent> */}
-        </Box></>:null}
+            </Box>
+          </>
+        ) : null}
       </Paper>
     </>
   );

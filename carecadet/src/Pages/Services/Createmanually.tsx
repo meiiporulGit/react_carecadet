@@ -7,6 +7,8 @@ import axios from "axios";
 import FormTextField from "../../Components/Textfield";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 
+// import { useState, useEffect } from "react";
+
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import { axiosPrivate } from "../../axios/axios";
 import Pricelistlandingpage from "./pricelistlandingpage";
@@ -24,6 +26,10 @@ interface InitialValues {
 }
 
 const CreateService = () => {
+  // const[query,setQuery] = useState([]);
+  // console.log(query,'q');
+  // const [info,setInfo]=useState([])
+  // console.log(info,'query')
   const select = useAppSelector((state) => state.providerAuth.login);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -37,6 +43,17 @@ const CreateService = () => {
     FacilityName: "",
     FacilityPrices: "",
   };
+
+  // useEffect(() => {
+
+  //   const fetchUsers = async() =>{
+  //     await axiosPrivate.get(`http://localhost:5200//findservicename`)
+  //     .then (res => {setInfo(res.data);
+  //     setQuery(res.data)})
+  //   }
+  //   fetchUsers()
+  // }, [])
+
   const onSubmit = (values: InitialValues, actions: any) => {
     const servicedata = {
       Organisationid: Organisationid[0].organizationID,

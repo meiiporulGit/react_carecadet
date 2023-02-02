@@ -73,7 +73,7 @@ const Patienthomepage = () => {
       .then((res) => {
         console.log(res.data);
         dispatch(dataSearch(res.data.data));
-        navigate("/patient/search");
+        navigate("/provider/search");
         console.log("i", res);
       })
       .catch((e) => console.log(e));
@@ -109,26 +109,32 @@ const Patienthomepage = () => {
               alignItems="flex-start"
               sx={{ ml: "10px" }}
             >
-              <Grid item xs={7}>
+            <Grid item xs={7}>
                 <Box
                   sx={{
+                    padding:"1rem",
                     display: "flex",
+                    justifyContent:"center",
+                    alignItems:"center",
                     background: "#4D77FF",
                     height: "6em",
                     width: "55em",
-                    m: "10px",
+                    gap:"1rem"
+                   
                   }}
                 >
                   <FormTextField
                     container={TextField}
-                    label="Search Service"
+                   
                     name="Service"
                     placeholder="Search Service"
                     type="text"
                     fullWidth={false}
                     sx={{
-                      m: "7.5px",
-                      background: "white",
+                     borderRadius:1,
+                      ".MuiInputBase-input" : {
+                        background: "white"
+                      },
                       ".MuiFormLabel-root ": {
                         letterSpacing: "0.2rem",
                         fontSize: "0.8rem",
@@ -141,14 +147,16 @@ const Patienthomepage = () => {
 
                   <FormTextField
                     container={TextField}
-                    label="location"
-                    name="location"
+                   
+                    name="Location"
                     placeholder="location"
                     type="text"
                     fullWidth={false}
                     sx={{
-                      m: "7.5px",
-                      background: "white",
+                      borderRadius:1,
+                      ".MuiInputBase-input" : {
+                        background: "white"
+                      },
                       ".MuiFormLabel-root ": {
                         letterSpacing: "0.2rem",
                         fontSize: "0.8rem",

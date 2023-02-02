@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -21,7 +21,7 @@ import {
   CardMedia,
   MenuItem,
   Menu,
-  Link,
+  
 } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
@@ -33,6 +33,7 @@ import { axiosPrivate } from "../../axios/axios";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 import SelectField from "../../Components/Select";
 import FormTextField from "../../Components/Textfield";
+import { dataSearch } from "../../Redux/ProviderRedux/HomeSlice";
 import { toast } from "react-toastify";
 
 import dashboardicon from "../../Images/dashboardicon.png";
@@ -45,7 +46,8 @@ import care from "../../Images/care.jpg";
 import InputAdornment from "@mui/material/InputAdornment";
 
 interface forminitialValues {
-  facilityName: string;
+Service: string;
+Location :string;
 }
 const options = [
   { value: "Type1", item: "Type1" },
@@ -55,16 +57,17 @@ const options = [
 const Providerhomepage = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const navigate = useNavigate();
+  const dispatch=useAppDispatch()
+  
   const initialValues: forminitialValues = {
-    facilityName: "",
+    Service:"",
+    Location:""
   };
   const validationSchema = Yup.object().shape({
-    facilityName: Yup.string().required("Required"),
+    Service: Yup.string().required("Required"),
   });
   const onSubmit = (values: forminitialValues, actions: any) => {
-    const facilitydata = {
-      facilityName: values.facilityName,
-    };
+   
     // alert(JSON.stringify(facilitydata, null, 2));
     actions.resetForm({
       values: {
@@ -72,11 +75,12 @@ const Providerhomepage = () => {
       },
     });
     axiosPrivate
-      .post("http://localhost:5200/facility/createFacility", facilitydata)
+      .get(`http://210.18.155.251:5003/search/?q=${values.Service}` )
       .then((res) => {
-        // alert('success')
-        toast.success("Successfully Added ");
-        console.log("i", res.data);
+        console.log(res.data)
+          dispatch(dataSearch(res.data.data))
+          navigate("/provider/search")
+        console.log("i", res);
       })
       .catch((e) => console.log(e));
   };
@@ -154,23 +158,29 @@ const Providerhomepage = () => {
               <Grid item xs={7}>
                 <Box
                   sx={{
+                    padding:"1rem",
                     display: "flex",
+                    justifyContent:"center",
+                    alignItems:"center",
                     background: "#4D77FF",
                     height: "6em",
                     width: "55em",
-                    m: "10px",
+                    gap:"1rem"
+                   
                   }}
                 >
                   <FormTextField
                     container={TextField}
-                    label="Search Service"
+                   
                     name="Service"
                     placeholder="Search Service"
                     type="text"
                     fullWidth={false}
                     sx={{
-                      m: "7.5px",
-                      background: "white",
+                     borderRadius:1,
+                      ".MuiInputBase-input" : {
+                        background: "white"
+                      },
                       ".MuiFormLabel-root ": {
                         letterSpacing: "0.2rem",
                         fontSize: "0.8rem",
@@ -183,14 +193,16 @@ const Providerhomepage = () => {
 
                   <FormTextField
                     container={TextField}
-                    label="location"
-                    name="location"
+                   
+                    name="Location"
                     placeholder="location"
                     type="text"
                     fullWidth={false}
                     sx={{
-                      m: "7.5px",
-                      background: "white",
+                      borderRadius:1,
+                      ".MuiInputBase-input" : {
+                        background: "white"
+                      },
                       ".MuiFormLabel-root ": {
                         letterSpacing: "0.2rem",
                         fontSize: "0.8rem",
@@ -365,7 +377,7 @@ const Providerhomepage = () => {
                     letterSpacing: "0.2rem",
                   }}
                 >
-                  Help Patients find you
+                HELP PATIENTS FIND YOU
                 </Typography>
                 <Typography
                   sx={{ padding: "10px", fontSize: "1rem", mt: "15px" }}
@@ -382,7 +394,7 @@ const Providerhomepage = () => {
                 item
               >
                 <Grid item xs={3}>
-                  {/* <Link  to="/provider/urgentcarelogin" style={{textDecoration:"none"}}> */}
+                  <Link to="/provider/urgentcarelogin" style={{textDecoration:"none"}}>
                   <Card
                     raised
                     sx={{
@@ -410,10 +422,10 @@ const Providerhomepage = () => {
                       </Typography>
                     </CardContent>
                   </Card>
-                  {/* </Link> */}
+                  </Link>
                 </Grid>
                 <Grid item xs={3}>
-                  {/* <Link style={{textDecoration:"none"}}to="/provider/dentalcarelogin" > */}
+                  <Link style={{textDecoration:"none"}}to="/provider/dentalcarelogin" >
                   <Card
                     raised
                     sx={{
@@ -441,10 +453,10 @@ const Providerhomepage = () => {
                       </Typography>
                     </CardContent>
                   </Card>
-                  {/* </Link> */}
+                  </Link>
                 </Grid>
                 <Grid item xs={3}>
-                  {/* <Link style={{textDecoration:"none"}}to="/provider/labcarelogin" > */}
+                  <Link style={{textDecoration:"none"}}to="/provider/labcarelogin" >
                   <Card
                     raised
                     sx={{
@@ -472,10 +484,10 @@ const Providerhomepage = () => {
                       </Typography>
                     </CardContent>
                   </Card>
-                  {/* </Link> */}
+                  </Link>
                 </Grid>
                 <Grid item xs={3}>
-                  {/* <Link style={{textDecoration:"none"}}to="/provider/otherslogin" > */}
+                  <Link style={{textDecoration:"none"}}to="/provider/otherslogin" >
                   <Card
                     raised
                     sx={{
@@ -503,7 +515,7 @@ const Providerhomepage = () => {
                       </Typography>
                     </CardContent>
                   </Card>
-                  {/* </Link> */}
+                  </Link>
                 </Grid>
               </Grid>
             </Grid>

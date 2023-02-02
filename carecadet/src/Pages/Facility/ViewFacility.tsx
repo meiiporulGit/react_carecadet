@@ -24,7 +24,7 @@ import { Buttoncomponent } from "../../Components/Buttoncomp";
 //redux store
 import { useAppSelector, useAppDispatch } from "../../Redux/Hook";
 import { facilityInfo } from "../../Redux/ProviderRedux/facilitySlice";
-import { serviceInfo } from "../../Redux/ProviderRedux/serviceSlice";
+import { serviceInfo ,facilitynameInfo} from "../../Redux/ProviderRedux/serviceSlice";
 import { axiosPrivate } from "../../axios/axios";
 // import {editButton} from "../../Redux/LoginSlice"
 
@@ -71,6 +71,7 @@ export default function ViewFacility() {
       `http://localhost:5200/facility/getFacilityByProvider?providerID=${getid.userID}`
     );
     setData(facilityDetails.data.data);
+    dispatch(facilitynameInfo(facilityDetails.data.data))
   };
 
   const Pointer = { cursor: "hand" };

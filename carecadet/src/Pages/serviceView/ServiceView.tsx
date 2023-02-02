@@ -162,7 +162,7 @@ const ServiceView = () => {
                 <TableCell sx={{ textAlign: "center" }}>
                   <Buttoncomponent
                     type="button"
-                    disable={dataPath.status === "verified" ? false : true}
+                    disable={dataPath.status === "verified" ? false : dataPath.status === "published"?false:true}
                     variant="contained"
                     size="large"
                     sx={{
