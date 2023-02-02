@@ -73,7 +73,7 @@ const Patienthomepage = () => {
       .then((res) => {
         console.log(res.data);
         dispatch(dataSearch(res.data.data));
-        navigate("/patient/search");
+        navigate("/provider/search");
         console.log("i", res);
       })
       .catch((e) => console.log(e));
