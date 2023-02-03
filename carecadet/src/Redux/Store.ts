@@ -19,9 +19,11 @@ import { serviceReducer } from "./ProviderRedux/serviceSlice";
 import { patientLoginReducer } from "./PatientRedux/patientAuth";
 import { serviceViewReducer } from "./ProviderRedux/serviceViewSlice";
 import { homeReducer } from "./ProviderRedux/HomeSlice";
+import { adminLoginReducer } from "./Admin/adminLogin";
 
 
 const reducers = combineReducers({
+  adminAuth:adminLoginReducer,
   homeReducer:homeReducer,
   providerAuth: loginReducer,
   providerOrganization: organizationReducer,

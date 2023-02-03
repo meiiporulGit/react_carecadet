@@ -38,6 +38,9 @@ import ServiceView from "./Pages/serviceView/ServiceView";
 import PublishService from "./Pages/serviceView/PublishService";
 import Search from "./Pages/Home/Search";
 import PublishCsv from "./Pages/serviceView/PublishCsv";
+import Admin from "./Pages/Admin/Admin";
+import AdminLogin from "./Pages/Admin/AdminLogin";
+import AdminSignup from "./Pages/Admin/AdminSignup";
 
 interface Route {
   key: string;
@@ -89,6 +92,15 @@ export const navRoutes: Array<Route> = [
     enabled: true,
     component: Contact,
   },
+  {
+    key: "admin",
+    title: "Admin",
+    path: "/admin/adminlogin",
+    color: "admin",
+    enabled: true,
+    component: Admin,
+  },
+  
 ];
 
 //**************************Provider Router***************************************************
@@ -449,4 +461,35 @@ export const homePage: Array<Route> = [
     enabled: true,
     component: Patienthomepage,
   },
+];
+
+export const admin = [
+  // {
+  //   key: "admin",
+  //   path: "/admin",
+  //   enabled: true,
+  //   component: Admin,
+  // },
+  {
+    key: "adminLogin",
+    path: "/admin/adminlogin",
+    enabled: true,
+    component: AdminLogin,
+  },
+  {
+    key: "adminSignup",
+    path: "/admin/signup",
+    enabled: true,
+    component: AdminSignup,
+  },
+];
+
+export const adminRoute = [
+  {
+    key: "admin",
+    path: "/admin",
+    enabled: true,
+    component: Admin,
+  },
+  
 ];

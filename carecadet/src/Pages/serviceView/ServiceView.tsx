@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 import { ViewInfo } from "../../Redux/ProviderRedux/serviceViewSlice";
 import { useNavigate } from "react-router-dom";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
+import { dataSearch } from "../../Redux/ProviderRedux/HomeSlice";
 
 const ServiceView = () => {
   const [pathData, setPathData] = useState<any>([]);
@@ -45,7 +46,9 @@ const ServiceView = () => {
         `/pathPricelist/getPathByProvider?providerID=${providerID}&OrganizationID=${orgID[0].organizationID}`
       )
       .then((res) => {
-        setPathData(res.data.data);
+        var resData=res.data.data
+        const filterData=resData.filter((d:any)=>d.fileFormat!=="Non-Standard")
+        setPathData(filterData);
         console.log(res.data);
       });
   };

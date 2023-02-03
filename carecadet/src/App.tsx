@@ -18,6 +18,8 @@ import {
   payerLogin,
   patientRoutes,
   homePage,
+  admin,
+  adminRoute,
 } from "./routes";
 
 import Layout from "./component/Layout";
@@ -30,6 +32,8 @@ import { useAppDispatch, useAppSelector } from "./Redux/Hook";
 import PatientLogin from "./ProtectedRoutes/PatientLogin";
 import PatientRoute from "./ProtectedRoutes/PatientRoute";
 import HomePage from "./ProtectedRoutes/HomePage";
+import AdminProtectedLogin from "./ProtectedRoutes/AdminLogin";
+import AdminProtectedRoute from "./ProtectedRoutes/AdminRoute";
 
 function App() {
   const theme = createTheme({
@@ -60,7 +64,27 @@ function App() {
         <Layout>
           <Routes>
             {/* <Route path = "/providerlanding" element = {<ProviderLandingPage/>}/> */}
-
+            {admin.map((ad)=>(
+              <Route key={ad.key}
+              path={ad.path}
+              element={<AdminProtectedLogin>
+              <ad.component/>
+            </AdminProtectedLogin>}
+           
+              
+              />
+            ))}
+    {adminRoute.map((ad)=>(
+              <Route key={ad.key}
+              path={ad.path}
+              element={<AdminProtectedRoute>
+              <ad.component/>
+            </AdminProtectedRoute>}
+           
+              
+              />
+            ))}
+           
             {homePage.map((page)=>(
               <Route key={page.key}
               path={page.path}

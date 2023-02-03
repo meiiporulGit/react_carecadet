@@ -72,14 +72,14 @@ const HomePage = ({ children,getData }: Props) => {
 //       userType:values.userType}
 //     }
 
-// React.useEffect(()=>{
-//     if(patientUser){
-//     navigate("/patient/checkPage")
-//     }
-//     if(providerUser){
-//         navigate("/provider/facility/viewFacility")
-//     }
-// },[getData])
+React.useEffect(()=>{
+    if(patientUser){
+    navigate("/patient/checkPage")
+    }
+    if(providerUser){
+        navigate("/provider/facility/viewFacility")
+    }
+},[getData])
 
   // let isAuth=true
   //   return !authUser && path==="patient" ? (

@@ -1,6 +1,6 @@
 import * as React from "react";
-import { useState } from "react";
-import { Grid, Typography, Button, Paper, Box, Container } from "@mui/material";
+import { useState,useEffect } from "react";
+import { Grid, Typography, Button, Paper, Box, Container,TextField,Autocomplete ,createFilterOptions} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import axios from "axios";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
@@ -20,6 +20,7 @@ import { axiosPrivate } from "../../axios/axios";
 import { orgid } from "../../Redux/ProviderRedux/orgSlice";
 import { toast } from "react-toastify";
 import { ContentPasteSearchOutlined } from "@mui/icons-material";
+import FormTextField from "../../Components/Textfield";
 type cvsItem = {
   id: string;
   SNo: string;
@@ -27,30 +28,24 @@ type cvsItem = {
   GridAlignment: "left" | "right" | "center";
 };
 
-export default function PricelistUploadthroFacility() {
+export default function Admin() {
   const [csvData, setCsvData] = useState<cvsItem[]>([]);
   const [filename, setFilename] = useState("");
   const [pageSize, setPagesize] = useState(5);
   const [columns, setColumns] = useState<any>([]);
   const [unknownHeader, setUnknownHeader] = useState<boolean>(false);
+  const [textValue,setTextValue]=useState<any>({})
+  const [option,setOption]=useState<any>([])
   const navigate = useNavigate();
 
-  const data = useAppSelector((state) => state.providerAuth.login);
+useEffect(()=>{
+  axiosPrivate.get("/pathPricelist/nonStandard").then(res=>{
+    console.log(res.data.data,"res")
+    setOption(res.data.data)
+  })
+},[])
 
-  console.log(data, "dat");
-  console.log(csvData, "checkd");
-  // organizationID: select.organizationID,
-
-  const orgid = useAppSelector(
-    (state) => state.providerOrganization.orgEditData
-  );
-  console.log("orgid", orgid[0].organizationID);
-  const facilityinput = useAppSelector(
-    (state) => state.providerService.serviceData
-  );
-  const emailData = useAppSelector((state) => state.providerAuth.login);
-  console.log(facilityinput, "facip");
-
+  
   const knownObj = [
     {
       headerName: "ServiceCode",
@@ -74,7 +69,22 @@ export default function PricelistUploadthroFacility() {
       maxLength: 32,
     },
     {
+      headerName: "Organisationid",
+      headerType: "string",
+      maxLength: 32,
+    },
+    {
       headerName: "FacilityPrices",
+      headerType: "string",
+      maxLength: 32,
+    },
+    {
+      headerName: "FacilityName",
+      headerType: "string",
+      maxLength: 32,
+    },
+    {
+      headerName: "FacilityNPI",
       headerType: "string",
       maxLength: 32,
     },
@@ -191,20 +201,17 @@ export default function PricelistUploadthroFacility() {
     var headers = lines[0].split(",");
     // console.log(headers, "headers");["sno","facilityPrices"]
     var result = [];
-    console.log(facilityinput, "fi");
-    var facilityNPI = facilityinput.facilityNPI;
-    var facilityName = facilityinput.facilityName;
-    console.log(facilityNPI, facilityName);
+
+
     for (var i = 1; i < lines.length - 1; i++) {
       var obj: any = {};
       var currentline = lines[i].split(",");
 
-      obj["Organisationid"] = orgid[0].organizationID;
+    
       for (var j = 0; j < headers.length; j++) {
         obj[headers[j]] = currentline[j];
       }
-      obj["FacilityName"] = facilityName;
-      obj["FacilityNPI"] = facilityNPI;
+     
       result.push(obj);
     }
     setCsvData(result);
@@ -213,46 +220,32 @@ export default function PricelistUploadthroFacility() {
     const knownHeaders = validateHeaders.filter((element) =>
       headers.includes(element)
     );
-    const isMatched = knownHeaders.length === validateHeaders.length;
-    //&&
-    // knownHeaders.every((value, index) => value === validateHeaders[index]);
-    console.log(
-      validateHeaders.length,
-      headers.length,
-      knownHeaders.length,
-      "validateHeaders"
-    );
-
-    if (
-      knownHeaders.length <= validateHeaders.length - 2 ||
-      headers.length > validateHeaders.length
-    ) {
-      toast.error(
-        "Please check the header name or download the sample csv format"
-      );
+    const isMatched =
+      knownHeaders.length === validateHeaders.length &&
+      knownHeaders.every((value, index) => value === validateHeaders[index]);
+    // console.log(validateHeaders,"validateHeaders")
+    if (validateHeaders.length === headers.length && isMatched) {
+      setUnknownHeader(false);
+      setColumns(columnsFormat);
+      return JSON.stringify(result);
     } else {
-      if (validateHeaders.length === headers.length && isMatched) {
-        setUnknownHeader(false);
-        setColumns(columnsFormat);
-        return JSON.stringify(result);
-      } else {
-        // setFilename("")
-        // toast.error("format not match");
-        // return { message: "error" };
-        setUnknownHeader(true);
-        headers.push("FacilityName", "FacilityNPI");
-        console.log(headers, "headers");
-        const unknownFormat = headers.map((da: any) => ({
-          field: da,
-          headerName: da,
-          editable: false,
-          width: 100,
-        }));
+      setFilename("")
+      toast.error("format not match");
+      return { message: "error" };
+      // setUnknownHeader(true);
+      // headers.push("FacilityName", "FacilityNPI");
+      // console.log(headers, "headers");
+      // const unknownFormat = headers.map((da: any) => ({
+      //   field: da,
+      //   headerName: da,
+      //   editable: false,
+      //   width: 100,
+      // }
+      // ));
 
-        setColumns(unknownFormat);
+      // setColumns(unknownFormat);
 
-        return JSON.stringify(result);
-      }
+      // return JSON.stringify(result);
     }
 
     // console.log(result,"res")
@@ -298,32 +291,21 @@ export default function PricelistUploadthroFacility() {
 
   const upload = (e: any) => {
     e.preventDefault();
-    // if(output){
-    //    let formData = new FormData();
-    //  formData.append("screenshot", output);
-    let datacheck = {
+    alert(JSON.stringify(textValue._id))
+     let datacheck = {
       name: filename,
       csv: csvData,
-      emailData: emailData,
-      organizationID: orgid[0].organizationID,
+      id:textValue._id,
+      email:textValue.email
+    
     };
-    if (unknownHeader) {
-      setUnknownHeader(false);
-      axiosPrivate
-        .post("http://localhost:5200/unknownHeaderPricelist", datacheck)
-        .then((res) => {
-          setColumns([]);
-          setCsvData([]);
-          toast.success(res.data.message);
-        })
-        .catch((err) => {
-          console.log(err, "cdfjdk");
-          toast.error(err.message);
-        });
-    } else {
-      axiosPrivate
+    if(textValue._id===undefined||""||null){
+      toast.error("select the org")
+    }else{
+      alert(JSON.stringify(textValue))
+        axiosPrivate
         .post(
-          "http://localhost:5200/uploadPricelist",
+          "http://localhost:5200/uploadAdminPricelist",
           datacheck
           // {
           //   headers: {
@@ -340,7 +322,50 @@ export default function PricelistUploadthroFacility() {
           console.log(err, "cdfjdk");
           toast.error(err.message);
         });
+    
     }
+    // if(output){
+    //    let formData = new FormData();
+    //  formData.append("screenshot", output);
+    // let datacheck = {
+    //   name: filename,
+    //   csv: csvData,
+    
+    // };
+    // if (unknownHeader) {
+    //   setUnknownHeader(false);
+    //   axiosPrivate
+    //     .post("http://localhost:5200/unknownHeaderPricelist", datacheck)
+    //     .then((res) => {
+    //       setColumns([]);
+    //       setCsvData([]);
+    //       toast.success(res.data.message);
+    //     })
+    //     .catch((err) => {
+    //       console.log(err, "cdfjdk");
+    //       toast.error(err.message);
+    //     });
+    // } else {
+                                    // axiosPrivate
+      //   .post(
+      //     "http://localhost:5200/uploadPricelist",
+      //     datacheck
+      //     // {
+      //     //   headers: {
+      //     //     "Content-Type": "multipart/form-data",
+      //     //   },
+      //     // }
+      //   )
+      //   .then((res) => {
+      //     setColumns([]);
+      //     setCsvData([]);
+      //     toast.success(res.data.message);
+      //   })
+      //   .catch((err) => {
+      //     console.log(err, "cdfjdk");
+      //     toast.error(err.message);
+      //   });
+    // }
   };
 
   const onSubmit = (e: any) => {
@@ -367,7 +392,7 @@ export default function PricelistUploadthroFacility() {
   };
 
   const Download = () => {
-    axiosPrivate.get("/download?format=singleFacility").then((res) => {
+    axiosPrivate.get("/download").then((res) => {
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = url;
@@ -376,6 +401,17 @@ export default function PricelistUploadthroFacility() {
       link.click();
     });
   };
+  const onText=(value:any)=>{
+   console.log(value,"vlau")
+      setTextValue({_id:value._id,email:value.providerName}) 
+  }
+
+  const OPTIONS_LIMIT = 10;
+const defaultFilterOptions = createFilterOptions();
+
+const filterOptions = (options:any, state:any) => {
+  return defaultFilterOptions(options, state).slice(0, OPTIONS_LIMIT);
+};
 
   return (
     <>
@@ -402,35 +438,32 @@ export default function PricelistUploadthroFacility() {
           // height: "88.8vh",
         }}
       >
-        <Grid container item justifyContent={"flex-end"}>
-          <Buttoncomponent
-            variant="contained"
-            type="button"
-            size="large"
-            color="primary"
-            onClick={Download}
-            sx={{
-              mt: 2,
-              backgroundColor: "secondary.dark",
-              width: "10vw",
-              color: "#fff",
-              "&:hover": {
-                color: "secondary.dark",
-                border: "1px solid blue",
-              },
-            }}
-          >
-            CSV Format
-          </Buttoncomponent>
-        </Grid>
-        <div
-          style={{
-            flex: 1,
-            height: "3px",
-            backgroundColor: "darkgray",
-            marginTop: "1rem",
-          }}
-        />
+         <Autocomplete
+       
+        freeSolo
+        options={option}
+        loading={option.length === 0}
+        filterOptions = {filterOptions}
+        onChange={(e:any,value:any)=>{onText(value)}}
+        getOptionLabel={(opt: any) => opt.organizationID+" / "+opt.providerID+" / "+(opt.filePath).split("/")[2] || opt}
+        renderInput={(params) => <TextField {...params}  label="OrgID-ProviderID-fileName" />}
+      />
+       {/* <TextField
+       placeholder="OrgID"
+       name="OrgID"
+       onChange={(e)=>{onText(e)}}
+       />
+       <TextField
+       placeholder="ProviderID"
+       name="providerID"
+       onChange={(e)=>{onText(e)}}
+       />
+          <TextField
+       placeholder="File Name"
+       name="filePath"
+       onChange={(e)=>{onText(e)}}
+       /> */}
+
         {/* <Grid container item xs={12} justifyContent="left">
           <Button
             variant="outlined"

@@ -57,6 +57,7 @@ export default function Signup() {
             password: values.password,
             lastName:values.lastName,
             email: values.email,
+            role:"PROVIDER"
           };
 
           axiosPrivate

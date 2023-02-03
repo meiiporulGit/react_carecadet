@@ -148,7 +148,7 @@ export default function PricelistUpload() {
       field: "FacilityName",
       headerName: "FacilityName",
       editable: true,
-      width: 100,
+      width: 250,
     },
     {
       field: "OrganisationPrices",
@@ -177,19 +177,27 @@ export default function PricelistUpload() {
   function csvJSON(csv: any) {
     console.log("csvdata");
     var lines = csv.split("\r\n");
-
+console.log(lines,"lines")
     var result = [];
-
+// var mandatoryfield=["FacilityNPI"]
     var headers = lines[0].split(",");
+    const mandatoryfield=headers.includes("FacilityNPI")&& headers.includes("FacilityName");
+    console.log("mandatoryfield",mandatoryfield)
+if(mandatoryfield)
+{
     console.log(headers, "headers");
+    let index = headers.indexOf("FacilityNPI");
+    console.log(index,"indexofnpi")
     const facilityNPI = facilityinput.facilityNPI;
     const facilityName = facilityinput.facilityName;
     for (var i = 1; i < lines.length - 1; i++) {
       var obj: any = {};
-      var currentline = lines[i].split(",");
+
+
+     var currentline = lines[i].split(",");
       console.log("currentline", currentline);
       let storefacility = facilityinput.filter(
-        (data: any) => data.facilityNPI === currentline[4]
+        (data: any) => data.facilityNPI === currentline[index]
       );
       console.log(storefacility, "storefacility");
       // if(storefacility[0]===undefined)
@@ -200,13 +208,13 @@ export default function PricelistUpload() {
         storefacility[0] == undefined
           ? "Facility name unavailable"
           : storefacility[0].facilityName;
-      obj["FacilityName"] = finalfacility;
+      
 
       obj["Organisationid"] = orgid[0].organizationID;
       for (var j = 0; j < headers.length; j++) {
         obj[headers[j]] = currentline[j];
       }
-
+      obj["FacilityName"] = finalfacility;
       result.push(obj);
       // data:{$push:[{result , facilityNPI}]}
     }
@@ -218,9 +226,19 @@ export default function PricelistUpload() {
       headers.includes(element)
     );
     const isMatched =
-      knownHeaders.length === validateHeaders.length &&
-      knownHeaders.every((value, index) => value === validateHeaders[index]);
+      knownHeaders.length === validateHeaders.length 
+      // &&
+      // knownHeaders.every((value, index) => value === validateHeaders[index]);
     // console.log(validateHeaders,"validateHeaders")
+
+    if (
+      knownHeaders.length <= validateHeaders.length - 2 ||
+      headers.length > validateHeaders.length
+    ) {
+      toast.error(
+        "Please check the header name or download the sample csv format"
+      );
+    }else{
     if (validateHeaders.length === headers.length && isMatched) {
       setUnknownHeader(false);
       setColumns(columnsFormat);
@@ -244,6 +262,11 @@ export default function PricelistUpload() {
       return JSON.stringify(result);
     }
   }
+}
+else{
+  toast.error("Please check your header name or download the sample format")
+}
+   }
 
   const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
@@ -361,6 +384,18 @@ export default function PricelistUpload() {
         toast.error(err.data.message);
       });
   };
+
+  const Download = () => {
+    axiosPrivate.get("/download?format=multipleFacility").then((res) => {
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "multipleFileFormat.csv");
+      document.body.appendChild(link);
+      link.click();
+    });
+  };
+
   return (
     <>
       <Paper
@@ -386,21 +421,33 @@ export default function PricelistUpload() {
           // height: "88.8vh",
         }}
       >
-        <Typography
-          variant="h6"
-          textAlign={"right"}
-          justifyItems={"right"}
-          sx={{ color: "Black" }}
-          margin={"15px"}
-          marginBottom={"5px"}
-        >
-          Hello {data.userID},
-        </Typography>
+         <Grid container item justifyContent={"flex-end"}>
+          <Buttoncomponent
+            variant="contained"
+            type="button"
+            size="large"
+            color="primary"
+            onClick={Download}
+            sx={{
+              mt: 2,
+              backgroundColor: "secondary.dark",
+              width: "10vw",
+              color: "#fff",
+              "&:hover": {
+                color: "secondary.dark",
+                border: "1px solid blue",
+              },
+            }}
+          >
+            CSV Format
+          </Buttoncomponent>
+        </Grid>
         <div
           style={{
             flex: 1,
             height: "3px",
             backgroundColor: "darkgray",
+            marginTop: "1rem",
           }}
         />
         {/* <Grid container item xs={12} justifyContent="left">

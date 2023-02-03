@@ -9,6 +9,7 @@ import styles from "./styles.module.css";
 import { Grid, Box, Typography, TextField, Paper } from "@mui/material";
 import Formtext from "../../Components/Textfield";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
+import { axiosPrivate } from "../../axios/axios";
 
 // interface Iconprops{
 //  icon: any
@@ -27,7 +28,7 @@ const schema = yup.object().shape({
     .min(4, "Password must be at least 4 characters"),
 });
 
-export default function SignupPatient() {
+export default function AdminSignup() {
   const [text, setText] = useState("");
 
   const navigate = useNavigate();
@@ -56,21 +57,21 @@ export default function SignupPatient() {
             password: values.password,
             lastName:values.lastName,
             email: values.email,
-            role:"PATIENT"
+            role:"ADMIN"
           };
 
-          axios
-            .post("http://localhost:5200/provider/createProvider", Registerdata)
+          axiosPrivate
+            .post("/provider/createAdmin", Registerdata)
 
             .then((res) => {
               toast.success(res.data.message);
-              navigate("/patient/login");
+              navigate("/admin/adminlogin");
               // alert("Success");
             })
             .catch((err) => {
               console.log(err, "signuperr");
               // toast.error(err.response.data);
-              toast.error(err);
+              toast.error(err.message);
             });
         }}
       >
@@ -92,7 +93,7 @@ export default function SignupPatient() {
                 minWidth: 300,
               }}
             >
-              <Typography variant="h4">Welcome Patient! </Typography>
+              <Typography variant="h4">Welcome Admin! </Typography>
               <Typography variant="h4" sx={{ ml: 9 }}>
                 Sign Up{" "}
               </Typography>
@@ -220,7 +221,7 @@ export default function SignupPatient() {
                 </Buttoncomponent>
               </Grid>
               <Typography>
-                Already have an account?<Link to="/patient/login">Login</Link>
+                Already have an account?<Link to="/provider/login">Login</Link>
               </Typography>
             </Paper>
           </Grid>
