@@ -7,7 +7,7 @@ import { store } from "../Redux/Store";
 import { accessTokentest } from "../Redux/ProviderRedux/LoginSlice";
 
 export const axiosPrivate = axios.create({
-  baseURL: "http://localhost:5200",
+  baseURL: "http://210.18.155.251:5003",
 });
 
 axiosPrivate.interceptors.request.use(
@@ -38,7 +38,7 @@ axiosPrivate.interceptors.response.use(
 
         // body: formBody
         const response = axios
-          .post("http://localhost:5200/user/access", { token: refreshToken })
+          .post("http://210.18.155.251:5003/user/access", { token: refreshToken })
           .then((res) => {
             console.log(res, "ccccc");
             return res;
