@@ -7,7 +7,8 @@ import { store } from "../Redux/Store";
 import { accessTokentest } from "../Redux/ProviderRedux/LoginSlice";
 
 export const axiosPrivate = axios.create({
-  baseURL: "http://210.18.155.251:5003",
+  // baseURL: "http://210.18.155.251:5003",
+  baseURL:"http://localhost:5200"
 });
 
 axiosPrivate.interceptors.request.use(
