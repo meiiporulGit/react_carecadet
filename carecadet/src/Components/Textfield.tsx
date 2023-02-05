@@ -13,6 +13,7 @@ interface props {
   label?:string;
   multirow?:number;
   multiline?:boolean;
+  autoComplete?:any;
 }
 const FormTextField = (props: props) => {
   return (
@@ -31,6 +32,7 @@ const FormTextField = (props: props) => {
         rows={props.multirow}
         type={props.type}
         multiline={props.multiline}
+        autoComplete={props.autoComplete}
         helperText={
           <ErrorMessage name={props.name}>
             {(error) => <ErrorProps>{error}</ErrorProps>}

@@ -3,10 +3,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface Ifacility {
   fData: any;
   service: any;
+  nppes:any;
+  facilityTypedata:any;
 }
 const initialState: Ifacility = {
   fData: {},
   service: {},
+  nppes:[],
+  facilityTypedata:[]
 };
 
 export const facilitySlice = createSlice({
@@ -19,14 +23,22 @@ export const facilitySlice = createSlice({
         fData: action.payload,
       };
     },
-    // serviceInfo: (state, action: PayloadAction<any>) => {
-    //   return {
-    //     ...state,
-    //     service: action.payload,
-    //   };
-    // },
+    nppesInfo:(state,action:PayloadAction<any>) =>{
+      return{
+        ...state,
+        nppes:action.payload
+      }
+    },
+    facilityTypeInfo:(state,action:PayloadAction<any>) =>{
+      return{
+        ...state,
+        facilityTypedata:action.payload
+      }
+    }
+   
   },
 });
 
-export const { facilityInfo } = facilitySlice.actions;
+export const { facilityInfo, nppesInfo, facilityTypeInfo } = facilitySlice.actions;
 export const facilityReducer = facilitySlice.reducer;
+
