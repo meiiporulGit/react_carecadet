@@ -59,6 +59,9 @@ export default function CreateFacility() {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const [checkInfo, setCheckInfo]=useState<any>([])
+
   const data = useAppSelector(state => state.providerAuth.login);
   console.log("datafaciltiy", data);
   const orgID = useAppSelector((state) => state.providerOrganization.orgEditData);
@@ -86,7 +89,8 @@ export default function CreateFacility() {
       await axiosPrivate.get(`http://localhost:5200/facility/findfacilityNPI`)
         .then((res) => {
           console.log(res.data, 'nppes')
-          dispatch(nppesInfo(res.data))
+          // dispatch(nppesInfo(res.data))
+          setCheckInfo(res.data)
         })
         .catch((e) => console.log(e));
       // .then (res => {setInfo(res.data);
@@ -291,7 +295,8 @@ export default function CreateFacility() {
                   name="facilityNPI"
                   component={Autocomplete}
                   filterOptions={filterOptions}
-                  options={info}
+                  // options={info}
+                  options={checkInfo}
                   // loading={info.length === 0}
 
                   // popupIcon={<SearchIcon />}
@@ -330,7 +335,8 @@ export default function CreateFacility() {
                         ...params.InputProps,
                         endAdornment: (
                           <React.Fragment>
-                            {info.length === 0 ? <CircularProgress color="inherit" size={20} /> : null}
+                            {/* {info.length === 0 ? <CircularProgress color="inherit" size={20} /> : null} */}
+                            {checkInfo.length === 0 ? <CircularProgress color="inherit" size={20} /> : null}
                             {params.InputProps.endAdornment}
                           </React.Fragment>),
                       }}

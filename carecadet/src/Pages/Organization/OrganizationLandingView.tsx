@@ -70,8 +70,8 @@ const OrganizationLandingView = ({ data }: Props) => {
                       : icon
                   }
                   style={{
-                    width: "98px",
-                    height: "98px",
+                    width: "157px",
+                    height: "157px",
                     position: "relative",
                     left: "25%",
                     border: "2px solid white",
