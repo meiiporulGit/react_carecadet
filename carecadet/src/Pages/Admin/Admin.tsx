@@ -15,7 +15,7 @@ import {
 } from "@mui/x-data-grid";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
-import { axiosPrivate } from "../../axios/axios";
+import { axiosPrivate, baseURL } from "../../axios/axios";
 // import { parse } from "csv-parse/browser/esm/sync";
 import { orgid } from "../../Redux/ProviderRedux/orgSlice";
 import { toast } from "react-toastify";
@@ -306,7 +306,7 @@ useEffect(()=>{
       alert(JSON.stringify(textValue))
         axiosPrivate
         .post(
-          "http://localhost:5200/uploadAdminPricelist",
+          `${baseURL}/uploadAdminPricelist`,
           datacheck
           // {
           //   headers: {
@@ -377,7 +377,7 @@ useEffect(()=>{
     let datacheck = { name: filename, csv: csvData };
     axiosPrivate
       .post(
-        "http://localhost:5200/publishPricelist",
+        `${baseURL}/publishPricelist`,
         datacheck
         // {
         //   headers: {

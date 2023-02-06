@@ -15,7 +15,7 @@ import {
 } from "@mui/x-data-grid";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
-import { axiosPrivate } from "../../axios/axios";
+import { axiosPrivate, baseURL } from "../../axios/axios";
 // import { parse } from "csv-parse/browser/esm/sync";
 import { orgid } from "../../Redux/ProviderRedux/orgSlice";
 import { toast } from "react-toastify";
@@ -234,7 +234,7 @@ export default function PublishCsv() {
     let datacheck = { name: filename, csv: csvData, emailData: data ,organizationID:orgid[0].organizationID};
     axiosPrivate
       .post(
-        "http://localhost:5200/uploadPricelist",
+        `${baseURL}/uploadPricelist`,
         datacheck
         // {
         //   headers: {
@@ -261,7 +261,7 @@ export default function PublishCsv() {
     //  formData.append("screenshot", output);
     let datacheck = { name: filename, csv: csvData };
     axiosPrivate.post(
-        "http://localhost:5200/publishPricelist",datacheck)
+        `${baseURL}/publishPricelist`,datacheck)
       .then((res) => {
         console.log("Success ", res);
         // alert("success");

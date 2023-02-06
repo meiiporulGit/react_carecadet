@@ -34,7 +34,7 @@ import FormTextField from "../../Components/Textfield";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 import SelectField from "../../Components/Select";
 import ErrorProps from "../../Components/Errorprops";
-import { axiosPrivate } from "../../axios/axios";
+import { axiosPrivate, baseURL } from "../../axios/axios";
 import { tabValueNav } from "../../Redux/ProviderRedux/LoginSlice";
 
 interface forminitialValues {
@@ -86,7 +86,7 @@ export default function CreateFacility() {
   
   useEffect(() => {
     const fetchFacilityNPI = async () => {
-      await axiosPrivate.get(`http://localhost:5200/facility/findfacilityNPI`)
+      await axiosPrivate.get(`${baseURL}/facility/findfacilityNPI`)
         .then((res) => {
           console.log(res.data, 'nppes')
           // dispatch(nppesInfo(res.data))
@@ -101,7 +101,7 @@ export default function CreateFacility() {
   }, [])
   useEffect(() => {
     const getFacilityType = async () => {
-      await axiosPrivate.get(`http://localhost:5200/facility/findfacilityType`)
+      await axiosPrivate.get(`${baseURL}/facility/findfacilityType`)
         .then((res) => {
           console.log(res.data, 'facilityType')
           dispatch(facilityTypeInfo(res.data))
@@ -163,7 +163,7 @@ export default function CreateFacility() {
       values: initialValues,
     });
     axiosPrivate
-      .post("http://localhost:5200/facility/createFacility", facilitydata)
+      .post(`${baseURL}/facility/createFacility`, facilitydata)
       .then((res) => {
         toast.success(res.data.message);
         console.log("resfacilitypost", res.data);

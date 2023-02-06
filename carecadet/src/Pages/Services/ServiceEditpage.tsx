@@ -34,7 +34,7 @@ import { Buttoncomponent } from "../../Components/Buttoncomp";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import clsx from "clsx";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
-import { axiosPrivate } from "../../axios/axios";
+import { axiosPrivate, baseURL } from "../../axios/axios";
 
 interface forminitialValues {
   _id: string;
@@ -142,7 +142,7 @@ export default function ServiceEditpage() {
     //  formData.append("screenshot", output);
     let datacheck = { name: filename, PriceList: csvEdit };
     axiosPrivate
-      .put("http://localhost:5200/bulkupdate", datacheck)
+      .put(`${baseURL}/bulkupdate`, datacheck)
       //   let datacheck1 = { name: filename, PriceList: csvdel };
       //   axios
 

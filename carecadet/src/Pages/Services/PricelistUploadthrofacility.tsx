@@ -15,7 +15,7 @@ import {
 } from "@mui/x-data-grid";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
-import { axiosPrivate } from "../../axios/axios";
+import { axiosPrivate, baseURL } from "../../axios/axios";
 // import { parse } from "csv-parse/browser/esm/sync";
 import { orgid } from "../../Redux/ProviderRedux/orgSlice";
 import { toast } from "react-toastify";
@@ -310,7 +310,7 @@ export default function PricelistUploadthroFacility() {
     if (unknownHeader) {
       setUnknownHeader(false);
       axiosPrivate
-        .post("http://localhost:5200/unknownHeaderPricelist", datacheck)
+        .post(`${baseURL}/unknownHeaderPricelist`, datacheck)
         .then((res) => {
           setColumns([]);
           setCsvData([]);
@@ -323,7 +323,7 @@ export default function PricelistUploadthroFacility() {
     } else {
       axiosPrivate
         .post(
-          "http://localhost:5200/uploadPricelist",
+          `${baseURL}/uploadPricelist`,
           datacheck
           // {
           //   headers: {
@@ -351,7 +351,7 @@ export default function PricelistUploadthroFacility() {
     let datacheck = { name: filename, csv: csvData };
     axiosPrivate
       .post(
-        "http://localhost:5200/publishPricelist",
+        `${baseURL}/publishPricelist`,
         datacheck
         // {
         //   headers: {

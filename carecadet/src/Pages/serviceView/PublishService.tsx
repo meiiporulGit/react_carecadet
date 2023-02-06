@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react'
 import { useAppSelector } from '../../Redux/Hook'
-import { axiosPrivate } from '../../axios/axios'
+import { axiosPrivate, baseURL } from '../../axios/axios'
 
 import { Buttoncomponent } from '../../Components/Buttoncomp'
 import {Box,Paper} from "@mui/material"
@@ -113,7 +113,7 @@ const PublishService = () => {
       const onSubmit = (e: any) => {
         e.preventDefault();
        let datacheck = { csv: csvData,emailData:{orgID:orgID[0].organizationID,file:viewData} };
-        axiosPrivate.post("http://localhost:5200/publishPricelist", datacheck)
+        axiosPrivate.post(`${baseURL}/publishPricelist`, datacheck)
           .then((res) => {
             toast.success(res.data.message)
             navigate("/provider/serviceView/serviceView");

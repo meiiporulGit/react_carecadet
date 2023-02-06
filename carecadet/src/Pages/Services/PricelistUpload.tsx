@@ -15,7 +15,7 @@ import {
 } from "@mui/x-data-grid";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
-import { axiosPrivate } from "../../axios/axios";
+import { axiosPrivate, baseURL } from "../../axios/axios";
 // import { parse } from "csv-parse/browser/esm/sync";
 import { orgid } from "../../Redux/ProviderRedux/orgSlice";
 import { facilitynameInfo } from "../../Redux/ProviderRedux/serviceSlice";
@@ -323,7 +323,7 @@ else{
       setUnknownHeader(false);
       axiosPrivate
         .post(
-          "http://localhost:5200/unknownHeaderPricelist",
+          `${baseURL}/unknownHeaderPricelist`,
           datacheck
           // {
           //   headers: {
@@ -345,7 +345,7 @@ else{
     } else {
       axiosPrivate
         .post(
-          "http://localhost:5200/uploadPricelist",
+          `${baseURL}/uploadPricelist`,
           datacheck
           // {
           //   headers: {
@@ -373,7 +373,7 @@ else{
     //  formData.append("screenshot", output);
     let datacheck = { name: filename, csv: csvData };
     axiosPrivate
-      .post("http://localhost:5200/publishPricelist", datacheck)
+      .post(`${baseURL}/publishPricelist`, datacheck)
       .then((res) => {
         console.log("Success ", res);
         // alert("success");

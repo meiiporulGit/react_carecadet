@@ -2,7 +2,7 @@ import React from "react";
 
 import { Box, Grid, Typography, Paper, Container } from "@mui/material";
 
-import { axiosPrivate } from "../../axios/axios";
+import { axiosPrivate, baseURL } from "../../axios/axios";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 import ViewFacility from "../Facility/ViewFacility";
@@ -66,7 +66,7 @@ const OrganizationLandingView = ({ data }: Props) => {
                 <img
                   src={
                     data[0].orgImg
-                      ? `http://localhost:5200/${data[0].orgImg}`
+                      ? `${baseURL}/${data[0].orgImg}`
                       : icon
                   }
                   style={{

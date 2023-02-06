@@ -11,7 +11,7 @@ import FormTextField from "../../Components/Textfield";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 import SelectField from "../../Components/Select";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
-import { axiosPrivate } from "../../axios/axios";
+import { axiosPrivate, baseURL } from "../../axios/axios";
 import Pricelistlandingpage from "./pricelistlandingpage";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -54,7 +54,7 @@ const CreateService = () => {
     useEffect(() => {
   
       const fetchUsers = async() =>{
-        await axiosPrivate.get(`http://localhost:5200/findServiceCode`)
+        await axiosPrivate.get(`${baseURL}/findServiceCode`)
         .then (res => {setInfo(res.data);
         setQuery(res.data)})
       }

@@ -27,7 +27,7 @@ import SelectField from "../../Components/Select";
 //redux store
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import { tabValueNav } from "../../Redux/ProviderRedux/LoginSlice";
-import { axiosPrivate } from "../../axios/axios";
+import { axiosPrivate, baseURL } from "../../axios/axios";
 import ErrorProps from "../../Components/Errorprops";
 
 interface forminitialValues {
@@ -113,7 +113,7 @@ export default function UpdateFacility() {
     //   },
     // });
     axiosPrivate
-      .put(`http://localhost:5200/facility/updateFacility`, facilitydata)
+      .put(`${baseURL}/facility/updateFacility`, facilitydata)
       .then((res) => {
         // alert('updated')
         toast.success("Successfully Updated");

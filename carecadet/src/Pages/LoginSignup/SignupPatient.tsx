@@ -9,6 +9,7 @@ import styles from "./styles.module.css";
 import { Grid, Box, Typography, TextField, Paper } from "@mui/material";
 import Formtext from "../../Components/Textfield";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
+import { baseURL } from "../../axios/axios";
 
 // interface Iconprops{
 //  icon: any
@@ -60,7 +61,7 @@ export default function SignupPatient() {
           };
 
           axios
-            .post("http://localhost:5200/provider/createProvider", Registerdata)
+            .post(`${baseURL}/provider/createProvider`, Registerdata)
 
             .then((res) => {
               toast.success(res.data.message);

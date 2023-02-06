@@ -25,7 +25,7 @@ import { Buttoncomponent } from "../../Components/Buttoncomp";
 import { useAppSelector, useAppDispatch } from "../../Redux/Hook";
 import { facilityInfo } from "../../Redux/ProviderRedux/facilitySlice";
 import { serviceInfo ,facilitynameInfo} from "../../Redux/ProviderRedux/serviceSlice";
-import { axiosPrivate } from "../../axios/axios";
+import { axiosPrivate, baseURL } from "../../axios/axios";
 // import {editButton} from "../../Redux/LoginSlice"
 
 interface forminitialValues {
@@ -68,7 +68,7 @@ export default function ViewFacility() {
   const getData = async () => {
     // const facilityDetails = await axios.get('http://localhost:5200/facility/getFacilityList')
     const facilityDetails = await axiosPrivate.get(
-      `http://localhost:5200/facility/getFacilityByProvider?providerID=${getid.userID}`
+      `/facility/getFacilityByProvider?providerID=${getid.userID}`
     );
     setData(facilityDetails.data.data);
     dispatch(facilitynameInfo(facilityDetails.data.data))
@@ -81,7 +81,7 @@ export default function ViewFacility() {
 
     await axios
       .delete(
-        `http://localhost:5200/facility/deleteFacility?facilityID=${facilityinput.facilityID}`,
+        `${baseURL}/facility/deleteFacility?facilityID=${facilityinput.facilityID}`,
         facilityinput
       )
       .then((data) => {
@@ -282,7 +282,7 @@ export default function ViewFacility() {
                       dispatch(facilityInfo({ facility }));
                       axiosPrivate
                         .delete(
-                          `http://localhost:5200/facility/deleteFacility?facilityID=${facility.facilityID}`,
+                          `/facility/deleteFacility?facilityID=${facility.facilityID}`,
                           facilityinput
                         )
                         .then(() => {
