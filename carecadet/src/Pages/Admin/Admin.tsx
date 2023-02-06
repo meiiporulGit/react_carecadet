@@ -221,8 +221,9 @@ useEffect(()=>{
       headers.includes(element)
     );
     const isMatched =
-      knownHeaders.length === validateHeaders.length &&
-      knownHeaders.every((value, index) => value === validateHeaders[index]);
+      knownHeaders.length === validateHeaders.length 
+      // &&
+      // knownHeaders.every((value, index) => value === validateHeaders[index]);
     // console.log(validateHeaders,"validateHeaders")
     if (validateHeaders.length === headers.length && isMatched) {
       setUnknownHeader(false);
@@ -405,6 +406,9 @@ useEffect(()=>{
    console.log(value,"vlau")
       setTextValue({_id:value._id,email:value.providerName}) 
   }
+  const CustomPaper = (props:any) => {
+    return <Paper elevation={8} sx={{backgroundColor:"#DCF0FA",color:"black"}}{...props} />;
+  };
 
   const OPTIONS_LIMIT = 10;
 const defaultFilterOptions = createFilterOptions();
@@ -416,12 +420,12 @@ const filterOptions = (options:any, state:any) => {
   return (
     <>
       <Paper
-        elevation={9}
+        elevation={3}
         sx={{
           backgroundColor: "primary.light",
           padding: "1.5rem",
           borderRadius: "15px",
-          // height: "88.8vh",
+          height: "89vh",
 
           "&::-webkit-scrollbar": {
             width: 20,
@@ -445,6 +449,7 @@ const filterOptions = (options:any, state:any) => {
         loading={option.length === 0}
         filterOptions = {filterOptions}
         onChange={(e:any,value:any)=>{onText(value)}}
+        PaperComponent={CustomPaper}
         getOptionLabel={(opt: any) => opt.organizationID+" / "+opt.providerID+" / "+(opt.filePath).split("/")[2] || opt}
         renderInput={(params) => <TextField {...params}  label="OrgID-ProviderID-fileName" />}
       />

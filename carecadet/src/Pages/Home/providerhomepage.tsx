@@ -21,7 +21,6 @@ import {
   CardMedia,
   MenuItem,
   Menu,
-  
 } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
@@ -46,8 +45,8 @@ import care from "../../Images/care.jpg";
 import InputAdornment from "@mui/material/InputAdornment";
 
 interface forminitialValues {
-Service: string;
-Location :string;
+  Service: string;
+  Location: string;
 }
 const options = [
   { value: "Type1", item: "Type1" },
@@ -57,29 +56,29 @@ const options = [
 const Providerhomepage = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const navigate = useNavigate();
-  const dispatch=useAppDispatch()
-  
+  const dispatch = useAppDispatch();
+
   const initialValues: forminitialValues = {
-    Service:"",
-    Location:""
+    Service: "",
+    Location: "",
   };
   const validationSchema = Yup.object().shape({
     Service: Yup.string().required("Required"),
+    Location: Yup.string().required("Required"),
   });
   const onSubmit = (values: forminitialValues, actions: any) => {
-   
     // alert(JSON.stringify(facilitydata, null, 2));
+    alert(JSON.stringify(values, null, 2))
     actions.resetForm({
-      values: {
-        facilityName: "",
-      },
+    values:initialValues
     });
-    axiosPrivate
-      .get(`http://210.18.155.251:5003/search/?q=${values.Service}` )
+    // axiosPrivate
+    //   .get(`http://210.18.155.251:5003/search/?q=`)
+    axiosPrivate.get (`http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`)
       .then((res) => {
-        console.log(res.data)
-          dispatch(dataSearch(res.data.data))
-          navigate("/provider/search")
+        console.log(res.data);
+        dispatch(dataSearch(res.data.data));
+        navigate("/provider/search");
         console.log("i", res);
       })
       .catch((e) => console.log(e));
@@ -155,8 +154,8 @@ const Providerhomepage = () => {
               alignItems="flex-start"
               sx={{ ml: "10px" }}
             >
-              <Grid item xs={7}>
-                <Box
+              <Grid  item xs={7} >
+                {/* <Box
                   sx={{
                     padding:"1rem",
                     display: "flex",
@@ -212,7 +211,69 @@ const Providerhomepage = () => {
                       },
                     }}
                   />
-                </Box>
+                </Box> */}
+                <Grid container xs={12} sx={{
+                    padding:"1rem",
+                    
+                    background: "#4D77FF",
+                   
+                    // width: "55em",
+                    gap:"1.5rem"
+                   
+                  }}>
+                <Grid item xs={7.5}  >
+                  <FormTextField
+                    container={TextField}
+                    name="Service"
+                    placeholder="Search Service"
+                    type="text"
+                    fullWidth={false}
+                    sx={{
+                      borderRadius: 1,
+                      ".MuiInputBase-input": {
+                        background: "white",
+                      },
+                      ".MuiFormLabel-root ": {
+                        letterSpacing: "0.2rem",
+                        fontSize: "0.8rem",
+                      },
+                      ".MuiInputLabel-shrink": {
+                        letterSpacing: 0,
+                      },
+                      '&::placeholder': {
+                       fontSize:"1.3rem",
+                        color: 'black'
+                      }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={4.1}>
+                  <FormTextField
+                    container={TextField}
+                    name="Location"
+                    placeholder="location"
+                    type="text"
+                    fullWidth={false}
+                    sx={{
+                      borderRadius: 1,
+                      ".MuiInputBase-input": {
+                        background: "white",
+                      },
+                      ".MuiFormLabel-root ": {
+                        letterSpacing: "0.2rem",
+                        fontSize: "0.8rem",
+                      },
+                      ".MuiInputLabel-shrink": {
+                        letterSpacing: 0,
+                      },
+                      '&::placeholder': {
+                        fontSize:"1.3rem",
+                         color: 'black'
+                       }
+                    }}
+                  />
+                </Grid>
+                </Grid>
               </Grid>
 
               <Grid item xs={5} sx={{ mt: "-250px" }}>
@@ -377,7 +438,7 @@ const Providerhomepage = () => {
                     letterSpacing: "0.2rem",
                   }}
                 >
-                HELP PATIENTS FIND YOU
+                  HELP PATIENTS FIND YOU
                 </Typography>
                 <Typography
                   sx={{ padding: "10px", fontSize: "1rem", mt: "15px" }}
@@ -394,127 +455,139 @@ const Providerhomepage = () => {
                 item
               >
                 <Grid item xs={3}>
-                  <Link to="/provider/urgentcarelogin" style={{textDecoration:"none"}}>
-                  <Card
-                    raised
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      padding: "5px",
-                      height: "15em",
-                    }}
+                  <Link
+                    to="/provider/urgentcarelogin"
+                    style={{ textDecoration: "none" }}
                   >
-                    <CardMedia
-                      sx={{ width: "100px", height: "90px" }}
-                      component="img"
-                      image={emergency}
-                      title="emergency"
-                    />
-                    <CardContent>
-                      <Typography
-                        variant="h6"
-                        color="textSecondary"
-                        sx={{ textAlign: "center" }}
-                      >
-                        Urgent care
-                      </Typography>
-                    </CardContent>
-                  </Card>
+                    <Card
+                      raised
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        padding: "5px",
+                        height: "15em",
+                      }}
+                    >
+                      <CardMedia
+                        sx={{ width: "100px", height: "90px" }}
+                        component="img"
+                        image={emergency}
+                        title="emergency"
+                      />
+                      <CardContent>
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ textAlign: "center" }}
+                        >
+                          Urgent care
+                        </Typography>
+                      </CardContent>
+                    </Card>
                   </Link>
                 </Grid>
                 <Grid item xs={3}>
-                  <Link style={{textDecoration:"none"}}to="/provider/dentalcarelogin" >
-                  <Card
-                    raised
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      padding: "5px",
-                      height: "15em",
-                    }}
+                  <Link
+                    style={{ textDecoration: "none" }}
+                    to="/provider/dentalcarelogin"
                   >
-                    <CardMedia
-                      sx={{ width: "100px", height: "90px" }}
-                      component="img"
-                      image={dentallogo}
-                      title="dentalcarelogo"
-                    />
-                    <CardContent>
-                      <Typography
-                        variant="h6"
-                        color="textSecondary"
-                        sx={{ textAlign: "center" }}
-                      >
-                        Dental care
-                      </Typography>
-                    </CardContent>
-                  </Card>
+                    <Card
+                      raised
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        padding: "5px",
+                        height: "15em",
+                      }}
+                    >
+                      <CardMedia
+                        sx={{ width: "100px", height: "90px" }}
+                        component="img"
+                        image={dentallogo}
+                        title="dentalcarelogo"
+                      />
+                      <CardContent>
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ textAlign: "center" }}
+                        >
+                          Dental care
+                        </Typography>
+                      </CardContent>
+                    </Card>
                   </Link>
                 </Grid>
                 <Grid item xs={3}>
-                  <Link style={{textDecoration:"none"}}to="/provider/labcarelogin" >
-                  <Card
-                    raised
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      padding: "5px",
-                      height: "15em",
-                    }}
+                  <Link
+                    style={{ textDecoration: "none" }}
+                    to="/provider/labcarelogin"
                   >
-                    <CardMedia
-                      sx={{ width: "90px", height: "100px" }}
-                      component="img"
-                      image={lab}
-                      title="lab"
-                    />
-                    <CardContent>
-                      <Typography
-                        variant="h6"
-                        color="textSecondary"
-                        sx={{ textAlign: "center" }}
-                      >
-                        Labs
-                      </Typography>
-                    </CardContent>
-                  </Card>
+                    <Card
+                      raised
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        padding: "5px",
+                        height: "15em",
+                      }}
+                    >
+                      <CardMedia
+                        sx={{ width: "90px", height: "100px" }}
+                        component="img"
+                        image={lab}
+                        title="lab"
+                      />
+                      <CardContent>
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ textAlign: "center" }}
+                        >
+                          Labs
+                        </Typography>
+                      </CardContent>
+                    </Card>
                   </Link>
                 </Grid>
                 <Grid item xs={3}>
-                  <Link style={{textDecoration:"none"}}to="/provider/otherslogin" >
-                  <Card
-                    raised
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      padding: "5px",
-                      height: "15em",
-                    }}
+                  <Link
+                    style={{ textDecoration: "none" }}
+                    to="/provider/otherslogin"
                   >
-                    <CardMedia
-                      sx={{ width: "90px", height: "100px" }}
-                      component="img"
-                      image={care}
-                      title="care"
-                    />
-                    <CardContent>
-                      <Typography
-                        variant="h6"
-                        color="textSecondary"
-                        sx={{ textAlign: "center" }}
-                      >
-                        others
-                      </Typography>
-                    </CardContent>
-                  </Card>
+                    <Card
+                      raised
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        padding: "5px",
+                        height: "15em",
+                      }}
+                    >
+                      <CardMedia
+                        sx={{ width: "90px", height: "100px" }}
+                        component="img"
+                        image={care}
+                        title="care"
+                      />
+                      <CardContent>
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          sx={{ textAlign: "center" }}
+                        >
+                          others
+                        </Typography>
+                      </CardContent>
+                    </Card>
                   </Link>
                 </Grid>
               </Grid>

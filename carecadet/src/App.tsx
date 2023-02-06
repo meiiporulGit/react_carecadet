@@ -20,6 +20,7 @@ import {
   homePage,
   admin,
   adminRoute,
+  searchPage,
 } from "./routes";
 
 import Layout from "./component/Layout";
@@ -63,6 +64,9 @@ function App() {
       <Router>
         <Layout>
           <Routes>
+            {searchPage.map((search)=>(
+              <Route key={search.key} path={search.path} element={<search.component/>}/>
+            ))}
             {/* <Route path = "/providerlanding" element = {<ProviderLandingPage/>}/> */}
             {admin.map((ad)=>(
               <Route key={ad.key}
@@ -161,7 +165,7 @@ function App() {
         </Layout>
       </Router>
       <ToastContainer
-        position="bottom-center"
+        position="top-center"
         autoClose={5000}
         hideProgressBar={true}
         newestOnTop={false}

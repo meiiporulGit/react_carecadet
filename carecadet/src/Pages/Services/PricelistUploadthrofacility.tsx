@@ -378,13 +378,13 @@ export default function PricelistUploadthroFacility() {
   };
 
   return (
-    <>
-      <Paper
-        elevation={9}
+  
+      <Box
+        
         sx={{
           backgroundColor: "primary.light",
-          padding: "1.5rem",
-          borderRadius: "15px",
+          
+         
           // height: "88.8vh",
 
           "&::-webkit-scrollbar": {
@@ -410,9 +410,9 @@ export default function PricelistUploadthroFacility() {
             color="primary"
             onClick={Download}
             sx={{
-              mt: 2,
+             
               backgroundColor: "secondary.dark",
-              width: "10vw",
+              width: "14vw",
               color: "#fff",
               "&:hover": {
                 color: "secondary.dark",
@@ -420,7 +420,7 @@ export default function PricelistUploadthroFacility() {
               },
             }}
           >
-            CSV Format
+            Sample Format
           </Buttoncomponent>
         </Grid>
         <div
@@ -462,7 +462,7 @@ export default function PricelistUploadthroFacility() {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            marginTop: "50px",
+            marginTop: "10px",
           }}
         >
           Upload your facility's Pricelist
@@ -503,7 +503,7 @@ export default function PricelistUploadthroFacility() {
           </Button>
 
           {/* service pricelist.csv in <i>src dir</i> */}
-          <Box>{filename}</Box>
+          <Box sx={{mt:2,fontWeight:"bold"}}>{filename}</Box>
         </Box>
         {columns.length !== 0 ? (
           <>
@@ -573,7 +573,7 @@ export default function PricelistUploadthroFacility() {
             </Box>
           </>
         ) : null}
-      </Paper>
-    </>
+      
+    </Box>
   );
 }

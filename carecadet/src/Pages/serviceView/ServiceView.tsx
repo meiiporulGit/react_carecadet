@@ -79,8 +79,8 @@ const ServiceView = () => {
     setPage(0);
   };
   return (
-    <Box sx={{ backgroundColor: "primary.light", padding: "1.8rem" }}>
-      <Grid container item justifyContent={"flex-end"} mb={"1rem"}>
+    <Box >
+      {/* <Grid container item justifyContent={"flex-end"} mb={"1rem"}>
         <Buttoncomponent type="button"  variant="contained"
         size="large"
         color="primary"
@@ -98,7 +98,7 @@ const ServiceView = () => {
         }}>
           Publish CSV
         </Buttoncomponent>
-      </Grid>
+      </Grid> */}
       {/* {pathData.map((path: any, i: any) => (
         <Paper
           elevation={3}
@@ -114,7 +114,7 @@ const ServiceView = () => {
       ))} */}
       <Grid container item sx={{ justifyContent: "center" }}>
         <Table sx={{ maxWidth: "100%" }}>
-          <TableHead sx={{ backgroundColor: "secondary.light" }}>
+          <TableHead sx={{ backgroundColor: "#4D77FF" }}>
             <TableRow>
               <TableCell
                 sx={{
@@ -154,7 +154,7 @@ const ServiceView = () => {
                 )
               : pathData
             ).map((dataPath: any,i:any) => (
-              <TableRow key={i}>
+              <TableRow key={i} sx={{backgroundColor: (i+1)%2===0?"#B4C8FC":"white"}}>
                 <TableCell sx={{ fontSize: "0.8rem", textAlign: "center" }}>
                   {dataPath.providerID}
                 </TableCell>
@@ -169,10 +169,10 @@ const ServiceView = () => {
                     variant="contained"
                     size="large"
                     sx={{
-                      backgroundColor:
-                        dataPath.status === "verified" ? "orange" : "green",
+                      backgroundColor:"#E4ECF7",
+                      border:"1px solid blue",
                       width: "12vw",
-                      color: "#fff",
+                      color: dataPath.status === "verified" ? "orange" : "green",
                       "&:hover": {
                         color: "secondary.dark",
                         border: "1px solid blue",

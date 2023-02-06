@@ -183,19 +183,18 @@ import {
   Toolbar,
   Typography,
   Paper,
-  Grid
+  Grid,
+  Divider,
 } from "@mui/material";
-import {toast} from "react-toastify"
-
+import { toast } from "react-toastify";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import { navRoutes } from "../routes";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Buttoncomponent } from "../Components/Buttoncomp";
 import { useAppDispatch, useAppSelector } from "../Redux/Hook";
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { axiosPrivate } from "../axios/axios";
-
 
 import {
   logoutButton,
@@ -208,19 +207,41 @@ import { adminLogoutButton } from "../Redux/Admin/adminLogin";
 
 const Navbar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const providerLogout = useAppSelector((state) => state.providerAuth.providerLogoutButton);
-  const patientLogout=useAppSelector((state)=>state.patientAuth.patientLogoutButton)
-const adminLogout=useAppSelector(state=>state.adminAuth.adminLogoutButton)
-  const userID=useAppSelector((state)=>state.providerAuth.login.userID)
-  const adminUserID=useAppSelector(state=>state.adminAuth.adminLogin.firstName+" "+state.adminAuth.adminLogin.lastName)
-  const userName=useAppSelector(state=>state.providerAuth.login.userName)
-  const adminUserName=useAppSelector(state=>state.adminAuth.adminLogin.userName)
+  const providerLogout = useAppSelector(
+    (state) => state.providerAuth.providerLogoutButton
+  );
+  const patientLogout = useAppSelector(
+    (state) => state.patientAuth.patientLogoutButton
+  );
+  const adminLogout = useAppSelector(
+    (state) => state.adminAuth.adminLogoutButton
+  );
+  const userID = useAppSelector((state) => state.providerAuth.login.userID);
+  const adminUserID = useAppSelector(
+    (state) =>
+      state.adminAuth.adminLogin.firstName +
+      " " +
+      state.adminAuth.adminLogin.lastName
+  );
+  const userName = useAppSelector((state) => state.providerAuth.login.userName);
+  const adminUserName = useAppSelector(
+    (state) => state.adminAuth.adminLogin.userName
+  );
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const char =location.pathname.split("/")[1] === ""? "patient": location.pathname.split("/")[1];
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
+  const char =
+    location.pathname.split("/")[1] === ""
+      ? "patient"
+      : location.pathname.split("/")[1];
+
+  const open = Boolean(anchorEl);
+  const handleClick = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
   const handleOpenNavMenu = (event: any) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -228,49 +249,63 @@ const adminLogout=useAppSelector(state=>state.adminAuth.adminLogoutButton)
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-  
 
   const onPageUser = (user: any, path: string) => {
     dispatch(pageUser(user));
     navigate(path);
   };
-  const onLogout = (type:string) => {
-    if(type==="patient"){
+  const onLogout = (type: string) => {
+    if (type === "patient") {
       dispatch(patientLogoutButton());
       navigate("/");
     }
-    if(type==="provider"){
-    axiosPrivate.post("/user/logout",userName).then(res=>{
-        console.log(res,"logout")
+    if (type === "provider") {
+      axiosPrivate.post("/user/logout", userName).then((res) => {
+        console.log(res, "logout");
         dispatch(logoutButton());
         dispatch(refrestState());
-        toast.success(res.data.message)
+        toast.success(res.data.message);
         navigate("/provider/home");
-    })
-  }
-  if(type==="admin"){
-    axiosPrivate.post("/admin/adminlogout",adminUserName).then(res=>{
-      console.log(res,"logout")
-      dispatch(adminLogoutButton());
-      
-      toast.success(res.data.message)
-      navigate("/admin/adminlogin");
-  })
-  }
+      });
+    }
+    if (type === "admin") {
+      axiosPrivate.post("/admin/adminlogout", adminUserName).then((res) => {
+        console.log(res, "logout");
+        dispatch(adminLogoutButton());
+
+        toast.success(res.data.message);
+        navigate("/admin/adminlogin");
+      });
+    }
   };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <Paper
+    elevation={3}
       sx={{
         width: "100%",
-        height: "7vh",
-        backgroundColor: "primary.light",
+        borderRadius: "1rem",
+        backgroundColor: "#AAC9DD",
+          border: "1px solid #728AB7",
         position: "fixed",
         zIndex: 1,
-        border: "1px solid #728AB7",
       }}
     >
-      <Container maxWidth="xl">
-        <Toolbar disableGutters sx={{display:"flex",justifyContent:"space-between"}}>
+      <Container
+        maxWidth="xl"
+      >
+        <Toolbar
+          disableGutters
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <Typography
             variant="h5"
             noWrap
@@ -341,17 +376,37 @@ const adminLogout=useAppSelector(state=>state.adminAuth.adminLogoutButton)
               CareCadet
             </Box>
           </Typography>
-         <Box sx={{width:"30%",display:{ xs: "none", md: "flex",xl:"flex" },justifyContent:"flex-end"}}>
-            <Box sx={{ display:"flex" }}>
+          <Box
+            sx={{
+              width: "40%",
+              display: { xs: "none", md: "flex", xl: "flex" },
+              justifyContent: "flex-end",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-around",
+                alignItems: "center",
+                width: "60vw",
+              }}
+            >
               {navRoutes.map((page) => (
                 <Typography
                   key={page.key}
-                  color={char === page.color ? "#4D77FF" : "primary.main"}
+                  color={char === page.color ? "#4D77FF" : "default"}
                   variant="button"
                   onClick={() => {
                     onPageUser(page.title, page.path);
                   }}
-                  sx={{ fontSize: "1.2rem", marginLeft: "2rem" ,cursor:"pointer"}}
+                  sx={{
+                    fontSize: "1.2rem",
+
+                    cursor: "pointer",
+                    ":hover": {
+                      color: "blue",
+                    },
+                  }}
                 >
                   {page.title}
                 </Typography>
@@ -367,106 +422,185 @@ const adminLogout=useAppSelector(state=>state.adminAuth.adminLogoutButton)
                 //   {page.title}
                 // </Link>
               ))}
-
-             
             </Box>
             {providerLogout ? (
-          <Box sx={{display:"flex"}}>
-           
-          <Buttoncomponent
-            type="button"
-            size="small"
-            fullWidth={false}
-            variant="contained"
-            onClick={()=>{onLogout("provider")}}
-            sx={{
-              backgroundColor: "secondary.dark",
-              width: "7vw",
-              color: "#fff",
-              ml: "15px",
-              "&:hover": {
-                color: "secondary.dark",
-                border: "1px solid blue",
-                // letterSpacing: "0.2rem",
-                // fontSize: "1rem",
-              },
-            }}
-          >
-            Logout
-          </Buttoncomponent>
-          <Box sx={{width:"7vw",display:"flex",flexWrap:"nowrap",gap:"0.5rem",margin:"0 0 0 1.5rem"}}>
-              <AccountCircleOutlinedIcon fontSize="large"/>
-              <Typography sx={{margin:"0.2rem 0 0 0"}}>{userID}</Typography>
+              <Box sx={{ display: "flex" }}>
+                {/* <Buttoncomponent
+                  type="button"
+                  size="small"
+                  fullWidth={false}
+                  variant="contained"
+                  onClick={() => {
+                    onLogout("provider");
+                  }}
+                  sx={{
+                    backgroundColor: "secondary.dark",
+                    width: "7vw",
+                    color: "#fff",
+                    ml: "15px",
+                    "&:hover": {
+                      color: "secondary.dark",
+                      border: "1px solid blue",
+                      // letterSpacing: "0.2rem",
+                      // fontSize: "1rem",
+                    },
+                  }}
+                >
+                  Logout
+                </Buttoncomponent> */}
+                <Box
+                  onClick={handleClick}
+                  sx={{
+                    width: "10vw",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexWrap: "nowrap",
+                    gap: "0.5rem",
+
+                    cursor: "pointer",
+                    ":hover": {
+                      color: "blue",
+                    },
+                  }}
+                >
+                  <Divider orientation="vertical" flexItem />
+                  <AccountCircleOutlinedIcon fontSize="large" />
+                  <Typography textAlign={"center"}>{userID}</Typography>
+                </Box>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    "aria-labelledby": "basic-button",
+                  }}
+                  PaperProps={{
+                    style: {
+                      width: "20ch",
+                      background: "#DEFFF8",
+                    },
+                  }}
+                >
+                  <MenuItem
+                    onClick={() => {
+                      handleClose();
+                      onLogout("provider");
+                    }}
+                  >
+                    Logout
+                  </MenuItem>
+                </Menu>
               </Box>
-        </Box>
-      ) : null}
-           {patientLogout ? (
-        <Box  >
-           {/* <Box sx={{width:"7vw",display:"flex",flexWrap:"nowrap",gap:"0.5rem",margin:"0 0 0 1.5rem"}}>
+            ) : null}
+            {patientLogout ? (
+              <Box>
+                {/* <Box sx={{width:"7vw",display:"flex",flexWrap:"nowrap",gap:"0.5rem",margin:"0 0 0 1.5rem"}}>
               <AccountCircleOutlinedIcon fontSize="large"/>
               <Typography sx={{margin:"0.2rem 0 0 0"}}>{userID}</Typography>
               </Box> */}
-          <Buttoncomponent
-            type="button"
-            size="small"
-            fullWidth={false}
-            variant="contained"
-            onClick={()=>{onLogout("patient")}}
-            sx={{
-              backgroundColor: "secondary.dark",
-              width: "7vw",
-              color: "#fff",
-              ml: "15px",
-              "&:hover": {
-                color: "secondary.dark",
-                border: "1px solid blue",
-                // letterSpacing: "0.2rem",
-                // fontSize: "1rem",
-              },
-            }}
-          >
-            Logout
-          </Buttoncomponent>
-        </Box>
-      ) : null}
-       {adminLogout ? (
-        <Box sx={{display:"flex"}} >
-           {/* <Box sx={{width:"7vw",display:"flex",flexWrap:"nowrap",gap:"0.5rem",margin:"0 0 0 1.5rem"}}>
+                <Buttoncomponent
+                  type="button"
+                  size="small"
+                  fullWidth={false}
+                  variant="contained"
+                  onClick={() => {
+                    onLogout("patient");
+                  }}
+                  sx={{
+                    backgroundColor: "secondary.dark",
+                    width: "7vw",
+                    color: "#fff",
+                    ml: "15px",
+                    "&:hover": {
+                      color: "secondary.dark",
+                      border: "1px solid blue",
+                      // letterSpacing: "0.2rem",
+                      // fontSize: "1rem",
+                    },
+                  }}
+                >
+                  Logout
+                </Buttoncomponent>
+              </Box>
+            ) : null}
+            {adminLogout ? (
+              <Box sx={{ display: "flex" }}>
+                {/* <Box sx={{width:"7vw",display:"flex",flexWrap:"nowrap",gap:"0.5rem",margin:"0 0 0 1.5rem"}}>
               <AccountCircleOutlinedIcon fontSize="large"/>
               <Typography sx={{margin:"0.2rem 0 0 0"}}>{userID}</Typography>
               </Box> */}
-          <Buttoncomponent
-            type="button"
-            size="small"
-            fullWidth={false}
-            variant="contained"
-            onClick={()=>{onLogout("admin")}}
-            sx={{
-              backgroundColor: "secondary.dark",
-              width: "7vw",
-              color: "#fff",
-              ml: "15px",
-              "&:hover": {
-                color: "secondary.dark",
-                border: "1px solid blue",
-                // letterSpacing: "0.2rem",
-                // fontSize: "1rem",
-              },
-            }}
-          >
-            Logout
-          </Buttoncomponent>
-          <Box sx={{width:"7vw",display:"flex",flexWrap:"nowrap",gap:"0.5rem",margin:"0 0 0 1.5rem"}}>
-              <AccountCircleOutlinedIcon fontSize="large"/>
-              <Typography sx={{margin:"0.2rem 0 0 0"}}>{adminUserID}</Typography>
+                {/* <Buttoncomponent
+                  type="button"
+                  size="small"
+                  fullWidth={false}
+                  variant="contained"
+                  onClick={() => {
+                    onLogout("admin");
+                  }}
+                  sx={{
+                    backgroundColor: "secondary.dark",
+                    width: "7vw",
+                    color: "#fff",
+                    ml: "15px",
+                    "&:hover": {
+                      color: "secondary.dark",
+                      border: "1px solid blue",
+                      // letterSpacing: "0.2rem",
+                      // fontSize: "1rem",
+                    },
+                  }}
+                >
+                  Logout
+                </Buttoncomponent> */}
+                <Box
+                  sx={{
+                    width: "10vw",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexWrap: "nowrap",
+                    gap: "0.5rem",
+
+                    cursor: "pointer",
+                    ":hover": {
+                      color: "blue",
+                    },
+                  }}
+                  onClick={handleClick}
+                >
+                  <Divider orientation="vertical" flexItem />
+                  <AccountCircleOutlinedIcon fontSize="large" />
+                  <Typography>{adminUserID}</Typography>
+                </Box>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    "aria-labelledby": "basic-button",
+                  }}
+                  PaperProps={{
+                    style: {
+                      width: "20ch",
+                      background: "#DEFFF8",
+                    },
+                  }}
+                >
+                  <MenuItem
+                    onClick={() => {
+                      handleClose();
+                      onLogout("admin");
+                    }}
+                  >
+                    Logout
+                  </MenuItem>
+                </Menu>
               </Box>
-      
-        </Box>
-      ) : null}
-       
-      </Box>
-          
-        
+            ) : null}
+          </Box>
         </Toolbar>
       </Container>
     </Paper>

@@ -110,7 +110,7 @@ const Patienthomepage = () => {
               sx={{ ml: "10px" }}
             >
             <Grid item xs={7}>
-                <Box
+                {/* <Box
                   sx={{
                     padding:"1rem",
                     display: "flex",
@@ -166,7 +166,70 @@ const Patienthomepage = () => {
                       },
                     }}
                   />
-                </Box>
+                </Box> */}
+                <Grid container xs={12} sx={{
+                    padding:"1rem",
+                    
+                    background: "#4D77FF",
+                   
+                    // width: "55em",
+                    gap:"1.5rem"
+                   
+                  }}>
+                    <Grid item xs={7.5}>
+                    <FormTextField
+                    container={TextField}
+                   
+                    name="Service"
+                    placeholder="Search Service"
+                    type="text"
+                    fullWidth={false}
+                    sx={{
+                     borderRadius:1,
+                      ".MuiInputBase-input" : {
+                        background: "white"
+                      },
+                      ".MuiFormLabel-root ": {
+                        letterSpacing: "0.2rem",
+                        fontSize: "0.8rem",
+                      },
+                      ".MuiInputLabel-shrink": {
+                        letterSpacing: 0,
+                      },
+                      '&::placeholder': {
+                        fontSize:"1.3rem",
+                         color: 'black'
+                       }
+                    }}
+                  />
+                    </Grid>
+                    <Grid  item xs={4}>
+                    <FormTextField
+                    container={TextField}
+                   
+                    name="Location"
+                    placeholder="location"
+                    type="text"
+                    fullWidth={false}
+                    sx={{
+                      borderRadius:1,
+                      ".MuiInputBase-input" : {
+                        background: "white"
+                      },
+                      ".MuiFormLabel-root ": {
+                        letterSpacing: "0.2rem",
+                        fontSize: "0.8rem",
+                      },
+                      ".MuiInputLabel-shrink": {
+                        letterSpacing: 0,
+                      },
+                      '&::placeholder': {
+                        fontSize:"1.3rem",
+                         color: 'black'
+                       }
+                    }}/>
+                    </Grid>
+                    </Grid>
               </Grid>
 
               <Grid item xs={3.75} sx={{ mt: "-250px" }}>

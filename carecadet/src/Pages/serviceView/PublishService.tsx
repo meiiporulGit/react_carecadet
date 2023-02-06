@@ -124,28 +124,9 @@ const PublishService = () => {
 
 
   return (
-    <Paper
-    elevation={9}
-    sx={{
-      backgroundColor: "primary.light",
-      padding: "1.5rem",
-      borderRadius: "15px",
-      // height: "88.8vh",
-
-      "&::-webkit-scrollbar": {
-        width: 20,
-      },
-      "&::-webkit-scrollbar-track": {
-        backgroundColor: "grey",
-      },
-      "&::-webkit-scrollbar-thumb": {
-        backgroundColor: "secondary.dark",
-        borderRadius: 2,
-      },
-      overflowX: "hidden",
-
-      // height: "88.8vh",
-    }}
+    <Box
+    
+    
   >
   
     
@@ -195,7 +176,7 @@ const PublishService = () => {
     </Box>
    </>:"loading"} 
     
-  </Paper>
+  </Box>
   )
 }
 

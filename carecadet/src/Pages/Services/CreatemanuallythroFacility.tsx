@@ -45,7 +45,9 @@ const CreateServicethroFacility = () => {
     FacilityNPI: "",
     FacilityPrices: "",
   };
-
+  const CustomPaper = (props:any) => {
+    return <Paper elevation={8} sx={{backgroundColor:"#DCF0FA",color:"black"}}{...props} />;
+  };
   const OPTIONS_LIMIT = 10;
   const defaultFilterOptions = createFilterOptions();
   
@@ -203,6 +205,7 @@ const CreateServicethroFacility = () => {
               component={Autocomplete}
                options = {info}
                loading={info.length === 0}
+               PaperComponent={CustomPaper}
 filterOptions = {filterOptions}
                getOptionLabel={(option: any) => option.Code || option}         
               freeSolo    

@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import {
   Grid,
+  Box,
   Typography,
   Paper,
   TextField,
@@ -123,14 +124,14 @@ export default function UpdateFacility() {
   };
 
   return (
-    <Paper
-      elevation={5}
-      sx={{
-        backgroundColor: "primary.light",
-        padding: "1.8rem",
-        // borderRadius: "15px",
-        m: "1em",
-      }}
+    <Box
+      // elevation={5}
+      // sx={{
+      //   backgroundColor: "primary.light",
+      //   padding: "1.8rem",
+      //   // borderRadius: "15px",
+      //   m: "1em",
+      // }}
     >
       {/* <Typography
         variant="h6"
@@ -517,6 +518,6 @@ export default function UpdateFacility() {
       )} 
        
       </Formik>
-    </Paper>
+    </Box>
   );
 }

@@ -449,12 +449,12 @@ export const homePage: Array<Route> = [
     enabled: true,
     component: Providerhomepage,
   },
-  {
-    key: "providerSearch",
-    path: "/provider/search",
-    enabled: true,
-    component: Search,
-  },
+  // {
+  //   key: "providerSearch",
+  //   path: "/provider/search",
+  //   enabled: true,
+  //   component: Search,
+  // },
   {
     key: "services",
     path: "/services",
@@ -493,3 +493,12 @@ export const adminRoute = [
   },
   
 ];
+
+export const searchPage=[
+  {
+    key: "providerSearch",
+    path: "/provider/search",
+    enabled: true,
+    component: Search,
+  },
+]

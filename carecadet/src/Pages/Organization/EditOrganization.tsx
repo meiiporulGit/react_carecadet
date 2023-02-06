@@ -403,6 +403,7 @@ import { organizationImage } from "../../Redux/ProviderRedux/orgSlice";
 import { axiosPrivate } from "../../axios/axios";
 import { useNavigate } from "react-router-dom";
 import { tabValueNav } from "../../Redux/ProviderRedux/LoginSlice";
+import { toast } from "react-toastify";
 
 interface InitialValues {
   organizationInformation: {
@@ -522,11 +523,14 @@ const EditOrganization = () => {
             .then((res) => {
               // alert("success");
               // dispatch(organizationEdit(orgdata))
+              toast.success(res.data.message)
               navigate("/provider/facility/viewFacility");
               // actions.resetForm({
               //   values: initialValues,
               // });
-            });
+            }).catch(err=>{
+              toast.error(err.message)
+            })
         });
     } catch {}
   };

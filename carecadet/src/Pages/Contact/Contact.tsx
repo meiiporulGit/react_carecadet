@@ -59,8 +59,9 @@ console.log(data,"check")
 
   return (
     <Paper
-      elevation={9}
+      elevation={3}
       sx={{
+        height:"89.5vh",
         backgroundColor: "primary.light",
         padding: "1.5rem",
         borderRadius: "15px",
@@ -90,7 +91,7 @@ console.log(data,"check")
           validationSchema={validationSchema}
         >
           <Form>
-            <Grid container justifyContent={"center"} sx={{ ml: 15 }}>
+            <Grid container justifyContent={"center"} >
               <Grid container justifyContent={"left"}>
                 <Typography
                   variant="h6"

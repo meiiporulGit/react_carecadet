@@ -398,25 +398,15 @@ else{
 
   return (
     <>
-      <Paper
-        elevation={9}
+      <Box
+       
         sx={{
           backgroundColor: "primary.light",
-          padding: "1.5rem",
+          // padding: "1.5rem",
           borderRadius: "15px",
           height: "88.8vh",
 
-          "&::-webkit-scrollbar": {
-            width: 20,
-          },
-          "&::-webkit-scrollbar-track": {
-            backgroundColor: "grey",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "secondary.dark",
-            borderRadius: 2,
-          },
-          overflowX: "hidden",
+        
 
           // height: "88.8vh",
         }}
@@ -429,9 +419,9 @@ else{
             color="primary"
             onClick={Download}
             sx={{
-              mt: 2,
+              // mt: 2,
               backgroundColor: "secondary.dark",
-              width: "10vw",
+              width: "14vw",
               color: "#fff",
               "&:hover": {
                 color: "secondary.dark",
@@ -439,7 +429,7 @@ else{
               },
             }}
           >
-            CSV Format
+            Sample Format
           </Buttoncomponent>
         </Grid>
         <div
@@ -481,7 +471,7 @@ else{
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            marginTop: "50px",
+            marginTop: "10px",
           }}
         >
           Upload your facility's Pricelist
@@ -522,7 +512,7 @@ else{
           </Button>
 
           {/* service pricelist.csv in <i>src dir</i> */}
-          <Box>{filename}</Box>
+          <Box sx={{mt:2,fontWeight:"bold"}}>{filename}</Box>
         </Box>
         {columns.length !== 0 ? (
           <>
@@ -592,7 +582,7 @@ else{
             </Box>
           </>
         ) : null}
-      </Paper>
+      </Box>
     </>
   );
 }

@@ -71,11 +71,11 @@ function Pricelist() {
   };
 
   return (
-    <Paper
-      elevation={9}
+    <Box
+   
       sx={{
         backgroundColor: "primary.light",
-        padding: "1.5rem",
+        padding: "1rem",
         // borderRadius: "15px",
       }}
     >
@@ -98,13 +98,13 @@ function Pricelist() {
       /> */}
       <Typography
         variant="h6"
-        margin={"40px"}
+        
         sx={{
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          marginTop: "50px",
+         
         }}
       >
         {/* <p className="para" style={{ paddingTop: "50px" }}> */}
@@ -141,8 +141,8 @@ function Pricelist() {
             "&:hover": {
               color: "secondary.dark",
               border: "1px solid blue",
-              letterSpacing: "0.2rem",
-              fontSize: "1rem",
+              // letterSpacing: "0.2rem",
+              // fontSize: "1rem",
             },
           }}
           onClick={navigateToupload}
@@ -194,8 +194,8 @@ function Pricelist() {
             "&:hover": {
               color: "secondary.dark",
               border: "1px solid blue",
-              letterSpacing: "0.2rem",
-              fontSize: "1rem",
+              // letterSpacing: "0.2rem",
+              // fontSize: "1rem",
             },
           }}
           onClick={handleClickOpen}
@@ -230,7 +230,7 @@ function Pricelist() {
         corresponding to each facility
         {/* </p> */}
       </Typography>
-    </Paper>
+    </Box>
   );
 }
 

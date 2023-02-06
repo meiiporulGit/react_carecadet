@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import {
   Grid,
+  Box,
   Typography,
   Paper,
   TextField,
@@ -170,15 +171,19 @@ export default function CreateFacility() {
       });
   };
 
+  const CustomPaper = (props:any) => {
+    return <Paper elevation={8} sx={{backgroundColor:"#DCF0FA",color:"black"}}{...props} />;
+  };
+
   return (
-    <Paper
-      elevation={5}
-      sx={{
-        backgroundColor: "primary.light",
-        padding: "1.8rem",
-        // borderRadius: "15px",
-        // m:"0 1em 1em 1em"
-      }}
+    <Box
+      // elevation={5}
+      // sx={{
+      //   backgroundColor: "primary.light",
+      //   padding: "1.8rem",
+      //   // borderRadius: "15px",
+      //   // m:"0 1em 1em 1em"
+      // }}
     >
 
 
@@ -287,11 +292,12 @@ export default function CreateFacility() {
                   component={Autocomplete}
                   filterOptions={filterOptions}
                   options={info}
-                  loading={info.length === 0}
+                  // loading={info.length === 0}
 
                   // popupIcon={<SearchIcon />}
                   //  open={info.length >= 3}
                   //  options={info.map((option:any)=>option.facilityNPI)}
+                  PaperComponent={CustomPaper}
                   getOptionLabel={(option: any) => option.facilityNPI || option}
                   // getOptionLabel = {(option: any) => typeof option === 'string'
                   // || option instanceof String ? option : ""}
@@ -676,6 +682,6 @@ export default function CreateFacility() {
         )}
 
       </Formik>
-    </Paper>
+    </Box>
   );
 }

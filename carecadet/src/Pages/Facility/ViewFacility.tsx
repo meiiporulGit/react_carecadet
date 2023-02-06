@@ -110,7 +110,7 @@ export default function ViewFacility() {
     // <Paper sx={{ backgroundColor: "primary.light" }}>
     // <Grid container justifyContent='center' display='flex'>
     <TableContainer
-      component={Paper}
+      component={Box}
       // elevation={3}
       sx={{
         //  m:"-20px 0px 0 -20px",
@@ -233,8 +233,8 @@ export default function ViewFacility() {
             {(rowsPerPage > 0
               ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : data
-            ).map((facility) => (
-              <TableRow key={facility.facilityNPI}>
+            ).map((facility,i) => (
+              <TableRow key={facility.facilityNPI} sx={{backgroundColor: (i+1)%2===0?"#B4C8FC":"white"}}>
                 <TableCell sx={{ fontSize: "0.8rem", textAlign: "center" }}>
                   {facility.facilityNPI}
                 </TableCell>
@@ -265,7 +265,7 @@ export default function ViewFacility() {
                 <TableCell sx={{ fontSize: "0.8rem", textAlign: "center" }}>
                   {facility.email}
                 </TableCell>
-                <TableCell sx={{ textAlign: "center" }}>
+                <TableCell sx={{ textAlign: "center" ,display:"flex"}}>
                   <IconButton
                     style={Pointer}
                     onClick={() => {

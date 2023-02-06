@@ -2,7 +2,7 @@ import React from "react";
 // import { Route, RouteProps, Navigate, useLocation } from "react-router";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import SideNavBar from "../component/SideNav/SideNavComp";
-import { Box, Grid, Paper, Typography, Link,Button,MenuItem,Menu } from "@mui/material";
+import { Box, Grid, Paper, Typography, Link,Button,MenuItem,Menu, Divider } from "@mui/material";
 
 import { useAppSelector, useAppDispatch } from "../Redux/Hook";
 import { refresh } from "../Redux/ProviderRedux/LoginSlice";
@@ -113,6 +113,7 @@ React.useEffect(()=>{
      display: "flex",
     //  color: "#728AB7",
     color:"black",
+    // fontSize:"4rem",
     //  fontWeight: "bold",
      // padding: "20px",
      marginBottom: "15px",
@@ -124,7 +125,7 @@ React.useEffect(()=>{
    I am a
  </Typography>
 
- <Button sx={{mt:location[2]==="search"?"-5px":"145px",
+ <Button sx={{mt:location[2]==="search"?"-30px":"120px",
          ml:location[2]==="search"?1:1}}
    aria-controls={open ? 'basic-menu' : undefined}
    aria-haspopup="true"
@@ -135,6 +136,7 @@ React.useEffect(()=>{
    <Typography
      variant="h4"
      sx={{
+      fontSize:"3.5rem",
        color: "#4D77FF",  
        textDecoration:'underline',                  
        "&:hover": {
@@ -157,14 +159,18 @@ React.useEffect(()=>{
    }}
    PaperProps={{
      style: {
-       width: '20ch',
+       width: '30ch',
+       background:"#DEFFF8",
+       
+      
      },
    }}
  >
-   <Link component={NavLink} to="/" color="black" underline="none">
-     <MenuItem onClick={handleClose}>Patient</MenuItem> </Link>
-     <Link component={NavLink} to="/provider/home" color="black" underline="none">
-       <MenuItem onClick={handleClose}>Provider</MenuItem></Link>
+   <Link component={NavLink} to="/" color="blue" underline="none">
+     <MenuItem onClick={handleClose} sx={{fontSize:"1.5rem"}}>Patient</MenuItem> </Link>
+     <Divider/>
+     <Link component={NavLink} to="/provider/home" color="blue" underline="none">
+       <MenuItem onClick={handleClose} sx={{fontSize:"1.5rem"}}>Provider</MenuItem></Link>
 
  </Menu>
 

@@ -14,6 +14,7 @@ import { Buttoncomponent } from "../../Components/Buttoncomp";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import {
   loginButton,
+  logoutButton,
   storeLoginInfo,
 } from "../../Redux/ProviderRedux/LoginSlice";
 import { axiosPrivate } from "../../axios/axios";
@@ -51,10 +52,11 @@ export default function AdminLogin() {
                 userType: values.userType,
               };
               console.log(Logindata, "values");
-
+              dispatch(logoutButton())
               axiosPrivate
                 .post("/admin/adminlogin", Logindata)
                 .then((res) => {
+                  
                   toast.success(res.data.message);
                   //  localStorage.setItem("userType", JSON.stringify(res.data.data.userType));
                   //  localStorage.setItem("token", JSON.stringify(res.data.data.token));

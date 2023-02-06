@@ -37,11 +37,12 @@ const OrganizationLandingView = ({ data }: Props) => {
         <Box>
           {/* <Box sx={{ display: "flex", width:"20%"}}> */}
           <Paper
-            // elevation={5}
+            elevation={5}
             square
             sx={{
               padding: "1.5rem",
               backgroundColor: "primary.light",
+             
               // borderRadius: "15px",
               //  m: "0em 1em 1em 0em",
               //  width:"19%"
@@ -69,8 +70,8 @@ const OrganizationLandingView = ({ data }: Props) => {
                       : icon
                   }
                   style={{
-                    width: "130px",
-                    height: "130px",
+                    width: "98px",
+                    height: "98px",
                     position: "relative",
                     left: "25%",
                     border: "2px solid white",

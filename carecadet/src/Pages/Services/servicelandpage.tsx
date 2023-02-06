@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Paper, TextField, Box, Typography, Button, Grid } from "@mui/material";
+import { Paper, TextField, Box, Typography, Button, Grid,Divider } from "@mui/material";
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -169,14 +169,14 @@ export default function Servicelandingpage() {
   }
 
   return (
-    <>
-      <Paper
+    
+      <Box
         // elevation={9}
         sx={{
           backgroundColor: "primary.light",
-          padding: "0.2rem",
+         
           borderRadius: "15px",
-          height: "76vh",
+          // height: "76vh",
         }}
       >
         <>
@@ -316,19 +316,21 @@ export default function Servicelandingpage() {
             /> */}
 
           {/* {JSON.stringify(data)} */}
-          <Box style={{ width: "1000px" }}>
-            <div>
+          <Box style={{ display:"flex",flexDirection:"column",rowGap:"0.2rem" }}>
+           
               {data.map((d: any, key: any) => {
                 return (
+                  <>
                   <button
                     style={{
-                      height: "35px",
-                      width: "1300px",
+                      // height: "35px",
+                      // width: "1300px",
+                      padding:"1rem",
                       border: "0",
-                      borderRadius: "5px",
+                      // borderRadius: "5px",
                       fontSize: "1.2rem",
                       textAlign: "left",
-                      // backgroundColor:"primary.light"
+                      backgroundColor:"#CDDBF8"
                     }}
                     key={key}
                     onClick={() => {
@@ -341,13 +343,14 @@ export default function Servicelandingpage() {
                   >
                     {d}{" "}
                   </button>
+                  {/* <Divider sx={{backgroundColor:"blue"}}/> */}
+                  </>
                 );
               })}
-            </div>
-            {}
+           
           </Box>
         </>
-      </Paper>
-    </>
+      </Box>
+    
   );
 }

@@ -23,7 +23,7 @@ const Layout = ({ children }:LayoutProps) => {
         }}
       >
         <Navbar />
-       <Box sx ={{marginTop:"8vh"}}>{children}</Box> 
+       <Box sx ={{marginTop:"10vh"}}>{children}</Box> 
     
       </Box>
     </>

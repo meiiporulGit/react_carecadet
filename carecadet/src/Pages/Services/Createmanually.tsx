@@ -85,6 +85,10 @@ const CreateService = () => {
     })
   };
 
+  const CustomPaper = (props:any) => {
+    return <Paper elevation={8} sx={{backgroundColor:"#DCF0FA",color:"black"}}{...props} />;
+  };
+
   const validationSchema = Yup.object().shape({
     ServiceCode: Yup.string().required("ServiceCode is required"),
     DiagnosisTestorServiceName: Yup.string().required(
@@ -214,6 +218,7 @@ const CreateService = () => {
                fullWidth={true}
                loading={info.length === 0}
 filterOptions = {filterOptions}
+PaperComponent={CustomPaper}
                getOptionLabel={(option: any) => option.Code || option}         
               freeSolo    
              
