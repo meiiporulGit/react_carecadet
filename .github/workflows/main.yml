@@ -14,7 +14,7 @@ jobs:
         password: Qwerty@123
         port: 22
         script: |
-          cd /home/linuxadmin/Projects/Healthlens/react_carecadet
-          git pull dev main --rebase
+          cd /home/linuxadmin/Healthlens/react_carecadet
+          git pull origin main
           cd carecadet
           bash ./script.sh
