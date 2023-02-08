@@ -269,8 +269,8 @@ const Patienthomepage = () => {
                   },
                 }}
               >
-                <SearchIcon /> Find care
-              </Buttoncomponent>
+                <SearchIcon /> Find care checkdeploy
+              </Buttoncomponent> 
             </Grid>
 
             <Box

@@ -15,7 +15,7 @@ import {
 } from "@mui/x-data-grid";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
-import { axiosPrivate, baseURL } from "../../axios/axios";
+import { adminAxiosPrivate, axiosPrivate, baseURL } from "../../axios/axios";
 // import { parse } from "csv-parse/browser/esm/sync";
 import { orgid } from "../../Redux/ProviderRedux/orgSlice";
 import { toast } from "react-toastify";
@@ -304,7 +304,7 @@ useEffect(()=>{
       toast.error("select the org")
     }else{
       alert(JSON.stringify(textValue))
-        axiosPrivate
+       adminAxiosPrivate
         .post(
           `${baseURL}/uploadAdminPricelist`,
           datacheck

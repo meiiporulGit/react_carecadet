@@ -39,7 +39,7 @@ import PublishService from "./Pages/serviceView/PublishService";
 import Search from "./Pages/Home/Search";
 import PublishCsv from "./Pages/serviceView/PublishCsv";
 import Admin from "./Pages/Admin/Admin";
-import AdminLogin from "./Pages/Admin/AdminLogin";
+import AdminLogin from "./Pages/Admin/LoginAdmin";
 import AdminSignup from "./Pages/Admin/AdminSignup";
 
 interface Route {
