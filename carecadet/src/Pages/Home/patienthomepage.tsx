@@ -269,7 +269,7 @@ const Patienthomepage = () => {
                   },
                 }}
               >
-                <SearchIcon /> Find care checkdeploy second check
+                <SearchIcon /> Find care patient 
               </Buttoncomponent> 
             </Grid>
 
