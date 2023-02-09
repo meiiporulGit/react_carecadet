@@ -351,7 +351,7 @@ export default function PricelistUploadthroFacility() {
     let datacheck = { name: filename, csv: csvData };
     axiosPrivate
       .post(
-        `${baseURL}/publishPricelist`,
+        `/upload/publishPricelist`,
         datacheck
         // {
         //   headers: {

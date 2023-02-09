@@ -6,10 +6,10 @@ import { logoutButton } from "../Redux/ProviderRedux/LoginSlice";
 import { store } from "../Redux/Store";
 import { accessTokentest } from "../Redux/ProviderRedux/LoginSlice";
 import { adminAccessTokentest } from "../Redux/Admin/adminLogin";
-
+// http://210.18.155.251:5003
 export const baseURL="http://localhost:5200"
 export const axiosPrivate = axios.create({
-  // baseURL: "http://210.18.155.251:5003",
+
   baseURL:baseURL
 });
 
