@@ -33,6 +33,7 @@ export default function PricelistUploadthroFacility() {
   const [pageSize, setPagesize] = useState(5);
   const [columns, setColumns] = useState<any>([]);
   const [unknownHeader, setUnknownHeader] = useState<boolean>(false);
+  const [publishButton, setPublishButton] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const data = useAppSelector((state) => state.providerAuth.login);
@@ -239,6 +240,7 @@ export default function PricelistUploadthroFacility() {
         // setFilename("")
         // toast.error("format not match");
         // return { message: "error" };
+        setPublishButton(true)
         setUnknownHeader(true);
         headers.push("FacilityName", "FacilityNPI");
         console.log(headers, "headers");
@@ -314,26 +316,7 @@ export default function PricelistUploadthroFacility() {
         .then((res) => {
           setColumns([]);
           setCsvData([]);
-          toast.success(res.data.message);
-        })
-        .catch((err) => {
-          console.log(err, "cdfjdk");
-          toast.error(err.message);
-        });
-    } else {
-      axiosPrivate
-        .post(
-          `/service/uploadPricelist`,
-          datacheck
-          // {
-          //   headers: {
-          //     "Content-Type": "multipart/form-data",
-          //   },
-          // }
-        )
-        .then((res) => {
-          setColumns([]);
-          setCsvData([]);
+          setPublishButton(false)
           toast.success(res.data.message);
         })
         .catch((err) => {
@@ -341,6 +324,27 @@ export default function PricelistUploadthroFacility() {
           toast.error(err.message);
         });
     }
+    //  else {
+    //   axiosPrivate
+    //     .post(
+    //       `/service/uploadPricelist`,
+    //       datacheck
+    //       // {
+    //       //   headers: {
+    //       //     "Content-Type": "multipart/form-data",
+    //       //   },
+    //       // }
+    //     )
+    //     .then((res) => {
+    //       setColumns([]);
+    //       setCsvData([]);
+    //       toast.success(res.data.message);
+    //     })
+    //     .catch((err) => {
+    //       console.log(err, "cdfjdk");
+    //       toast.error(err.message);
+    //     });
+    // }
   };
 
   const onSubmit = (e: any) => {
@@ -354,7 +358,7 @@ export default function PricelistUploadthroFacility() {
       organizationID: orgid[0].organizationID};
     axiosPrivate
       .post(
-        `$/service/publishPricelistCorrectformat`,
+        `/service/publishPricelistCorrectformat`,
         datacheck
         // {
         //   headers: {
@@ -531,7 +535,7 @@ export default function PricelistUploadthroFacility() {
               sx={{ mt: 1 }}
             />
         <Box sx={{ display: "flex", gap: "1.5rem" }}>
-            {unknownHeader == true  ? (
+            {publishButton  ? (
               <Buttoncomponent
                 type="submit"
                 variant="contained"

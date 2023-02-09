@@ -306,7 +306,7 @@ useEffect(()=>{
       alert(JSON.stringify(textValue))
        adminAxiosPrivate
         .post(
-          `${baseURL}/service/uploadAdminPricelist`,
+          `/service/uploadAdminPricelist`,
           datacheck
           // {
           //   headers: {
@@ -377,7 +377,7 @@ useEffect(()=>{
     let datacheck = { name: filename, csv: csvData };
     axiosPrivate
       .post(
-        `${baseURL}/service/publishPricelist`,
+        `/service/publishPricelist`,
         datacheck
         // {
         //   headers: {

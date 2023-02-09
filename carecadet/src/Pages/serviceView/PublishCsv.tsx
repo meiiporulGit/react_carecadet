@@ -234,7 +234,7 @@ export default function PublishCsv() {
     let datacheck = { name: filename, csv: csvData, emailData: data ,organizationID:orgid[0].organizationID};
     axiosPrivate
       .post(
-        `${baseURL}/service/uploadPricelist`,
+        `/service/uploadPricelist`,
         datacheck
         // {
         //   headers: {

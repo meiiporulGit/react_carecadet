@@ -113,7 +113,7 @@ export default function UpdateFacility() {
     //   },
     // });
     axiosPrivate
-      .put(`${baseURL}/facility/updateFacility`, facilitydata)
+      .put(`/facility/updateFacility`, facilitydata)
       .then((res) => {
         // alert('updated')
         toast.success("Successfully Updated");

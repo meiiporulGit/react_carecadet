@@ -79,9 +79,9 @@ export default function ViewFacility() {
   const deleteFacility = async (event: any, id: number) => {
     //event.persist();
 
-    await axios
+    await axiosPrivate
       .delete(
-        `${baseURL}/facility/deleteFacility?facilityID=${facilityinput.facilityID}`,
+        `/facility/deleteFacility?facilityID=${facilityinput.facilityID}`,
         facilityinput
       )
       .then((data) => {

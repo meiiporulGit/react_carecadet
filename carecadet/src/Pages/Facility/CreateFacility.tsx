@@ -86,7 +86,7 @@ export default function CreateFacility() {
   
   useEffect(() => {
     const fetchFacilityNPI = async () => {
-      await axiosPrivate.get(`${baseURL}/facility/findfacilityNPI`)
+      await axiosPrivate.get(`/facility/findfacilityNPI`)
         .then((res) => {
           console.log(res.data, 'nppes')
           // dispatch(nppesInfo(res.data))
@@ -101,7 +101,7 @@ export default function CreateFacility() {
   }, [])
   useEffect(() => {
     const getFacilityType = async () => {
-      await axiosPrivate.get(`${baseURL}/facility/findfacilityType`)
+      await axiosPrivate.get(`/facility/findfacilityType`)
         .then((res) => {
           console.log(res.data, 'facilityType')
           dispatch(facilityTypeInfo(res.data))
@@ -163,7 +163,7 @@ export default function CreateFacility() {
       values: initialValues,
     });
     axiosPrivate
-      .post(`${baseURL}/facility/createFacility`, facilitydata)
+      .post(`/facility/createFacility`, facilitydata)
       .then((res) => {
         toast.success(res.data.message);
         console.log("resfacilitypost", res.data);
