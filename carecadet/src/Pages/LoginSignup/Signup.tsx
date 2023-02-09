@@ -117,7 +117,7 @@ export default function Signup() {
                 placeholder="firstName"
                 type="text"
                 sx={{
-                  width: "20vw",
+                  width: {md:"20vw"},
                   "&::placeholder": {
                     // color: "green",
 
@@ -141,7 +141,7 @@ export default function Signup() {
                 placeholder="lastName"
                 type="text"
                 sx={{
-                  width: "20vw",
+                  width:{md:"20vw"},
                   "&::placeholder": {
                     // color: "green",
 
@@ -165,7 +165,7 @@ export default function Signup() {
                 placeholder="email"
                 type="email"
                 sx={{
-                  width: "20vw",
+                  width: {md:"20vw"},
                   "&::placeholder": {
                     // color: "green",
 
@@ -189,7 +189,7 @@ export default function Signup() {
                 placeholder="password"
                 type="password"
                 sx={{
-                  width: "20vw",
+                  width: {md:"20vw"},
                   "&::placeholder": {
                     // color: "green",
 

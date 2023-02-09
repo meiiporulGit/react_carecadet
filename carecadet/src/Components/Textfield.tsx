@@ -9,7 +9,8 @@ interface props {
   type: string;
   fullWidth?: boolean;
   container:any;
-  sx?:any
+  sx?:any;
+  inputProps?:any;
   label?:string;
   multirow?:number;
   multiline?:boolean;

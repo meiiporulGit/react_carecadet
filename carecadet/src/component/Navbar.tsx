@@ -285,12 +285,12 @@ const Navbar = () => {
 
   return (
     <Paper
-    elevation={3}
+      elevation={3}
       sx={{
         width: "100%",
         borderRadius: "1rem",
         backgroundColor: "#AAC9DD",
-          border: "1px solid #728AB7",
+        border: "1px solid #728AB7",
         position: "fixed",
         zIndex: 1,
       }}
@@ -451,7 +451,7 @@ const Navbar = () => {
                 <Box
                   onClick={handleClick}
                   sx={{
-                    width: "10vw",
+                    // width: "10vw",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",

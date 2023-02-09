@@ -113,7 +113,7 @@ export default function UpdateFacility() {
     //   },
     // });
     axiosPrivate
-      .put(`${baseURL}/facility/updateFacility`, facilitydata)
+      .put(`/facility/updateFacility`, facilitydata)
       .then((res) => {
         // alert('updated')
         toast.success("Successfully Updated");
@@ -124,58 +124,7 @@ export default function UpdateFacility() {
   };
 
   return (
-    <Box
-      // elevation={5}
-      // sx={{
-      //   backgroundColor: "primary.light",
-      //   padding: "1.8rem",
-      //   // borderRadius: "15px",
-      //   m: "1em",
-      // }}
-    >
-      {/* <Typography
-        variant="h6"
-        textAlign={"right"}
-        justifyItems={"right"}
-        sx={{ color: "Black" }}
-        margin={"10px"}
-        marginBottom={"5px"}
-      >
-        Hello {getid.userID},
-      </Typography>
-      <div
-        style={{
-          marginBottom: "10px",
-          flex: 1,
-          height: "3px",
-          backgroundColor: "darkgray",
-        }}
-      /> */}
-      {/* <Grid container item xs={12} justifyContent="left">
-        <Button
-          variant="outlined"
-          type="button"
-          onClick={() => {
-            dispatch(tabValueNav(1));
-            dispatch(editButton())
-            navigate("/providerlanding");
-          }}
-          sx={{
-            backgroundColor: "secondary.dark",
-            width: "8vw",
-
-            marginBottom: "0.5rem",
-            color: "#fff",
-            "&:hover": {
-              color: "secondary.dark",
-              border: "1px solid blue",
-            },
-          }}
-          startIcon={<ArrowBackIcon fontSize="large" />}
-        >
-          BACK
-        </Button>
-      </Grid> */}
+    <Box>
 
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
       {({ handleChange, values, setFieldValue,  }) => (

@@ -119,7 +119,7 @@ const ProtectedRoute = ({ children, getData }: Props) => {
         <OrganizationLandingView data={data} />
       </Grid>
 
-      <Grid item xs={data.length === 0 ? 12 : 9.5}>
+      <Grid item xs={data.length === 0 ? 12 : 9.5} >
         {getData !== "org" && getData !== "editOrg" ? (
           // <Box sx={{ m: 0, p: 0 }}>
           //   <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -142,34 +142,36 @@ const ProtectedRoute = ({ children, getData }: Props) => {
           value ? (
             "....loading"
           ) : (
-            <Box display={"flex"} flexDirection="column" gap="0.5rem" >
+            <Grid container display={"flex"} flexDirection="column" gap={{xs:"0.5rem" ,md:"0.5rem"}} >
               <OrganizationNav />
               <Divider />
               <Paper
                 elevation={5}
                 sx={{
                   backgroundColor: "primary.light",
-                  padding: "1.8rem",
-                  height: "80.5vh",
+                  padding: {xs:"1.5rem",md:"1.8rem"},
+                  ml:{xs:"1.6rem",md:"0"},
+                  height: {md:"80.5vh"},
+                  width:{xs:"300px",md:"100%"},
                   "&::-webkit-scrollbar": {
-                    width: 15,
+                    width:{md:15} ,
 
                   },
                   "&::-webkit-scrollbar-track": {
-                    backgroundColor: "grey",
+                    backgroundColor: {md:"grey"},
                   },
                   "&::-webkit-scrollbar-thumb": {
-                    backgroundColor: "#AAC9DD",
-                    borderRadius: 2,
+                    backgroundColor: {md:"#AAC9DD"},
+                    borderRadius: {md:2},
                   
                   },
-                  overflowX: "hidden",
+                  overflowX: {md:"hidden"},
         
                 }}
               >
                 {children}
               </Paper>
-            </Box>
+            </Grid>
           )
         ) : (
           <>{children}</>

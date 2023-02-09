@@ -117,7 +117,7 @@ export default function CreateFacility() {
   const filterOptions = (options: any, state: any) => {
     return defaultFilterOptions(options, state).slice(0, OPTIONS_LIMIT);
   };
-  const info = useAppSelector((state) => state.providerFacility.nppes);
+  // const info = useAppSelector((state) => state.providerFacility.nppes);
   const options = useAppSelector((state) => state.providerFacility.facilityTypedata)
   console.log(options, 'options')
   const validationSchema = Yup.object().shape({
@@ -163,7 +163,7 @@ export default function CreateFacility() {
       values: initialValues,
     });
     axiosPrivate
-      .post(`${baseURL}/facility/createFacility`, facilitydata)
+      .post(`/facility/createFacility`, facilitydata)
       .then((res) => {
         toast.success(res.data.message);
         console.log("resfacilitypost", res.data);
@@ -180,15 +180,7 @@ export default function CreateFacility() {
   };
 
   return (
-    <Box
-      // elevation={5}
-      // sx={{
-      //   backgroundColor: "primary.light",
-      //   padding: "1.8rem",
-      //   // borderRadius: "15px",
-      //   // m:"0 1em 1em 1em"
-      // }}
-    >
+    <Box>
 
 
       <Formik
@@ -199,7 +191,7 @@ export default function CreateFacility() {
         {({ handleChange, values, setFieldValue }) => (
 
           <Form>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} justifyContent={"center"}>
               <Grid item xs={12}>
                 <Typography
                   mb={"0.3rem"}
@@ -227,87 +219,19 @@ export default function CreateFacility() {
                 >
                   Search Facility NPI
                 </Typography>
-                {/* <Field
-              name="autocomplete"
-              component={Autocomplete}
-              options={info}
-              getOptionLabel={(option: any) => option.facilityNPI}
-               popupIcon={<SearchIcon />}
-               noOptionsText={
-                true
-                  ? 'NPI data not found -Enter manually'
-                  : 'Type atleast 4 letters'
-              }
-              // ListboxProps={{ style: { maxHeight: "15rem" }, position: "bottom-start" }}
-             
-              onChange={(e: any, value: any) => {
-                console.log(value,"imanualentervalue");
-                setFieldValue(
-                  "facilityName",
-                  value !== null ? value.facilityName : ""
-                )
-                // setFieldValue("facilityNPI", value !== null ? value.facilityNPI :"");
-                setFieldValue("facilityNPI",value.facilityNPI)
-                setFieldValue("facilityType", value !== null ? value.facilityType : "");
-                setFieldValue("addressLine1", value !== null ? value.addressLine1 : "");
-                setFieldValue("addressLine2",value !== null ? value.addressLine2 : "");
-                setFieldValue("city", value !== null ? value.city : "");
-                setFieldValue ("state", value !== null ? value.state : "");
-                setFieldValue ("zipCode", value !== null ? value.zipCode : "");
-                setFieldValue("email", value !== null ? value.email : "");
-                setFieldValue ("contact", value !== null ? value.contact : "");
-
-              }}
-              //  defaultValue = ''
-              // onInputChange = {(e: any, value: any) => {
-              //   console.log(value,"imanualentervalue");
-              //   setFieldValue(
-              //     "facilityNPI",
-              //     value.facilityNPI 
-              //   )}}
-              renderInput={(params: AutocompleteRenderInputParams) => (
-                <TextField
-                  {...params}
-                  name="autocomplete"
-                  // error={touched['autocomplete'] && !!errors['autocomplete']}
-                  // helperText={touched['autocomplete'] && errors['autocomplete']}
-                  label="Search Facility NPI"
-                  variant="outlined"
-                  sx={{
-                    ".MuiFormLabel-root ": {
-                      letterSpacing: "0.2rem",
-                      fontSize: "0.8rem",
-                    },
-                    ".MuiInputLabel-shrink": {
-                      letterSpacing: 0,
-                    },
-                    "& .MuiAutocomplete-popupIndicator": { transform: "none" }
-                    // ".MuiInputBase-root":{
-                    //   borderRadius: "50px",
-                    //   // height:"40px"
-                    // },
-                  
-                  }}
-                />
-              )}
-            /> */}
+       
                 <Field
                   name="facilityNPI"
                   component={Autocomplete}
                   filterOptions={filterOptions}
-                  // options={info}
+               
                   options={checkInfo}
-                  // loading={info.length === 0}
-
-                  // popupIcon={<SearchIcon />}
-                  //  open={info.length >= 3}
-                  //  options={info.map((option:any)=>option.facilityNPI)}
+                
                   PaperComponent={CustomPaper}
                   getOptionLabel={(option: any) => option.facilityNPI || option}
-                  // getOptionLabel = {(option: any) => typeof option === 'string'
-                  // || option instanceof String ? option : ""}
+               
                   freeSolo
-                  // autoSelect
+                 
                   onChange={(e: any, value: any) => {
 
                     console.log(value, "imanualentervalue");

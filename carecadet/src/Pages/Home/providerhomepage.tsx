@@ -91,12 +91,12 @@ const Providerhomepage = () => {
     setAnchorEl(null);
   };
   return (
-    <Box
-      // elevation={5}
-      sx={{
-        background: "transparent",
-      }}
-    >
+    // <Box
+    //   // elevation={5}
+    //   sx={{
+    //     background: "transparent",
+    //   }}
+    // >
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -110,7 +110,7 @@ const Providerhomepage = () => {
               backgroundColor: "primary.light",
             }}
           >
-            <Grid container justifyContent="flex-end">
+            <Grid container justifyContent={{xs:"center",md:"flex-end"}}>
               <Buttoncomponent
                 type="button"
                 size="small"
@@ -119,12 +119,11 @@ const Providerhomepage = () => {
                 onClick={() => navigate("/provider/login")}
                 sx={{
                   backgroundColor: "secondary.dark",
-                  width: "7vw",
+                  width: {xs:"20vw",md:"7vw"},
                   color: "#fff",
-
-                  mt: "-260px",
-                  mb: "260px",
-                  mr: "40px",
+                  mt: {xs:"0px",md:"-260px"},
+                  mb: {xs:"20px",md:"260px"},
+                  mr: {md:"40px"},
                   "&:hover": {
                     color: "secondary.dark",
                     border: "1px solid blue",
@@ -137,91 +136,28 @@ const Providerhomepage = () => {
               </Buttoncomponent>
             </Grid>
 
-            {/* <Grid item xs={4}>
-                  <SelectField
-                    container={Select}
-                    name="Payer"
-                    label="Payer"
-                    selectData={options}
-                  />
-                </Grid> */}
+        
 
             <Grid
               container
-              spacing={1}
+              spacing={3.5}
               direction="row"
-              justifyContent="flex-start"
-              alignItems="flex-start"
-              sx={{ ml: "10px" }}
+              // justifyContent="flex-start"
+              // alignItems="flex-start"
+              // sx={{ ml: "10px" }}
             >
-              <Grid  item xs={7} >
-                {/* <Box
-                  sx={{
-                    padding:"1rem",
-                    display: "flex",
-                    justifyContent:"center",
-                    alignItems:"center",
-                    background: "#4D77FF",
-                    height: "6em",
-                    width: "55em",
-                    gap:"1rem"
-                   
-                  }}
-                >
-                  <FormTextField
-                    container={TextField}
-                   
-                    name="Service"
-                    placeholder="Search Service"
-                    type="text"
-                    fullWidth={false}
-                    sx={{
-                     borderRadius:1,
-                      ".MuiInputBase-input" : {
-                        background: "white"
-                      },
-                      ".MuiFormLabel-root ": {
-                        letterSpacing: "0.2rem",
-                        fontSize: "0.8rem",
-                      },
-                      ".MuiInputLabel-shrink": {
-                        letterSpacing: 0,
-                      },
-                    }}
-                  />
-
-                  <FormTextField
-                    container={TextField}
-                   
-                    name="Location"
-                    placeholder="location"
-                    type="text"
-                    fullWidth={false}
-                    sx={{
-                      borderRadius:1,
-                      ".MuiInputBase-input" : {
-                        background: "white"
-                      },
-                      ".MuiFormLabel-root ": {
-                        letterSpacing: "0.2rem",
-                        fontSize: "0.8rem",
-                      },
-                      ".MuiInputLabel-shrink": {
-                        letterSpacing: 0,
-                      },
-                    }}
-                  />
-                </Box> */}
+              <Grid  item xs = {12} md={7} >
+              
                 <Grid container xs={12} sx={{
                     padding:"1rem",
                     
                     background: "#4D77FF",
                    
                     // width: "55em",
-                    gap:"1.5rem"
+                    gap:"1.5rem",mb:{xs:5,md:0}
                    
                   }}>
-                <Grid item xs={7.5}  >
+                <Grid item xs = {12} md={7.5}  >
                   <FormTextField
                     container={TextField}
                     name="Service"
@@ -241,17 +177,17 @@ const Providerhomepage = () => {
                         letterSpacing: 0,
                       },
                       '&::placeholder': {
-                       fontSize:"1.3rem",
+                        fontSize:{xs:"1rem",md:"1.3rem"},
                         color: 'black'
                       }
                     }}
                   />
                 </Grid>
-                <Grid item xs={4.1}>
+                <Grid item xs = {12} md={4.1}>
                   <FormTextField
                     container={TextField}
                     name="Location"
-                    placeholder="location"
+                    placeholder="Location"
                     type="text"
                     fullWidth={false}
                     sx={{
@@ -267,7 +203,7 @@ const Providerhomepage = () => {
                         letterSpacing: 0,
                       },
                       '&::placeholder': {
-                        fontSize:"1.3rem",
+                        fontSize:{xs:"1rem",md:"1.3rem"},
                          color: 'black'
                        }
                     }}
@@ -276,7 +212,7 @@ const Providerhomepage = () => {
                 </Grid>
               </Grid>
 
-              <Grid item xs={5} sx={{ mt: "-250px" }}>
+              <Grid item xs={5} sx={{ mt: "-250px" , display:{xs:"none" , md:'block'}}}>
                 <img
                   src={healthcare}
                   alt="Home"
@@ -289,20 +225,21 @@ const Providerhomepage = () => {
                   }}
                 />
               </Grid>
-
+              <Grid>
               <Buttoncomponent
                 type="submit"
                 size="large"
                 fullWidth={false}
                 variant="contained"
                 sx={{
-                  marginTop: "-100px",
-                  ml: "350px",
+                  marginTop: {xs:"15px",md:"-100px"},
+                  ml: {xs:"80px",md:"350px"},
+                  mb:{xs:10,md:20},
                   backgroundColor: "secondary.dark",
                   // width: "20vw",
                   color: "#fff",
-                  display: "flex",
-                  justifyContent: "center",
+                  // display: "flex",
+                  // justifyContent: "center",
                   // gap:"1.2rem",
 
                   "&:hover": {
@@ -315,29 +252,31 @@ const Providerhomepage = () => {
               >
                 <SearchIcon /> Find Negotiated rates
               </Buttoncomponent>
+              </Grid>
+             
             </Grid>
 
             <Card
               raised
               sx={{
                 backgroundColor: "RGB(217 229 251)",
-                padding: "10px",
-                marginTop: "5px",
-                height: "35em",
-                marginBottom: "80px",
+                padding: {md:"10px"},
+                marginTop: {md:"5px"},
+                height: {md:"35em"},
+                marginBottom: {md:"80px"},
               }}
             >
-              <Grid container sx={{ padding: "10px" }}>
+              <Grid container sx={{ padding: {md:"10px"},mb: "30px", ml:{xs:"-20px"}}}>
                 <Grid
                   container
                   direction="row"
                   justifyContent="center"
                   alignItems="center"
-                  item
+                  
                 >
                   <Typography
-                    variant="h3"
-                    sx={{ color: "#728AB7", padding: "10px", mb: "40px" }}
+                    // variant={{md:"h3"}}
+                    sx={{   fontSize:{xs:"1.8rem",sm:"2rem",md:"4rem"},color: "#728AB7", padding: "10px", mb: "40px" }}
                   >
                     Products
                   </Typography>
@@ -345,35 +284,43 @@ const Providerhomepage = () => {
 
                 <Grid
                   container
-                  direction="row"
+                  // direction="row"
                   justifyContent="center"
-                  item
-                  spacing={30}
+                 alignItems="center"
+                 
+                  spacing={{xs:10, md:30}}
                 >
-                  <Grid item xs={4}>
+                  <Grid item xs={4} >
                     <Card
                       raised
                       sx={{
                         display: "flex",
-                        flexDirection: "column",
+                         flexDirection:"column" ,
                         justifyContent: "center",
                         alignItems: "center",
-                        padding: "10px",
+                       
+                        // padding: "10px",
                         height: "15em",
+                        width:{xs:"8em",md:"20em"}
+
                         // ,width:"18em"
                       }}
                     >
                       <CardMedia
-                        sx={{ width: "100px", height: "90px" }}
+                        sx={{ width: "100px", 
+                        height: "90px",
+                    
+                      }}
                         component="img"
                         image={dashboardicon}
                         title="payer dashboard"
+                        
                       />
                       <CardContent>
                         <Typography
-                          variant="h6"
+                          // variant="h6"
                           color="textSecondary"
-                          sx={{ textAlign: "center" }}
+                          sx={{ textAlign: "center",fontSize:{xs:"1 rem",md:"1.6rem"} }}
                         >
                           Dashboards for Payer<br></br> negotiated rates
                         </Typography>
@@ -389,22 +336,28 @@ const Providerhomepage = () => {
                         flexDirection: "column",
                         justifyContent: "center",
                         alignItems: "center",
-                        padding: "10px",
+                        // padding: "10px",
                         height: "15em",
-                        mb: "30px",
+                        width:{xs:"8em",md:"20em"},
+                        // mb: "30px",
+                       
                       }}
                     >
                       <CardMedia
-                        sx={{ width: "100px", height: "90px" }}
+                        sx={{ width: "100px", 
+                      
+                        // height: "90px",
+                        
+                      }}
                         component="img"
                         image={dashboardicon}
                         title="payer dashboard"
                       />
                       <CardContent>
                         <Typography
-                          variant="h6"
+                          // variant="h6"
                           color="textSecondary"
-                          sx={{ textAlign: "center" }}
+                          sx={{ textAlign: "center",fontSize:{xs:"1 rem",md:"1.6rem"} }}
                         >
                           Customized Rate report
                         </Typography>
@@ -431,11 +384,13 @@ const Providerhomepage = () => {
                   Providers
                 </Typography>
                 <Typography
-                  variant="h3"
+                  // variant="h3"
                   sx={{
                     color: "#728AB7",
                     padding: "5px",
                     letterSpacing: "0.2rem",
+                    textAlign:"center",
+                    fontSize:{xs:"1.8rem",sm:"2rem",md:"4rem"}
                   }}
                 >
                   HELP PATIENTS FIND YOU
@@ -448,11 +403,12 @@ const Providerhomepage = () => {
               </Grid>
               <Grid
                 container
-                direction="row"
+                direction={{md:"row"}}
+                // flexWrap={"wrap"}
                 // justifyContent="center"
                 // alignItems="center"
                 spacing={3}
-                item
+        
               >
                 <Grid item xs={3}>
                   <Link
@@ -467,20 +423,20 @@ const Providerhomepage = () => {
                         justifyContent: "center",
                         alignItems: "center",
                         padding: "5px",
-                        height: "15em",
+                        height: {xs:"8em",md:"15em"},
                       }}
                     >
                       <CardMedia
-                        sx={{ width: "100px", height: "90px" }}
+                        sx={{ padding:{xs:"5px"},width: {xs:"40px",md:"100px"}, height: {md:"90px"} }}
                         component="img"
                         image={emergency}
                         title="emergency"
                       />
                       <CardContent>
                         <Typography
-                          variant="h6"
+                          // variant="h6"
                           color="textSecondary"
-                          sx={{ textAlign: "center" }}
+                          sx={{ textAlign: "center",fontSize:{xs:"1 rem",md:"1.6rem"} }}
                         >
                           Urgent care
                         </Typography>
@@ -501,20 +457,20 @@ const Providerhomepage = () => {
                         justifyContent: "center",
                         alignItems: "center",
                         padding: "5px",
-                        height: "15em",
+                        height: {xs:"8em",md:"15em"},
                       }}
                     >
                       <CardMedia
-                        sx={{ width: "100px", height: "90px" }}
+                         sx={{ padding:{xs:"5px"},width: {xs:"60px",md:"100px"}, height: {md:"90px"} }}
                         component="img"
                         image={dentallogo}
                         title="dentalcarelogo"
                       />
                       <CardContent>
                         <Typography
-                          variant="h6"
+                          // variant="h6"
                           color="textSecondary"
-                          sx={{ textAlign: "center" }}
+                          sx={{ textAlign: "center",fontSize:{xs:"1 rem",md:"1.6rem"} }}
                         >
                           Dental care
                         </Typography>
@@ -535,20 +491,20 @@ const Providerhomepage = () => {
                         justifyContent: "center",
                         alignItems: "center",
                         padding: "5px",
-                        height: "15em",
+                        height: {xs:"8em",md:"15em"},
                       }}
                     >
                       <CardMedia
-                        sx={{ width: "90px", height: "100px" }}
+                       sx={{ padding:{xs:"5px"},width: {xs:"60px",md:"100px"}, height: {md:"90px"} }}
                         component="img"
                         image={lab}
                         title="lab"
                       />
                       <CardContent>
                         <Typography
-                          variant="h6"
+                          // variant="h6"
                           color="textSecondary"
-                          sx={{ textAlign: "center" }}
+                          sx={{ textAlign: "center",fontSize:{xs:"1 rem",md:"1.6rem"} }}
                         >
                           Labs
                         </Typography>
@@ -569,20 +525,20 @@ const Providerhomepage = () => {
                         justifyContent: "center",
                         alignItems: "center",
                         padding: "5px",
-                        height: "15em",
+                        height: {xs:"8em",md:"15em"},
                       }}
                     >
                       <CardMedia
-                        sx={{ width: "90px", height: "100px" }}
+                        sx={{ padding:{xs:"5px"},width: {xs:"80px",md:"100px"}, height: {md:"90px"} }}
                         component="img"
                         image={care}
                         title="care"
                       />
                       <CardContent>
                         <Typography
-                          variant="h6"
+                          // variant="h6"
                           color="textSecondary"
-                          sx={{ textAlign: "center" }}
+                          sx={{ textAlign: "center",fontSize:{xs:"1 rem",md:"1.6rem"} }}
                         >
                           others
                         </Typography>
@@ -613,7 +569,7 @@ const Providerhomepage = () => {
           </Box>
         </Form>
       </Formik>
-    </Box>
+    // </Box>
   );
 };
 
