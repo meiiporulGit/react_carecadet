@@ -158,7 +158,7 @@ export default function CreateFacility() {
         longitude: values.longitude}
    
     };
-    alert(JSON.stringify(facilitydata, null, 2));
+    // alert(JSON.stringify(facilitydata, null, 2));
     actions.resetForm({
       values: initialValues,
     });

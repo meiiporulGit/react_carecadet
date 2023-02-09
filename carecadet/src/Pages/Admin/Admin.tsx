@@ -292,7 +292,7 @@ useEffect(()=>{
 
   const upload = (e: any) => {
     e.preventDefault();
-    alert(JSON.stringify(textValue._id))
+    // alert(JSON.stringify(textValue._id))
      let datacheck = {
       name: filename,
       csv: csvData,
@@ -303,7 +303,7 @@ useEffect(()=>{
     if(textValue._id===undefined||""||null){
       toast.error("select the org")
     }else{
-      alert(JSON.stringify(textValue))
+      // alert(JSON.stringify(textValue))
        adminAxiosPrivate
         .post(
           `/service/uploadAdminPricelist`,
