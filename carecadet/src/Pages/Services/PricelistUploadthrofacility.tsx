@@ -310,7 +310,7 @@ export default function PricelistUploadthroFacility() {
     if (unknownHeader) {
       setUnknownHeader(false);
       axiosPrivate
-        .post(`${baseURL}/unknownHeaderPricelist`, datacheck)
+        .post(`/service/unknownHeaderPricelist`, datacheck)
         .then((res) => {
           setColumns([]);
           setCsvData([]);
@@ -323,7 +323,7 @@ export default function PricelistUploadthroFacility() {
     } else {
       axiosPrivate
         .post(
-          `${baseURL}/uploadPricelist`,
+          `/service/uploadPricelist`,
           datacheck
           // {
           //   headers: {
@@ -348,10 +348,13 @@ export default function PricelistUploadthroFacility() {
     // if(output){
     //    let formData = new FormData();
     //  formData.append("screenshot", output);
-    let datacheck = { name: filename, csv: csvData };
+    let datacheck = {  csv: csvData,
+      fileType: "Multiple facility upload",
+      emailData: data,
+      organizationID: orgid[0].organizationID};
     axiosPrivate
       .post(
-        `${baseURL}/publishPricelist`,
+        `$/service/publishPricelistCorrectformat`,
         datacheck
         // {
         //   headers: {
@@ -367,7 +370,7 @@ export default function PricelistUploadthroFacility() {
   };
 
   const Download = () => {
-    axiosPrivate.get("/download?format=singleFacility").then((res) => {
+    axiosPrivate.get("/service/download?format=singleFacility").then((res) => {
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = url;
@@ -527,7 +530,8 @@ export default function PricelistUploadthroFacility() {
               // hideFooter
               sx={{ mt: 1 }}
             />
-            <Box sx={{ display: "flex", gap: "1.5rem" }}>
+        <Box sx={{ display: "flex", gap: "1.5rem" }}>
+            {unknownHeader == true  ? (
               <Buttoncomponent
                 type="submit"
                 variant="contained"
@@ -549,7 +553,9 @@ export default function PricelistUploadthroFacility() {
               >
                 Save
               </Buttoncomponent>
-              {/* <Buttoncomponent
+
+) :
+              <Buttoncomponent
             type="submit"
             variant="contained"
             size="large"
@@ -569,7 +575,8 @@ export default function PricelistUploadthroFacility() {
             onClick={onSubmit}
           >
             Publish
-          </Buttoncomponent> */}
+          </Buttoncomponent>
+}
             </Box>
           </>
         ) : null}

@@ -306,7 +306,7 @@ useEffect(()=>{
       alert(JSON.stringify(textValue))
         axiosPrivate
         .post(
-          `${baseURL}/uploadAdminPricelist`,
+          `${baseURL}/service/uploadAdminPricelist`,
           datacheck
           // {
           //   headers: {
@@ -377,7 +377,7 @@ useEffect(()=>{
     let datacheck = { name: filename, csv: csvData };
     axiosPrivate
       .post(
-        `${baseURL}/publishPricelist`,
+        `${baseURL}/service/publishPricelist`,
         datacheck
         // {
         //   headers: {
@@ -393,7 +393,7 @@ useEffect(()=>{
   };
 
   const Download = () => {
-    axiosPrivate.get("/download").then((res) => {
+    axiosPrivate.get("/service/download").then((res) => {
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = url;

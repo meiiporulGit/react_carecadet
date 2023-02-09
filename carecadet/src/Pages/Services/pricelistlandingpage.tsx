@@ -58,7 +58,7 @@ export default function Pricelistlandingpage() {
   }, []);
   const getData = async () => {
     const pricelistdetails = await axiosPrivate.get(
-      `/getPriceListbyFacility?facilityNPI=${facilityinput.facilityNPI}&Organisationid=${orgid[0].organizationID}`
+      `/service/getPriceListbyFacility?facilityNPI=${facilityinput.facilityNPI}&Organisationid=${orgid[0].organizationID}`
     );
     const data = pricelistdetails.data.data;
     if (data.length == 0) {

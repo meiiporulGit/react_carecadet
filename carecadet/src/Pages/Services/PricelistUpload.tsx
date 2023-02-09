@@ -323,7 +323,7 @@ else{
       setUnknownHeader(false);
       axiosPrivate
         .post(
-          `${baseURL}/unknownHeaderPricelist`,
+          `/service/unknownHeaderPricelist`,
           datacheck
           // {
           //   headers: {
@@ -336,27 +336,6 @@ else{
           setColumns([]);
           setCsvData([]);
 
-          toast.success(res.data.message);
-        })
-        .catch((err) => {
-          console.log(err, "cdfjdk");
-          toast.error(err.message);
-        });
-    } else {
-      axiosPrivate
-        .post(
-          `${baseURL}/uploadPricelist`,
-          datacheck
-          // {
-          //   headers: {
-          //     "Content-Type": "multipart/form-data",
-          //   },
-          // }
-        )
-        .then((res) => {
-          console.log("Success ", res);
-          setColumns([]);
-          setCsvData([]);
           toast.success(res.data.message);
         })
         .catch((err) => {
@@ -364,16 +343,43 @@ else{
           toast.error(err.message);
         });
     }
+    //  else {
+    //   axiosPrivate
+    //     .post(
+    //       `${baseURL}/uploadPricelist`,
+    //       datacheck
+    //       // {
+    //       //   headers: {
+    //       //     "Content-Type": "multipart/form-data",
+    //       //   },
+    //       // }
+    //     )
+    //     .then((res) => {
+    //       console.log("Success ", res);
+    //       setColumns([]);
+    //       setCsvData([]);
+    //       toast.success(res.data.message);
+    //     })
+    //     .catch((err) => {
+    //       console.log(err, "cdfjdk");
+    //       toast.error(err.message);
+    //     });
+    // }
   };
+
 
   const onSubmit = (e: any) => {
     e.preventDefault();
     // if(output){
     //    let formData = new FormData();
     //  formData.append("screenshot", output);
-    let datacheck = { name: filename, csv: csvData };
+    let datacheck = {    name: filename,
+      csv: csvData,
+      fileType: "Multiple facility upload",
+      emailData: data,
+      organizationID: orgid[0].organizationID};
     axiosPrivate
-      .post(`${baseURL}/publishPricelist`, datacheck)
+      .post(`/service/publishPricelistCorrectformat`, datacheck)
       .then((res) => {
         console.log("Success ", res);
         // alert("success");
@@ -386,7 +392,7 @@ else{
   };
 
   const Download = () => {
-    axiosPrivate.get("/download?format=multipleFacility").then((res) => {
+    axiosPrivate.get("/service/download?format=multipleFacility").then((res) => {
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = url;
@@ -536,7 +542,10 @@ else{
               // hideFooter
               sx={{ mt: 1 }}
             />
-            <Box sx={{ display: "flex", gap: "1.5rem" }}>
+
+<Box sx={{ display: "flex", gap: "1.5rem" }}>
+            {unknownHeader == true  ? (
+         
               <Buttoncomponent
                 type="submit"
                 variant="contained"
@@ -558,7 +567,11 @@ else{
               >
                 Save
               </Buttoncomponent>
-              {/* <Buttoncomponent
+            
+            ) :
+
+          
+              <Buttoncomponent
             type="submit"
             variant="contained"
             size="large"
@@ -578,8 +591,12 @@ else{
             onClick={onSubmit}
           >
             Publish
-          </Buttoncomponent> */}
-            </Box>
+          </Buttoncomponent>
+            }
+            
+</Box>
+
+
           </>
         ) : null}
       </Box>

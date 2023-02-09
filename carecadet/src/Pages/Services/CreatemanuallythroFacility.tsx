@@ -57,7 +57,7 @@ const CreateServicethroFacility = () => {
     useEffect(() => {
   
       const fetchUsers = async() =>{
-        await axiosPrivate.get(`${baseURL}/findServiceCode`)
+        await axiosPrivate.get(`/service/findServiceCode`)
         .then (res => {setInfo(res.data);
         setQuery(res.data)})
       }
@@ -74,7 +74,7 @@ const CreateServicethroFacility = () => {
       FacilityPrices: values.FacilityPrices,
     };
     // alert(JSON.stringify(servicedata, null, 2));
-    axiosPrivate.post("/createservice", servicedata).then((res) => {
+    axiosPrivate.post("/service/createservice", servicedata).then((res) => {
       toast.success(res.data.message)
       actions.resetForm({
         values: initialValues,
