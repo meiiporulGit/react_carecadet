@@ -9,7 +9,7 @@ import styles from "./styles.module.css";
 import { Grid, Box, Typography, TextField, Paper } from "@mui/material";
 import Formtext from "../../Components/Textfield";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
-import { axiosPrivate } from "../../axios/axios";
+import { adminAxiosPrivate, axiosPrivate } from "../../axios/axios";
 
 // interface Iconprops{
 //  icon: any
@@ -60,7 +60,7 @@ export default function AdminSignup() {
             role:"ADMIN"
           };
 
-          axiosPrivate
+          adminAxiosPrivate
             .post("/provider/createAdmin", Registerdata)
 
             .then((res) => {

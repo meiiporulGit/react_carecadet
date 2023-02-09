@@ -556,7 +556,7 @@ const Navbar = () => {
                 </Buttoncomponent> */}
                 <Box
                   sx={{
-                    width: "10vw",
+                    width: "12vw",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",

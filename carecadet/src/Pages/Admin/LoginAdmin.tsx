@@ -17,7 +17,7 @@ import {
   logoutButton,
   storeLoginInfo,
 } from "../../Redux/ProviderRedux/LoginSlice";
-import { axiosPrivate } from "../../axios/axios";
+import { adminAxiosPrivate, axiosPrivate } from "../../axios/axios";
 import { adminLoginInfo, adminLogoutButton } from "../../Redux/Admin/adminLogin";
 
 const schema = yup.object().shape({
@@ -53,7 +53,7 @@ export default function AdminLogin() {
               };
               console.log(Logindata, "values");
               dispatch(logoutButton())
-              axiosPrivate
+              adminAxiosPrivate
                 .post("/admin/adminlogin", Logindata)
                 .then((res) => {
                   
