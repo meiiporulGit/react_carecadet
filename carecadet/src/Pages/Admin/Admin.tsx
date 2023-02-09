@@ -15,7 +15,7 @@ import {
 } from "@mui/x-data-grid";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
-import { axiosPrivate, baseURL } from "../../axios/axios";
+import { adminAxiosPrivate, axiosPrivate, baseURL } from "../../axios/axios";
 // import { parse } from "csv-parse/browser/esm/sync";
 import { orgid } from "../../Redux/ProviderRedux/orgSlice";
 import { toast } from "react-toastify";
@@ -39,7 +39,7 @@ export default function Admin() {
   const navigate = useNavigate();
 
 useEffect(()=>{
-  axiosPrivate.get("/pathPricelist/nonStandard").then(res=>{
+  adminAxiosPrivate.get("/pathPricelist/nonStandard").then(res=>{
     console.log(res.data.data,"res")
     setOption(res.data.data)
   })
@@ -304,7 +304,7 @@ useEffect(()=>{
       toast.error("select the org")
     }else{
       alert(JSON.stringify(textValue))
-        axiosPrivate
+       adminAxiosPrivate
         .post(
           `${baseURL}/service/uploadAdminPricelist`,
           datacheck
@@ -393,7 +393,7 @@ useEffect(()=>{
   };
 
   const Download = () => {
-    axiosPrivate.get("/service/download").then((res) => {
+    axiosPrivate.get("/download").then((res) => {
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = url;

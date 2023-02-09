@@ -42,6 +42,12 @@ export const adminLoginSlice = createSlice({
         
       };
     },
+    adminAccessTokentest: (state, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        adminLogin: { ...state.adminLogin, token: action.payload },
+      };
+    },
    
    
 
@@ -54,6 +60,7 @@ export const {
     adminLoginInfo,
   
     adminLogoutButton,
+    adminAccessTokentest
   
   // editButton
 } = adminLoginSlice.actions;

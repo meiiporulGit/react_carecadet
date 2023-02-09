@@ -270,7 +270,7 @@ const Patienthomepage = () => {
                 }}
               >
                 <SearchIcon /> Find care
-              </Buttoncomponent>
+              </Buttoncomponent> 
             </Grid>
 
             <Box
