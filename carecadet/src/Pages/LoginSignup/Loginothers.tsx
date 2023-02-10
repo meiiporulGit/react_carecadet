@@ -32,7 +32,7 @@ export default function Loginothers() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   return (
-    <Box sx={{ backgroundColor: "#EBF3FA", height: "95vh", mt: "-0.5vh" }}>
+    <Box sx={{ backgroundColor: "#EBF3FA", height: "95vh", mt: "-0.5vh" ,padding:{xs:"20px",md:"none"}}}>
       <Grid container>
         <Grid item md={7} sx={{ display: "flex", justifyContent: "center" }}>
           <Formik
@@ -122,7 +122,7 @@ export default function Loginothers() {
                   placeholder="email"
                   type="email"
                   sx={{
-                    width: "20vw",
+                    width: {md:"20vw"},
                     "&::placeholder": {
                       color: "#728AB7",
 
@@ -149,7 +149,7 @@ export default function Loginothers() {
                   placeholder="password"
                   type="password"
                   sx={{
-                    width: "20vw",
+                    width: {md:"20vw"},
                     "&::placeholder": {
                       color: "#728AB7",
                       letterSpacing: "0.2rem",
@@ -190,7 +190,7 @@ export default function Loginothers() {
           item
           md={5}
           sx={{
-            display: "flex",
+            display: {xs:"none",md:"flex"},
             justifyContent: "center",
             alignItems: "center",
             mt: 8,
