@@ -288,9 +288,9 @@ const Providerhomepage = () => {
                   justifyContent="center"
                  alignItems="center"
                  
-                  spacing={{xs:10, md:30}}
+                  spacing={{xs:1, md:30}}
                 >
-                  <Grid item xs={4} >
+                  <Grid item xs={12} md={4} >
                     <Card
                       raised
                       sx={{
@@ -298,10 +298,9 @@ const Providerhomepage = () => {
                          flexDirection:"column" ,
                         justifyContent: "center",
                         alignItems: "center",
-                       
                         // padding: "10px",
                         height: "15em",
-                        width:{xs:"8em",md:"20em"}
+                        ml:{xs:"3rem",md:0}                   
 
                         // ,width:"18em"
                       }}
@@ -320,7 +319,7 @@ const Providerhomepage = () => {
                         <Typography
                           // variant="h6"
                           color="textSecondary"
-                          sx={{ textAlign: "center",fontSize:{xs:"1 rem",md:"1.6rem"} }}
+                          sx={{ textAlign: "center",fontSize:{xs:"1 rem",md:"1.2rem"} }}
                         >
                           Dashboards for Payer<br></br> negotiated rates
                         </Typography>
@@ -328,7 +327,7 @@ const Providerhomepage = () => {
                     </Card>
                   </Grid>
 
-                  <Grid item xs={4}>
+                  <Grid item xs={12} md={4} justifyContent={"center"}alignItems={"center"}>
                     <Card
                       raised
                       sx={{
@@ -337,14 +336,15 @@ const Providerhomepage = () => {
                         justifyContent: "center",
                         alignItems: "center",
                         // padding: "10px",
+                        ml:{xs:"3rem",md:0},
                         height: "15em",
-                        width:{xs:"8em",md:"20em"},
                         // mb: "30px",
                        
                       }}
                     >
                       <CardMedia
-                        sx={{ width: "100px", 
+                        sx={{ 
+                          width: "100px", 
                       
                         // height: "90px",
                         
@@ -357,7 +357,7 @@ const Providerhomepage = () => {
                         <Typography
                           // variant="h6"
                           color="textSecondary"
-                          sx={{ textAlign: "center",fontSize:{xs:"1 rem",md:"1.6rem"} }}
+                          sx={{ textAlign: "center",fontSize:{xs:"1 rem",md:"1.2rem"} }}
                         >
                           Customized Rate report
                         </Typography>
@@ -367,6 +367,9 @@ const Providerhomepage = () => {
                 </Grid>
               </Grid>
             </Card>
+
+
+
 
             <Grid container sx={{ padding: "10px" }}>
               <Grid
@@ -410,7 +413,7 @@ const Providerhomepage = () => {
                 spacing={3}
         
               >
-                <Grid item xs={3}>
+                <Grid item xs = {8} md={3} justifyContent={"center"} alignItems={"center"}>
                   <Link
                     to="/provider/urgentcarelogin"
                     style={{ textDecoration: "none" }}
