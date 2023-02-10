@@ -68,7 +68,7 @@ const Providerhomepage = () => {
   });
   const onSubmit = (values: forminitialValues, actions: any) => {
     // alert(JSON.stringify(facilitydata, null, 2));
-    alert(JSON.stringify(values, null, 2))
+    // alert(JSON.stringify(values, null, 2))
     actions.resetForm({
     values:initialValues
     });

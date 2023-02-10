@@ -292,7 +292,7 @@ useEffect(()=>{
 
   const upload = (e: any) => {
     e.preventDefault();
-    alert(JSON.stringify(textValue._id))
+    // alert(JSON.stringify(textValue._id))
      let datacheck = {
       name: filename,
       csv: csvData,
@@ -303,10 +303,10 @@ useEffect(()=>{
     if(textValue._id===undefined||""||null){
       toast.error("select the org")
     }else{
-      alert(JSON.stringify(textValue))
+      // alert(JSON.stringify(textValue))
        adminAxiosPrivate
         .post(
-          `${baseURL}/uploadAdminPricelist`,
+          `/service/uploadAdminPricelist`,
           datacheck
           // {
           //   headers: {
@@ -369,39 +369,39 @@ useEffect(()=>{
     // }
   };
 
-  // const onSubmit = (e: any) => {
-  //   e.preventDefault();
-  //   // if(output){
-  //   //    let formData = new FormData();
-  //   //  formData.append("screenshot", output);
-  //   let datacheck = { name: filename, csv: csvData };
-  //   axiosPrivate
-  //     .post(
-  //       `${baseURL}/publishPricelist`,
-  //       datacheck
-  //       // {
-  //       //   headers: {
-  //       //     "Content-Type": "multipart/form-data",
-  //       //   },
-  //       // }
-  //     )
-  //     .then((res) => {
-  //       console.log("Success ", res);
-  //       // alert("success");
-  //       navigate("/provider/facility/pricelistlanding");
-  //     }); //  }
-  // };
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+    // if(output){
+    //    let formData = new FormData();
+    //  formData.append("screenshot", output);
+    let datacheck = { name: filename, csv: csvData };
+    axiosPrivate
+      .post(
+        `/service/publishPricelist`,
+        datacheck
+        // {
+        //   headers: {
+        //     "Content-Type": "multipart/form-data",
+        //   },
+        // }
+      )
+      .then((res) => {
+        console.log("Success ", res);
+        // alert("success");
+        navigate("/provider/facility/pricelistlanding");
+      }); //  }
+  };
 
-  // const Download = () => {
-  //   axiosPrivate.get("/download").then((res) => {
-  //     const url = window.URL.createObjectURL(new Blob([res.data]));
-  //     const link = document.createElement("a");
-  //     link.href = url;
-  //     link.setAttribute("download", "singleFileFormat.csv");
-  //     document.body.appendChild(link);
-  //     link.click();
-  //   });
-  // };
+  const Download = () => {
+    axiosPrivate.get("/download").then((res) => {
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "singleFileFormat.csv");
+      document.body.appendChild(link);
+      link.click();
+    });
+  };
   const onText=(value:any)=>{
    console.log(value,"vlau")
       setTextValue({_id:value._id,email:value.providerName}) 

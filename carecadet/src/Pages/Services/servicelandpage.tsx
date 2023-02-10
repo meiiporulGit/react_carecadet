@@ -70,7 +70,7 @@ export default function Servicelandingpage() {
   useEffect(() => {}, []);
   const getData = async () => {
     axiosPrivate
-      .get(`/getPriceListbyOrg?Organisationid=${orgid[0].organizationID}`)
+      .get(`/service/getPricelistbyOrg?Organisationid=${orgid[0].organizationID}`)
       .then((resp) => {
         const d = resp.data.data;
         const dd = d.map((c: any) => c.DiagnosisTestorServiceName);

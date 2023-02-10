@@ -86,7 +86,7 @@ export default function CreateFacility() {
   
   useEffect(() => {
     const fetchFacilityNPI = async () => {
-      await axiosPrivate.get(`${baseURL}/facility/findfacilityNPI`)
+      await axiosPrivate.get(`/facility/findfacilityNPI`)
         .then((res) => {
           console.log(res.data, 'nppes')
           // dispatch(nppesInfo(res.data))
@@ -101,7 +101,7 @@ export default function CreateFacility() {
   }, [])
   useEffect(() => {
     const getFacilityType = async () => {
-      await axiosPrivate.get(`${baseURL}/facility/findfacilityType`)
+      await axiosPrivate.get(`/facility/findfacilityType`)
         .then((res) => {
           console.log(res.data, 'facilityType')
           dispatch(facilityTypeInfo(res.data))
@@ -158,7 +158,7 @@ export default function CreateFacility() {
         longitude: values.longitude}
    
     };
-    alert(JSON.stringify(facilitydata, null, 2));
+    // alert(JSON.stringify(facilitydata, null, 2));
     actions.resetForm({
       values: initialValues,
     });

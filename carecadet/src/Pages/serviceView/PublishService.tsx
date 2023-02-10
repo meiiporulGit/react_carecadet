@@ -113,7 +113,7 @@ const PublishService = () => {
       const onSubmit = (e: any) => {
         e.preventDefault();
        let datacheck = { csv: csvData,emailData:{orgID:orgID[0].organizationID,file:viewData} };
-        axiosPrivate.post(`${baseURL}/publishPricelist`, datacheck)
+        axiosPrivate.post(`/service/publishPricelist`, datacheck)
           .then((res) => {
             toast.success(res.data.message)
             navigate("/provider/serviceView/serviceView");

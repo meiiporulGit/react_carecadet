@@ -64,7 +64,7 @@ export default function PricelistEditpage() {
   console.log(facilityinput, "facip");
   const getData = async () => {
     const pricelistdetails = await axiosPrivate.get(
-      `/getPriceListbyFacility?facilityNPI=${facilityinput.facilityNPI}&Organisationid=${orgid[0].organizationID}`
+      `/service/getPriceListbyFacility?facilityNPI=${facilityinput.facilityNPI}&Organisationid=${orgid[0].organizationID}`
     );
     setData(pricelistdetails.data.data);
     console.log(pricelistdetails.data, "pricelist");
@@ -131,21 +131,21 @@ export default function PricelistEditpage() {
     //  formData.append("screenshot", output);
     let datacheck = { name: filename, PriceList: csvEdit };
     axiosPrivate
-      .put(`${baseURL}/bulkupdate`, datacheck)
+      .put(`/service/bulkupdate`, datacheck)
       .then((res) => {
       let datacheck1 = {data: { name: filename, PriceList: csvdel }};
       axiosPrivate
       
         .delete(
-          `${baseURL}/bulkdelete`, datacheck1)
+          `/service/bulkdelete`, datacheck1)
   
      
         .then((res) => {
           console.log("Success ", res);
-          alert("success");
+          // alert("success");
       })
       .then((res) => {
-        alert("success");
+        // alert("success");
         // dispatch(organizationEdit(orgdata))
         navigate("/provider/facility/pricelistlanding")
         // actions.resetForm({

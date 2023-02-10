@@ -61,7 +61,7 @@ const Patienthomepage = () => {
     // const facilitydata = {
     //   Service: values.Service,
     // };
-    alert(JSON.stringify(values));
+    // alert(JSON.stringify(values));
     // actions.resetForm({
     //   values: {
 

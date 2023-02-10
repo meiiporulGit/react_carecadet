@@ -59,7 +59,7 @@ export default function ServiceViewPage() {
   }, []);
   const getData = async () => {
     const pricelistdetails = await axiosPrivate.get(
-      `/getPriceListbyService?DiagnosisTestorServiceName=${serviceinput}&Organisationid=${orgid[0].organizationID}`
+      `/service/getPriceListbyService?DiagnosisTestorServiceName=${serviceinput}&Organisationid=${orgid[0].organizationID}`
     );
     const data = pricelistdetails.data.data;
     // if (data.length == 0) {

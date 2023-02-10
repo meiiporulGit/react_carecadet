@@ -61,7 +61,7 @@ export default function Signup() {
           };
 
           axiosPrivate
-            .post(`${baseURL}/provider/createProvider`, Registerdata)
+            .post(`/provider/createProvider`, Registerdata)
 
             .then((res) => {
               toast.success(res.data.message);

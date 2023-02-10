@@ -44,7 +44,7 @@ export default function Loginlabs() {
               userType: "PROVIDER",
             }}
             onSubmit={(values) => {
-              alert(JSON.stringify(values));
+              // alert(JSON.stringify(values));
               const Logindata = {
                 userName: values.email,
                 password: values.password,
@@ -70,7 +70,7 @@ export default function Loginlabs() {
                   console.log(res);
 
                   //  window.location = "/profile";
-                  alert("Success");
+                  // alert("Success");
                   navigate("/provider/facility/viewFacility");
                 })
                 .catch((err) => {

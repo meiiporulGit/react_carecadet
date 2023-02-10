@@ -86,7 +86,7 @@ export default function ViewFacility() {
     // const facilitydata = {
     //   Service: values.Service,
     // };
-    alert(JSON.stringify(values));
+    // alert(JSON.stringify(values));
     // actions.resetForm({
     //   values: {
 

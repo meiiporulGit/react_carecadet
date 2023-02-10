@@ -80,8 +80,10 @@ export default function ViewFacility() {
     //event.persist();
 
     await  axiosPrivate
+
       .delete(
         `/facility/deleteFacility?facilityID=${facilityinput.facilityID}`,
+     
         facilityinput
       )
       .then((data) => {

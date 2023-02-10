@@ -73,7 +73,7 @@ export default function ServiceEditpage() {
   }, []);
   const getData = async () => {
     const pricelistdetails = await axiosPrivate.get(
-      `/getPriceListbyService?DiagnosisTestorServiceName=${serviceinput}&Organisationid=${orgid[0].organizationID}`
+      `/service/getPriceListbyService?DiagnosisTestorServiceName=${serviceinput}&Organisationid=${orgid[0].organizationID}`
     );
     const data = pricelistdetails.data.data;
     // if (data.length == 0) {
@@ -142,7 +142,7 @@ export default function ServiceEditpage() {
     //  formData.append("screenshot", output);
     let datacheck = { name: filename, PriceList: csvEdit };
     axiosPrivate
-      .put(`${baseURL}/bulkupdate`, datacheck)
+      .put(`/service/bulkupdate`, datacheck)
       //   let datacheck1 = { name: filename, PriceList: csvdel };
       //   axios
 
