@@ -135,7 +135,7 @@ export default function ViewFacility() {
             Facility List
           </Typography>
         </Grid>
-        <Grid container item xs={12} sm={6} justifyContent="right">
+        <Grid container item xs={12} sm={6} justifyContent={{md:"right"}}>
           <Link to="/provider/facility/addFacility" style={{ textDecoration: "none" }}>
             <Buttoncomponent
               fullWidth={false}
@@ -144,13 +144,14 @@ export default function ViewFacility() {
               size="large"
               sx={{
                 backgroundColor: "secondary.dark",
-                width: "12vw",
+                width: {xs:"40vw",sm:"12vw"},
                 color: "#fff",
                 "&:hover": {
                   color: "secondary.dark",
                   border: "1px solid blue",
                 },
                 m: "1.5rem",
+                ml:{xs:0}
               }}
             >
               Add Facility

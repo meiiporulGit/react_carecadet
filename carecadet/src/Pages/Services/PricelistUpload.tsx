@@ -177,96 +177,95 @@ export default function PricelistUpload() {
   function csvJSON(csv: any) {
     console.log("csvdata");
     var lines = csv.split("\r\n");
-console.log(lines,"lines")
+    console.log(lines, "lines")
     var result = [];
-// var mandatoryfield=["FacilityNPI"]
+    // var mandatoryfield=["FacilityNPI"]
     var headers = lines[0].split(",");
-    const mandatoryfield=headers.includes("FacilityNPI")&& headers.includes("FacilityName");
-    console.log("mandatoryfield",mandatoryfield)
-if(mandatoryfield)
-{
-    console.log(headers, "headers");
-    let index = headers.indexOf("FacilityNPI");
-    console.log(index,"indexofnpi")
-    const facilityNPI = facilityinput.facilityNPI;
-    const facilityName = facilityinput.facilityName;
-    for (var i = 1; i < lines.length - 1; i++) {
-      var obj: any = {};
+    const mandatoryfield = headers.includes("FacilityNPI") && headers.includes("FacilityName");
+    console.log("mandatoryfield", mandatoryfield)
+    if (mandatoryfield) {
+      console.log(headers, "headers");
+      let index = headers.indexOf("FacilityNPI");
+      console.log(index, "indexofnpi")
+      const facilityNPI = facilityinput.facilityNPI;
+      const facilityName = facilityinput.facilityName;
+      for (var i = 1; i < lines.length - 1; i++) {
+        var obj: any = {};
 
 
-     var currentline = lines[i].split(",");
-      console.log("currentline", currentline);
-      let storefacility = facilityinput.filter(
-        (data: any) => data.facilityNPI === currentline[index]
-      );
-      console.log(storefacility, "storefacility");
-      // if(storefacility[0]===undefined)
-      // {
-      //   toast.error(`${currentline[4]} is Invalid NPI`)
-      // }
-      var finalfacility =
-        storefacility[0] == undefined
-          ? "Facility name unavailable"
-          : storefacility[0].facilityName;
-      
+        var currentline = lines[i].split(",");
+        console.log("currentline", currentline);
+        let storefacility = facilityinput.filter(
+          (data: any) => data.facilityNPI === currentline[index]
+        );
+        console.log(storefacility, "storefacility");
+        // if(storefacility[0]===undefined)
+        // {
+        //   toast.error(`${currentline[4]} is Invalid NPI`)
+        // }
+        var finalfacility =
+          storefacility[0] == undefined
+            ? "Facility name unavailable"
+            : storefacility[0].facilityName;
 
-      obj["Organisationid"] = orgid[0].organizationID;
-      for (var j = 0; j < headers.length; j++) {
-        obj[headers[j]] = currentline[j];
+
+        obj["Organisationid"] = orgid[0].organizationID;
+        for (var j = 0; j < headers.length; j++) {
+          obj[headers[j]] = currentline[j];
+        }
+        obj["FacilityName"] = finalfacility;
+        result.push(obj);
+        // data:{$push:[{result , facilityNPI}]}
       }
-      obj["FacilityName"] = finalfacility;
-      result.push(obj);
-      // data:{$push:[{result , facilityNPI}]}
-    }
-    // console.log(result,"res")
-    setCsvData(result);
-    // return JSON.stringify(result); 
-    var validateHeaders = knownObj.map((d) => d.headerName);
-    const knownHeaders = validateHeaders.filter((element) =>
-      headers.includes(element)
-    );
-    const isMatched =
-      knownHeaders.length === validateHeaders.length 
+      // console.log(result,"res")
+      setCsvData(result);
+      // return JSON.stringify(result); 
+      var validateHeaders = knownObj.map((d) => d.headerName);
+      const knownHeaders = validateHeaders.filter((element) =>
+        headers.includes(element)
+      );
+      const isMatched =
+        knownHeaders.length === validateHeaders.length
       // &&
       // knownHeaders.every((value, index) => value === validateHeaders[index]);
-    // console.log(validateHeaders,"validateHeaders")
+      // console.log(validateHeaders,"validateHeaders")
 
-    if (
-      knownHeaders.length <= validateHeaders.length - 2 ||
-      headers.length > validateHeaders.length
-    ) {
-      toast.error(
-        "Please check the header name or download the sample csv format"
-      );
-    }else{
-    if (validateHeaders.length === headers.length && isMatched) {
-      setUnknownHeader(false);
-      setColumns(columnsFormat);
-      return JSON.stringify(result);
-    } else {
-      // setFilename("")
-      // toast.error("format not match");
-      // return { message: "error" };
-      setUnknownHeader(true);
+      if (
+        knownHeaders.length <= validateHeaders.length - 2 ||
+        headers.length > validateHeaders.length
+      ) {
+        toast.error(
+          "Please check the header name or download the sample csv format"
+        );
+      } else {
+        if (validateHeaders.length === headers.length && isMatched) {
+          setUnknownHeader(false);
+          setColumns(columnsFormat);
+          return JSON.stringify(result);
+        } else {
+          // setFilename("")
+          // toast.error("format not match");
+          // return { message: "error" };
+          setUnknownHeader(true);
 
-      console.log(headers, "headers");
-      const unknownFormat = headers.map((da: any) => ({
-        field: da,
-        headerName: da,
-        editable: false,
-        width: 100,
-      }));
+          console.log(headers, "headers");
+          const unknownFormat = headers.map((da: any) => ({
+            field: da,
+            headerName: da,
+            editable: false,
+            width: 100,
+          }));
 
-      setColumns(unknownFormat);
+          setColumns(unknownFormat);
 
-      return JSON.stringify(result);
+          return JSON.stringify(result);
+        }
+      }
+    }
+    else {
+      toast.error("Please check your header name or download the sample format")
     }
   }
-}
-else{
-  toast.error("Please check your header name or download the sample format")
-}
-   }
 
   const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
@@ -399,19 +398,19 @@ else{
   return (
     <>
       <Box
-       
+
         sx={{
           backgroundColor: "primary.light",
           // padding: "1.5rem",
           borderRadius: "15px",
           height: "88.8vh",
 
-        
+
 
           // height: "88.8vh",
         }}
       >
-         <Grid container item justifyContent={"flex-end"}>
+        <Grid container item justifyContent={"flex-end"}>
           <Buttoncomponent
             variant="contained"
             type="button"
@@ -421,7 +420,7 @@ else{
             sx={{
               // mt: 2,
               backgroundColor: "secondary.dark",
-              width: "14vw",
+              width: {xs:"30vw",sm:"14vw"},
               color: "#fff",
               "&:hover": {
                 color: "secondary.dark",
@@ -492,7 +491,7 @@ else{
             sx={{
               mt: 2,
               backgroundColor: "secondary.dark",
-              width: "15vw",
+              width: {xs:"30vw",sm:"15vw"},
               color: "#fff",
               fontSize: "1rem",
               "&:hover": {
@@ -512,7 +511,7 @@ else{
           </Button>
 
           {/* service pricelist.csv in <i>src dir</i> */}
-          <Box sx={{mt:2,fontWeight:"bold"}}>{filename}</Box>
+          <Box sx={{ mt: 2, fontWeight: "bold" }}>{filename}</Box>
         </Box>
         {columns.length !== 0 ? (
           <>

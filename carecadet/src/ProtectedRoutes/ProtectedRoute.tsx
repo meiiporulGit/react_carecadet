@@ -152,7 +152,7 @@ const ProtectedRoute = ({ children, getData }: Props) => {
                   padding: {xs:"1.5rem",md:"1.8rem"},
                   ml:{xs:"1.6rem",md:"0"},
                   height: {md:"80.5vh"},
-                  width:{xs:"300px",md:"100%"},
+                  width:{xs:"300px",sm:"100%"},
                   "&::-webkit-scrollbar": {
                     width:{md:15} ,
 

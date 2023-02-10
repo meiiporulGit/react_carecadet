@@ -137,7 +137,7 @@ function Pricelist() {
           sx={{
             mt: 2,
             backgroundColor: "secondary.dark",
-            width: "10vw",
+            width: {xs:"30vw",sm:"10vw"},
             color: "#fff",
             "&:hover": {
               color: "secondary.dark",
@@ -190,7 +190,7 @@ function Pricelist() {
           sx={{
             mt: 2,
             backgroundColor: "secondary.dark",
-            width: "10vw",
+            width: {xs:"30vw",sm:"10vw"},
             color: "#fff",
             "&:hover": {
               color: "secondary.dark",

@@ -412,7 +412,7 @@ export default function PricelistUploadthroFacility() {
             sx={{
              
               backgroundColor: "secondary.dark",
-              width: "14vw",
+              width: {xs:"30vw",sm:"14vw"},
               color: "#fff",
               "&:hover": {
                 color: "secondary.dark",
@@ -483,7 +483,7 @@ export default function PricelistUploadthroFacility() {
             sx={{
               mt: 2,
               backgroundColor: "secondary.dark",
-              width: "15vw",
+              width: {xs:"30vw",sm:"15vw"},
               color: "#fff",
               fontSize: "1rem",
               "&:hover": {
