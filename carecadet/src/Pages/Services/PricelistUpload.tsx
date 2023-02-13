@@ -381,12 +381,13 @@ export default function PricelistUpload() {
       .post(`/service/publishPricelistCorrectformat`, datacheck)
       .then((res) => {
         console.log("Success ", res);
-        // alert("success");
+        // alert("success"); 
+        toast.success(res.data.message);
         navigate("/provider/service/listService");
       })
       .catch((err) => {
         console.log(err, "checkerror");
-        toast.error(err.data.message);
+        toast.error(err.message);
       });
   };
 
