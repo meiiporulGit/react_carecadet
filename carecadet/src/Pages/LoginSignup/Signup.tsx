@@ -116,6 +116,7 @@ export default function Signup() {
                 container={TextField}
                 placeholder="firstName"
                 type="text"
+                autoComplete="new-country-area"
                 sx={{
                   width: {md:"20vw"},
                   "&::placeholder": {
@@ -140,6 +141,7 @@ export default function Signup() {
                 container={TextField}
                 placeholder="lastName"
                 type="text"
+                autoComplete="new-country-area"
                 sx={{
                   width:{md:"20vw"},
                   "&::placeholder": {
@@ -164,6 +166,7 @@ export default function Signup() {
                 container={TextField}
                 placeholder="email"
                 type="email"
+                autoComplete="new-country-area"
                 sx={{
                   width: {md:"20vw"},
                   "&::placeholder": {
@@ -188,6 +191,7 @@ export default function Signup() {
                 container={TextField}
                 placeholder="password"
                 type="password"
+                autoComplete="new-country-area"
                 sx={{
                   width: {md:"20vw"},
                   "&::placeholder": {
