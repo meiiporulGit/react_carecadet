@@ -162,7 +162,7 @@ const CreateServicethroFacility = () => {
                setFieldValue("DiagnosisTestorServiceName",value !== null ? value.DiagnosisTestorServiceName :"");
              
                              }}
-                             value={values.ServiceCode}
+                            
                renderInput={(params: AutocompleteRenderInputParams) => (
                 <TextField
                   {...params}
@@ -187,35 +187,55 @@ const CreateServicethroFacility = () => {
 
               </Grid>
 
-              {/* <Grid item xs={12} sm={4}>
-              <Typography
-                sx={{
-                  fontSize: "1rem",
-                  fontWeight: "bold",
-                  // m: "0.5rem 0 0.2rem 0",
-                  mb: "0.3rem",
-                }}
-              >
-                Description
-              </Typography>
-              <FormTextField
-                container={TextField}
-                label="Description"
-                name="Description"
-                placeholder="Description"
-                type="text"
-                fullWidth={true}
-                sx={{
-                  ".MuiFormLabel-root ": {
-                    letterSpacing: "0.2rem",
-                    fontSize: "0.8rem",
-                  },
-                  ".MuiInputLabel-shrink": {
-                    letterSpacing: 0,
-                  },
-                }}
-              />
-            </Grid> */}
+              <Grid item xs={12}>
+                <Typography
+                  // variant="h6"
+                  sx={{
+                    fontSize: "1.2rem",
+                    mb: "0.5rem",
+                  }}
+                >
+                 DiagnosisTest or Service Name
+                </Typography>
+                <Field
+               label="DiagnosisTest or ServiceName"
+               name="DiagnosisTestorServiceName"
+              component={Autocomplete}
+               options = {info}
+               loading={info.length === 0}
+               PaperComponent={CustomPaper}
+filterOptions = {filterOptions}
+               getOptionLabel={(option: any) => option.DiagnosisTestorServiceName || option}         
+              freeSolo    
+             
+              onChange={(e: any, value: any) => {
+                setFieldValue("ServiceCode",value !== null ? value.Code :"");
+               setFieldValue("DiagnosisTestorServiceName",value !== null ? value.DiagnosisTestorServiceName :"");
+                
+                             }}
+                             value={values.DiagnosisTestorServiceName}
+               renderInput={(params: AutocompleteRenderInputParams) => (
+                <TextField
+                  {...params}
+                  name="serviceCode"
+                  label="Search serviceCode"
+                  onChange={handleChange}
+                   variant="outlined"
+                  sx={{
+                    ".MuiFormLabel-root ": {
+                      letterSpacing: "0.2rem",
+                      fontSize: "0.8rem",
+                    },
+                    ".MuiInputLabel-shrink": {
+                      letterSpacing: 0,
+                    },
+                    "& .MuiAutocomplete-popupIndicator": { transform: "none" }                  
+                  }}
+                />
+              )}
+            />
+
+              </Grid>
 
               <Grid item xs={12} >
               <Typography
