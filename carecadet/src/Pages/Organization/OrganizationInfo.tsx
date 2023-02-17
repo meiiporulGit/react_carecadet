@@ -123,9 +123,15 @@ const OrganizationInfo = () => {
               console.log(err, "orgErr");
               toast.error(err.message);
             });
+            
+        })
+        .catch((err) => {
+          console.log(err, "imgerr");
+          toast.error(err.message);
         });
     } catch (err) {
       throw err;
+      console.log(err,'err')
     }
   };
 
@@ -331,6 +337,8 @@ const OrganizationInfo = () => {
                     placeholder={org.placeholder}
                     type={org.type}
                     fullWidth={true}
+                    autoComplete="text"
+                    // autoComplete="new-country-area"
                     sx={{
                       "&::placeholder": {
                         // color: "green",
@@ -380,6 +388,7 @@ const OrganizationInfo = () => {
                     placeholder={person.placeholder}
                     type={person.type}
                     fullWidth={true}
+                    autoComplete="text"
                   />
                 </Grid>
               ))}

@@ -122,6 +122,7 @@ export default function Login() {
                   name="email"
                   placeholder="email"
                   type="email"
+                  autoComplete="new-country-area"
                   sx={{
                     width: {md:"20vw"},
                     "&::placeholder": {
@@ -149,6 +150,7 @@ export default function Login() {
                   name="password"
                   placeholder="password"
                   type="password"
+                  autoComplete="new-country-area"
                   sx={{
                     width: {md:"20vw"},
                     "&::placeholder": {

@@ -413,7 +413,7 @@ const Providerhomepage = () => {
                 spacing={3}
         
               >
-                <Grid item xs = {8} md={3} justifyContent={"center"} alignItems={"center"}>
+                <Grid item xs = {10} md={3} justifyContent={"center"} alignItems={"center"}>
                   <Link
                     to="/provider/urgentcarelogin"
                     style={{ textDecoration: "none" }}
@@ -426,6 +426,7 @@ const Providerhomepage = () => {
                         justifyContent: "center",
                         alignItems: "center",
                         padding: "5px",
+                        ml:{xs:5,md:0},
                         height: {xs:"8em",md:"15em"},
                       }}
                     >
@@ -447,7 +448,7 @@ const Providerhomepage = () => {
                     </Card>
                   </Link>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs ={10} md={3}>
                   <Link
                     style={{ textDecoration: "none" }}
                     to="/provider/dentalcarelogin"
@@ -460,6 +461,7 @@ const Providerhomepage = () => {
                         justifyContent: "center",
                         alignItems: "center",
                         padding: "5px",
+                        ml:{xs:5,md:0},
                         height: {xs:"8em",md:"15em"},
                       }}
                     >
@@ -481,7 +483,7 @@ const Providerhomepage = () => {
                     </Card>
                   </Link>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs ={10} md={3}>
                   <Link
                     style={{ textDecoration: "none" }}
                     to="/provider/labcarelogin"
@@ -493,6 +495,7 @@ const Providerhomepage = () => {
                         flexDirection: "column",
                         justifyContent: "center",
                         alignItems: "center",
+                        ml:{xs:5,md:0},
                         padding: "5px",
                         height: {xs:"8em",md:"15em"},
                       }}
@@ -515,7 +518,7 @@ const Providerhomepage = () => {
                     </Card>
                   </Link>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs ={10} md={3}>
                   <Link
                     style={{ textDecoration: "none" }}
                     to="/provider/otherslogin"
@@ -528,6 +531,7 @@ const Providerhomepage = () => {
                         justifyContent: "center",
                         alignItems: "center",
                         padding: "5px",
+                        ml:{xs:5,md:0},
                         height: {xs:"8em",md:"15em"},
                       }}
                     >
