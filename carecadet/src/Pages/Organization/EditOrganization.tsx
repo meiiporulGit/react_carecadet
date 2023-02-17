@@ -401,7 +401,7 @@ import { Buttoncomponent } from "../../Components/Buttoncomp";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import { organizationImage } from "../../Redux/ProviderRedux/orgSlice";
 import { axiosPrivate } from "../../axios/axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { tabValueNav } from "../../Redux/ProviderRedux/LoginSlice";
 import { toast } from "react-toastify";
 
@@ -430,9 +430,11 @@ interface InitialValues {
 
 const EditOrganization = () => {
   const dispatch = useAppDispatch();
+  const{ pathname}=useLocation()
   const [currentFile, setCurrentFile] = useState<any>();
   const [fileName, setFileName] = useState<any>("");
-  const select = useAppSelector((state) => state.providerOrganization.orgEditData);
+  const [buttonEdit,setButtonEdit]=useState<Boolean>(false)
+  const select = useAppSelector((state) => state.providerOrganization.orgEditData[0]);
   console.log(select)
   const image = useAppSelector((state) => state.providerOrganization.orgEditImage);
   console.log("imageedit", image);
@@ -524,7 +526,11 @@ const EditOrganization = () => {
               // alert("success");
               // dispatch(organizationEdit(orgdata))
               toast.success(res.data.message)
-              navigate("/provider/facility/viewFacility");
+              if(buttonEdit){
+                navigate("/provider/viewOrg",{ state: { previousPath: pathname } });
+              }else{
+              navigate("/provider/facility/viewFacility",{ state: { previousPath: pathname } });
+              }
               // actions.resetForm({
               //   values: initialValues,
               // });
@@ -535,20 +541,41 @@ const EditOrganization = () => {
     } catch {}
   };
 
+  // const validationSchema = Yup.object().shape({
+  //   organizationInformation: Yup.object().shape({
+  //     organizationName: Yup.string().required("Organization Name is required"),
+  //     streetAdd1: Yup.string().required("Address is required"),
+  //     city: Yup.string().required("city is required"),
+  //     state: Yup.string().required("state is required"),
+  //     zipCode: Yup.string().required("zip code is required"),
+  //     Email: Yup.string().required("Email is required").email("invalid email"),
+  //   }),
+  //   contactPersonInformation: Yup.object().shape({
+  //     firstName: Yup.string().required("First Name is a required field"),
+  //     lastName: Yup.string().required("Last Name is required"),
+  //     role: Yup.string().required("Role is a required field"),
+  //     contactno: Yup.string().required("Contact is a required field"),
+  //     email: Yup.string()
+  //       .required("Email is a required field")
+  //       .email("invalid email"),
+  //   }),
+  // });
+
   const validationSchema = Yup.object().shape({
     organizationInformation: Yup.object().shape({
       organizationName: Yup.string().required("Organization Name is required"),
       streetAdd1: Yup.string().required("Address is required"),
-      city: Yup.string().required("city is required"),
-      state: Yup.string().required("state is required"),
-      zipCode: Yup.string().required("zip code is required"),
+      city: Yup.string().required("city is required").matches(/[a-zA-Z]/, 'City can only contain alphabets.'),
+      state: Yup.string().required("state is required").matches(/[a-zA-Z]/, 'State can only contain alphabets.'),
+      zipCode: Yup.string().required("zip code is required").matches(/^[A-Za-z0-9]+$/,"Zip Code can only contain alphabets and number"),
       Email: Yup.string().required("Email is required").email("invalid email"),
+      phone:Yup.string().required("Phone is required").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/,"only numbers").test("len","Invalid Contact no", (val: any) => val && val.length === 10),
     }),
     contactPersonInformation: Yup.object().shape({
-      firstName: Yup.string().required("First Name is a required field"),
-      lastName: Yup.string().required("Last Name is required"),
-      role: Yup.string().required("Role is a required field"),
-      contactno: Yup.string().required("Contact is a required field"),
+      firstName: Yup.string().required("First Name is a required field").matches(/[a-zA-Z]/, 'First Name can only contain alphabets.'),
+      lastName: Yup.string().required("Last Name is required").matches(/[a-zA-Z]/, 'Last Name can only contain alphabets.'),
+      role: Yup.string().required("Role is a required field").matches(/[A-Za-z0-9]+$/,"Role can only contain alphabets and number"),
+      contactno: Yup.string().required("Contact is a required field").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/,"only numbers") .test("len","Invalid contact no", (val: any) => val && val.length === 10),
       email: Yup.string()
         .required("Email is a required field")
         .email("invalid email"),
@@ -557,56 +584,64 @@ const EditOrganization = () => {
 
   const organizationData = [
     {
-      xs: 12,
+      xs:12,
+      md: 12,
       label: "Organization Name",
       name: "organizationInformation.organizationName",
       placeholder: "Organization Name",
       type: "text",
     },
     {
-      xs: 6,
+      xs:12,
+      md: 6,
       label: "Street Address1",
       name: "organizationInformation.streetAdd1",
       placeholder: "Street Address1",
       type: "text",
     },
     {
-      xs: 6,
+      xs:12,
+      md: 6,
       label: "Street Address2",
       name: "organizationInformation.streetAdd2",
       placeholder: "Street Address2",
       type: "text",
     },
     {
-      xs: 4,
+      xs:12,
+      md: 4,
       label: "City",
       name: "organizationInformation.city",
       placeholder: "City",
       type: "text",
     },
     {
-      xs: 4,
+      xs:12,
+      md: 4,
       label: "State",
       name: "organizationInformation.state",
       placeholder: "State",
       type: "text",
     },
     {
-      xs: 4,
+      xs:12,
+      md: 4,
       label: "Zip Code",
       name: "organizationInformation.zipCode",
       placeholder: "Zip Code",
       type: "text",
     },
     {
-      xs: 6,
+      xs:12,
+      md: 6,
       label: "Phone",
       name: "organizationInformation.phone",
       placeholder: "Phone Number",
       type: "text",
     },
     {
-      xs: 6,
+      xs:12,
+      md: 6,
       label: "Email",
       name: "organizationInformation.Email",
       placeholder: "Email",
@@ -615,14 +650,16 @@ const EditOrganization = () => {
   ];
   const contactPersonData = [
     {
-      xs: 6,
+      xs:12,
+      md: 6,
       label: "First Name",
       name: "contactPersonInformation.firstName",
       placeholder: "First Name",
       type: "text",
     },
     {
-      xs: 6,
+      xs:12,
+      md: 6,
       label: "Last Name",
       name: "contactPersonInformation.lastName",
       placeholder: "Last Name",
@@ -630,21 +667,24 @@ const EditOrganization = () => {
     },
 
     {
-      xs: 6,
+      xs:12,
+      md: 6,
       label: "Role",
       name: "contactPersonInformation.role",
       placeholder: "Role",
       type: "text",
     },
     {
-      xs: 6,
+      xs:12,
+      md: 6,
       label: "Contact",
       name: "contactPersonInformation.contactno",
       placeholder: "Contact Number",
       type: "text",
     },
     {
-      xs: 12,
+      xs:12,
+      md: 12,
       label: "Email",
       name: "contactPersonInformation.email",
       placeholder: "Email",
@@ -750,7 +790,7 @@ const EditOrganization = () => {
             </Grid>
 
             {organizationData.map((org, i) => (
-              <Grid item xs={org.xs} key={i}>
+              <Grid item xs={org.xs}  md={org.md}key={i}>
                 <Typography
                   // variant="h6"
                   sx={{
@@ -791,7 +831,7 @@ const EditOrganization = () => {
               </Typography>
             </Grid>
             {contactPersonData.map((person, i) => (
-              <Grid item xs={person.xs} key={i}>
+              <Grid item xs={person.xs} md={person.md} key={i}>
                 <Typography
                   // variant="h6"
                   sx={{
@@ -819,15 +859,41 @@ const EditOrganization = () => {
               </Grid>
             ))}
 
-            <Grid container item xs={12} justifyContent="right">
+            <Grid container item xs={12} justifyContent="right" >
               <Buttoncomponent
+
                 type="submit"
                 size="large"
                 fullWidth={false}
                 variant="contained"
                 sx={{
+                 display:{xs:"none",md:"block"},
                   backgroundColor: "secondary.dark",
                   width: "10vw",
+                  color: "#fff",
+                  "&:hover": {
+                    color: "secondary.dark",
+                    border: "1px solid blue",
+                    // letterSpacing: "0.2rem",
+                    // fontSize: "1rem",
+                  },
+                }}
+              >
+                Update
+              </Buttoncomponent>
+              <Buttoncomponent
+
+                type="submit"
+                size="large"
+                fullWidth={false}
+                variant="contained"
+                onClick={()=>{
+                  setButtonEdit(true)
+                }}
+                sx={{
+                 display:{xs:"flex",md:"none"},
+                  backgroundColor: "secondary.dark",
+                  width: "15vw",
                   color: "#fff",
                   "&:hover": {
                     color: "secondary.dark",

@@ -63,6 +63,25 @@ const OrganizationNav = () => {
         >
           {/* <Box display={"flex"} gap="2rem"> */}
           <Link
+            to="/provider/viewOrg"
+            component={NavLink}
+            underline="none"
+          >
+            <MenuItem onClick={handleCloseNavMenu} sx={{ width: 250 }}>
+              <Typography
+                sx={{
+                  color: location === "viewOrg" ? "#4D77FF" : "default",
+                  fontSize: "1.1rem",
+                  borderBottom: location === "viewOrg" ? "3px solid blue" : "none",
+                  padding: "0.3rem",
+                  cursor: "pointer"
+                }}
+              >
+                Organization info
+              </Typography>
+            </MenuItem>
+          </Link>
+          <Link
             to="/provider/facility/viewFacility"
             component={NavLink}
             underline="none"
@@ -121,6 +140,7 @@ const OrganizationNav = () => {
             </MenuItem>
           </Link>
           {/* </Box> */}
+       
         </Menu>
       </Box>
 

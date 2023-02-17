@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Box,
+  Collapse,
   IconButton,
   Table,
   TableBody,
@@ -11,12 +12,16 @@ import {
   TablePagination,
   TableRow,
   Typography,
+
 } from "@mui/material";
 import { Grid, Paper } from "@mui/material";
 import axios from "axios";
+
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 //comp
@@ -24,8 +29,9 @@ import { Buttoncomponent } from "../../Components/Buttoncomp";
 //redux store
 import { useAppSelector, useAppDispatch } from "../../Redux/Hook";
 import { facilityInfo } from "../../Redux/ProviderRedux/facilitySlice";
-import { serviceInfo ,facilitynameInfo} from "../../Redux/ProviderRedux/serviceSlice";
+import { serviceInfo, facilitynameInfo } from "../../Redux/ProviderRedux/serviceSlice";
 import { axiosPrivate, baseURL } from "../../axios/axios";
+import { ArrowDropDown, KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 // import {editButton} from "../../Redux/LoginSlice"
 
 interface forminitialValues {
@@ -44,16 +50,23 @@ interface forminitialValues {
   contact: string;
   email: string;
 }
+interface facilityProps {
+  FacilityDetails: any;
+
+}
+
+
 
 export default function ViewFacility() {
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [open, setOpen] = useState(-1)
   const [data, setData] = useState([] as forminitialValues[]);
   console.log(data, "datinfo");
   const dispatch = useAppDispatch();
   const getid = useAppSelector(
-    (state: {providerAuth: { login: any } }) => state.providerAuth.login
+    (state: { providerAuth: { login: any } }) => state.providerAuth.login
   );
 
   const facilityinput = useAppSelector(
@@ -76,20 +89,18 @@ export default function ViewFacility() {
 
   const Pointer = { cursor: "hand" };
 
-  const deleteFacility = async (event: any, id: number) => {
-    //event.persist();
+  // const deleteFacility = async (event: any, id: number) => {
+  //   //event.persist();
+  //   await axiosPrivate
+  //     .delete(
+  //       `/facility/deleteFacility?facilityID=${facilityinput.facilityID}`,
 
-    await  axiosPrivate
-
-      .delete(
-        `/facility/deleteFacility?facilityID=${facilityinput.facilityID}`,
-     
-        facilityinput
-      )
-      .then((data) => {
-        getData();
-      });
-  };
+  //       facilityinput
+  //     )
+  //     .then((data) => {
+  //       getData();
+  //     });
+  // };
 
   //Table Pagination
   const emptyRows =
@@ -108,15 +119,19 @@ export default function ViewFacility() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  interface facilityProps {
+    forminitialValues: any
+  }
+
+
   return (
     // <Paper sx={{ backgroundColor: "primary.light" }}>
-    // <Grid container justifyContent='center' display='flex'>
+     <Grid container justifyContent='center' display='flex'>
     <TableContainer
       component={Box}
       // elevation={3}
       sx={{
         //  m:"-20px 0px 0 -20px",
-
         width: "100%",
         backgroundColor: "primary.light",
         //  borderRadius: '10px',
@@ -128,7 +143,7 @@ export default function ViewFacility() {
         <Grid item xs={12} sm={6}>
           <Typography
             sx={{
-              padding: "1.5rem",
+              padding: { md: "1.2rem" },
               textAlign: "left",
               fontSize: "1.2rem",
               fontWeight: "bold",
@@ -137,23 +152,24 @@ export default function ViewFacility() {
             Facility List
           </Typography>
         </Grid>
-        <Grid container item xs={12} sm={6} justifyContent={{md:"right"}}>
+        <Grid container item xs={12} sm={6} justifyContent={{ xs: "right" }}>
           <Link to="/provider/facility/addFacility" style={{ textDecoration: "none" }}>
             <Buttoncomponent
               fullWidth={false}
               variant="contained"
               type="button"
-              size="large"
+              // size="large"
               sx={{
                 backgroundColor: "secondary.dark",
-                width: {xs:"40vw",sm:"12vw"},
+                width: { xs: "35vw", sm: "12vw" },
                 color: "#fff",
                 "&:hover": {
                   color: "secondary.dark",
                   border: "1px solid blue",
                 },
                 m: "1.5rem",
-                ml:{xs:0}
+                fontSize: { xs: "0.9rem", md: "1rem" }
+                // ml: { xs: 0 }
               }}
             >
               Add Facility
@@ -163,7 +179,7 @@ export default function ViewFacility() {
       </Grid>
 
       <Grid item sx={{ justifyContent: "center" }}>
-        <Table sx={{ maxWidth: "100%" }}>
+        <Table sx={{ maxWidth: "100%", display: { xs: "none", md: "block" } }}>
           <TableHead sx={{ backgroundColor: "secondary.light" }}>
             <TableRow>
               <TableCell
@@ -236,8 +252,8 @@ export default function ViewFacility() {
             {(rowsPerPage > 0
               ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : data
-            ).map((facility,i) => (
-              <TableRow key={facility.facilityNPI} sx={{backgroundColor: (i+1)%2===0?"#B4C8FC":"white"}}>
+            ).map((facility, i) => (
+              <TableRow key={facility.facilityNPI} sx={{ backgroundColor: (i + 1) % 2 === 0 ? "#B4C8FC" : "white" }}>
                 <TableCell sx={{ fontSize: "0.8rem", textAlign: "center" }}>
                   {facility.facilityNPI}
                 </TableCell>
@@ -268,7 +284,7 @@ export default function ViewFacility() {
                 <TableCell sx={{ fontSize: "0.8rem", textAlign: "center" }}>
                   {facility.email}
                 </TableCell>
-                <TableCell sx={{ textAlign: "center" ,display:"flex"}}>
+                <TableCell sx={{ textAlign: "center", display: "flex" }}>
                   <IconButton
                     style={Pointer}
                     onClick={() => {
@@ -334,18 +350,78 @@ export default function ViewFacility() {
                     // "rgba(100,100,100,0.5)"
                   },
                   ".MuiTablePagination-selectLabel, .MuiTablePagination-input":
-                    {
-                      fontWeight: "bold",
-                      color: "#173A5E",
-                    },
+                  {
+                    fontWeight: "bold",
+                    color: "#173A5E",
+                  },
                 }}
               />
             </TableRow>
           </TableFooter>
         </Table>
+
+        <Box sx={{ display: { xs: "flex", md: "none" }, flexDirection: "column" }}>
+          {data.map((facility, index) => (
+            <><Paper sx={{ padding: "0.5rem", m: "0.2rem", fontSize: "0.9rem" }}>
+
+              <IconButton onClick={() => setOpen(open === index ? -1 : index)}>
+                <ArrowDropDown sx={{ transform: open === index ? 'initial' : 'rotate(-90deg)' }} />
+                {/* {open === index ? (<KeyboardArrowUp />) : (<KeyboardArrowDown />)} */}
+              </IconButton>
+
+              {facility.facilityName}
+
+            </Paper>
+
+              <Collapse in={open === index} timeout="auto" unmountOnExit >
+                <Paper sx={{ display: "flex", flexDirection: "column", mt: "0.2rem", padding: "1rem" }}>
+                  <Typography sx={{ display: "flex" }}> <Typography sx={{ color: "blue", fontSize: "1rem", }}>Facility NPI </Typography><Typography sx={{ ml: "0.2rem", fontSize: "0.9rem" }}>:  {facility.facilityNPI}</Typography></Typography>
+                  <Typography sx={{ display: "flex", justifyContent: "flex-start", }}><Typography sx={{ color: "blue", fontSize: "1rem" }}>  Address </Typography><Typography sx={{ ml: "1.5rem", fontSize: "0.9rem" }}>: {facility.address.addressLine1},<br></br><Typography sx={{ ml: "0.5rem", fontSize: "0.9rem" }}>{facility.address.city},{facility.address.state}</Typography><Typography sx={{ ml: "0.5rem", fontSize: "0.9rem" }}>{facility.address.zipCode}</Typography></Typography></Typography>
+                  <Typography sx={{ display: "flex" }}><Typography sx={{ color: "blue", fontSize: "1rem" }}>  Email </Typography><Typography sx={{ ml: "0.7rem", fontSize: "0.9rem" }}>:  {facility.email}</Typography></Typography>
+                  <Typography sx={{ display: "flex" }}> <Typography sx={{ color: "blue", fontSize: "1rem" }}> Contact </Typography><Typography sx={{ ml: "0.5rem", fontSize: "0.9rem" }}>:  {facility.contact}</Typography></Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}><IconButton
+                    style={Pointer}
+                    onClick={() => {
+                      dispatch(facilityInfo(facility))
+                      navigate("/provider/facility/update");
+                    }}
+                  >
+                    <EditIcon style={Pointer} />
+                  </IconButton>
+                    <IconButton
+                      style={Pointer}
+                      onClick={() => {
+                        dispatch(facilityInfo({ facility }));
+                        axiosPrivate
+                          .delete(
+                            `/facility/deleteFacility?facilityID=${facility.facilityID}`,
+                            facilityinput
+                          )
+                          .then(() => {
+                            toast.success("Successfully Deleted");
+                            getData();
+                          });
+                      }}
+                    >
+                      <DeleteIcon style={Pointer} />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => {
+                        dispatch(serviceInfo(facility));
+                        navigate("/provider/facility/pricelistlanding");
+                      }}
+                    >
+                      <MedicalServicesIcon />
+                    </IconButton></Box>
+                </Paper>
+              </Collapse></>
+
+          ))}
+
+        </Box>
       </Grid>
     </TableContainer>
-    // </Grid>
+     </Grid>
     // </Paper>
   );
 }

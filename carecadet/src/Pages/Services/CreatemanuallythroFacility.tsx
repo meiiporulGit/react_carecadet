@@ -26,10 +26,10 @@ interface InitialValues {
 }
 
 const CreateServicethroFacility = () => {
-  const [query,setQuery] = useState([]);
-  console.log(query,'q')
+
+ 
   const [info,setInfo]=useState([])
-  console.log(info,'query')
+  console.log(info,'info')
   const select = useAppSelector((state) => state.providerAuth.login);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -59,7 +59,10 @@ const CreateServicethroFacility = () => {
       const fetchUsers = async() =>{
         await axiosPrivate.get(`/service/findServiceCode`)
         .then (res => {setInfo(res.data);
-        setQuery(res.data)})
+          console.log("info",info)
+        
+     
+      })
       }
       fetchUsers()
     }, [])
@@ -73,7 +76,7 @@ const CreateServicethroFacility = () => {
       FacilityNPI: facilityinput.facilityNPI,
       FacilityPrices: values.FacilityPrices,
     };
-    // alert(JSON.stringify(servicedata, null, 2));
+  
     axiosPrivate.post("/service/createservice", servicedata).then((res) => {
       toast.success(res.data.message)
       actions.resetForm({
@@ -93,43 +96,7 @@ const CreateServicethroFacility = () => {
     FacilityPrices: Yup.string().required("ServicePrice is required"),
   });
 
-  // const servicepriceData = [
-  //   {
-  //     xs: 12,
-  //     label: "Service Code ",
-  //     name: "ServiceCode",
-  //     placeholder: "Service Code",
-  //     type: "text",
-  //   },
-  //   {
-  //     xs: 12,
-  //     label: "Service Name",
-  //     name: "DiagnosisTestorServiceName",
-  //     placeholder: "Service Name",
-  //     type: "text",
-  //   },
-  //   {
-  //     xs: 12,
-  //     label: "Organisation Prices",
-  //     name: "OrganisationPrices",
-  //     placeholder: "Organisation Prices",
-  //     type: "text",
-  //   },
-  //   // {
-  //   //   xs: 12,
-  //   //   label: "Facility NPI",
-  //   //   name: "FacilityNPI",
-  //   //   placeholder: "FacilityNPI",
-  //   //   type: "text",
-  //   // },
-  //   {
-  //     xs: 12,
-  //     label: "Facility Prices",
-  //     name: "FacilityPrices",
-  //     placeholder: "FacilityPrices",
-  //     type: "text",
-  //   },
-  // ];
+ 
   return (
     <Paper
       elevation={9}
@@ -161,34 +128,7 @@ const CreateServicethroFacility = () => {
                 Add Service Price
               </Typography>
             </Grid>
-            {/* {servicepriceData.map((d, i) => (
-              <Grid item xs={d.xs} key={i}>
-                <Typography
-                  // variant="h6"
-                  sx={{
-                    fontSize: "1.2rem",
-                    mb: "0.5rem",
-                  }}
-                >
-                  {d.label}
-              
-                </Typography>
-                <FormTextField
-                  container={TextField}
-                  name={d.name}
-                  placeholder={d.placeholder}
-                  type={d.type}
-                  fullWidth={true}
-                  sx={{
-                    "&::placeholder": {
-                      // color: "green",
-                      letterSpacing: "0.2rem",
-                      // fontSize: "1rem",
-                    },
-                  }}
-                />
-              </Grid>
-            ))} */}
+            
 
 <Grid item xs={12}>
                 <Typography
@@ -200,34 +140,33 @@ const CreateServicethroFacility = () => {
                 >
                  Service Code
                 </Typography>
+             
                 <Field
-              name="serviceCode"
+                          
+              name="ServiceCode"
               component={Autocomplete}
                options = {info}
                loading={info.length === 0}
                PaperComponent={CustomPaper}
-filterOptions = {filterOptions}
+              filterOptions = {filterOptions}
                getOptionLabel={(option: any) => option.Code || option}         
               freeSolo    
              fullWidth={true}
              value={values.ServiceCode}
               onChange={(e: any, value: any) => {
-                setFieldValue("ServiceCode",value !== null ? value.Code :"");
+            
+                
+                console.log("value",value.Code)
+               
+               setFieldValue("ServiceCode",value !== null ? value.Code :"");
                setFieldValue("DiagnosisTestorServiceName",value !== null ? value.DiagnosisTestorServiceName :"");
-                // setFieldValue("facilityNPI",value !== null ? value.facilityNPI : "");
-              
-                // setFieldValue("addressLine1", value !== null ? value.addressLine1 : "");
-                // setFieldValue("addressLine2",value !== null ? value.addressLine2 : "");
-                // setFieldValue("city", value !== null ? value.city : "");
-                // setFieldValue ("state", value !== null ? value.state : "");
-                // setFieldValue ("zipCode", value !== null ? value.zipCode : "");
-                // setFieldValue("email", value !== null ? value.email : "");
-                // setFieldValue ("contact", value !== null ? value.contact : "")
+             
                              }}
+                             value={values.ServiceCode}
                renderInput={(params: AutocompleteRenderInputParams) => (
                 <TextField
                   {...params}
-                  name="serviceCode"
+                  name="ServiceCode"
                   label="Search serviceCode"
                   onChange={handleChange}
                    variant="outlined"
@@ -241,6 +180,7 @@ filterOptions = {filterOptions}
                     },
                     "& .MuiAutocomplete-popupIndicator": { transform: "none" }                  
                   }}
+  
                 />
               )}
             />
@@ -277,7 +217,7 @@ filterOptions = {filterOptions}
               />
             </Grid> */}
 
-              {/* <Grid item xs={12} >
+              <Grid item xs={12} >
               <Typography
                 sx={{
                   fontSize: "1rem",
@@ -286,13 +226,14 @@ filterOptions = {filterOptions}
                   mb: "0.3rem",
                 }}
               >
-                DiagnosisTest or ServiceName
+                Organisation Prices
               </Typography>
               <FormTextField
                 container={TextField}
-                label="DiagnosisTest or ServiceName"
-                name="DiagnosisTestorServiceName"
-                placeholder="DiagnosisTestorServiceName"
+                label="OrganisationPrices"
+                name="OrganisationPrices"
+                placeholder="OrganisationPrices"
+                autoComplete="text"
                 type="text"
                 fullWidth={true}
                 sx={{
@@ -305,63 +246,8 @@ filterOptions = {filterOptions}
                   },
                 }}
               />
-            </Grid> */}
-<Grid item xs={12}>
-                <Typography
-                  // variant="h6"
-                  sx={{
-                    fontSize: "1.2rem",
-                    mb: "0.5rem",
-                  }}
-                >
-                 DiagnosisTestorServiceName
-                </Typography>
-                <Field
-              name="DiagnosisTestorServiceName"
-              component={Autocomplete}
-              options = {info}
-              loading={info.length === 0}
-              PaperComponent={CustomPaper}
-              filterOptions = {filterOptions}
-              getOptionLabel={(option: any) => option.DiagnosisTestorServiceName || option}         
-              freeSolo    
-              fullWidth={true}
-              value={values.DiagnosisTestorServiceName}
-              onChange={(e: any, value: any) => {
-                setFieldValue("ServiceCode",value !== null ? value.Code :"");
-                setFieldValue("DiagnosisTestorServiceName",value !== null ? value.DiagnosisTestorServiceName :"");
-                // setFieldValue("facilityNPI",value !== null ? value.facilityNPI : "");
-              
-                // setFieldValue("addressLine1", value !== null ? value.addressLine1 : "");
-                // setFieldValue("addressLine2",value !== null ? value.addressLine2 : "");
-                // setFieldValue("city", value !== null ? value.city : "");
-                // setFieldValue ("state", value !== null ? value.state : "");
-                // setFieldValue ("zipCode", value !== null ? value.zipCode : "");
-                // setFieldValue("email", value !== null ? value.email : "");
-                // setFieldValue ("contact", value !== null ? value.contact : "")
-                             }}
-               renderInput={(params: AutocompleteRenderInputParams) => (
-                <TextField
-                  {...params}
-                  name="DiagnosisTestorServiceName"
-                  label="DiagnosisTestorServiceName"
-                  onChange={handleChange}
-                   variant="outlined"
-                  sx={{
-                    ".MuiFormLabel-root ": {
-                      letterSpacing: "0.2rem",
-                      fontSize: "0.8rem",
-                    },
-                    ".MuiInputLabel-shrink": {
-                      letterSpacing: 0,
-                    },
-                    "& .MuiAutocomplete-popupIndicator": { transform: "none" }                  
-                  }}
-                />
-              )}
-            />
+            </Grid>
 
-              </Grid>
            
             <Grid item xs={12} >
               <Typography
@@ -438,6 +324,7 @@ filterOptions = {filterOptions}
                 container={TextField}
                 label="Facility NPI"
                 name="FacilityNPI"
+                autoComplete="text"
                 placeholder="FacilityNPI"
                 type="text"
                 fullWidth={true}
@@ -469,6 +356,7 @@ filterOptions = {filterOptions}
                 label="Facility Prices"
                 name="FacilityPrices"
                 placeholder="FacilityPrices"
+                autoComplete="text"
                 type="text"
                 fullWidth={true}
                 sx={{

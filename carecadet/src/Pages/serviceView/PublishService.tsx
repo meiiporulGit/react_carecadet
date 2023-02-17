@@ -1,9 +1,9 @@
 import React,{useState,useEffect} from 'react'
-import { useAppSelector } from '../../Redux/Hook'
+import { useAppDispatch, useAppSelector } from '../../Redux/Hook'
 import { axiosPrivate, baseURL } from '../../axios/axios'
 
 import { Buttoncomponent } from '../../Components/Buttoncomp'
-import {Box,Paper} from "@mui/material"
+import {Box,Paper,Grid,Collapse,IconButton,Typography,Button,TextField,TablePagination} from "@mui/material"
 import {
     DataGrid,
     GridColTypeDef,
@@ -12,6 +12,167 @@ import {
   } from "@mui/x-data-grid";
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { Edit, KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material'
+
+interface rowProps {
+  fac: any;
+
+}
+
+function TableRowRes({ fac}: rowProps) {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  console.log(fac, "facilityRow");
+  const [open, setOpen] = useState<boolean>(false);
+  const [edit, setEdit] = useState<boolean>(false);
+  const [data, setData] = useState<any>(fac);
+
+
+
+  return (
+    <Box>
+      <Paper sx={{backgroundColor:"primary.light",padding:"0.3rem"}}>
+        <Grid container>
+          <Grid item xs={10} >
+            <Box sx={{display:"flex",flexWrap:"nowrap",alignItems:"center"}}>
+            <IconButton
+           
+              aria-label="expand row"
+              size="small"
+              onClick={() => {
+                setOpen(!open)
+               
+              }}
+            >
+              {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+            </IconButton>
+            <Typography>{fac.DiagnosisTestorServiceName}</Typography>
+            </Box>
+          </Grid>
+         
+        </Grid>
+      </Paper>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <Paper
+          sx={{
+            backgroundColor:"primary.light",
+            display: "flex",
+            flexDirection: "column",
+            mt: "0.2rem",
+            padding: "1rem",
+          }}
+        >
+          <Grid container rowGap={"0.5rem"}>
+         
+          <Grid  container item xs={12}>
+            <Grid item xs={6} >
+            <Typography sx={{ color: "blue" }}>
+              OrganizationID{" "}
+            </Typography>
+            </Grid>
+            <Grid item xs={1} >
+            <Typography >
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={5} >
+            <Typography >
+            {fac.Organisationid}
+            </Typography>
+            </Grid>
+          </Grid>
+          <Grid  container item xs={12}>
+            <Grid item xs={6} >
+            <Typography sx={{ color: "blue" }}>
+             Service Code
+            </Typography>
+            </Grid>
+            <Grid item xs={1} >
+            <Typography >
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={5} >
+            <Typography >
+            {fac.ServiceCode}
+            </Typography>
+            </Grid>
+          </Grid>
+          <Grid  container item xs={12}>
+            <Grid item xs={6} >
+            <Typography sx={{ color: "blue" }}>
+              Facility NPI
+            </Typography>
+            </Grid>
+            <Grid item xs={1} >
+            <Typography >
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={5} >
+            <Typography >
+            {fac.FacilityNPI}
+            </Typography>
+            </Grid>
+          </Grid>
+          <Grid  container item xs={12}>
+            <Grid item xs={6} >
+            <Typography sx={{ color: "blue" }}>
+              FacilityName
+            </Typography>
+            </Grid>
+            <Grid item xs={1} >
+            <Typography >
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={5} >
+            <Typography >
+            {fac.FacilityName}
+            </Typography>
+            </Grid>
+          </Grid>
+          <Grid  container item xs={12}>
+            <Grid item xs={6} >
+            <Typography sx={{ color: "blue" }}>
+              Organization Price
+            </Typography>
+            </Grid>
+            <Grid item xs={1} >
+            <Typography >
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={5} >
+            <Typography >
+            {fac.OrganisationPrices}
+            </Typography>
+            </Grid>
+          </Grid>
+          <Grid  container item xs={12}>
+            <Grid item xs={6} >
+            <Typography sx={{ color: "blue" }}>
+              Facility Price
+            </Typography>
+            </Grid>
+            <Grid item xs={1} >
+            <Typography >
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={5} >
+            <Typography >
+            {fac.FacilityPrices}
+            </Typography>
+            </Grid>
+          </Grid>
+        </Grid>
+        </Paper>
+      </Collapse>
+    </Box>
+  );
+}
+
 const PublishService = () => {
 
     const navigate=useNavigate()
@@ -19,6 +180,8 @@ const PublishService = () => {
     const viewData=useAppSelector(state=>state.providerServiceView.ViewData)
     const [csvData,setCsvData]=useState<any>([])
     const [pageSize, setPagesize] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
    
 
     useEffect(()=>{
@@ -43,7 +206,19 @@ const PublishService = () => {
       })
     },[])
 
-   
+   const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    page: number
+  ) => {
+    setPage(page);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
     const usdPrice: GridColTypeDef = {
       type: "number",
@@ -148,8 +323,61 @@ const PublishService = () => {
       //   }
       // }}
       // hideFooter
-      sx={{ mt: 1 }}
+      sx={{ mt: 1, display: { xs: "none", md: "block" } }}
     />
+     <Box
+              sx={{
+                
+                display: { xs: "flex", md: "none" },
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              { (rowsPerPage > 0
+              ? csvData.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                )
+              : csvData
+            ).map((fac: any, i: any) => (
+              <>
+                <TableRowRes
+                  key={i}
+                  fac={fac}
+                 
+                />
+                
+                </>
+              ))}
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                count={csvData.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                labelDisplayedRows={({ from, to, count }) =>
+                  `${from}-${to} of ${count !== -1 ? count : ` ${to}}`}`
+                }
+                backIconButtonProps={{
+                  color: "secondary",
+                }}
+                nextIconButtonProps={{ color: "secondary" }}
+                showFirstButton={true}
+                showLastButton={true}
+                labelRowsPerPage={<Typography sx={{display:{xs:"none",md:"block"}}}>Rows:</Typography>}
+                sx={{
+                  ".MuiTablePagination-toolbar": {
+                    backgroundColor: "primary.light",
+                    // "rgba(100,100,100,0.5)"
+                  },
+                  ".MuiTablePagination-selectLabel, .MuiTablePagination-input":
+                    {
+                      fontWeight: "bold",
+                      color: "#173A5E",
+                    },
+                }}/>
+            </Box>
     <Box sx={{ display: "flex", gap: "1.5rem" }}>
      
       <Buttoncomponent

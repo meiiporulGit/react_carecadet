@@ -44,6 +44,7 @@ const HomePage = ({ children, getData }: Props) => {
   );
 
   const providerUser = useAppSelector(state => state.providerAuth.providerLogoutButton)
+  const adminUser =useAppSelector(state=>state.adminAuth.adminLogoutButton)
   //   const options = [
   //     { value: "Provider", item: "Provider" },
   //     { value: "Patient", item: "Patient" },
@@ -78,6 +79,9 @@ const HomePage = ({ children, getData }: Props) => {
     }
     if (providerUser) {
       navigate("/provider/facility/viewFacility")
+    }
+    if(adminUser){
+      navigate("/admin/adminlogin")
     }
   }, [getData])
 

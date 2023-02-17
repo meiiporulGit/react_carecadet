@@ -110,50 +110,7 @@ const CreateService = () => {
     FacilityPrices: Yup.string().required("ServicePrice is required"),
   });
 
-  // const servicepriceData = [
-  //   {
-  //     xs: 12,
-  //     label: "Service Code ",
-  //     name: "ServiceCode",
-  //     placeholder: "Service Code",
-  //     type: "text",
-  //   },
-  //   {
-  //     xs: 12,
-  //     label: "Service Name",
-  //     name: "DiagnosisTestorServiceName",
-  //     placeholder: "Service Name",
-  //     type: "text",
-  //   },
-  //   {
-  //     xs: 12,
-  //     label: "Organisation Prices",
-  //     name: "OrganisationPrices",
-  //     placeholder: "Organisation Prices",
-  //     type: "text",
-  //   },
-  //   {
-  //     xs: 12,
-  //     label: "Facility Name",
-  //     name: "FacilityName",
-  //     placeholder: "FacilityName",
-  //     type: "text",
-  //   },
-  //   {
-  //     xs: 12,
-  //     label: "Facility NPI",
-  //     name: "FacilityNPI",
-  //     placeholder: "FacilityNPI",
-  //     type: "text",
-  //   },
-  //   {
-  //     xs: 12,
-  //     label: "Facility Prices",
-  //     name: "FacilityPrices",
-  //     placeholder: "FacilityPrices",
-  //     type: "text",
-  //   },
-  // ];
+
   return (
     <Paper
       elevation={9}
@@ -169,7 +126,7 @@ const CreateService = () => {
         validationSchema={validationSchema}
       >
 
-{({ handleChange, setFieldValue , values}) => (
+{({ handleChange, setFieldValue,values}) => (
         <Form>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -185,6 +142,34 @@ const CreateService = () => {
                 Add Service Price
               </Typography>
             </Grid>
+            {/* {servicepriceData.map((d, i) => (
+              <Grid item xs={d.xs} key={i}>
+                <Typography
+                  // variant="h6"
+                  sx={{
+                    fontSize: "1.2rem",
+                    mb: "0.5rem",
+                  }}
+                >
+                  {d.label}
+                </Typography>
+                <FormTextField
+                  container={TextField}
+                  name={d.name}
+                  placeholder={d.placeholder}
+                  type={d.type}
+                  fullWidth={true}
+                  sx={{
+                    "&::placeholder": {
+                      // color: "green",
+                      letterSpacing: "0.2rem",
+                      // fontSize: "1rem",
+                    },
+                  }}
+                />
+              </Grid>
+            ))} */}
+
 
             <Grid item xs={12}>
                 <Typography
@@ -205,20 +190,11 @@ const CreateService = () => {
 filterOptions = {filterOptions}
                getOptionLabel={(option: any) => option.Code || option}         
               freeSolo    
-             fullWidth={true}
-             value={values.ServiceCode}
+             
               onChange={(e: any, value: any) => {
                 setFieldValue("ServiceCode",value !== null ? value.Code :"");
                setFieldValue("DiagnosisTestorServiceName",value !== null ? value.DiagnosisTestorServiceName :"");
-                // setFieldValue("facilityNPI",value !== null ? value.facilityNPI : "");
-              
-                // setFieldValue("addressLine1", value !== null ? value.addressLine1 : "");
-                // setFieldValue("addressLine2",value !== null ? value.addressLine2 : "");
-                // setFieldValue("city", value !== null ? value.city : "");
-                // setFieldValue ("state", value !== null ? value.state : "");
-                // setFieldValue ("zipCode", value !== null ? value.zipCode : "");
-                // setFieldValue("email", value !== null ? value.email : "");
-                // setFieldValue ("contact", value !== null ? value.contact : "")
+                
                              }}
                renderInput={(params: AutocompleteRenderInputParams) => (
                 <TextField
@@ -273,7 +249,7 @@ filterOptions = {filterOptions}
               />
             </Grid> */}
 
-              {/* <Grid item xs={12} >
+              <Grid item xs={12} >
               <Typography
                 sx={{
                   fontSize: "1rem",
@@ -301,63 +277,7 @@ filterOptions = {filterOptions}
                   },
                 }}
               />
-            </Grid> */}
-<Grid item xs={12}>
-                <Typography
-                  // variant="h6"
-                  sx={{
-                    fontSize: "1.2rem",
-                    mb: "0.5rem",
-                  }}
-                >
-                 DiagnosisTestorServiceName
-                </Typography>
-                <Field
-              name="DiagnosisTestorServiceName"
-              component={Autocomplete}
-              options = {info}
-              loading={info.length === 0}
-              PaperComponent={CustomPaper}
-              filterOptions = {filterOptions}
-              getOptionLabel={(option: any) => option.DiagnosisTestorServiceName || option}         
-              freeSolo    
-              fullWidth={true}
-              value={values.DiagnosisTestorServiceName}
-              onChange={(e: any, value: any) => {
-                setFieldValue("ServiceCode",value !== null ? value.Code :"");
-                setFieldValue("DiagnosisTestorServiceName",value !== null ? value.DiagnosisTestorServiceName :"");
-                // setFieldValue("facilityNPI",value !== null ? value.facilityNPI : "");
-              
-                // setFieldValue("addressLine1", value !== null ? value.addressLine1 : "");
-                // setFieldValue("addressLine2",value !== null ? value.addressLine2 : "");
-                // setFieldValue("city", value !== null ? value.city : "");
-                // setFieldValue ("state", value !== null ? value.state : "");
-                // setFieldValue ("zipCode", value !== null ? value.zipCode : "");
-                // setFieldValue("email", value !== null ? value.email : "");
-                // setFieldValue ("contact", value !== null ? value.contact : "")
-                             }}
-               renderInput={(params: AutocompleteRenderInputParams) => (
-                <TextField
-                  {...params}
-                  name="DiagnosisTestorServiceName"
-                  label="DiagnosisTestorServiceName"
-                  onChange={handleChange}
-                   variant="outlined"
-                  sx={{
-                    ".MuiFormLabel-root ": {
-                      letterSpacing: "0.2rem",
-                      fontSize: "0.8rem",
-                    },
-                    ".MuiInputLabel-shrink": {
-                      letterSpacing: 0,
-                    },
-                    "& .MuiAutocomplete-popupIndicator": { transform: "none" }                  
-                  }}
-                />
-              )}
-            />
-
-              </Grid>
+            </Grid>
 
            
             <Grid item xs={12} >
@@ -375,6 +295,7 @@ filterOptions = {filterOptions}
                 container={TextField}
                 label="OrganisationPrices"
                 name="OrganisationPrices"
+                autoComplete="text"
                 placeholder="OrganisationPrices"
                 type="text"
                 fullWidth={true}
@@ -406,6 +327,7 @@ filterOptions = {filterOptions}
                 label="Facility Name"
                 name="FacilityName"
                 placeholder="FacilityName"
+                autoComplete="text"
                 type="text"
                 fullWidth={true}
                 sx={{
@@ -436,6 +358,7 @@ filterOptions = {filterOptions}
                 label="Facility NPI"
                 name="FacilityNPI"
                 placeholder="FacilityNPI"
+                autoComplete="text"
                 type="text"
                 fullWidth={true}
                 sx={{
@@ -467,6 +390,7 @@ filterOptions = {filterOptions}
                 name="FacilityPrices"
                 placeholder="FacilityPrices"
                 type="text"
+                autoComplete="text"
                 fullWidth={true}
                 sx={{
                   ".MuiFormLabel-root ": {

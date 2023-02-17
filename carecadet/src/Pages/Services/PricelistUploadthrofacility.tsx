@@ -350,6 +350,7 @@ export default function PricelistUploadthroFacility() {
     var validateHeaders = knownObj.map((d) => d.headerName);
     const knownHeaders = validateHeaders.filter((element) =>
       headers.includes(element)
+     
     );
     const isMatched = knownHeaders.length === validateHeaders.length;
     //&&
@@ -365,6 +366,7 @@ export default function PricelistUploadthroFacility() {
       knownHeaders.length <= validateHeaders.length - 2 ||
       headers.length > validateHeaders.length
     ) {
+    
       toast.error(
         "Please check the header name or download the sample csv format"
       );

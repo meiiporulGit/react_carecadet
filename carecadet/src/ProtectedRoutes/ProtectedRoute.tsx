@@ -1,26 +1,12 @@
 import React from "react";
 import { Navigate, useLocation, useNavigate } from "react-router";
-import {
-  Box,
-  Grid,
-  Tabs,
-  Tab,
-  Typography,
-  Divider,
-  Paper,
-} from "@mui/material";
+import {Box,Grid,Typography,Divider,Paper} from "@mui/material";
+
 
 import OrganizationLandingView from "../Pages/Organization/OrganizationLandingView";
 import { useAppSelector, useAppDispatch } from "../Redux/Hook";
 import { axiosPrivate } from "../axios/axios";
 import { organizationEdit } from "../Redux/ProviderRedux/orgSlice";
-import { Buttoncomponent } from "../Components/Buttoncomp";
-import { refrestState } from "../Redux/ProviderRedux/orgSlice";
-import {
-  logoutButton,
-  pageUser,
-  storeLoginInfo,
-} from "../Redux/ProviderRedux/LoginSlice";
 import OrganizationNav from "./OrganizationNav";
 
 interface Props {
@@ -34,42 +20,44 @@ interface TabPanelProps {
   value: number;
 }
 
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
+// function TabPanel(props: TabPanelProps) {
+//   const { children, value, index, ...other } = props;
 
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
+//   return (
+//     <div
+//       role="tabpanel"
+//       hidden={value !== index}
+//       id={`simple-tabpanel-${index}`}
+//       aria-labelledby={`simple-tab-${index}`}
+//       {...other}
+//     >
+//       {value === index && (
+//         <Box sx={{ p: 3 }}>
+//           <Typography>{children}</Typography>
+//         </Box>
+//       )}
+//     </div>
+//   );
+// }
 
-function a11yProps(index: number) {
-  return {
-    id: `simple-tab-${index}`,
-  };
-}
+// function a11yProps(index: number) {
+//   return {
+//     id: `simple-tab-${index}`,
+//   };
+// }
 
 const ProtectedRoute = ({ children, getData }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
-
   const dispatch = useAppDispatch();
+
   const userID = useAppSelector((state) => state.providerAuth.login.userID);
   const authUser = useAppSelector((state) => state.providerAuth);
+ 
 
   const [data, setData] = React.useState<any>([]);
   const [value, setValue] = React.useState(false);
+
   const path = location.pathname.split("/")[1];
 
   // const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -83,11 +71,11 @@ const ProtectedRoute = ({ children, getData }: Props) => {
   // };
 
   React.useEffect(() => {
-    if (data.length === 0 || getData === "providerorg") {
+    var previouslocation=location.state!==null?true:false
+    if (data.length === 0 ||previouslocation) {
       setValue(true);
-      axiosPrivate
-        .get(`/organization/getOrganizationByProvider?providerID=${userID}`)
-        .then((res) => {
+      axiosPrivate.get(`/organization/getOrganizationByProvider?providerID=${userID}`)
+      .then((res) => {
           const resData = res.data.data;
           if (resData.length === 0) {
             navigate("/provider/org");
@@ -97,29 +85,24 @@ const ProtectedRoute = ({ children, getData }: Props) => {
             setValue(false);
           }
         })
-        .catch((err) => console.log(err));
+      .catch((err) => console.log(err));
     }
   }, [getData]);
-
-  let isAuth =
-    path === "provider" &&
-    authUser.login.userType === "PROVIDER" &&
-    (authUser.login.token !== null || undefined || "") &&
-    authUser.providerLogoutButton;
+ 
+  let isAuth =path === "provider" &&authUser.login.userType === "PROVIDER" &&(authUser.login.token !== null || undefined || "") &&authUser.providerLogoutButton;
 
   return isAuth ? (
-    <Grid container columnSpacing={"1rem"} sx={{padding:"0.5rem"}}>
-      <Grid
-        item
-        xs={2.5}
-        sx={{
+    <Grid container columnSpacing={"1rem"} sx={{ padding: {xs:"0.3rem",md:"0.5rem" }}}>
+      {!value && data.length!==0?(<>
+      <Grid item md={4}  lg={2.5}
+      sx={{
           display: { xs: "none", md: data.length === 0 ? "none" : "block" },
         }}
       >
-        <OrganizationLandingView data={data} />
+        <OrganizationLandingView />
       </Grid>
 
-      <Grid item xs={data.length === 0 ? 12 : 9.5} >
+      <Grid container item xs={12} md={data.length === 0 ? 12 : 7.5} lg={data.length === 0 ? 12 : 9.5}>
         {getData !== "org" && getData !== "editOrg" ? (
           // <Box sx={{ m: 0, p: 0 }}>
           //   <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -139,44 +122,40 @@ const ProtectedRoute = ({ children, getData }: Props) => {
           //     </TabPanel>
           //   )}
           // </Box>
-          value ? (
-            "....loading"
-          ) : (
-            <Grid container display={"flex"} flexDirection="column" gap={{xs:"0.5rem" ,md:"0.5rem"}} >
+        
+            <Grid container item xs={12} display={"flex"} flexDirection="column" gap={{ xs: "0.5rem", md: "0.5rem" }}>
               <OrganizationNav />
               <Divider />
-              <Paper
-                elevation={5}
+              <Paper elevation={5}
                 sx={{
                   backgroundColor: "primary.light",
-                  padding: {xs:"1.5rem",md:"1.8rem"},
-                  ml:{xs:"1.6rem",md:"0"},
-                  height: {md:"80.5vh"},
-                  width:{xs:"300px",sm:"100%"},
+                  padding: { xs: "0.5rem", md: "1.8rem" },
+                  // ml:{xs:"1.6rem",md:"0"},
+                  height: {xs:"80.5vh", md: "80.5vh" },
+                  // width:{xs:"300px",sm:"100%"},
                   "&::-webkit-scrollbar": {
-                    width:{md:15} ,
-
+                    width: {xs:0, md: 15 },
                   },
                   "&::-webkit-scrollbar-track": {
-                    backgroundColor: {md:"grey"},
+                    backgroundColor: { md: "grey" },
                   },
                   "&::-webkit-scrollbar-thumb": {
-                    backgroundColor: {md:"#AAC9DD"},
-                    borderRadius: {md:2},
-                  
+                    backgroundColor: { md: "#AAC9DD" },
+                    borderRadius: { md: 2 },
                   },
-                  overflowX: {md:"hidden"},
-        
+                  overflowX: { xs: "hidden" },
                 }}
               >
                 {children}
               </Paper>
             </Grid>
-          )
+       
         ) : (
           <>{children}</>
         )}
-      </Grid>
+      </Grid></>):<Grid item>{getData!=="org"?"...loading":<>{children}</>}</Grid>}
+      
+    
     </Grid>
   ) : (
     <Navigate to="/provider/home" replace />
