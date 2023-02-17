@@ -60,7 +60,7 @@ function TableRowRes({ fac }: rowProps) {
               backgroundColor: "#E4ECF7",
               // color: "blue",
               padding:"0.3rem",
-              border: fac.status === "verified" ? "2px solid  orange" : "1px solid  green",
+              border: fac.status === "verified" ? "3px solid  orange" : "1px solid  green",
               "&:hover": {
                 color: "secondary.dark",
                 border: "1px solid blue",

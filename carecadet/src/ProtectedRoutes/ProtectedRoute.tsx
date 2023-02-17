@@ -92,7 +92,7 @@ const ProtectedRoute = ({ children, getData }: Props) => {
   let isAuth =path === "provider" &&authUser.login.userType === "PROVIDER" &&(authUser.login.token !== null || undefined || "") &&authUser.providerLogoutButton;
 
   return isAuth ? (
-    <Grid container columnSpacing={"1rem"} sx={{ padding: {xs:"0",md:"0.5rem" }}}>
+    <Grid container columnSpacing={"1rem"} sx={{ padding: {xs:"0.3rem",md:"0.5rem" }}}>
       {!value && data.length!==0?(<>
       <Grid item md={4}  lg={2.5}
       sx={{
@@ -131,10 +131,10 @@ const ProtectedRoute = ({ children, getData }: Props) => {
                   backgroundColor: "primary.light",
                   padding: { xs: "0.5rem", md: "1.8rem" },
                   // ml:{xs:"1.6rem",md:"0"},
-                  height: { md: "80.5vh" },
+                  height: {xs:"80.5vh", md: "80.5vh" },
                   // width:{xs:"300px",sm:"100%"},
                   "&::-webkit-scrollbar": {
-                    width: { md: 15 },
+                    width: {xs:0, md: 15 },
                   },
                   "&::-webkit-scrollbar-track": {
                     backgroundColor: { md: "grey" },
@@ -143,7 +143,7 @@ const ProtectedRoute = ({ children, getData }: Props) => {
                     backgroundColor: { md: "#AAC9DD" },
                     borderRadius: { md: 2 },
                   },
-                  overflowX: { md: "hidden" },
+                  overflowX: { xs: "hidden" },
                 }}
               >
                 {children}
