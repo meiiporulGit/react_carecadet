@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Paper, TextField, Box, Typography, Grid, Button } from "@mui/material";
+import { Paper, Grid, Box,Button, Typography, Collapse, IconButton,TablePagination,TextField } from "@mui/material";
 import axios from "axios";
 import {
   GridRowsProp,
@@ -36,6 +36,8 @@ import clsx from "clsx";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import { axiosPrivate, baseURL } from "../../axios/axios";
 import { toast } from "react-toastify";
+import { KeyboardArrowDown, KeyboardArrowUp ,Edit} from "@mui/icons-material";
+
 interface forminitialValues {
   _id: string;
   SNo: string;
@@ -47,14 +49,156 @@ interface forminitialValues {
   FacilityPrices: string;
   GridAlignment : 'left' | 'right' | 'center';
 }
+interface rowProps{
+  fac:any
+  onButtonEdit: any;
+}
 
+
+
+
+
+
+function TableRowRes({ fac, onButtonEdit }: rowProps) {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  console.log(fac, "facilityRow");
+  const [open, setOpen] = useState<boolean>(false);
+  const [edit, setEdit] = useState<boolean>(false);
+  const [data, setData] = useState<any>(fac);
+
+  const editOnchange = (e: any) => {
+    console.log(e.target.name, e.target.value);
+    var editData = { ...data, [e.target.name]: e.target.value };
+    setData(editData);
+  };
+
+  const onButton = () => {
+    setEdit(false);
+    onButtonEdit(data);
+  };
+
+  return (
+    <Box>
+      <Paper sx={{backgroundColor:"primary.light",padding:"0.3rem"}}>
+        <Grid container>
+          <Grid item xs={10} >
+            <Box sx={{display:"flex",flexWrap:"nowrap",alignItems:"center"}}>
+            <IconButton
+           
+              aria-label="expand row"
+              size="small"
+              onClick={() => {
+                setOpen(!open)
+                setEdit(false)
+              }}
+            >
+              {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+            </IconButton>
+            <Typography>{fac.DiagnosisTestorServiceName}</Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={2}>
+            <Edit
+              onClick={() => {
+                setEdit(true);
+              }}
+            />
+          </Grid>
+        </Grid>
+      </Paper>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <Paper
+          sx={{
+            backgroundColor:"primary.light",
+            display: "flex",
+            flexDirection: "column",
+            mt: "0.2rem",
+            padding: "1rem",
+          }}
+        >
+          <Grid container>
+          {edit ?
+            <Grid item justifyContent={"flex-end"}> <Button onClick={onButton}>save</Button></Grid> : null}
+          </Grid>
+          <Grid  container item xs={12}>
+            <Grid item xs={6} >
+            <Typography sx={{ color: "blue" }}>
+              Organization ID{" "}
+            </Typography>
+            </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+            <Typography sx={{ color: "blue" }}>
+            {fac.Organisationid}
+            </Typography>
+            </Grid>
+          </Grid>
+
+         
+          <Typography sx={{ display: "flex" }}>
+            {" "}
+            <Typography sx={{ color: "blue" }}>Service Code </Typography> :{" "}
+            {fac.ServiceCode}
+          </Typography>
+          <Typography sx={{ display: "flex" }}>
+            {" "}
+            <Typography sx={{ color: "blue" }}>Facility NPI </Typography> :{" "}
+            {fac.FacilityNPI}
+          </Typography>
+          <Typography sx={{ display: "flex" }}>
+            {" "}
+            <Typography sx={{ color: "blue" }}>Facility Name </Typography> :{" "}
+            {fac.FacilityName}
+          </Typography>
+          <Typography sx={{ display: "flex" }}>
+            {" "}
+            <Typography sx={{ color: "blue" }}>
+              Organisation Prices{" "}
+            </Typography>{" "}
+            :{" "}
+            {!edit ? (
+              fac.OrganisationPrices
+            ) : (
+              <TextField
+                value={data.OrganisationPrices}
+                name="OrganisationPrices"
+                onChange={(e) => editOnchange(e)}
+              />
+            )}
+          </Typography>
+          <Typography sx={{ display: "flex" }}>
+            {" "}
+            <Typography sx={{ color: "blue" }}>
+              Facility Prices{" "}
+            </Typography> :{" "}
+            {!edit ? (
+              fac.FacilityPrices
+            ) : (
+              <TextField
+                value={data.FacilityPrices}
+                name="FacilityPrices"
+                onChange={(e) => editOnchange(e)}
+              />
+            )}
+          </Typography>
+        </Paper>
+      </Collapse>
+    </Box>
+  );
+}
 export default function PricelistEditpage() {
   const [data, setData] = useState([] as any);
   const [pageSize, setPagesize] = useState(5);
   const [csvEdit, setcsvEdit] = useState([] as any);
   const [csvdel, setcsvDel] = useState([] as any);
   const [filename, setFilename] = useState("");
-
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
   const dispatch = useAppDispatch();
   // const facilityid=useAppSelector((state)=>state.editFacility.service);
   // console.log("facilityid", facilityid);
@@ -188,7 +332,32 @@ export default function PricelistEditpage() {
     },
     cellClassName: 'font-tabular-nums',
   };
+  const onButtonEdit = (e: any) => {
+    var editData=data.map((d:any)=>{
+      if(d.SNo===e.SNo){
+        return e
+      }else{
+        return d
+      }
+    })
+  
+    console.log(editData,"checkEdit")
+    setData(editData)
+      
+    };
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    page: number
+  ) => {
+    setPage(page);
+  };
 
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   const columns: GridColumns = [
     // {
     //   field: "SNo",
@@ -284,15 +453,19 @@ export default function PricelistEditpage() {
 
   return (
     <>
-      <Paper
-        elevation={9}
-        sx={{
-          backgroundColor: "primary.light",
-          padding: "1.5rem",
-          borderRadius: "15px",
-          height: "88.8vh",
-        }}
-      >
+       <Box
+
+sx={{
+  backgroundColor: "primary.light",
+  // padding: "1.5rem",
+  borderRadius: "15px",
+  height: "88.8vh",
+
+
+
+  // height: "88.8vh",
+}}
+>
         <Typography
           mb={"0.5rem"}
           sx={{
@@ -357,6 +530,7 @@ export default function PricelistEditpage() {
               rowsPerPageOptions={[5, 10, 20]}
               onCellEditCommit={onCellEditCommit}
               sx={{
+                maxWidth: "100%",display:{xs:"none",md:"block"}, mt:1 ,
                 fontSize: "1rem",
                 backgroundColor: "lightgray",
                 borderColor: "primary.light",
@@ -367,6 +541,59 @@ export default function PricelistEditpage() {
               components={{ Row: CustomRow }}
             />
           </Box>
+          < Box
+              sx={{
+                
+                display: { xs: "flex", md: "none" },
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              { (rowsPerPage > 0
+              ? data.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                )
+              : data
+            ).map((fac: any, i: any) => (
+              <>
+                <TableRowRes
+                  key={i}
+                  fac={fac}
+                  onButtonEdit={(e: any) => onButtonEdit(e)}
+                />
+                
+                </>
+              ))}
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                count={data.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                labelDisplayedRows={({ from, to, count }) =>
+                  `${from}-${to} of ${count !== -1 ? count : ` ${to}}`}`
+                }
+                backIconButtonProps={{
+                  color: "secondary",
+                }}
+                nextIconButtonProps={{ color: "secondary" }}
+                showFirstButton={true}
+                showLastButton={true}
+                labelRowsPerPage={<span>Rows:</span>}
+                sx={{
+                  ".MuiTablePagination-toolbar": {
+                    backgroundColor: "primary.light",
+                    // "rgba(100,100,100,0.5)"
+                  },
+                  ".MuiTablePagination-selectLabel, .MuiTablePagination-input":
+                    {
+                      fontWeight: "bold",
+                      color: "#173A5E",
+                    },
+                }}/>
+            </Box>
           <Buttoncomponent
             type="submit"
             variant="contained"
@@ -394,7 +621,7 @@ export default function PricelistEditpage() {
 
           {JSON.stringify(csvdel)} */}
         </>
-      </Paper>
+      </Box>
     </>
   );
 }

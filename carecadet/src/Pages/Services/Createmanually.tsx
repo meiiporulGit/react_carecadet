@@ -61,6 +61,19 @@ const CreateService = () => {
       fetchUsers()
     }, [])
 
+    // const filterOptions1 = (options:any, state:any) => {
+    //   return defaultFilterOptions(options, state).slice(0, OPTIONS_LIMIT);
+    // };
+      // useEffect(() => {
+    
+      //   const fetchUsers= async() =>{
+      //     await axiosPrivate.get(`/service/findDiagnosisTestorServiceName`)
+      //     .then (res => {setInfo(res.data);
+      //     setQuery(res.data)})
+      //   }
+      //   fetchUsers()
+      // }, [])
+
 
   const onSubmit = (values: InitialValues, actions: any) => {
     console.log("test")
@@ -156,7 +169,7 @@ const CreateService = () => {
         validationSchema={validationSchema}
       >
 
-{({ handleChange, setFieldValue}) => (
+{({ handleChange, setFieldValue , values}) => (
         <Form>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -172,36 +185,8 @@ const CreateService = () => {
                 Add Service Price
               </Typography>
             </Grid>
-            {/* {servicepriceData.map((d, i) => (
-              <Grid item xs={d.xs} key={i}>
-                <Typography
-                  // variant="h6"
-                  sx={{
-                    fontSize: "1.2rem",
-                    mb: "0.5rem",
-                  }}
-                >
-                  {d.label}
-                </Typography>
-                <FormTextField
-                  container={TextField}
-                  name={d.name}
-                  placeholder={d.placeholder}
-                  type={d.type}
-                  fullWidth={true}
-                  sx={{
-                    "&::placeholder": {
-                      // color: "green",
-                      letterSpacing: "0.2rem",
-                      // fontSize: "1rem",
-                    },
-                  }}
-                />
-              </Grid>
-            ))} */}
 
-
-<Grid item xs={12}>
+            <Grid item xs={12}>
                 <Typography
                   // variant="h6"
                   sx={{
@@ -215,13 +200,13 @@ const CreateService = () => {
               name="serviceCode"
               component={Autocomplete}
                options = {info}
-               fullWidth={true}
                loading={info.length === 0}
+               PaperComponent={CustomPaper}
 filterOptions = {filterOptions}
-PaperComponent={CustomPaper}
                getOptionLabel={(option: any) => option.Code || option}         
               freeSolo    
-             
+             fullWidth={true}
+             value={values.ServiceCode}
               onChange={(e: any, value: any) => {
                 setFieldValue("ServiceCode",value !== null ? value.Code :"");
                setFieldValue("DiagnosisTestorServiceName",value !== null ? value.DiagnosisTestorServiceName :"");
@@ -288,7 +273,7 @@ PaperComponent={CustomPaper}
               />
             </Grid> */}
 
-              <Grid item xs={12} >
+              {/* <Grid item xs={12} >
               <Typography
                 sx={{
                   fontSize: "1rem",
@@ -316,7 +301,63 @@ PaperComponent={CustomPaper}
                   },
                 }}
               />
-            </Grid>
+            </Grid> */}
+<Grid item xs={12}>
+                <Typography
+                  // variant="h6"
+                  sx={{
+                    fontSize: "1.2rem",
+                    mb: "0.5rem",
+                  }}
+                >
+                 DiagnosisTestorServiceName
+                </Typography>
+                <Field
+              name="DiagnosisTestorServiceName"
+              component={Autocomplete}
+              options = {info}
+              loading={info.length === 0}
+              PaperComponent={CustomPaper}
+              filterOptions = {filterOptions}
+              getOptionLabel={(option: any) => option.DiagnosisTestorServiceName || option}         
+              freeSolo    
+              fullWidth={true}
+              value={values.DiagnosisTestorServiceName}
+              onChange={(e: any, value: any) => {
+                setFieldValue("ServiceCode",value !== null ? value.Code :"");
+                setFieldValue("DiagnosisTestorServiceName",value !== null ? value.DiagnosisTestorServiceName :"");
+                // setFieldValue("facilityNPI",value !== null ? value.facilityNPI : "");
+              
+                // setFieldValue("addressLine1", value !== null ? value.addressLine1 : "");
+                // setFieldValue("addressLine2",value !== null ? value.addressLine2 : "");
+                // setFieldValue("city", value !== null ? value.city : "");
+                // setFieldValue ("state", value !== null ? value.state : "");
+                // setFieldValue ("zipCode", value !== null ? value.zipCode : "");
+                // setFieldValue("email", value !== null ? value.email : "");
+                // setFieldValue ("contact", value !== null ? value.contact : "")
+                             }}
+               renderInput={(params: AutocompleteRenderInputParams) => (
+                <TextField
+                  {...params}
+                  name="DiagnosisTestorServiceName"
+                  label="DiagnosisTestorServiceName"
+                  onChange={handleChange}
+                   variant="outlined"
+                  sx={{
+                    ".MuiFormLabel-root ": {
+                      letterSpacing: "0.2rem",
+                      fontSize: "0.8rem",
+                    },
+                    ".MuiInputLabel-shrink": {
+                      letterSpacing: 0,
+                    },
+                    "& .MuiAutocomplete-popupIndicator": { transform: "none" }                  
+                  }}
+                />
+              )}
+            />
+
+              </Grid>
 
            
             <Grid item xs={12} >

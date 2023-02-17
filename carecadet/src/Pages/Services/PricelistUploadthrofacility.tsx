@@ -1,8 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { Grid, Typography, Button, Paper, Box, Container } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import axios from "axios";
+import { Grid, Typography, Button, Paper, Box, Container ,Collapse, IconButton,TablePagination,TextField} from "@mui/material";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 import { ChangeEvent } from "react";
 import { useNavigate } from "react-router";
@@ -16,10 +14,9 @@ import {
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { axiosPrivate, baseURL } from "../../axios/axios";
-// import { parse } from "csv-parse/browser/esm/sync";
-import { orgid } from "../../Redux/ProviderRedux/orgSlice";
+
 import { toast } from "react-toastify";
-import { ContentPasteSearchOutlined } from "@mui/icons-material";
+import { KeyboardArrowDown, KeyboardArrowUp ,Edit } from "@mui/icons-material";
 type cvsItem = {
   id: string;
   SNo: string;
@@ -27,11 +24,151 @@ type cvsItem = {
   GridAlignment: "left" | "right" | "center";
 };
 
+interface rowProps{
+  fac:any
+  onButtonEdit: any;
+}
+
+function TableRowRes({ fac, onButtonEdit }: rowProps) {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  console.log(fac, "facilityRow");
+  const [open, setOpen] = useState<boolean>(false);
+  const [edit, setEdit] = useState<boolean>(false);
+  const [data, setData] = useState<any>(fac);
+
+  const editOnchange = (e: any) => {
+    console.log(e.target.name, e.target.value);
+    var editData = { ...data, [e.target.name]: e.target.value };
+    setData(editData);
+  };
+
+  const onButton = () => {
+    setEdit(false);
+    onButtonEdit(data);
+  };
+
+  return (
+    <Box>
+      <Paper sx={{backgroundColor:"primary.light",padding:"0.3rem"}}>
+        <Grid container>
+          <Grid item xs={10} >
+            <Box sx={{display:"flex",flexWrap:"nowrap",alignItems:"center"}}>
+            <IconButton
+           
+              aria-label="expand row"
+              size="small"
+              onClick={() => {
+                setOpen(!open)
+                setEdit(false)
+              }}
+            >
+              {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+            </IconButton>
+            <Typography>{fac.DiagnosisTestorServiceName}</Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={2}>
+            <Edit
+              onClick={() => {
+                setEdit(true);
+              }}
+            />
+          </Grid>
+        </Grid>
+      </Paper>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <Paper
+          sx={{
+            backgroundColor:"primary.light",
+            display: "flex",
+            flexDirection: "column",
+            mt: "0.2rem",
+            padding: "1rem",
+          }}
+        >
+          <Grid container>
+          {edit ?
+            <Grid item justifyContent={"flex-end"}> <Button onClick={onButton}>save</Button></Grid> : null}
+          </Grid>
+          <Grid  container item xs={12}>
+            <Grid item xs={6} >
+            <Typography sx={{ color: "blue" }}>
+              OrganizationID{" "}
+            </Typography>
+            </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+            <Typography sx={{ color: "blue" }}>
+            {fac.Organisationid}
+            </Typography>
+            </Grid>
+          </Grid>
+
+         
+          <Typography sx={{ display: "flex" }}>
+            {" "}
+            <Typography sx={{ color: "blue" }}>ServiceCode </Typography> :{" "}
+            {fac.ServiceCode}
+          </Typography>
+          <Typography sx={{ display: "flex" }}>
+            {" "}
+            <Typography sx={{ color: "blue" }}>FacilityNPI </Typography> :{" "}
+            {fac.FacilityNPI}
+          </Typography>
+          <Typography sx={{ display: "flex" }}>
+            {" "}
+            <Typography sx={{ color: "blue" }}>FacilityName </Typography> :{" "}
+            {fac.FacilityName}
+          </Typography>
+          <Typography sx={{ display: "flex" }}>
+            {" "}
+            <Typography sx={{ color: "blue" }}>
+              OrganisationPrices{" "}
+            </Typography>{" "}
+            :{" "}
+            {!edit ? (
+              fac.OrganisationPrices
+            ) : (
+              <TextField
+                value={data.OrganisationPrices}
+                name="OrganisationPrices"
+                onChange={(e) => editOnchange(e)}
+              />
+            )}
+          </Typography>
+          <Typography sx={{ display: "flex" }}>
+            {" "}
+            <Typography sx={{ color: "blue" }}>
+              FacilityPrices{" "}
+            </Typography> :{" "}
+            {!edit ? (
+              fac.FacilityPrices
+            ) : (
+              <TextField
+                value={data.FacilityPrices}
+                name="FacilityPrices"
+                onChange={(e) => editOnchange(e)}
+              />
+            )}
+          </Typography>
+        </Paper>
+      </Collapse>
+    </Box>
+  );
+}
+
 export default function PricelistUploadthroFacility() {
   const [csvData, setCsvData] = useState<cvsItem[]>([]);
   const [filename, setFilename] = useState("");
   const [pageSize, setPagesize] = useState(5);
   const [columns, setColumns] = useState<any>([]);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
   const [unknownHeader, setUnknownHeader] = useState<boolean>(false);
   const [publishButton, setPublishButton] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -347,12 +484,41 @@ export default function PricelistUploadthroFacility() {
     // }
   };
 
+  const onButtonEdit = (e: any) => {
+    var editData=csvData.map((d)=>{
+      if(d.SNo===e.SNo){
+        return e
+      }else{
+        return d
+      }
+    })
+  
+    console.log(editData,"checkEdit")
+    setCsvData(editData)
+      
+    };
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    page: number
+  ) => {
+    setPage(page);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+
   const onSubmit = (e: any) => {
     e.preventDefault();
     // if(output){
     //    let formData = new FormData();
     //  formData.append("screenshot", output);
-    let datacheck = {  csv: csvData,
+    let datacheck = {  name: filename,
+      csv: csvData,
       fileType: "Multiple facility upload",
       emailData: data,
       organizationID: orgid[0].organizationID};
@@ -540,8 +706,61 @@ export default function PricelistUploadthroFacility() {
               //   }
               // }}
               // hideFooter
-              sx={{ mt: 1 }}
+              sx={{ maxWidth: "100%",display:{xs:"none",md:"block"}, mt:1 }}
             />
+             < Box
+              sx={{
+                
+                display: { xs: "flex", md: "none" },
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              { (rowsPerPage > 0
+              ? csvData.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                )
+              : csvData
+            ).map((fac: any, i: any) => (
+              <>
+                <TableRowRes
+                  key={i}
+                  fac={fac}
+                  onButtonEdit={(e: any) => onButtonEdit(e)}
+                />
+                
+                </>
+              ))}
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                count={csvData.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                labelDisplayedRows={({ from, to, count }) =>
+                  `${from}-${to} of ${count !== -1 ? count : ` ${to}}`}`
+                }
+                backIconButtonProps={{
+                  color: "secondary",
+                }}
+                nextIconButtonProps={{ color: "secondary" }}
+                showFirstButton={true}
+                showLastButton={true}
+                labelRowsPerPage={<span>Rows:</span>}
+                sx={{
+                  ".MuiTablePagination-toolbar": {
+                    backgroundColor: "primary.light",
+                    // "rgba(100,100,100,0.5)"
+                  },
+                  ".MuiTablePagination-selectLabel, .MuiTablePagination-input":
+                    {
+                      fontWeight: "bold",
+                      color: "#173A5E",
+                    },
+                }}/>
+            </Box>
         <Box sx={{ display: "flex", gap: "1.5rem" }}>
             {publishButton  ? (
               <Buttoncomponent

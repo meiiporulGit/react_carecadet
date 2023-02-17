@@ -145,7 +145,7 @@ const CreateServicethroFacility = () => {
         validationSchema={validationSchema}
       >
 
-{({ handleChange, setFieldValue}) => (
+{({ handleChange, setFieldValue,values}) => (
         <Form>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -210,6 +210,7 @@ filterOptions = {filterOptions}
                getOptionLabel={(option: any) => option.Code || option}         
               freeSolo    
              fullWidth={true}
+             value={values.ServiceCode}
               onChange={(e: any, value: any) => {
                 setFieldValue("ServiceCode",value !== null ? value.Code :"");
                setFieldValue("DiagnosisTestorServiceName",value !== null ? value.DiagnosisTestorServiceName :"");
@@ -276,7 +277,7 @@ filterOptions = {filterOptions}
               />
             </Grid> */}
 
-              <Grid item xs={12} >
+              {/* <Grid item xs={12} >
               <Typography
                 sx={{
                   fontSize: "1rem",
@@ -304,8 +305,63 @@ filterOptions = {filterOptions}
                   },
                 }}
               />
-            </Grid>
+            </Grid> */}
+<Grid item xs={12}>
+                <Typography
+                  // variant="h6"
+                  sx={{
+                    fontSize: "1.2rem",
+                    mb: "0.5rem",
+                  }}
+                >
+                 DiagnosisTestorServiceName
+                </Typography>
+                <Field
+              name="DiagnosisTestorServiceName"
+              component={Autocomplete}
+              options = {info}
+              loading={info.length === 0}
+              PaperComponent={CustomPaper}
+              filterOptions = {filterOptions}
+              getOptionLabel={(option: any) => option.DiagnosisTestorServiceName || option}         
+              freeSolo    
+              fullWidth={true}
+              value={values.DiagnosisTestorServiceName}
+              onChange={(e: any, value: any) => {
+                setFieldValue("ServiceCode",value !== null ? value.Code :"");
+                setFieldValue("DiagnosisTestorServiceName",value !== null ? value.DiagnosisTestorServiceName :"");
+                // setFieldValue("facilityNPI",value !== null ? value.facilityNPI : "");
+              
+                // setFieldValue("addressLine1", value !== null ? value.addressLine1 : "");
+                // setFieldValue("addressLine2",value !== null ? value.addressLine2 : "");
+                // setFieldValue("city", value !== null ? value.city : "");
+                // setFieldValue ("state", value !== null ? value.state : "");
+                // setFieldValue ("zipCode", value !== null ? value.zipCode : "");
+                // setFieldValue("email", value !== null ? value.email : "");
+                // setFieldValue ("contact", value !== null ? value.contact : "")
+                             }}
+               renderInput={(params: AutocompleteRenderInputParams) => (
+                <TextField
+                  {...params}
+                  name="DiagnosisTestorServiceName"
+                  label="DiagnosisTestorServiceName"
+                  onChange={handleChange}
+                   variant="outlined"
+                  sx={{
+                    ".MuiFormLabel-root ": {
+                      letterSpacing: "0.2rem",
+                      fontSize: "0.8rem",
+                    },
+                    ".MuiInputLabel-shrink": {
+                      letterSpacing: 0,
+                    },
+                    "& .MuiAutocomplete-popupIndicator": { transform: "none" }                  
+                  }}
+                />
+              )}
+            />
 
+              </Grid>
            
             <Grid item xs={12} >
               <Typography

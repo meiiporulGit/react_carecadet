@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Paper, TextField, Box, Typography } from "@mui/material";
+import { Paper, TextField, Box, Typography,TablePagination,Collapse,IconButton } from "@mui/material";
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -18,7 +18,7 @@ import { Buttoncomponent } from "../../Components/Buttoncomp";
 import Avatar from "@mui/material/Avatar";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
-
+import { KeyboardArrowDown, KeyboardArrowUp ,Edit} from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import clsx from "clsx";
 import { axiosPrivate } from "../../axios/axios";
@@ -36,9 +36,39 @@ interface forminitialValues {
   GridAlignment: "left" | "right" | "center";
 }
 
+interface rowProps{
+  fac:any
+}
+function Row({fac}:rowProps){
+ console.log(fac,"facilityRow")
+  const [open,setOpen]=useState<boolean>(false)
+return(
+  <Box>
+      <IconButton
+          aria-label="expand row"
+          size="small"
+          onClick={() => setOpen(!open)}
+        >
+          {open ? <KeyboardArrowUp /> : <KeyboardArrowDown/>}
+        </IconButton>{fac.FacilityName}
+        <Collapse in={open} timeout="auto" unmountOnExit>
+        <Paper sx={{display:"flex",flexDirection:"column",mt:"0.2rem",padding:"1rem"}}>
+        <Typography sx={{display:"flex"}}> <Typography sx={{color:"blue"}}> ServiceCode </Typography>       :  {fac.ServiceCode}</Typography>
+        
+
+        <Typography sx={{display:"flex"}}><Typography sx={{color:"blue"}}> Organisation Prices </Typography>       :  {fac.OrganisationPrices}</Typography>
+        <Typography sx={{display:"flex"}}><Typography sx={{color:"blue"}}> Facility Prices </Typography>       :  {fac.FacilityPrices}</Typography>
+        </Paper>
+      </Collapse>
+  </Box>
+)
+}
+
 export default function ServiceViewPage() {
   const [data, setData] = useState([] as forminitialValues[]);
   const [pageSize, setPagesize] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
   const [tabValue, setTabValue] = useState("foi");
   const dispatch = useAppDispatch();
   // const facilityid=useAppSelector((state)=>state.editFacility.service);v
@@ -139,7 +169,19 @@ export default function ServiceViewPage() {
       ...usdPrice,
     },
   ];
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    page: number
+  ) => {
+    setPage(page);
+  };
 
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   const navigateToAdd = () => {
     // This will navigate to second component
     // dispatch(editButton());
@@ -201,7 +243,7 @@ export default function ServiceViewPage() {
             justifyContent="flex-end"
             alignItems="flex-end"
             sx={{
-              gap: "40rem",
+              // gap: "40rem",
               mb: 2,
             }}
           >
@@ -299,6 +341,8 @@ export default function ServiceViewPage() {
               onPageSizeChange={(newPageSize) => setPagesize(newPageSize)}
               rowsPerPageOptions={[5, 10, 20]}
               sx={{
+                // maxWidth: "100%",
+                display:{xs:"none",md:"block"},
                 fontSize: "1rem",
                 backgroundColor: "lightgray",
                 borderColor: "primary.light",
@@ -306,9 +350,46 @@ export default function ServiceViewPage() {
                   color: "white",
                 },
               }}
+              
               components={{ Row: CustomRow }}
             />
           </Box>
+          <Box sx={{display:{xs:"flex",md:"none"},flexDirection:"column",gap:"1rem"}}>
+        {data.map((fac:any,i:any)=>(
+         
+        <Row key={i} fac={fac}/>
+    
+        ))}
+      
+        <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                count={data.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                labelDisplayedRows={({ from, to, count }) =>
+                  `${from}-${to} of ${count !== -1 ? count : ` ${to}}`}`
+                }
+                backIconButtonProps={{
+                  color: "secondary",
+                }}
+                nextIconButtonProps={{ color: "secondary" }}
+                showFirstButton={true}
+                showLastButton={true}
+                labelRowsPerPage={<span>Rows:</span>}
+                sx={{
+                  ".MuiTablePagination-toolbar": {
+                    backgroundColor: "primary.light",
+                    // "rgba(100,100,100,0.5)"
+                  },
+                  ".MuiTablePagination-selectLabel, .MuiTablePagination-input":
+                    {
+                      fontWeight: "bold",
+                      color: "#173A5E",
+                    },
+                }}/>
+                  </Box>
         </>
       </Paper>
     </>

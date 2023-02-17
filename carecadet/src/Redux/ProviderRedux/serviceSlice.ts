@@ -7,7 +7,7 @@ export interface Ifacility {
 }
 const initialState: Ifacility = {
   serviceData: {},
-  facilityData:{}
+  facilityData:[]
 };
 
 export const serviceSlice = createSlice({

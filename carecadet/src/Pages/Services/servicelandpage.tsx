@@ -36,6 +36,7 @@ interface forminitialValues {
   GridAlignment: "left" | "right" | "center";
 }
 
+
 export default function Servicelandingpage() {
   const [data, setData] = useState<any>([]);
   const [pageSize, setPagesize] = useState(5);
@@ -60,7 +61,7 @@ export default function Servicelandingpage() {
       state.providerService.serviceData
   );
 
-  console.log(facilitynameInfo, "facip");
+
   const navigate = useNavigate();
   useEffect(() => {
     console.log("start");
