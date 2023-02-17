@@ -35,7 +35,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import clsx from "clsx";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import { axiosPrivate, baseURL } from "../../axios/axios";
-
+import { toast } from "react-toastify";
 interface forminitialValues {
   _id: string;
   SNo: string;
@@ -141,6 +141,7 @@ export default function PricelistEditpage() {
   
      
         .then((res) => {
+          toast.success(res.data.message);
           console.log("Success ", res);
           // alert("success");
       })

@@ -35,7 +35,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import clsx from "clsx";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import { axiosPrivate, baseURL } from "../../axios/axios";
-
+import { toast } from "react-toastify";
 interface forminitialValues {
   _id: string;
   SNo: string;
@@ -151,9 +151,11 @@ export default function ServiceEditpage() {
 
       // )
       .then((res) => {
-        alert("success");
+       
+       
         // dispatch(organizationEdit(orgdata))
         navigate("/provider/service/serviceview");
+        toast.success(res.data.message)
         // actions.resetForm({
         //   values: initialValues,
         // });

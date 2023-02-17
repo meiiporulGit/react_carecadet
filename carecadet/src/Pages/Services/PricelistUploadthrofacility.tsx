@@ -369,8 +369,16 @@ export default function PricelistUploadthroFacility() {
       .then((res) => {
         console.log("Success ", res);
         // alert("success");
+        toast.success(res.data.message);
         navigate("/provider/facility/pricelistlanding");
-      }); //  }
+      })
+      
+      .catch((err) => {
+        console.log(err, "cdfjdk");
+        toast.error(err.message);
+      });
+      
+      //  }
   };
 
   const Download = () => {

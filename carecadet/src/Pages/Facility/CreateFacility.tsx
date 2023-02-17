@@ -89,8 +89,8 @@ export default function CreateFacility() {
       await axiosPrivate.get(`/facility/findfacilityNPI`)
         .then((res) => {
           console.log(res.data, 'nppes')
-          // dispatch(nppesInfo(res.data))
-          setCheckInfo(res.data)
+          //  dispatch(nppesInfo(res.data))
+           setCheckInfo(res.data)
         })
         .catch((e) => console.log(e));
       // .then (res => {setInfo(res.data);
@@ -117,7 +117,7 @@ export default function CreateFacility() {
   const filterOptions = (options: any, state: any) => {
     return defaultFilterOptions(options, state).slice(0, OPTIONS_LIMIT);
   };
-  // const info = useAppSelector((state) => state.providerFacility.nppes);
+  //  const info = useAppSelector((state) => state.providerFacility.nppes);
   const options = useAppSelector((state) => state.providerFacility.facilityTypedata)
   console.log(options, 'options')
   const validationSchema = Yup.object().shape({
@@ -132,7 +132,7 @@ export default function CreateFacility() {
       .required("Required"),
     // .test("len", (val: any) => val && val.length === 5),
     state: Yup.string().nullable().required("Required"),
-    contact: Yup.string().required("Required"),
+    contact: Yup.string().required(" Required"),
     email: Yup.string().email().required("Required"),
   });
 
@@ -206,7 +206,8 @@ export default function CreateFacility() {
                   Add Facility Information
                 </Typography>
               </Grid>
-              <Grid item xs={12} sm={12}
+             
+                <Grid item xs={12} sm={12}
               // style={{ marginLeft: "70%" }}
               >
                 <Typography
@@ -243,8 +244,6 @@ export default function CreateFacility() {
                     setFieldValue("city", value !== null ? value.city : "");
                     setFieldValue("state", value !== null ? value.state : "");
                     setFieldValue("zipCode", value !== null ? value.zipCode : "");
-                    setFieldValue("email", value !== null ? value.email : "");
-                    setFieldValue("contact", value !== null ? value.contact : "");
                     setFieldValue("latitude", value !== null ? value.latitude : "");
                     setFieldValue("longitude", value !== null ? value.longitude : "")
                   }}
@@ -255,6 +254,10 @@ export default function CreateFacility() {
                       label="Search Facility NPI"
                       onChange={handleChange}
                       variant="outlined"
+                      helperText={
+                        <ErrorMessage name="facilityNPI">
+                          {(error) => <ErrorProps>{error}</ErrorProps>}
+                        </ErrorMessage>}
                       InputProps={{
                         ...params.InputProps,
                         endAdornment: (
@@ -282,9 +285,7 @@ export default function CreateFacility() {
                       }}
                     />
                   )}
-                />
-
-            
+                />            
               </Grid>
              
               <Grid item xs={12} sm={6}>

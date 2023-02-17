@@ -123,9 +123,15 @@ const OrganizationInfo = () => {
               console.log(err, "orgErr");
               toast.error(err.message);
             });
+            
+        })
+        .catch((err) => {
+          console.log(err, "imgerr");
+          toast.error(err.message);
         });
     } catch (err) {
       throw err;
+      console.log(err,'err')
     }
   };
 
