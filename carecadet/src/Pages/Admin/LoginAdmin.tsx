@@ -36,7 +36,7 @@ export default function AdminLogin() {
   return (
     <Box sx={{ backgroundColor: "#EBF3FA", height: "95vh", mt: "-0.5vh" }}>
       <Grid container>
-        <Grid item md={7} sx={{ display: "flex", justifyContent: "center" }}>
+        <Grid item xs={12} md={7} sx={{ display: "flex", justifyContent: "center" }}>
           <Formik
             validationSchema={schema}
             initialValues={{
@@ -111,7 +111,7 @@ export default function AdminLogin() {
                 </Typography>
               </Grid>
 
-              <Grid>
+              <Grid >
                 <Typography
                   variant="h6"
                   sx={{
@@ -129,7 +129,7 @@ export default function AdminLogin() {
                   placeholder="email"
                   type="email"
                   sx={{
-                    width: "20vw",
+                    width: {xs:"default",md:"20vw"},
                     "&::placeholder": {
                       color: "#728AB7",
 
@@ -156,7 +156,7 @@ export default function AdminLogin() {
                   placeholder="password"
                   type="password"
                   sx={{
-                    width: "20vw",
+                    width: {xs:"default",md:"20vw"},
                     "&::placeholder": {
                       color: "#728AB7",
                       letterSpacing: "0.2rem",
@@ -165,7 +165,7 @@ export default function AdminLogin() {
                   }}
                 />
               </Grid>
-              <Grid item>
+              <Grid container item  justifyContent={{xs:"center",md:"left"}}>
                 <Buttoncomponent
                   type="submit"
                   size="large"
@@ -173,8 +173,9 @@ export default function AdminLogin() {
                   variant="contained"
                   sx={{
                     mt: 2,
+                    
                     backgroundColor: "secondary.dark",
-                    width: "20vw",
+                    width: {xs:"50vw",md:"20vw"},
                     color: "#fff",
                     "&:hover": {
                       color: "secondary.dark",
@@ -187,7 +188,7 @@ export default function AdminLogin() {
                   Login
                 </Buttoncomponent>
               </Grid>
-              <Typography sx={{ color: "#728AB7" }}>
+              <Typography sx={{ color: "#728AB7",mt:"0.5rem" }}textAlign={{xs:"center",md:"left"}}>
                 Don't have an account.<Link to="/admin/signup">Signup</Link>
               </Typography>
             </Form>
@@ -197,7 +198,7 @@ export default function AdminLogin() {
           item
           md={5}
           sx={{
-            display: "flex",
+            display:{xs:"none",md:"flex"},
             justifyContent: "center",
             alignItems: "center",
             mt: 8,

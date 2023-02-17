@@ -85,10 +85,11 @@ export default function AdminSignup() {
             <Paper
               variant="outlined"
               sx={{
-                bgcolor: "#E4ECF7",
-                boxShadow: 1,
-                borderRadius: 2,
-                padding: 5,
+                bgcolor: {xs:"transparent",md:"#E4ECF7"},
+                boxShadow: {xs:0,md:1},
+                border:{xs:"none",md:"Paper"},
+                borderRadius: {xs:0,md:2},
+                padding:{xs:0,md:5},
                 mt: 2,
                 minWidth: 300,
               }}
@@ -117,7 +118,7 @@ export default function AdminSignup() {
                 placeholder="firstName"
                 type="text"
                 sx={{
-                  width: "20vw",
+                  width: {xs:"default",md:"20vw"},
                   "&::placeholder": {
                     // color: "green",
 
@@ -141,7 +142,7 @@ export default function AdminSignup() {
                 placeholder="lastName"
                 type="text"
                 sx={{
-                  width: "20vw",
+                  width: {xs:"default",md:"20vw"},
                   "&::placeholder": {
                     // color: "green",
 
@@ -165,7 +166,7 @@ export default function AdminSignup() {
                 placeholder="email"
                 type="email"
                 sx={{
-                  width: "20vw",
+                  width: {xs:"default",md:"20vw"},
                   "&::placeholder": {
                     // color: "green",
 
@@ -189,7 +190,7 @@ export default function AdminSignup() {
                 placeholder="password"
                 type="password"
                 sx={{
-                  width: "20vw",
+                  width: {xs:"default",md:"20vw"},
                   "&::placeholder": {
                     // color: "green",
 
@@ -198,7 +199,7 @@ export default function AdminSignup() {
                   },
                 }}
               />
-              <Grid item>
+              <Grid container item justifyContent={{xs:"center",md:"left"}}>
                 <Buttoncomponent
                   type="submit"
                   size="large"
@@ -207,7 +208,7 @@ export default function AdminSignup() {
                   sx={{
                     mt: 2,
                     backgroundColor: "secondary.dark",
-                    width: "20vw",
+                    width:{xs:"50vw",md:"20vw"},
                     color: "#fff",
                     "&:hover": {
                       color: "secondary.dark",
@@ -220,8 +221,8 @@ export default function AdminSignup() {
                   Register
                 </Buttoncomponent>
               </Grid>
-              <Typography>
-                Already have an account?<Link to="/provider/login">Login</Link>
+              <Typography  textAlign={{xs:"center",md:"left"}}>
+                Already have an account?<Link to="/admin/adminlogin">Login</Link>
               </Typography>
             </Paper>
           </Grid>

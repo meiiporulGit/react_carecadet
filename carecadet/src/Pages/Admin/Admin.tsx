@@ -1,6 +1,19 @@
 import * as React from "react";
-import { useState,useEffect } from "react";
-import { Grid, Typography, Button, Paper, Box, Container,TextField,Autocomplete ,createFilterOptions} from "@mui/material";
+import { useState, useEffect } from "react";
+import {
+  Grid,
+  Typography,
+  Button,
+  Paper,
+  Box,
+  Container,
+  TextField,
+  Autocomplete,
+  Collapse,
+  createFilterOptions,
+  IconButton,
+  TablePagination,
+} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import axios from "axios";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
@@ -19,7 +32,12 @@ import { adminAxiosPrivate, axiosPrivate, baseURL } from "../../axios/axios";
 // import { parse } from "csv-parse/browser/esm/sync";
 import { orgid } from "../../Redux/ProviderRedux/orgSlice";
 import { toast } from "react-toastify";
-import { ContentPasteSearchOutlined } from "@mui/icons-material";
+import {
+  ContentPasteSearchOutlined,
+  Edit,
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+} from "@mui/icons-material";
 import FormTextField from "../../Components/Textfield";
 type cvsItem = {
   id: string;
@@ -28,24 +46,162 @@ type cvsItem = {
   GridAlignment: "left" | "right" | "center";
 };
 
+interface rowProps {
+  fac: any;
+  onButtonEdit: any;
+}
+function TableRowRes({ fac, onButtonEdit }: rowProps) {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  console.log(fac, "facilityRow");
+  const [open, setOpen] = useState<boolean>(false);
+  const [edit, setEdit] = useState<boolean>(false);
+  const [data, setData] = useState<any>(fac);
+
+  const editOnchange = (e: any) => {
+    console.log(e.target.name, e.target.value);
+    var editData = { ...data, [e.target.name]: e.target.value };
+    setData(editData);
+  };
+
+  const onButton = () => {
+    setEdit(false);
+    onButtonEdit(data);
+  };
+
+  return (
+    <Box>
+      <Paper sx={{backgroundColor:"primary.light",padding:"0.3rem"}}>
+        <Grid container>
+          <Grid item xs={10} >
+            <Box sx={{display:"flex",flexWrap:"nowrap",alignItems:"center"}}>
+            <IconButton
+           
+              aria-label="expand row"
+              size="small"
+              onClick={() => {
+                setOpen(!open)
+                setEdit(false)
+              }}
+            >
+              {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+            </IconButton>
+            <Typography>{fac.DiagnosisTestorServiceName}</Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={2}>
+            <Edit
+              onClick={() => {
+                setEdit(true);
+              }}
+            />
+          </Grid>
+        </Grid>
+      </Paper>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <Paper
+          sx={{
+            backgroundColor:"primary.light",
+            display: "flex",
+            flexDirection: "column",
+            mt: "0.2rem",
+            padding: "1rem",
+          }}
+        >
+          <Grid container>
+          {edit ?
+            <Grid item justifyContent={"flex-end"}> <Button onClick={onButton}>save</Button></Grid> : null}
+          </Grid>
+          <Grid  container item xs={12}>
+            <Grid item xs={6} >
+            <Typography sx={{ color: "blue" }}>
+              OrganizationID{" "}
+            </Typography>
+            </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+            <Typography sx={{ color: "blue" }}>
+            {fac.Organisationid}
+            </Typography>
+            </Grid>
+          </Grid>
+
+         
+          <Typography sx={{ display: "flex" }}>
+            {" "}
+            <Typography sx={{ color: "blue" }}>ServiceCode </Typography> :{" "}
+            {fac.ServiceCode}
+          </Typography>
+          <Typography sx={{ display: "flex" }}>
+            {" "}
+            <Typography sx={{ color: "blue" }}>FacilityNPI </Typography> :{" "}
+            {fac.FacilityNPI}
+          </Typography>
+          <Typography sx={{ display: "flex" }}>
+            {" "}
+            <Typography sx={{ color: "blue" }}>FacilityName </Typography> :{" "}
+            {fac.FacilityName}
+          </Typography>
+          <Typography sx={{ display: "flex" }}>
+            {" "}
+            <Typography sx={{ color: "blue" }}>
+              OrganisationPrices{" "}
+            </Typography>{" "}
+            :{" "}
+            {!edit ? (
+              fac.OrganisationPrices
+            ) : (
+              <TextField
+                value={data.OrganisationPrices}
+                name="OrganisationPrices"
+                onChange={(e) => editOnchange(e)}
+              />
+            )}
+          </Typography>
+          <Typography sx={{ display: "flex" }}>
+            {" "}
+            <Typography sx={{ color: "blue" }}>
+              FacilityPrices{" "}
+            </Typography> :{" "}
+            {!edit ? (
+              fac.FacilityPrices
+            ) : (
+              <TextField
+                value={data.FacilityPrices}
+                name="FacilityPrices"
+                onChange={(e) => editOnchange(e)}
+              />
+            )}
+          </Typography>
+        </Paper>
+      </Collapse>
+    </Box>
+  );
+}
+
 export default function Admin() {
   const [csvData, setCsvData] = useState<cvsItem[]>([]);
   const [filename, setFilename] = useState("");
   const [pageSize, setPagesize] = useState(5);
   const [columns, setColumns] = useState<any>([]);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
   const [unknownHeader, setUnknownHeader] = useState<boolean>(false);
-  const [textValue,setTextValue]=useState<any>({})
-  const [option,setOption]=useState<any>([])
+  const [textValue, setTextValue] = useState<any>({});
+  const [option, setOption] = useState<any>([]);
   const navigate = useNavigate();
 
-useEffect(()=>{
-  adminAxiosPrivate.get("/pathPricelist/nonStandard").then(res=>{
-    console.log(res.data.data,"res")
-    setOption(res.data.data)
-  })
-},[])
+  useEffect(() => {
+    adminAxiosPrivate.get("/pathPricelist/nonStandard").then((res) => {
+      console.log(res.data.data, "res");
+      setOption(res.data.data);
+    });
+  }, []);
 
-  
   const knownObj = [
     {
       headerName: "ServiceCode",
@@ -154,6 +310,20 @@ useEffect(()=>{
     },
   ];
 
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    page: number
+  ) => {
+    setPage(page);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   const onCellEditCommit = (cellData: any) => {
     const { id, field, value } = cellData;
     console.log(cellData);
@@ -202,16 +372,14 @@ useEffect(()=>{
     // console.log(headers, "headers");["sno","facilityPrices"]
     var result = [];
 
-
     for (var i = 1; i < lines.length - 1; i++) {
       var obj: any = {};
       var currentline = lines[i].split(",");
 
-    
       for (var j = 0; j < headers.length; j++) {
         obj[headers[j]] = currentline[j];
       }
-     
+
       result.push(obj);
     }
     setCsvData(result);
@@ -220,17 +388,16 @@ useEffect(()=>{
     const knownHeaders = validateHeaders.filter((element) =>
       headers.includes(element)
     );
-    const isMatched =
-      knownHeaders.length === validateHeaders.length 
-      // &&
-      // knownHeaders.every((value, index) => value === validateHeaders[index]);
+    const isMatched = knownHeaders.length === validateHeaders.length;
+    // &&
+    // knownHeaders.every((value, index) => value === validateHeaders[index]);
     // console.log(validateHeaders,"validateHeaders")
     if (validateHeaders.length === headers.length && isMatched) {
       setUnknownHeader(false);
       setColumns(columnsFormat);
       return JSON.stringify(result);
     } else {
-      setFilename("")
+      setFilename("");
       toast.error("format not match");
       return { message: "error" };
       // setUnknownHeader(true);
@@ -293,18 +460,17 @@ useEffect(()=>{
   const upload = (e: any) => {
     e.preventDefault();
     // alert(JSON.stringify(textValue._id))
-     let datacheck = {
+    let datacheck = {
       name: filename,
       csv: csvData,
-      id:textValue._id,
-      email:textValue.email
-    
+      id: textValue._id,
+      email: textValue.email,
     };
-    if(textValue._id===undefined||""||null){
-      toast.error("select the org")
-    }else{
+    if (textValue._id === undefined || "" || null) {
+      toast.error("select the org");
+    } else {
       // alert(JSON.stringify(textValue))
-       adminAxiosPrivate
+      adminAxiosPrivate
         .post(
           `/service/uploadAdminPricelist`,
           datacheck
@@ -323,7 +489,6 @@ useEffect(()=>{
           console.log(err, "cdfjdk");
           toast.error(err.message);
         });
-    
     }
     // if(output){
     //    let formData = new FormData();
@@ -331,7 +496,7 @@ useEffect(()=>{
     // let datacheck = {
     //   name: filename,
     //   csv: csvData,
-    
+
     // };
     // if (unknownHeader) {
     //   setUnknownHeader(false);
@@ -347,25 +512,25 @@ useEffect(()=>{
     //       toast.error(err.message);
     //     });
     // } else {
-                                    // axiosPrivate
-      //   .post(
-      //     "http://localhost:5200/uploadPricelist",
-      //     datacheck
-      //     // {
-      //     //   headers: {
-      //     //     "Content-Type": "multipart/form-data",
-      //     //   },
-      //     // }
-      //   )
-      //   .then((res) => {
-      //     setColumns([]);
-      //     setCsvData([]);
-      //     toast.success(res.data.message);
-      //   })
-      //   .catch((err) => {
-      //     console.log(err, "cdfjdk");
-      //     toast.error(err.message);
-      //   });
+    // axiosPrivate
+    //   .post(
+    //     "http://localhost:5200/uploadPricelist",
+    //     datacheck
+    //     // {
+    //     //   headers: {
+    //     //     "Content-Type": "multipart/form-data",
+    //     //   },
+    //     // }
+    //   )
+    //   .then((res) => {
+    //     setColumns([]);
+    //     setCsvData([]);
+    //     toast.success(res.data.message);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err, "cdfjdk");
+    //     toast.error(err.message);
+    //   });
     // }
   };
 
@@ -402,20 +567,40 @@ useEffect(()=>{
       link.click();
     });
   };
-  const onText=(value:any)=>{
-   console.log(value,"vlau")
-      setTextValue({_id:value._id,email:value.providerName}) 
-  }
-  const CustomPaper = (props:any) => {
-    return <Paper elevation={8} sx={{backgroundColor:"#DCF0FA",color:"black"}}{...props} />;
+  const onText = (value: any) => {
+    console.log(value, "vlau");
+    setTextValue({ _id: value._id, email: value.providerName });
+  };
+  const CustomPaper = (props: any) => {
+    return (
+      <Paper
+        elevation={8}
+        sx={{ backgroundColor: "#DCF0FA", color: "black" }}
+        {...props}
+      />
+    );
   };
 
   const OPTIONS_LIMIT = 10;
-const defaultFilterOptions = createFilterOptions();
+  const defaultFilterOptions = createFilterOptions();
 
-const filterOptions = (options:any, state:any) => {
-  return defaultFilterOptions(options, state).slice(0, OPTIONS_LIMIT);
-};
+  const filterOptions = (options: any, state: any) => {
+    return defaultFilterOptions(options, state).slice(0, OPTIONS_LIMIT);
+  };
+
+  const onButtonEdit = (e: any) => {
+  var editData=csvData.map((d)=>{
+    if(d.SNo===e.SNo){
+      return e
+    }else{
+      return d
+    }
+  })
+
+  console.log(editData,"checkEdit")
+  setCsvData(editData)
+    
+  };
 
   return (
     <>
@@ -428,7 +613,7 @@ const filterOptions = (options:any, state:any) => {
           height: "89vh",
 
           "&::-webkit-scrollbar": {
-            width: 20,
+            width: { xs: 0, md: 10 },
           },
           "&::-webkit-scrollbar-track": {
             backgroundColor: "grey",
@@ -442,18 +627,27 @@ const filterOptions = (options:any, state:any) => {
           // height: "88.8vh",
         }}
       >
-         <Autocomplete
-       
-        freeSolo
-        options={option}
-        loading={option.length === 0}
-        filterOptions = {filterOptions}
-        onChange={(e:any,value:any)=>{onText(value)}}
-        PaperComponent={CustomPaper}
-        getOptionLabel={(opt: any) => opt.organizationID+" / "+opt.providerID+" / "+(opt.filePath).split("/")[2] || opt}
-        renderInput={(params) => <TextField {...params}  label="OrgID-ProviderID-fileName" />}
-      />
-       {/* <TextField
+        <Autocomplete
+          freeSolo
+          options={option}
+          loading={option.length === 0}
+          filterOptions={filterOptions}
+          onChange={(e: any, value: any) => {
+            onText(value);
+          }}
+          PaperComponent={CustomPaper}
+          getOptionLabel={(opt: any) =>
+            opt.organizationID +
+              " / " +
+              opt.providerID +
+              " / " +
+              opt.filePath.split("/")[2] || opt
+          }
+          renderInput={(params) => (
+            <TextField {...params} label="OrgID-ProviderID-fileName" />
+          )}
+        />
+        {/* <TextField
        placeholder="OrgID"
        name="OrgID"
        onChange={(e)=>{onText(e)}}
@@ -521,7 +715,7 @@ const filterOptions = (options:any, state:any) => {
             sx={{
               mt: 2,
               backgroundColor: "secondary.dark",
-              width: "15vw",
+              // width: "15vw",
               color: "#fff",
               fontSize: "1rem",
               "&:hover": {
@@ -541,7 +735,7 @@ const filterOptions = (options:any, state:any) => {
           </Button>
 
           {/* service pricelist.csv in <i>src dir</i> */}
-          <Box>{filename}</Box>
+          <Box textAlign={"center"} mb={"1rem"}>{filename}</Box>
         </Box>
         {columns.length !== 0 ? (
           <>
@@ -563,8 +757,62 @@ const filterOptions = (options:any, state:any) => {
               //   }
               // }}
               // hideFooter
-              sx={{ mt: 1 }}
+              sx={{ mt: 1, display: { xs: "none", md: "block" } }}
             />
+
+            <Box
+              sx={{
+                
+                display: { xs: "flex", md: "none" },
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              { (rowsPerPage > 0
+              ? csvData.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                )
+              : csvData
+            ).map((fac: any, i: any) => (
+              <>
+                <TableRowRes
+                  key={i}
+                  fac={fac}
+                  onButtonEdit={(e: any) => onButtonEdit(e)}
+                />
+                
+                </>
+              ))}
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                count={csvData.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                labelDisplayedRows={({ from, to, count }) =>
+                  `${from}-${to} of ${count !== -1 ? count : ` ${to}}`}`
+                }
+                backIconButtonProps={{
+                  color: "secondary",
+                }}
+                nextIconButtonProps={{ color: "secondary" }}
+                showFirstButton={true}
+                showLastButton={true}
+                labelRowsPerPage={<Typography sx={{display:{xs:"none",md:"block"}}}>Rows:</Typography>}
+                sx={{
+                  ".MuiTablePagination-toolbar": {
+                    backgroundColor: "primary.light",
+                    // "rgba(100,100,100,0.5)"
+                  },
+                  ".MuiTablePagination-selectLabel, .MuiTablePagination-input":
+                    {
+                      fontWeight: "bold",
+                      color: "#173A5E",
+                    },
+                }}/>
+            </Box>
             <Box sx={{ display: "flex", gap: "1.5rem" }}>
               <Buttoncomponent
                 type="submit"

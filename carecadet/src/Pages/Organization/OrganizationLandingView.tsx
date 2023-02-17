@@ -18,13 +18,14 @@ import EmailIcon from "@mui/icons-material/Email";
 import ContactsIcon from "@mui/icons-material/Contacts";
 import DefaultUserPic from "../../Images/DefaultUserpic.jpg";
 import icon from "../../Images/icon.jpg";
-interface Props {
-  data: any;
-}
+// interface Props {
+//   data: any;
+// }
 
-const OrganizationLandingView = ({ data }: Props) => {
+const OrganizationLandingView = () => {
   const [popUp, setPopUp] = React.useState<boolean>(false);
   const userID = useAppSelector((state) => state.providerAuth.login.userID);
+  const data=useAppSelector(state=>state.providerOrganization.orgEditData)
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const typo = "1.2rem";
@@ -37,12 +38,12 @@ const OrganizationLandingView = ({ data }: Props) => {
         <Box>
           {/* <Box sx={{ display: "flex", width:"20%"}}> */}
           <Paper
-            elevation={5}
+            
             square
             sx={{
-              padding: "1.5rem",
-              backgroundColor: "primary.light",
-             
+              padding:{xs:0,md:"1.5rem"} ,
+              backgroundColor:{xs:"transparent",md:"primary.light"} ,
+              boxShadow:{xs:"none",md:5} 
               // borderRadius: "15px",
               //  m: "0em 1em 1em 0em",
               //  width:"19%"
@@ -171,7 +172,7 @@ const OrganizationLandingView = ({ data }: Props) => {
                   fullWidth={false}
                   variant="contained"
                   onClick={() => {
-                    dispatch(organizationEdit({ ...data[0] }));
+                    // dispatch(organizationEdit({ ...data[0] }));
                     dispatch(organizationImage(data[0].orgImg));
                     // dispatch(editButton())
                     navigate("/provider/editOrg");

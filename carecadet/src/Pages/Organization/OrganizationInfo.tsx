@@ -133,16 +133,17 @@ const OrganizationInfo = () => {
     organizationInformation: Yup.object().shape({
       organizationName: Yup.string().required("Organization Name is required"),
       streetAdd1: Yup.string().required("Address is required"),
-      city: Yup.string().required("city is required"),
-      state: Yup.string().required("state is required"),
-      zipCode: Yup.string().required("zip code is required"),
+      city: Yup.string().required("city is required").matches(/[a-zA-Z]/, 'City can only contain alphabets.'),
+      state: Yup.string().required("state is required").matches(/[a-zA-Z]/, 'State can only contain alphabets.'),
+      zipCode: Yup.string().required("zip code is required").matches(/^[A-Za-z0-9]+$/,"Zip Code can only contain alphabets and number"),
       Email: Yup.string().required("Email is required").email("invalid email"),
+      phone:Yup.string().required("Phone is required").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/,"only numbers").test("len"," Invalid Contact no",(val: any) => val && val.length === 10),
     }),
     contactPersonInformation: Yup.object().shape({
-      firstName: Yup.string().required("First Name is a required field"),
-      lastName: Yup.string().required("Last Name is required"),
-      role: Yup.string().required("Role is a required field"),
-      contactno: Yup.string().required("Contact is a required field"),
+      firstName: Yup.string().required("First Name is a required field").matches(/[a-zA-Z]/, 'First Name can only contain alphabets.'),
+      lastName: Yup.string().required("Last Name is required").matches(/[a-zA-Z]/, 'Last Name can only contain alphabets.'),
+      role: Yup.string().required("Role is a required field").matches(/[A-Za-z0-9]+$/,"Role can only contain alphabets and number"),
+      contactno: Yup.string().required("Contact is a required field").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/,"only numbers") .test("len","Invalid Contact no", (val: any) => val && val.length === 10),
       email: Yup.string()
         .required("Email is a required field")
         .email("invalid email"),
@@ -152,55 +153,63 @@ const OrganizationInfo = () => {
   const organizationData = [
     {
       xs: 12,
+      md: 12,
       label: "Organization Name",
       name: "organizationInformation.organizationName",
       placeholder: "Organization Name",
       type: "text",
     },
     {
-      xs: 6,
+      xs: 12,
+      md: 6,
       label: "Street Address1",
       name: "organizationInformation.streetAdd1",
       placeholder: "Street Address1",
       type: "text",
     },
     {
-      xs: 6,
+      xs: 12,
+      md: 6,
       label: "Street Address2",
       name: "organizationInformation.streetAdd2",
       placeholder: "Street Address2",
       type: "text",
     },
     {
-      xs: 4,
+      xs: 12,
+      md: 4,
       label: "City",
       name: "organizationInformation.city",
       placeholder: "City",
       type: "text",
     },
     {
-      xs: 4,
+      xs: 12,
+      md: 4,
       label: "State",
       name: "organizationInformation.state",
       placeholder: "State",
       type: "text",
     },
     {
-      xs: 4,
+      xs: 12,
+      md: 4,
       label: "Zip Code",
       name: "organizationInformation.zipCode",
       placeholder: "Zip Code",
       type: "text",
     },
     {
-      xs: 6,
+      xs: 12,
+      md: 6,
       label: "Phone",
       name: "organizationInformation.phone",
       placeholder: "Phone Number",
       type: "text",
     },
     {
-      xs: 6,
+      xs: 12,
+      md: 6,
       label: "Email",
       name: "organizationInformation.Email",
       placeholder: "Email",
@@ -209,14 +218,16 @@ const OrganizationInfo = () => {
   ];
   const contactPersonData = [
     {
-      xs: 6,
+      xs: 12,
+      md: 6,
       label: "First Name",
       name: "contactPersonInformation.firstName",
       placeholder: "First Name",
       type: "text",
     },
     {
-      xs: 6,
+      xs: 12,
+      md: 6,
       label: "Last Name",
       name: "contactPersonInformation.lastName",
       placeholder: "Last Name",
@@ -224,14 +235,16 @@ const OrganizationInfo = () => {
     },
 
     {
-      xs: 6,
+      xs: 12,
+      md: 6,
       label: "Role",
       name: "contactPersonInformation.role",
       placeholder: "Role",
       type: "text",
     },
     {
-      xs: 6,
+      xs: 12,
+      md: 6,
       label: "Contact",
       name: "contactPersonInformation.contactno",
       placeholder: "Contact Number",
@@ -239,6 +252,7 @@ const OrganizationInfo = () => {
     },
     {
       xs: 12,
+      md: 12,
       label: "Email",
       name: "contactPersonInformation.email",
       placeholder: "Email",
@@ -301,7 +315,7 @@ const OrganizationInfo = () => {
               </Grid>
 
               {organizationData.map((org, i) => (
-                <Grid item xs={org.xs} key={i}>
+                <Grid item xs={org.xs} md={org.md} key={i}>
                   <Typography
                     // variant="h6"
                     sx={{
@@ -342,7 +356,7 @@ const OrganizationInfo = () => {
                 </Typography>
               </Grid>
               {contactPersonData.map((person, i) => (
-                <Grid item xs={person.xs} key={i}>
+                <Grid item xs={person.xs} md={person.md} key={i}>
                   <Typography
                     // variant="h6"
                     sx={{

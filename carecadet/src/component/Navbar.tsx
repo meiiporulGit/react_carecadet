@@ -204,6 +204,7 @@ import {
 import { patientLogoutButton } from "../Redux/PatientRedux/patientAuth";
 import { refrestState } from "../Redux/ProviderRedux/orgSlice";
 import { adminLogoutButton } from "../Redux/Admin/adminLogin";
+import { LogoutTwoTone } from "@mui/icons-material";
 
 const Navbar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -216,7 +217,7 @@ const Navbar = () => {
   const adminLogout = useAppSelector(
     (state) => state.adminAuth.adminLogoutButton
   );
-  const userID = useAppSelector((state) => state.providerAuth.login.userID);
+  const userID = useAppSelector((state) => state.providerAuth.login);
   const adminUserID = useAppSelector(
     (state) =>
       state.adminAuth.adminLogin.firstName +
@@ -295,9 +296,7 @@ const Navbar = () => {
         zIndex: 1,
       }}
     >
-      <Container
-        maxWidth="xl"
-      >
+      <Container maxWidth="xl">
         <Toolbar
           disableGutters
           sx={{
@@ -358,6 +357,136 @@ const Navbar = () => {
                   </MenuItem>
                 </Link>
               ))}
+             
+              {providerLogout ? (
+                <Box sx={{ display: "flex", flexDirection: "column" }}>
+                   <Divider />
+                  <Box
+                  
+                    sx={{
+                     
+
+                      height: "7vh",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      flexWrap: "nowrap",
+                      gap: "0.5rem",
+
+                      cursor: "pointer",
+                     
+                    }}
+                  >
+                    <AccountCircleOutlinedIcon fontSize="large" />
+                    <Typography textAlign={"center"}>
+                      {userID.firstName + " " + userID.lastName}
+                    </Typography>
+                  </Box>
+                  <Divider />
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "6vh",
+                    
+
+                      flexWrap: "nowrap",
+                      gap: "0.5rem",
+                      color:"blue",
+
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      // handleClose();
+                    handleCloseNavMenu()
+                      onLogout("provider");
+                    }}
+                  >
+                   <LogoutTwoTone /> Logout 
+                  </Box>
+                </Box>
+              ) : null}
+              {patientLogout ? (
+                <Box>
+                  {/* <Box sx={{width:"7vw",display:"flex",flexWrap:"nowrap",gap:"0.5rem",margin:"0 0 0 1.5rem"}}>
+              <AccountCircleOutlinedIcon fontSize="large"/>
+              <Typography sx={{margin:"0.2rem 0 0 0"}}>{userID}</Typography>
+              </Box> */}
+                  <Buttoncomponent
+                    type="button"
+                    size="small"
+                    fullWidth={false}
+                    variant="contained"
+                    onClick={() => {
+                      onLogout("patient");
+                    }}
+                    sx={{
+                      backgroundColor: "secondary.dark",
+                      width: "7vw",
+                      color: "#fff",
+                      ml: "15px",
+                      "&:hover": {
+                        color: "secondary.dark",
+                        border: "1px solid blue",
+                        // letterSpacing: "0.2rem",
+                        // fontSize: "1rem",
+                      },
+                    }}
+                  >
+                    Logout
+                  </Buttoncomponent>
+                </Box>
+              ) : null}
+              {adminLogout ? (
+                <Box sx={{ display: "flex",flexDirection: "column" }}>
+                   <Divider />
+                 
+                  <Box
+                    sx={{
+                      height: "7vh",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      flexWrap: "nowrap",
+                      gap: "0.5rem",
+
+                      cursor: "pointer",
+                    
+                    }}
+                  
+                  >
+                 
+                    <AccountCircleOutlinedIcon fontSize="large" />
+                    <Typography>{adminUserID}</Typography>
+                  </Box>
+                  <Divider/>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "6vh",
+                    
+
+                      flexWrap: "nowrap",
+                      gap: "0.5rem",
+                      color:"blue",
+
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      // handleClose();
+                    handleCloseNavMenu()
+                      onLogout("admin");
+                    }}
+                  >
+                   <LogoutTwoTone /> Logout 
+                  </Box>
+                
+                </Box>
+              ) : null}
             </Menu>
           </Box>
           <Typography
@@ -388,7 +517,7 @@ const Navbar = () => {
                 display: "flex",
                 justifyContent: "space-around",
                 alignItems: "center",
-                width: "60vw",
+                width: "80vw",
               }}
             >
               {navRoutes.map((page) => (
@@ -451,7 +580,7 @@ const Navbar = () => {
                 <Box
                   onClick={handleClick}
                   sx={{
-                    // width: "10vw",
+                    width: "10vw",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -466,7 +595,9 @@ const Navbar = () => {
                 >
                   <Divider orientation="vertical" flexItem />
                   <AccountCircleOutlinedIcon fontSize="large" />
-                  <Typography textAlign={"center"}>{userID}</Typography>
+                  <Typography textAlign={"center"}>
+                    {userID.firstName + " " + userID.lastName}
+                  </Typography>
                 </Box>
                 <Menu
                   id="basic-menu"

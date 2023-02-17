@@ -15,12 +15,69 @@ import {
   TableRow,
   Typography,
   Grid,
+  Paper,
+  Collapse,
 } from "@mui/material";
 import { toast } from "react-toastify";
 import { ViewInfo } from "../../Redux/ProviderRedux/serviceViewSlice";
 import { useNavigate } from "react-router-dom";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 import { dataSearch } from "../../Redux/ProviderRedux/HomeSlice";
+import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
+
+interface rowProps {
+  fac: any;
+}
+function TableRowRes({ fac }: rowProps) {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  console.log(fac, "facilityRow");
+  const [open, setOpen] = useState<boolean>(false);
+
+  const viewOnClick = (path: any) => {
+    if (path.status === "Pending") {
+      toast.error("not verified");
+    } else if (path.status === "published") {
+      toast.error("already published");
+    } else {
+      dispatch(ViewInfo(path));
+      navigate("/provider/serviceView/publishservice");
+    }
+  };
+  return (
+    
+      <Paper elevation={5}>
+        {/* <IconButton
+          aria-label="expand row"
+          size="small"
+          onClick={() => setOpen(!open)}
+        >
+          {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+        </IconButton> */}
+        
+         
+          <Typography  textAlign={"justify"} sx={{
+              backgroundColor: "#E4ECF7",
+              // color: "blue",
+              padding:"0.3rem",
+              border: fac.status === "verified" ? "2px solid  orange" : "1px solid  green",
+              "&:hover": {
+                color: "secondary.dark",
+                border: "1px solid blue",
+              },
+            }}
+            onClick={() => {
+              viewOnClick(fac);
+              // dispatch(facilityInfo(facility));
+              // dispatch(editButton())
+              // navigate("/provider/facility/update");
+            }} >{fac.filePath.split("/")[2]} </Typography>
+        
+       
+      </Paper>
+    
+  );
+}
 
 const ServiceView = () => {
   const [pathData, setPathData] = useState<any>([]);
@@ -46,8 +103,10 @@ const ServiceView = () => {
         `/pathPricelist/getPathByProvider?providerID=${providerID}&OrganizationID=${orgID[0].organizationID}`
       )
       .then((res) => {
-        var resData=res.data.data
-        const filterData=resData.filter((d:any)=>d.fileFormat!=="Non-Standard")
+        var resData = res.data.data;
+        const filterData = resData.filter(
+          (d: any) => d.fileFormat !== "Non-Standard"
+        );
         setPathData(filterData);
         console.log(res.data);
       });
@@ -55,16 +114,16 @@ const ServiceView = () => {
   const viewOnClick = (path: any) => {
     if (path.status === "Pending") {
       toast.error("not verified");
-    }else if(path.status === "published"){
+    } else if (path.status === "published") {
       toast.error("already published");
     } else {
       dispatch(ViewInfo(path));
       navigate("/provider/serviceView/publishservice");
     }
   };
-  const onPublish=()=>{
-    navigate("/provider/serviceView/publishcsv")
-  }
+  const onPublish = () => {
+    navigate("/provider/serviceView/publishcsv");
+  };
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     page: number
@@ -79,7 +138,7 @@ const ServiceView = () => {
     setPage(0);
   };
   return (
-    <Box >
+    <Box>
       {/* <Grid container item justifyContent={"flex-end"} mb={"1rem"}>
         <Buttoncomponent type="button"  variant="contained"
         size="large"
@@ -113,10 +172,10 @@ const ServiceView = () => {
         </Paper>
       ))} */}
       <Grid container item sx={{ justifyContent: "center" }}>
-        <Table sx={{ maxWidth: "100%" }}>
+        <Table sx={{ maxWidth: "100%" ,display:{xs:"none",md:"table"}}}>
           <TableHead sx={{ backgroundColor: "#4D77FF" }}>
             <TableRow>
-              <TableCell
+              {/* <TableCell
                 sx={{
                   fontSize: "1rem",
                   fontWeight: "bold",
@@ -124,7 +183,7 @@ const ServiceView = () => {
                 }}
               >
                 providerID
-              </TableCell>
+              </TableCell> */}
               <TableCell
                 sx={{
                   fontSize: "1rem",
@@ -153,11 +212,16 @@ const ServiceView = () => {
                   page * rowsPerPage + rowsPerPage
                 )
               : pathData
-            ).map((dataPath: any,i:any) => (
-              <TableRow key={i} sx={{backgroundColor: (i+1)%2===0?"#B4C8FC":"white"}}>
-                <TableCell sx={{ fontSize: "0.8rem", textAlign: "center" }}>
+            ).map((dataPath: any, i: any) => (
+              <TableRow
+                key={i}
+                sx={{
+                  backgroundColor: (i + 1) % 2 === 0 ? "#B4C8FC" : "white",
+                }}
+              >
+                {/* <TableCell sx={{ fontSize: "0.8rem", textAlign: "center" }}>
                   {dataPath.providerID}
-                </TableCell>
+                </TableCell> */}
                 <TableCell sx={{ fontSize: "0.8rem", textAlign: "center" }}>
                   {dataPath.filePath.split("/")[2]}
                 </TableCell>
@@ -165,14 +229,21 @@ const ServiceView = () => {
                 <TableCell sx={{ textAlign: "center" }}>
                   <Buttoncomponent
                     type="button"
-                    disable={dataPath.status === "verified" ? false : dataPath.status === "published"?false:true}
+                    disable={
+                      dataPath.status === "verified"
+                        ? false
+                        : dataPath.status === "published"
+                        ? false
+                        : true
+                    }
                     variant="contained"
                     size="large"
                     sx={{
-                      backgroundColor:"#E4ECF7",
-                      border:"1px solid blue",
+                      backgroundColor: "#E4ECF7",
+                      border: "1px solid blue",
                       width: "12vw",
-                      color: dataPath.status === "verified" ? "orange" : "green",
+                      color:
+                        dataPath.status === "verified" ? "orange" : "green",
                       "&:hover": {
                         color: "secondary.dark",
                         border: "1px solid blue",
@@ -225,6 +296,17 @@ const ServiceView = () => {
             </TableRow>
           </TableFooter>
         </Table>
+        <Box
+          sx={{
+            display: { xs: "flex", md: "none" },
+            flexDirection: "column",
+            gap: "1rem",
+          }}
+        >
+          {pathData.map((fac: any, i: any) => (
+            <TableRowRes key={i} fac={fac} />
+          ))}
+        </Box>
       </Grid>
     </Box>
   );

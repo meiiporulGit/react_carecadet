@@ -41,6 +41,7 @@ import PublishCsv from "./Pages/serviceView/PublishCsv";
 import Admin from "./Pages/Admin/Admin";
 import AdminLogin from "./Pages/Admin/LoginAdmin";
 import AdminSignup from "./Pages/Admin/AdminSignup";
+import OrganizationLandingView from "./Pages/Organization/OrganizationLandingView";
 
 interface Route {
   key: string;
@@ -230,6 +231,13 @@ export const providerRoutespages: Array<Route> = [
     path: "/provider/editOrg",
     enabled: true,
     component: EditOrganization,
+  },
+  {
+    key: "viewOrg",
+    title: "view",
+    path: "/provider/viewOrg",
+    enabled: true,
+    component: OrganizationLandingView,
   },
   {
     key: "serviceView",
