@@ -52,7 +52,7 @@ const OrganizationLandingView = () => {
           >
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               {/* <Grid item xs={3} sx={{ display: "flex", flexDirection: "column"}}> */}
-              <Typography
+              {/* <Typography
                 noWrap
                 sx={{
                   padding: "1rem 1rem 1rem 2rem",
@@ -62,6 +62,14 @@ const OrganizationLandingView = () => {
                 }}
               >
                 Organization Detail
+              </Typography> */}
+               <Typography sx={{  m: "0 0 0 0.5rem",
+                    fontWeight: "bold",
+                    fontSize: "1.2rem",
+                    textAlign:"center"
+                    // letterSpacing: "0.2rem" 
+                  }}>
+                {data[0].organizationName}
               </Typography>
               <Box>
                 <img
@@ -74,7 +82,7 @@ const OrganizationLandingView = () => {
                     width: "157px",
                     height: "157px",
                     position: "relative",
-                    left: "25%",
+                    left: "21%",
                     border: "2px solid white",
                     borderRadius: "50%",
                   }}
@@ -93,9 +101,9 @@ const OrganizationLandingView = () => {
                   Location
                 </Typography>
               </Box>
-              <Typography sx={{ ml: "2.5rem" }}>
+              {/* <Typography sx={{ ml: "2.5rem" }}>
                 {data[0].organizationName}
-              </Typography>
+              </Typography> */}
               <Typography sx={{ ml: "2.5rem" }}>
                 <Box sx={{ display: "flex" }}>
                   {data[0].address.addressLine1}
