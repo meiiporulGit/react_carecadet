@@ -290,10 +290,9 @@ const Navbar = () => {
       sx={{
         width: "100%",
         borderRadius: "1rem",
-        backgroundColor: "#AAC9DD",
+        backgroundColor: "#A3C0D9",
         border: "1px solid #728AB7",
-        position: "fixed",
-        zIndex: 1,
+       
       }}
     >
       <Container maxWidth="xl">
@@ -586,10 +585,10 @@ const Navbar = () => {
                     alignItems: "center",
                     flexWrap: "nowrap",
                     gap: "0.5rem",
-
+                    color: "blue",
                     cursor: "pointer",
                     ":hover": {
-                      color: "blue",
+                      color: "white",
                     },
                   }}
                 >
@@ -693,10 +692,11 @@ const Navbar = () => {
                     alignItems: "center",
                     flexWrap: "nowrap",
                     gap: "0.5rem",
+                    color:"blue",
 
                     cursor: "pointer",
                     ":hover": {
-                      color: "blue",
+                      color: "white",
                     },
                   }}
                   onClick={handleClick}

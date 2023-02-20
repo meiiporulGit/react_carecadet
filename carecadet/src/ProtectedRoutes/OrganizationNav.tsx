@@ -34,7 +34,7 @@ const OrganizationNav = () => {
   const userName = useAppSelector(state => state.providerAuth.login.userName)
 
   return (
-    <Box >
+    <Box sx={{padding:"1rem 0 0 0"}}>
       <Box sx={{  display: { xs: "flex", md: "none" } }}>
         <IconButton
           size="large"
