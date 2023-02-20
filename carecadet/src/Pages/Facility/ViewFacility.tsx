@@ -196,6 +196,8 @@ export default function ViewFacility() {
                   fontSize: "1rem",
                   fontWeight: "bold",
                   textAlign: "center",
+                  
+                  width:{md:"250px"}
                 }}
               >
                 Facility Name
@@ -205,6 +207,7 @@ export default function ViewFacility() {
                   fontSize: "1rem",
                   fontWeight: "bold",
                   textAlign: "center",
+                  width:{md:"200px"}
                 }}
               >
                 Facility Type
@@ -214,6 +217,7 @@ export default function ViewFacility() {
                   fontSize: "1rem",
                   fontWeight: "bold",
                   textAlign: "center",
+                  width:{md:"250px"}
                 }}
               >
                 Address
@@ -223,6 +227,7 @@ export default function ViewFacility() {
                   fontSize: "1rem",
                   fontWeight: "bold",
                   textAlign: "center",
+                  
                 }}
               >
                 Contact
@@ -241,6 +246,7 @@ export default function ViewFacility() {
                   fontSize: "1rem",
                   fontWeight: "bold",
                   textAlign: "center",
+                  width:{md:"250px"}
                 }}
               >
                 Actions
@@ -284,7 +290,7 @@ export default function ViewFacility() {
                 <TableCell sx={{ fontSize: "0.8rem", textAlign: "center" }}>
                   {facility.email}
                 </TableCell>
-                <TableCell sx={{ textAlign: "center", display: "flex" }}>
+                <TableCell sx={{  display: "flex" ,marginLeft:"1rem"}}>
                   <IconButton
                     style={Pointer}
                     onClick={() => {

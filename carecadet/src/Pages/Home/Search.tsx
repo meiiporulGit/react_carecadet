@@ -218,7 +218,7 @@ export default function ViewFacility() {
                 <FormTextField
                   container={TextField}
                   name="Location"
-                  placeholder="location"
+                  placeholder="Location"
                   type="text"
                   fullWidth={false}
                   sx={{
