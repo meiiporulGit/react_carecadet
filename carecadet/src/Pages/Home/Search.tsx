@@ -395,13 +395,13 @@ export default function ViewFacility() {
                       <Typography
                         sx={{ fontSize: "1rem", color: "black", mb: "20px" }}
                       >
-                        {dsearch.FacilityDetails.addressLine1 +
+                        {dsearch.FacilityDetails?.addressLine1 +
                           "," +
-                          dsearch.FacilityDetails.city +
+                          dsearch.FacilityDetails?.city +
                           "," +
-                          dsearch.FacilityDetails.state +
+                          dsearch.FacilityDetails?.state +
                           " - " +
-                          dsearch.FacilityDetails.zipCode}
+                          dsearch.FacilityDetails?.zipCode}
                       </Typography>
                       <Typography
                         sx={{ fontSize: "1rem", color: "black", mb: "10px" }}
