@@ -320,7 +320,7 @@ export default function ServiceViewPage() {
               "& .super-app-theme--header": {
                 backgroundColor: "#4D77FF",
               },
-              height: 400,
+              // height: 400,
               width: 1,
               "& .odd": {
                 bgcolor: "white",
