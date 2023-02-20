@@ -237,7 +237,7 @@ filterOptions = {filterOptions}
 
               </Grid>
 
-              <Grid item xs={12} >
+              {/* <Grid item xs={12} >
               <Typography
                 sx={{
                   fontSize: "1rem",
@@ -266,10 +266,10 @@ filterOptions = {filterOptions}
                   },
                 }}
               />
-            </Grid>
+            </Grid> */}
 
            
-            <Grid item xs={12} >
+            {/* <Grid item xs={12} >
               <Typography
                 sx={{
                   fontSize: "1rem",
@@ -297,7 +297,7 @@ filterOptions = {filterOptions}
                   },
                 }}
               />
-            </Grid>
+            </Grid> */}
 
             {/* <Grid item xs={12} >
               <Typography
@@ -328,7 +328,7 @@ filterOptions = {filterOptions}
                 }}
               />
             </Grid> */}
-
+{/* 
             <Grid item xs={12} >
               <Typography
                 sx={{
@@ -358,7 +358,7 @@ filterOptions = {filterOptions}
                   },
                 }}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} >
               <Typography

@@ -99,15 +99,17 @@ const OrganizationLandingView = () => {
               <Typography sx={{ ml: "2.5rem" }}>
                 <Box sx={{ display: "flex" }}>
                   {data[0].address.addressLine1}
-                  <Box sx={{ ml: "0.5rem" }}>
+                  
+                </Box>
+                <Box >
                     {data[0].address.addressLine2}
                   </Box>
+                <Box sx={{ display: "flex" }}>
+                  {data[0].address.city} 
+                  <Box sx={{ ml: "0.5rem" }}>{data[0].address.state}</Box>                
                 </Box>
-                <Box sx={{ display: "flex", mb: "0.5rem" }}>
-                  {data[0].address.city}
-                  <Box sx={{ ml: "0.5rem" }}>{data[0].address.state}</Box>
-                  <Box sx={{ ml: "0.5rem" }}>{data[0].address.zipCode}</Box>
-                </Box>
+                
+                  <Box sx={{  mb: "0.5rem" }}>{data[0].address.zipCode}</Box>
               </Typography>
               <Box sx={{ display: "flex", m: "0.3rem" }}>
                 <PhoneIcon />
