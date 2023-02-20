@@ -121,20 +121,36 @@ export default function CreateFacility() {
   const options = useAppSelector((state) => state.providerFacility.facilityTypedata)
   console.log(options, 'options')
   const validationSchema = Yup.object().shape({
-    facilityNPI: Yup.string().required("Required"),
-    facilityName: Yup.string().required("Required"),
-    facilityType: Yup.string().required("Required"),
+    facilityNPI: Yup.string().required("FacilityNPI is required"),
+    facilityName: Yup.string().required("Facility Name is required"),
+    facilityType: Yup.string().required("Facility Type is required"),
     //facilityTypeOthers: Yup.string().required("Required"),
-    addressLine1: Yup.string().required("Required"),
+    addressLine1: Yup.string().required("Street Address1 is required"),
     // addressLine2: Yup.string().required("Required field"),
-    city: Yup.string().nullable().required("Required"),
+    city: Yup.string().nullable().required("City is required").matches(/[a-zA-Z]/, 'City name should be alpha-characters'),
     zipCode: Yup.string()
-      .required("Required"),
-    // .test("len", (val: any) => val && val.length === 5),
-    state: Yup.string().nullable().required("Required"),
-    contact: Yup.string().required(" Required"),
-    email: Yup.string().email().required("Required"),
+      .required("Zipcode is required")
+     .test("len", (val: any) => val && val.length === 5||val.length === 9)
+     .matches(/^[A-Za-z0-9]+$/,"Zipcode should be alpha-numeric characters"),
+    state: Yup.string().nullable().required("State is required").matches(/[a-zA-Z]/, 'State name should be alpha-characters'),
+    contact: Yup.string().required("Phone is required").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/,"only numbers").test("len"," Invalid Contact no",(val: any) => val && val.length === 10),
+    email: Yup.string().email().required("Email is required")
   });
+  // const validationSchema = Yup.object().shape({
+  //   facilityNPI: Yup.string().required("Required"),
+  //   facilityName: Yup.string().required("Required"),
+  //   facilityType: Yup.string().required("Required"),
+  //   //facilityTypeOthers: Yup.string().required("Required"),
+  //   addressLine1: Yup.string().required("Required"),
+  //   // addressLine2: Yup.string().required("Required field"),
+  //   city: Yup.string().nullable().required("Required"),
+  //   zipCode: Yup.string()
+  //     .required("Required"),
+  //   // .test("len", (val: any) => val && val.length === 5),
+  //   state: Yup.string().nullable().required("Required"),
+  //   contact: Yup.string().required(" Required"),
+  //   email: Yup.string().email().required("Required"),
+  // });
 
   const onSubmit = (values: forminitialValues, actions: any) => {
     const facilitydata = {
