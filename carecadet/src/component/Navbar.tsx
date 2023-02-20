@@ -190,7 +190,10 @@ import { toast } from "react-toastify";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import { navRoutes } from "../routes";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate} from "react-router-dom";
+
+
+
 import { Buttoncomponent } from "../Components/Buttoncomp";
 import { useAppDispatch, useAppSelector } from "../Redux/Hook";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
@@ -205,6 +208,7 @@ import { patientLogoutButton } from "../Redux/PatientRedux/patientAuth";
 import { refrestState } from "../Redux/ProviderRedux/orgSlice";
 import { adminLogoutButton } from "../Redux/Admin/adminLogin";
 import { LogoutTwoTone } from "@mui/icons-material";
+import Providerhomepage from "../Pages/Home/providerhomepage"
 
 const Navbar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -312,9 +316,11 @@ const Navbar = () => {
               display: { xs: "none", md: "flex" },
             }}
           >
+            <Link sx={{textDecoration:"none"}} component ={NavLink} to = "/provider/home">
             <Box sx={{ display: "flex", fontWeight: "bold" }}>
               Care<Box sx={{ color: "#4D77FF" }}>Cadet</Box>
             </Box>
+            </Link>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton

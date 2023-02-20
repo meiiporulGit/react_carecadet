@@ -119,7 +119,7 @@ export default function Loginothers() {
                 <FormTextField
                   container={TextField}
                   name="email"
-                  placeholder="email"
+                  placeholder="Email"
                   type="email"
                   sx={{
                     width: {md:"20vw"},
@@ -146,7 +146,7 @@ export default function Loginothers() {
                 <FormTextField
                   container={TextField}
                   name="password"
-                  placeholder="password"
+                  placeholder="Password"
                   type="password"
                   sx={{
                     width: {md:"20vw"},
