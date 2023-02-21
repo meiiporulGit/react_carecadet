@@ -139,9 +139,9 @@ const OrganizationInfo = () => {
     organizationInformation: Yup.object().shape({
       organizationName: Yup.string().required("Organization Name is required"),
       streetAdd1: Yup.string().required("Address is required"),
-      city: Yup.string().required("city is required").matches(/[a-zA-Z]/, 'City can only contain alphabets.'),
-      state: Yup.string().required("state is required").matches(/[a-zA-Z]/, 'State can only contain alphabets.'),
-      zipCode: Yup.string().required("zip code is required").matches(/^[A-Za-z0-9]+$/,"Zip Code can only contain alphabets and number"),
+      city: Yup.string().required("City is required").matches(/[a-zA-Z]/, 'City can only contain alphabets.'),
+      state: Yup.string().required("State is required").matches(/[a-zA-Z]/, 'State can only contain alphabets.'),
+      zipCode: Yup.string().required("Zip Code is required").matches(/^[A-Za-z0-9]+$/,"Zip Code can only contain alphabets and number"),
       Email: Yup.string().required("Email is required").email("invalid email"),
       phone:Yup.string().required("Phone is required").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/,"only numbers").test("len"," Invalid Contact no",(val: any) => val && val.length === 10),
     }),
