@@ -120,7 +120,7 @@ export default function Login() {
                 <FormTextField
                   container={TextField}
                   name="email"
-                  placeholder="email"
+                  placeholder="Email"
                   type="email"
                   autoComplete="new-country-area"
                   sx={{
@@ -148,7 +148,7 @@ export default function Login() {
                 <FormTextField
                   container={TextField}
                   name="password"
-                  placeholder="password"
+                  placeholder="Password"
                   type="password"
                   autoComplete="new-country-area"
                   sx={{

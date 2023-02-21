@@ -114,7 +114,7 @@ export default function SignupPatient() {
               <Formtext
                 name="firstName"
                 container={TextField}
-                placeholder="firstName"
+                placeholder="FirstName"
                 type="text"
                 sx={{
                   width: "20vw",
@@ -138,7 +138,7 @@ export default function SignupPatient() {
               <Formtext
                 name="lastName"
                 container={TextField}
-                placeholder="lastName"
+                placeholder="LastName"
                 type="text"
                 sx={{
                   width: "20vw",
@@ -162,7 +162,7 @@ export default function SignupPatient() {
               <Formtext
                 name="email"
                 container={TextField}
-                placeholder="email"
+                placeholder="Email"
                 type="email"
                 sx={{
                   width: "20vw",
@@ -186,7 +186,7 @@ export default function SignupPatient() {
               <Formtext
                 name="password"
                 container={TextField}
-                placeholder="password"
+                placeholder="Password"
                 type="password"
                 sx={{
                   width: "20vw",

@@ -114,7 +114,7 @@ export default function Signup() {
               <Formtext
                 name="firstName"
                 container={TextField}
-                placeholder="firstName"
+                placeholder="FirstName"
                 type="text"
                 autoComplete="new-country-area"
                 sx={{
@@ -139,7 +139,7 @@ export default function Signup() {
               <Formtext
                 name="lastName"
                 container={TextField}
-                placeholder="lastName"
+                placeholder="LastName"
                 type="text"
                 autoComplete="new-country-area"
                 sx={{
@@ -164,7 +164,7 @@ export default function Signup() {
               <Formtext
                 name="email"
                 container={TextField}
-                placeholder="email"
+                placeholder="Email"
                 type="email"
                 autoComplete="new-country-area"
                 sx={{
@@ -189,7 +189,7 @@ export default function Signup() {
               <Formtext
                 name="password"
                 container={TextField}
-                placeholder="password"
+                placeholder="Password"
                 type="password"
                 autoComplete="new-country-area"
                 sx={{
