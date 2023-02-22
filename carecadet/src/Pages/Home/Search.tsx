@@ -14,6 +14,12 @@ import {
   Card,
   Typography,
   Container,
+  ListItemButton,
+  ListItemIcon,
+  Collapse,
+  ListItemText,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 import { Grid, Paper, TextField, Select } from "@mui/material";
 import { Formik, Form, ErrorMessage } from "formik";
@@ -36,26 +42,14 @@ import FormTextField from "../../Components/Textfield";
 import SelectField from "../../Components/Select";
 import SearchIcon from "@mui/icons-material/Search";
 import { dataSearch } from "../../Redux/ProviderRedux/HomeSlice";
+import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 
-interface forminitialValues {
-  providerID: string;
-  facilityID: string;
-  facilityNPI?: string;
-  facilityName: string;
-  facilityType: string;
-  address: {
-    addressLine1: string;
-    addressLine2?: string;
-    city: string;
-    state: string;
-    zipCode: string;
-  };
-  contact: string;
-  email: string;
-}
+
 
 export default function ViewFacility() {
   const navigate = useNavigate();
+  const [open, setOpen] = useState<boolean>(false)
+  const [checked, setChecked] = useState<boolean>(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [data, setData] = useState([] as forminitialValues[]);
@@ -78,6 +72,20 @@ export default function ViewFacility() {
     { value: "Type2", item: "Type2" },
     { value: "Type3", item: "Type3" },
   ];
+  const optionscheck = [
+        {
+          name: "10 miles",
+          label: "10 miles",
+        },
+        {
+          name: "30 miles",
+          label: "30 miles",
+        },
+        {
+          name: "50 miles",
+          label: "50 miles",
+        },
+      ];
   const validationSchema = Yup.object().shape({
     Service: Yup.string().required("Required"),
     Location: Yup.string().required("Required"),
@@ -108,24 +116,6 @@ export default function ViewFacility() {
     // .get(`http://210.18.155.251:5003/org`)
   };
 
-  //   useEffect(() => {
-  //     getData();
-  //   }, []);
-
-  //   const getData = async () => {
-  //     // const facilityDetails = await axios.get('http://localhost:5200/facility/getFacilityList')
-  //     const facilityDetails = await axiosPrivate.get(
-  //       `http://localhost:5200/facility/getFacilityByProvider?providerID=${getid.userID}`
-  //     );
-  //     setData(facilityDetails.data.data);
-  //   };
-
-  const Pointer = { cursor: "hand" };
-
-  const deleteFacility = async (event: any, id: number) => {
-    //event.persist();
-  };
-
   //Table Pagination
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
@@ -142,6 +132,9 @@ export default function ViewFacility() {
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked);
   };
   return (
     <Box sx={{ backgroundColor: "primary.light", padding: "1.8rem" }}>
@@ -172,21 +165,7 @@ export default function ViewFacility() {
                 // gap:"1rem",
               }}
             >
-              {/* <Grid item xs={2.5}>
-                  <SelectField
-                    container={Select}
-                    name="Payer"
-                    label="Facility type"
-                    selectData={options}
-                    sx={{
-                    
-                      borderRadius:1,
-                       ".MuiInputBase-input" : {
-                         background: "white"
-                       }
-                      }}
-                  />
-                </Grid> */}
+             
 
               <Grid item xs={6}>
                 <FormTextField
@@ -293,15 +272,15 @@ export default function ViewFacility() {
             <Typography variant="h6" sx={{ mb: "30px", fontSize: "2rem" }}>
               Filters
             </Typography>
-            <Box
+            {/* <Box
               sx={{
                 display: "flex",
                 flexDirection: "column",
                 rowGap: "1rem",
                 alignItems: "center",
               }}
-            >
-              <Button
+            > */}
+              {/* <Button
                 variant="contained"
                 sx={{
                   width: "250px",
@@ -313,7 +292,45 @@ export default function ViewFacility() {
                 }}
               >
                 Distance
-              </Button>
+              </Button> */}
+              <Box>
+            <Paper sx={{ 
+              fontSize: "1rem",                  
+                  borderRadius: "20px",
+                  backgroundColor:"#CDDBF8",
+                  mb:"10px"
+                 }}>
+                <IconButton
+                aria-label="expand row"
+                size="small"
+                onClick={() => setOpen(!open)}
+            >
+                {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+            </IconButton>
+                Distance
+            </Paper>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+            <ListItemButton sx={{ pl: 4 }} disableRipple>
+            <ListItemIcon>
+            <FormControlLabel control={<Checkbox  sx = {{p:0}} onChange={handleChange} disableRipple />} label="10 miles" />
+            </ListItemIcon>
+            {/* <ListItemText primary="Within 10km" /> */}
+          </ListItemButton>
+          <ListItemButton sx={{ pl: 4 }}>
+            <ListItemIcon>
+            <FormControlLabel control={<Checkbox  sx = {{p:0}} onChange={handleChange}/>} label="30 miles" />
+            </ListItemIcon>
+            {/* <ListItemText primary="Within 10km" /> */}
+          </ListItemButton>
+          <ListItemButton sx={{ pl: 4 }}>
+            <ListItemIcon>
+            <FormControlLabel control={<Checkbox sx = {{p:0}} onChange={handleChange}/>} label="50 miles" />
+            </ListItemIcon>
+            {/* <ListItemText primary="Within 10km" /> */}
+          </ListItemButton>
+         
+            </Collapse>
+        </Box>
               <Button
                 variant="contained"
                 sx={{
@@ -353,7 +370,7 @@ export default function ViewFacility() {
               >
                 Facility Type
               </Button>
-            </Box>
+            {/* </Box> */}
           </Box>
           <Box
             sx={{
