@@ -93,14 +93,14 @@ export const navRoutes: Array<Route> = [
     enabled: true,
     component: Contact,
   },
-  {
-    key: "admin",
-    title: "Admin",
-    path: "/admin/adminlogin",
-    color: "admin",
-    enabled: true,
-    component: Admin,
-  },
+  // {
+  //   key: "admin",
+  //   title: "Admin",
+  //   path: "/admin/adminlogin",
+  //   color: "admin",
+  //   enabled: true,
+  //   component: Admin,
+  // },
   
 ];
 
