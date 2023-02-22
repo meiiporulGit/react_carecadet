@@ -1,8 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState, useRef } from "react";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { TextField, Box, Typography, Grid, Paper, Button } from "@mui/material";
+import {
+  TextField,
+  Box,
+  Typography,
+  Grid,
+  Paper,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Autocomplete,
+  AutocompleteRenderInputParams,
+  createFilterOptions,
+} from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -13,6 +25,8 @@ import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import { axiosPrivate } from "../../axios/axios";
 import OrganizationLandingView from "./OrganizationLandingView";
 import { useNavigate } from "react-router-dom";
+import ErrorProps from "../../Components/Errorprops";
+
 // import FileUploadService from './Fileupload/FileUpload';
 interface InitialValues {
   file: any;
@@ -41,11 +55,32 @@ const OrganizationInfo = () => {
   const navigate = useNavigate();
 
   const [currentFile, setCurrentFile] = useState<any>();
+  const [checked, setChecked] = React.useState<boolean>(false);
+  const [autoCompleteData,setAutoCompleteData]=React.useState<any>([])
 
   const [fileName, setFileName] = useState<any>("");
 
   const fileInput = useRef<any>();
   // console.log(currentFile,'single');
+
+  useEffect(()=>{
+    axiosPrivate.get("/organization/cityStateList").then((res)=>{
+      console.log("citystate",res.data.data)
+      setAutoCompleteData(res.data.data)
+      
+    })
+  },[])
+
+  const CustomPaper = (props:any) => {
+    return <Paper elevation={8} sx={{backgroundColor:"#DCF0FA",color:"black"}}{...props} />;
+  };
+
+  const OPTIONS_LIMIT = 10;
+  const defaultFilterOptions = createFilterOptions();
+  
+  const filterOptions = (options:any, state:any) => {
+    return defaultFilterOptions(options, state).slice(0, OPTIONS_LIMIT);
+  };
 
   const initialValues: InitialValues = {
     organizationInformation: {
@@ -57,7 +92,7 @@ const OrganizationInfo = () => {
       state: "",
       zipCode: "",
       phone: "",
-      Email: "",
+      Email: select.email,
     },
     contactPersonInformation: {
       firstName: "",
@@ -72,6 +107,8 @@ const OrganizationInfo = () => {
     setCurrentFile(fileInput.current.files[0]);
     setFileName(fileInput.current.files[0].name);
   };
+
+
 
   const onSubmit = async (values: InitialValues, actions: any) => {
     let formData = new FormData();
@@ -123,7 +160,6 @@ const OrganizationInfo = () => {
               console.log(err, "orgErr");
               toast.error(err.message);
             });
-            
         })
         .catch((err) => {
           console.log(err, "imgerr");
@@ -131,7 +167,7 @@ const OrganizationInfo = () => {
         });
     } catch (err) {
       throw err;
-      console.log(err,'err')
+      console.log(err, "err");
     }
   };
 
@@ -139,17 +175,52 @@ const OrganizationInfo = () => {
     organizationInformation: Yup.object().shape({
       organizationName: Yup.string().required("Organization Name is required"),
       streetAdd1: Yup.string().required("Address is required"),
-      city: Yup.string().required("City is required").matches(/[a-zA-Z]/, 'City can only contain alphabets.'),
-      state: Yup.string().required("State is required").matches(/[a-zA-Z]/, 'State can only contain alphabets.'),
-      zipCode: Yup.string().required("Zip Code is required").matches(/^[A-Za-z0-9]+$/,"Zip Code can only contain alphabets and number"),
+      city: Yup.string()
+        .required("City is required")
+        .matches(/[a-zA-Z]/, "City can only contain alphabets."),
+      state: Yup.string()
+        .required("State is required")
+        .matches(/[a-zA-Z]/, "State can only contain alphabets."),
+      zipCode: Yup.string()
+        .required("Zip Code is required")
+        .matches(
+          /^[A-Za-z0-9]+$/,
+          "Zip Code can only contain alphabets and number"
+        ),
       Email: Yup.string().required("Email is required").email("invalid email"),
-      phone:Yup.string().required("Phone is required").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/,"only numbers").test("len"," Invalid Contact no",(val: any) => val && val.length === 10),
+      phone: Yup.string()
+        .required("Phone is required")
+        .matches(
+          /^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/,
+          "only numbers"
+        )
+        .test(
+          "len",
+          " Invalid Contact no",
+          (val: any) => val && val.length === 10
+        ),
     }),
     contactPersonInformation: Yup.object().shape({
-      firstName: Yup.string().required("First Name is a required field").matches(/[a-zA-Z]/, 'First Name can only contain alphabets.'),
-      lastName: Yup.string().required("Last Name is required").matches(/[a-zA-Z]/, 'Last Name can only contain alphabets.'),
-      role: Yup.string().required("Role is a required field").matches(/[A-Za-z0-9]+$/,"Role can only contain alphabets and number"),
-      contactno: Yup.string().required("Contact is a required field").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/,"only numbers") .test("len","Invalid Contact no", (val: any) => val && val.length === 10),
+      firstName: Yup.string()
+        .required("First Name is a required field")
+        .matches(/[a-zA-Z]/, "First Name can only contain alphabets."),
+      lastName: Yup.string()
+        .required("Last Name is required")
+        .matches(/[a-zA-Z]/, "Last Name can only contain alphabets."),
+      role: Yup.string()
+        .required("Role is a required field")
+        .matches(/[A-Za-z0-9]+$/, "Role can only contain alphabets and number"),
+      contactno: Yup.string()
+        .required("Contact is a required field")
+        .matches(
+          /^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/,
+          "only numbers"
+        )
+        .test(
+          "len",
+          "Invalid Contact no",
+          (val: any) => val && val.length === 10
+        ),
       email: Yup.string()
         .required("Email is a required field")
         .email("invalid email"),
@@ -181,7 +252,33 @@ const OrganizationInfo = () => {
       placeholder: "Street Address2",
       type: "text",
     },
-    {
+    // {
+    //   xs: 12,
+    //   md: 4,
+    //   label: "City",
+    //   name: "organizationInformation.city",
+    //   placeholder: "City",
+    //   type: "text",
+    // },
+    // {
+    //   xs: 12,
+    //   md: 4,
+    //   label: "State",
+    //   name: "organizationInformation.state",
+    //   placeholder: "State",
+    //   type: "text",
+    // },
+    // {
+    //   xs: 12,
+    //   md: 4,
+    //   label: "Zip Code",
+    //   name: "organizationInformation.zipCode",
+    //   placeholder: "Zip Code",
+    //   type: "text",
+    // },
+  ]
+const orgDetail2=[
+  {
       xs: 12,
       md: 4,
       label: "City",
@@ -195,14 +292,6 @@ const OrganizationInfo = () => {
       label: "State",
       name: "organizationInformation.state",
       placeholder: "State",
-      type: "text",
-    },
-    {
-      xs: 12,
-      md: 4,
-      label: "Zip Code",
-      name: "organizationInformation.zipCode",
-      placeholder: "Zip Code",
       type: "text",
     },
     {
@@ -256,14 +345,14 @@ const OrganizationInfo = () => {
       placeholder: "Contact Number",
       type: "text",
     },
-    {
-      xs: 12,
-      md: 12,
-      label: "Email",
-      name: "contactPersonInformation.email",
-      placeholder: "Email",
-      type: "email",
-    },
+    // {
+    //   xs: 12,
+    //   md: 12,
+    //   label: "Email",
+    //   name: "contactPersonInformation.email",
+    //   placeholder: "Email",
+    //   type: "email",
+    // },
   ];
   return (
     <Paper
@@ -279,7 +368,7 @@ const OrganizationInfo = () => {
         onSubmit={onSubmit}
         validationSchema={validationSchema}
       >
-        <>
+        {({ handleChange, setFieldValue, values }) => (
           <Form>
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -349,7 +438,96 @@ const OrganizationInfo = () => {
                   />
                 </Grid>
               ))}
-
+              
+         <Grid item xs={12} md={4}>
+         <Typography
+                  // variant="h6"
+                  sx={{
+                    fontSize: "1.2rem",
+                    mb: "0.5rem",
+                  }}
+                >
+               Zip Code
+                </Typography>
+             
+                <Field
+                          
+              name="organizationInformation.zipCode"
+              component={Autocomplete}
+               options = {autoCompleteData}
+               loading={autoCompleteData.length === 0}
+               PaperComponent={CustomPaper}
+              filterOptions = {filterOptions}
+               getOptionLabel={(option: any) => option.ZIP_CODE || option}         
+              freeSolo    
+             fullWidth={true}
+             value={values.organizationInformation.zipCode}
+             
+              onChange={(e: any, value: any) => {
+            
+                
+                console.log("value",value.ZIP_CODE)
+               
+               setFieldValue("organizationInformation.zipCode",value !== null ? value.ZIP_CODE :"");
+               setFieldValue("organizationInformation.city",value !== null ? value.city :"");
+               setFieldValue("organizationInformation.state",value !== null ? value.state :"");
+             
+                             }}
+                            
+               renderInput={(params: AutocompleteRenderInputParams) => (
+                <TextField
+                  {...params}
+                  helperText={<ErrorMessage name="organizationInformation.zipCode">
+                  {(error) => <ErrorProps>{error}</ErrorProps>}
+                    </ErrorMessage>}
+                  name="ServiceCode"
+                  label="Search serviceCode"
+                  onChange={handleChange}
+                   variant="outlined"
+                  sx={{
+                    ".MuiFormLabel-root ": {
+                      letterSpacing: "0.2rem",
+                      fontSize: "0.8rem",
+                    },
+                    ".MuiInputLabel-shrink": {
+                      letterSpacing: 0,
+                    },
+                    "& .MuiAutocomplete-popupIndicator": { transform: "none" }                  
+                  }}
+  
+                />
+              )}
+            />
+         </Grid>
+   {orgDetail2.map((org,i)=>(
+    <Grid item xs={org.xs} md={org.md} key={i}>
+    <Typography
+      // variant="h6"
+      sx={{
+        fontSize: "1.2rem",
+        mb: "0.5rem",
+      }}
+    >
+      {org.label}
+    </Typography>
+    <FormTextField
+      container={TextField}
+      name={org.name}
+      placeholder={org.placeholder}
+      type={org.type}
+      fullWidth={true}
+      autoComplete="text"
+      // autoComplete="new-country-area"
+      sx={{
+        "&::placeholder": {
+          // color: "green",
+          letterSpacing: "0.2rem",
+          // fontSize: "1rem",
+        },
+      }}
+    />
+  </Grid>
+   ))}
               <Grid item xs={12}>
                 <Typography
                   mb={"0.5rem"}
@@ -392,6 +570,68 @@ const OrganizationInfo = () => {
                   />
                 </Grid>
               ))}
+              <Grid item xs={12}>
+              <FormControlLabel
+              sx={{
+                "& .MuiFormControlLabel-label": {
+                  color:"#BBC7D9",
+                  fontSize:"1.1rem"
+                } 
+              }}
+            control={
+              <Checkbox checked={checked} sx={{
+                "&.Mui-checked": {
+                  color: 'blue'
+                },
+                }}
+                onChange={(e:any)=>{
+                   setChecked(e.target.checked)
+                   if(e.target.checked===true){
+                   setFieldValue("contactPersonInformation.email",values.organizationInformation.Email)
+                }
+                else{
+                  setFieldValue("contactPersonInformation.email","")
+                }
+                  }}/>
+            }
+            label="Same as organization email"
+          />
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <Typography
+                  // variant="h6"
+                  sx={{
+                    fontSize: "1.2rem",
+                    mb: "0.5rem",
+                  }}
+                >
+                  Email
+                </Typography>
+                <Field
+                  as={TextField}
+                
+                  value={  values.contactPersonInformation.email}
+                 
+                  sx={{
+                    // boxShadow: "0 0 45px 1px red" ,
+                    "&::placeholder": {
+                      // color: "green",
+                      letterSpacing: "0.2rem",
+                      // fontSize: "1rem",
+                    },
+                  }}
+                  helperText={ <ErrorMessage name="contactPersonInformation.email">
+                  {(error) => <ErrorProps>{error}</ErrorProps>}
+                    </ErrorMessage>}
+                  name="contactPersonInformation.email"
+                  placeholder="Email"
+                  type="email"
+                  fullWidth={true}
+                  autoComplete="text"
+                  
+                />
+               
+              </Grid>
 
               <Grid container item xs={12} justifyContent="right">
                 <Buttoncomponent
@@ -416,7 +656,7 @@ const OrganizationInfo = () => {
               </Grid>
             </Grid>
           </Form>
-        </>
+        )}
       </Formik>
     </Paper>
   );
