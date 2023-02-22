@@ -392,7 +392,7 @@ export default function PricelistUpload() {
           // toast.error("format not match");
           // return { message: "error" };
           setUnknownHeader(true);
-
+          setPublishButton(true)
           console.log(headers, "headers");
           const unknownFormat = headers.map((da: any) => ({
             field: da,
@@ -479,7 +479,7 @@ export default function PricelistUpload() {
           console.log("Success ", res);
           setColumns([]);
           setCsvData([]);
-
+          setPublishButton(false)
           toast.success(res.data.message);
         })
         .catch((err) => {
