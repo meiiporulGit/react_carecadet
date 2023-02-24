@@ -21,6 +21,7 @@ interface InitialValues {
   ServiceCode: string;
   DiagnosisTestorServiceName: string;
   OrganisationPrices?: string;
+  FacilityName:string;
   FacilityNPI?: string;
   FacilityPrices: string;
 }
@@ -43,6 +44,7 @@ const CreateServicethroFacility = () => {
     DiagnosisTestorServiceName: "",
     OrganisationPrices: "",
     FacilityNPI: "",
+    FacilityName:"",
     FacilityPrices: "",
   };
   const CustomPaper = (props:any) => {
@@ -74,6 +76,7 @@ const CreateServicethroFacility = () => {
       DiagnosisTestorServiceName: values.DiagnosisTestorServiceName,
       OrganisationPrices: values.OrganisationPrices,
       FacilityNPI: facilityinput.facilityNPI,
+      FacilityName:facilityinput.facilityName,
       FacilityPrices: values.FacilityPrices,
     };
   
