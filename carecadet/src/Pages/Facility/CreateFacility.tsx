@@ -130,7 +130,7 @@ export default function CreateFacility() {
     city: Yup.string().nullable().required("City is required").matches(/[a-zA-Z]/, 'City name should be alpha-characters'),
     zipCode: Yup.string()
       .required("Zipcode is required")
-     .test("len", (val: any) => val && val.length === 5||val.length === 9)
+     .test("len", (val: any) => val && val.length === 5)
      .matches(/^[A-Za-z0-9]+$/,"Zipcode should be alpha-numeric characters"),
     state: Yup.string().nullable().required("State is required").matches(/[a-zA-Z]/, 'State name should be alpha-characters'),
     contact: Yup.string().required("Phone is required").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/,"only numbers").test("len"," Invalid Contact no",(val: any) => val && val.length === 10),

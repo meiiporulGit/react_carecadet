@@ -103,11 +103,11 @@ const CreateService = () => {
   };
 
   const validationSchema = Yup.object().shape({
-    ServiceCode: Yup.string().required("ServiceCode is required"),
+    ServiceCode: Yup.string().required("Service Code is required"),
     DiagnosisTestorServiceName: Yup.string().required(
-      "Servicename is required"
+      "Service Name is required"
     ),
-    FacilityPrices: Yup.string().required("ServicePrice is required"),
+    FacilityPrices: Yup.string().required("Service Price is required"),
   });
 
 
@@ -201,7 +201,7 @@ filterOptions = {filterOptions}
                 <TextField
                   {...params}
                   name="serviceCode"
-                  label="Search serviceCode"
+                  label="Search Service Code"
                   onChange={handleChange}
                    variant="outlined"
                   sx={{
@@ -299,7 +299,7 @@ filterOptions = {filterOptions}
                  DiagnosisTest or Service Name
                 </Typography>
                 <Field
-               label="DiagnosisTest or ServiceName"
+               label="Service Name"
                name="DiagnosisTestorServiceName"
               component={Autocomplete}
                options = {info}
@@ -319,7 +319,7 @@ filterOptions = {filterOptions}
                 <TextField
                   {...params}
                   name="serviceCode"
-                  label="Search serviceCode"
+                  label="Search Service Name"
                   onChange={handleChange}
                    variant="outlined"
                   sx={{
@@ -370,12 +370,10 @@ filterOptions = {filterOptions}
 
             <Grid item xs={12} >
               <Typography
-                sx={{
-                  fontSize: "1rem",
-                  fontWeight: "bold",
-                  // m: "0.5rem 0 0.2rem 0",
-                  mb: "0.3rem",
-                }}
+              sx={{
+                fontSize: "1.2rem",
+                mb: "0.5rem",
+              }}
               >
                 Facility Name
               </Typography>
@@ -383,7 +381,7 @@ filterOptions = {filterOptions}
                 container={TextField}
                 label="Facility Name"
                 name="FacilityName"
-                placeholder="FacilityName"
+                placeholder="Facility Name"
                 autoComplete="text"
                 type="text"
                 fullWidth={true}
@@ -402,10 +400,8 @@ filterOptions = {filterOptions}
             <Grid item xs={12} >
               <Typography
                 sx={{
-                  fontSize: "1rem",
-                  fontWeight: "bold",
-                  // m: "0.5rem 0 0.2rem 0",
-                  mb: "0.3rem",
+                  fontSize: "1.2rem",
+                  mb: "0.5rem",
                 }}
               >
                 Facility NPI
@@ -414,7 +410,7 @@ filterOptions = {filterOptions}
                 container={TextField}
                 label="Facility NPI"
                 name="FacilityNPI"
-                placeholder="FacilityNPI"
+                placeholder="Facility NPI"
                 autoComplete="text"
                 type="text"
                 fullWidth={true}
@@ -433,10 +429,8 @@ filterOptions = {filterOptions}
             <Grid item xs={12} >
               <Typography
                 sx={{
-                  fontSize: "1rem",
-                  fontWeight: "bold",
-                  // m: "0.5rem 0 0.2rem 0",
-                  mb: "0.3rem",
+                  fontSize: "1.2rem",
+                  mb: "0.5rem",
                 }}
               >
                 Facility Prices
@@ -445,7 +439,7 @@ filterOptions = {filterOptions}
                 container={TextField}
                 label="Facility Prices"
                 name="FacilityPrices"
-                placeholder="FacilityPrices"
+                placeholder="Facility Prices"
                 type="text"
                 autoComplete="text"
                 fullWidth={true}

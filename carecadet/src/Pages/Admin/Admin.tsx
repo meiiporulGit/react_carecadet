@@ -113,70 +113,122 @@ function TableRowRes({ fac, onButtonEdit }: rowProps) {
             <Grid item justifyContent={"flex-end"}> <Button onClick={onButton}>save</Button></Grid> : null}
           </Grid>
           <Grid  container item xs={12}>
-            <Grid item xs={6} >
+            <Grid item xs={4.5} >
             <Typography sx={{ color: "blue" }}>
               OrganizationID{" "}
             </Typography>
             </Grid>
-            <Grid item xs={2} >
-            <Typography sx={{ color: "blue" }}>
+            <Grid item xs={1} >
+            <Typography >
              :
             </Typography>
             </Grid>
-            <Grid item xs={4} >
-            <Typography sx={{ color: "blue" }}>
+            <Grid item xs={5.5} >
+            <Typography >
             {fac.Organisationid}
+            </Typography>
+            </Grid>
+          </Grid>
+          <Grid  container item xs={12}>
+            <Grid item xs={4.5} >
+            <Typography sx={{ color: "blue" }}>
+              Service Code
+            </Typography>
+            </Grid>
+            <Grid item xs={1} >
+            <Typography >
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={5.5} >
+            <Typography >
+            {fac.ServiceCode}
+            </Typography>
+            </Grid>
+          </Grid>
+          <Grid  container item xs={12}>
+            <Grid item xs={4.5} >
+            <Typography sx={{ color: "blue" }}>
+              Facility NPI
+            </Typography>
+            </Grid>
+            <Grid item xs={1} >
+            <Typography >
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={5.5} >
+            <Typography >
+            {fac.FacilityNPI}
             </Typography>
             </Grid>
           </Grid>
 
          
-          <Typography sx={{ display: "flex" }}>
-            {" "}
-            <Typography sx={{ color: "blue" }}>ServiceCode </Typography> :{" "}
-            {fac.ServiceCode}
-          </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
-            <Typography sx={{ color: "blue" }}>FacilityNPI </Typography> :{" "}
-            {fac.FacilityNPI}
-          </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
-            <Typography sx={{ color: "blue" }}>FacilityName </Typography> :{" "}
-            {fac.FacilityName}
-          </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
+          <Grid  container item xs={12}>
+            <Grid item xs={4.5} >
             <Typography sx={{ color: "blue" }}>
-              OrganisationPrices{" "}
-            </Typography>{" "}
-            :{" "}
+              Facility Name
+            </Typography>
+            </Grid>
+            <Grid item xs={1} >
+            <Typography >
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={5.5} >
+            <Typography >
+            {fac.FacilityName}
+            </Typography>
+            </Grid>
+          </Grid>
+         
+          <Grid container item xs={12} alignItems={"center"}>
+          <Grid item xs={4.5} >
+            <Typography sx={{ color: "blue" }}>
+              Organisation Prices
+            </Typography>
+            </Grid>
+            <Grid item xs={1} >
+            :
+            </Grid>
             {!edit ? (
-              fac.OrganisationPrices
+              <Grid item xs={5.5}>
+             { fac.OrganisationPrices}
+              </Grid>
             ) : (
+              <Grid item xs={5.5}>
               <TextField
                 value={data.OrganisationPrices}
                 name="OrganisationPrices"
                 onChange={(e) => editOnchange(e)}
               />
+              </Grid>
             )}
-          </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
+          </Grid>
+          <Grid container item xs={12}>
+          <Grid item xs={4.5} >
             <Typography sx={{ color: "blue" }}>
-              FacilityPrices{" "}
-            </Typography> :{" "}
+              Facility Prices
+            </Typography>
+            </Grid>
+            <Grid item xs={1} >
+            :
+            </Grid>
             {!edit ? (
-              fac.FacilityPrices
+              <Grid item xs={5.5}>
+             { fac.FacilityPrices}
+              </Grid>
             ) : (
+              <Grid item xs={5.5}>
               <TextField
                 value={data.FacilityPrices}
-                name="FacilityPrices"
+                name="OrganisationPrices"
                 onChange={(e) => editOnchange(e)}
               />
+              </Grid>
             )}
-          </Typography>
+          </Grid>
         </Paper>
       </Collapse>
     </Box>

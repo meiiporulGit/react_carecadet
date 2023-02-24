@@ -102,7 +102,7 @@ const ProtectedRoute = ({ children, getData }: Props) => {
         <OrganizationLandingView />
       </Grid>
 
-      <Grid container item xs={12} md={data.length === 0 ? 12 : 7.5} lg={data.length === 0 ? 12 : 9.5}>
+      <Grid container item xs={12} md={data.length === 0 ? 12 : 8} lg={data.length === 0 ? 12 : 9.5}>
         {getData !== "org" && getData !== "editOrg" ? (
           // <Box sx={{ m: 0, p: 0 }}>
           //   <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
