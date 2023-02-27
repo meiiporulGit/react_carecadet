@@ -307,7 +307,7 @@ export default function ViewFacility() {
                       dispatch(facilityInfo({ facility }));
                       axiosPrivate
                         .delete(
-                          `/facility/deleteFacility?facilityID=${facility.facilityID}`,
+                          `/facility/deleteFacility?facilityNPI=${facility.facilityNPI}`,
                           facilityinput
                         )
                         .then(() => {
@@ -400,7 +400,7 @@ export default function ViewFacility() {
                         dispatch(facilityInfo({ facility }));
                         axiosPrivate
                           .delete(
-                            `/facility/deleteFacility?facilityID=${facility.facilityID}`,
+                            `/facility/deleteFacility?facilityNPI=${facility.facilityNPI}`,
                             facilityinput
                           )
                           .then(() => {

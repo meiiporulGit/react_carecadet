@@ -110,7 +110,7 @@ const Providerhomepage = () => {
               backgroundColor: "primary.light",
             }}
           >
-            <Grid container justifyContent={{xs:"center",md:"flex-end"}}>
+            {/* <Grid container justifyContent={{xs:"center",md:"flex-end"}}>
               <Buttoncomponent
                 type="button"
                 size="small"
@@ -134,7 +134,7 @@ const Providerhomepage = () => {
               >
                 Sign in
               </Buttoncomponent>
-            </Grid>
+            </Grid> */}
 
         
 

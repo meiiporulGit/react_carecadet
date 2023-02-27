@@ -185,12 +185,13 @@ import {
   Paper,
   Grid,
   Divider,
+  Button,
 } from "@mui/material";
 import { toast } from "react-toastify";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import { navRoutes } from "../routes";
-import { NavLink, useLocation, useNavigate} from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 
 
@@ -242,7 +243,7 @@ const Navbar = () => {
     location.pathname.split("/")[1] === ""
       ? "patient"
       : location.pathname.split("/")[1];
-
+  console.log(char, 'char')
   const open = Boolean(anchorEl);
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -296,7 +297,7 @@ const Navbar = () => {
         borderRadius: "1rem",
         backgroundColor: "#A3C0D9",
         border: "1px solid #728AB7",
-       
+
       }}
     >
       <Container maxWidth="xl">
@@ -316,10 +317,10 @@ const Navbar = () => {
               display: { xs: "none", md: "flex" },
             }}
           >
-            <Link sx={{textDecoration:"none"}} component ={NavLink} to = "/provider/home">
-            <Box sx={{ display: "flex", fontWeight: "bold" }}>
-              Care<Box sx={{ color: "#4D77FF" }}>Cadet</Box>
-            </Box>
+            <Link sx={{ textDecoration: "none" }} component={NavLink} to="/provider/home">
+              <Box sx={{ display: "flex", fontWeight: "bold" }}>
+                Care<Box sx={{ color: "#4D77FF" }}>Cadet</Box>
+              </Box>
             </Link>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -358,18 +359,21 @@ const Navbar = () => {
                   variant="button"
                 >
                   <MenuItem onClick={handleCloseNavMenu} sx={{ width: 250 }}>
-                    <Typography textAlign="center">{page.title}</Typography>
+                    <Typography textAlign="center">
+                      {page.title}
+
+                    </Typography>
                   </MenuItem>
                 </Link>
               ))}
-             
+
               {providerLogout ? (
                 <Box sx={{ display: "flex", flexDirection: "column" }}>
-                   <Divider />
+                  <Divider />
                   <Box
-                  
+
                     sx={{
-                     
+
 
                       height: "7vh",
                       display: "flex",
@@ -379,7 +383,7 @@ const Navbar = () => {
                       gap: "0.5rem",
 
                       cursor: "pointer",
-                     
+
                     }}
                   >
                     <AccountCircleOutlinedIcon fontSize="large" />
@@ -395,24 +399,76 @@ const Navbar = () => {
                       justifyContent: "center",
                       alignItems: "center",
                       height: "6vh",
-                    
+
 
                       flexWrap: "nowrap",
                       gap: "0.5rem",
-                      color:"blue",
+                      color: "blue",
 
                       cursor: "pointer",
                     }}
                     onClick={() => {
                       // handleClose();
-                    handleCloseNavMenu()
+                      handleCloseNavMenu()
                       onLogout("provider");
                     }}
                   >
-                   <LogoutTwoTone /> Logout 
+                    <LogoutTwoTone /> Logout
                   </Box>
                 </Box>
-              ) : null}
+              ) : <Box
+                onClick={() => {
+                  if (char === "provider") {
+                    navigate("/provider/login")
+                  }
+                  else if (char === "patient") {
+                    navigate("/")
+                  }
+                }}
+
+                sx={{
+                  display: "flex",
+                  fontSize: "1.2rem",
+                  p: "1rem",
+                  // alignItems: "center",
+                  // flexWrap: "nowrap",
+                  // gap: "0.5rem",
+                  color: "blue",
+                  cursor: "pointer",
+                  // ":hover": {
+                  //   color: "white",
+                  // },
+                }}
+              >
+
+                <Typography textAlign={"center"}>
+                  SIGNIN
+                </Typography>
+              </Box>
+                //   <Buttoncomponent
+                //   type="button"
+                //   size="small"
+                //   fullWidth={false}
+                //   variant="contained"
+                //   onClick={() => navigate("/provider/login")}
+                //   sx={{
+                //     backgroundColor: "secondary.dark",
+                //     width: {xs:"20vw",md:"7vw"},
+                //     color: "#fff",
+                //     mt: {xs:"0px",md:"-260px"},
+                //     mb: {xs:"20px",md:"260px"},
+                //     mr: {md:"40px"},
+                //     "&:hover": {
+                //       color: "secondary.dark",
+                //       border: "1px solid blue",
+                //       // letterSpacing: "0.2rem",
+                //       // fontSize: "1rem",
+                //     },
+                //   }}
+                // >
+                //   Sign in
+                // </Buttoncomponent>
+              }
               {patientLogout ? (
                 <Box>
                   {/* <Box sx={{width:"7vw",display:"flex",flexWrap:"nowrap",gap:"0.5rem",margin:"0 0 0 1.5rem"}}>
@@ -444,10 +500,11 @@ const Navbar = () => {
                   </Buttoncomponent>
                 </Box>
               ) : null}
+
               {adminLogout ? (
-                <Box sx={{ display: "flex",flexDirection: "column" }}>
-                   <Divider />
-                 
+                <Box sx={{ display: "flex", flexDirection: "column" }}>
+                  <Divider />
+
                   <Box
                     sx={{
                       height: "7vh",
@@ -458,38 +515,38 @@ const Navbar = () => {
                       gap: "0.5rem",
 
                       cursor: "pointer",
-                    
+
                     }}
-                  
+
                   >
-                 
+
                     <AccountCircleOutlinedIcon fontSize="large" />
                     <Typography>{adminUserID}</Typography>
                   </Box>
-                  <Divider/>
+                  <Divider />
                   <Box
                     sx={{
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
                       height: "6vh",
-                    
+
 
                       flexWrap: "nowrap",
                       gap: "0.5rem",
-                      color:"blue",
+                      color: "blue",
 
                       cursor: "pointer",
                     }}
                     onClick={() => {
                       // handleClose();
-                    handleCloseNavMenu()
+                      handleCloseNavMenu()
                       onLogout("admin");
                     }}
                   >
-                   <LogoutTwoTone /> Logout 
+                    <LogoutTwoTone /> Logout
                   </Box>
-                
+
                 </Box>
               ) : null}
             </Menu>
@@ -520,7 +577,7 @@ const Navbar = () => {
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "space-around",
+                justifyContent: "space-evenly",
                 alignItems: "center",
                 width: "80vw",
               }}
@@ -543,7 +600,10 @@ const Navbar = () => {
                   }}
                 >
                   {page.title}
+
+
                 </Typography>
+
                 // <Link
                 //   key={page.key}
                 //   component={NavLink}
@@ -556,6 +616,7 @@ const Navbar = () => {
                 //   {page.title}
                 // </Link>
               ))}
+
             </Box>
             {providerLogout ? (
               <Box sx={{ display: "flex" }}>
@@ -629,14 +690,34 @@ const Navbar = () => {
                   </MenuItem>
                 </Menu>
               </Box>
-            ) : null}
-            {patientLogout ? (
+            ) : (<Typography
+              onClick={() => {
+                if (char === "provider") { navigate("/provider/login") }
+                else if (char === "patient") { navigate("/") }
+              }
+              }
+
+              sx={{
+                display: "flex",
+                justifyContent: "space-evenly", 
+                cursor: "pointer",
+                ":hover": {
+                  color: "blue",
+                },
+              }}
+            >
+              <Typography variant="button" sx={{ fontSize: "1.2rem" }}>
+                SIGNIN
+              </Typography>
+            </Typography>)}
+
+            {/* {patientLogout ? (
               <Box>
                 {/* <Box sx={{width:"7vw",display:"flex",flexWrap:"nowrap",gap:"0.5rem",margin:"0 0 0 1.5rem"}}>
               <AccountCircleOutlinedIcon fontSize="large"/>
               <Typography sx={{margin:"0.2rem 0 0 0"}}>{userID}</Typography>
               </Box> */}
-                <Buttoncomponent
+            {/* <Buttoncomponent
                   type="button"
                   size="small"
                   fullWidth={false}
@@ -660,7 +741,9 @@ const Navbar = () => {
                   Logout
                 </Buttoncomponent>
               </Box>
-            ) : null}
+            ) : null} */}
+
+
             {adminLogout ? (
               <Box sx={{ display: "flex" }}>
                 {/* <Box sx={{width:"7vw",display:"flex",flexWrap:"nowrap",gap:"0.5rem",margin:"0 0 0 1.5rem"}}>
@@ -698,7 +781,7 @@ const Navbar = () => {
                     alignItems: "center",
                     flexWrap: "nowrap",
                     gap: "0.5rem",
-                    color:"blue",
+                    color: "blue",
 
                     cursor: "pointer",
                     ":hover": {
