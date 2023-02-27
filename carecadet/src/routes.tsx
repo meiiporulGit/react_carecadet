@@ -24,6 +24,8 @@ import PricelistUploadthroFacility from "./Pages/Services/PricelistUploadthrofac
 import Login from "./Pages/LoginSignup/Login";
 import Home from "./Pages/testPages/Home";
 import Signup from "./Pages/LoginSignup/Signup";
+import Forgotpass from "./Pages/LoginSignup/Forgotpass";
+import Resetpass from "./Pages/LoginSignup/Resetpass";
 import ProviderLandingPage from "./Pages/testPages/Landingpage";
 
 import Providerhomepage from "./Pages/Home/providerhomepage";
@@ -133,6 +135,23 @@ export const providerLogin: Array<Route> = [
     enabled: true,
     component: Signup,
   },
+  
+  {
+    key: "Forgotpass",
+    title: "Forgotpass",
+    path: "/provider/forgotpass",
+    enabled: true,
+    component: Forgotpass,
+  },
+
+  {
+    key: "Resetpass",
+    title: "Resetpass",
+    path: "/provider/resetpass",
+    enabled: true,
+    component: Resetpass,
+  },
+
   {
     key: "login",
     path: "/provider/urgentcarelogin",

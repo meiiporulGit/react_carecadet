@@ -186,6 +186,9 @@ export default function Login() {
               <Typography sx={{ color: "#728AB7" }}>
                 Don't have an account.<Link to="/provider/signup">Signup</Link>
               </Typography>
+              <Typography sx={{ color: "#728AB7" }}>
+              <Link to="/provider/forgotpass">Forgot password</Link>
+              </Typography>
             </Form>
           </Formik>
         </Grid>
