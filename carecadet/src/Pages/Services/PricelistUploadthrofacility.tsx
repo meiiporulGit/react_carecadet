@@ -405,6 +405,10 @@ export default function PricelistUploadthroFacility() {
     }
     const file = e.target.files[0];
     const { name } = file;
+    console.log(file.size,"fileCHeck")
+    if (file.size >100000){
+      toast.warning("more than 1MB")
+    }
     setFilename(name);
     console.log("name", name);
     const reader = new FileReader();

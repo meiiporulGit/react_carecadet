@@ -23,7 +23,7 @@ import { ViewInfo } from "../../Redux/ProviderRedux/serviceViewSlice";
 import { useNavigate } from "react-router-dom";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 import { dataSearch } from "../../Redux/ProviderRedux/HomeSlice";
-import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
+import { InsertDriveFile, KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 
 interface rowProps {
   fac: any;
@@ -45,37 +45,40 @@ function TableRowRes({ fac }: rowProps) {
     }
   };
   return (
-    
-      <Paper elevation={5}>
-        {/* <IconButton
+    <Paper elevation={5}>
+      {/* <IconButton
           aria-label="expand row"
           size="small"
           onClick={() => setOpen(!open)}
         >
           {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
         </IconButton> */}
-        
-         
-          <Typography  textAlign={"justify"} sx={{
-              backgroundColor: "#E4ECF7",
-              // color: "blue",
-              padding:"0.3rem",
-              border: fac.status === "verified" ? "3px solid  orange" : "1px solid  green",
-              "&:hover": {
-                color: "secondary.dark",
-                border: "1px solid blue",
-              },
-            }}
-            onClick={() => {
-              viewOnClick(fac);
-              // dispatch(facilityInfo(facility));
-              // dispatch(editButton())
-              // navigate("/provider/facility/update");
-            }} >{fac.filePath.split("/")[2]} </Typography>
-        
-       
-      </Paper>
-    
+
+      <Typography
+        textAlign={"justify"}
+        sx={{
+          backgroundColor: "#E4ECF7",
+          // color: "blue",
+          padding: "0.3rem",
+          border:
+            fac.status === "verified"
+              ? "3px solid  orange"
+              : "1px solid  green",
+          "&:hover": {
+            color: "secondary.dark",
+            border: "1px solid blue",
+          },
+        }}
+        onClick={() => {
+          viewOnClick(fac);
+          // dispatch(facilityInfo(facility));
+          // dispatch(editButton())
+          // navigate("/provider/facility/update");
+        }}
+      >
+        {fac.filePath.split("/")[2]}{" "}
+      </Typography>
+    </Paper>
   );
 }
 
@@ -172,10 +175,14 @@ const ServiceView = () => {
         </Paper>
       ))} */}
       <Grid container item sx={{ justifyContent: "center" }}>
-        <Table sx={{ maxWidth: "100%" ,display:{xs:"none",md:"table"}}}>
-          <TableHead sx={{ backgroundColor: "#4D77FF" }}>
-            <TableRow>
-              {/* <TableCell
+        {pathData.length !== 0 ? (
+          <>
+            <Table
+              sx={{ maxWidth: "100%", display: { xs: "none", md: "table" } }}
+            >
+              <TableHead sx={{ backgroundColor: "#4D77FF" }}>
+                <TableRow>
+                  {/* <TableCell
                 sx={{
                   fontSize: "1rem",
                   fontWeight: "bold",
@@ -184,129 +191,148 @@ const ServiceView = () => {
               >
                 providerID
               </TableCell> */}
-              <TableCell
-                sx={{
-                  fontSize: "1rem",
-                  fontWeight: "bold",
-                  textAlign: "center",
-                }}
-              >
-                File Name
-              </TableCell>
-              <TableCell
-                sx={{
-                  fontSize: "1rem",
-                  fontWeight: "bold",
-                  textAlign: "center",
-                }}
-              >
-                Actions
-              </TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {(rowsPerPage > 0
-              ? pathData.slice(
-                  page * rowsPerPage,
-                  page * rowsPerPage + rowsPerPage
-                )
-              : pathData
-            ).map((dataPath: any, i: any) => (
-              <TableRow
-                key={i}
-                sx={{
-                  backgroundColor: (i + 1) % 2 === 0 ? "#B4C8FC" : "white",
-                }}
-              >
-                {/* <TableCell sx={{ fontSize: "0.8rem", textAlign: "center" }}>
-                  {dataPath.providerID}
-                </TableCell> */}
-                <TableCell sx={{ fontSize: "0.8rem", textAlign: "center" }}>
-                  {dataPath.filePath.split("/")[2]}
-                </TableCell>
-
-                <TableCell sx={{ textAlign: "center" }}>
-                  <Buttoncomponent
-                    type="button"
-                    disable={
-                      dataPath.status === "verified"
-                        ? false
-                        : dataPath.status === "published"
-                        ? false
-                        : true
-                    }
-                    variant="contained"
-                    size="large"
+                  <TableCell
                     sx={{
-                      backgroundColor: "#E4ECF7",
-                      border: "1px solid blue",
-                      width: "12vw",
-                      color:
-                        dataPath.status === "verified" ? "orange" : "green",
-                      "&:hover": {
-                        color: "secondary.dark",
-                        border: "1px solid blue",
-                      },
-                    }}
-                    onClick={() => {
-                      viewOnClick(dataPath);
-                      // dispatch(facilityInfo(facility));
-                      // dispatch(editButton())
-                      // navigate("/provider/facility/update");
+                      fontSize: "1rem",
+                      fontWeight: "bold",
+                      textAlign: "center",
                     }}
                   >
-                    {dataPath.status}
-                  </Buttoncomponent>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                count={pathData.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                labelDisplayedRows={({ from, to, count }) =>
-                  `${from}-${to} of ${count !== -1 ? count : ` ${to}}`}`
-                }
-                backIconButtonProps={{
-                  color: "secondary",
-                }}
-                nextIconButtonProps={{ color: "secondary" }}
-                showFirstButton={true}
-                showLastButton={true}
-                labelRowsPerPage={<span>Rows:</span>}
-                sx={{
-                  ".MuiTablePagination-toolbar": {
-                    backgroundColor: "primary.light",
-                    // "rgba(100,100,100,0.5)"
-                  },
-                  ".MuiTablePagination-selectLabel, .MuiTablePagination-input":
-                    {
+                    File Name
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      fontSize: "1rem",
                       fontWeight: "bold",
-                      color: "#173A5E",
-                    },
-                }}
-              />
-            </TableRow>
-          </TableFooter>
-        </Table>
-        <Box
-          sx={{
-            display: { xs: "flex", md: "none" },
-            flexDirection: "column",
-            gap: "1rem",
-          }}
-        >
-          {pathData.map((fac: any, i: any) => (
-            <TableRowRes key={i} fac={fac} />
-          ))}
-        </Box>
+                      textAlign: "center",
+                    }}
+                  >
+                    Actions
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {(rowsPerPage > 0
+                  ? pathData.slice(
+                      page * rowsPerPage,
+                      page * rowsPerPage + rowsPerPage
+                    )
+                  : pathData
+                ).map((dataPath: any, i: any) => (
+                  <TableRow
+                    key={i}
+                    sx={{
+                      backgroundColor: (i + 1) % 2 === 0 ? "#B4C8FC" : "white",
+                    }}
+                  >
+                    {/* <TableCell sx={{ fontSize: "0.8rem", textAlign: "center" }}>
+                  {dataPath.providerID}
+                </TableCell> */}
+                    <TableCell sx={{ fontSize: "0.8rem", textAlign: "center" }}>
+                      {dataPath.filePath.split("/")[2]}
+                    </TableCell>
+
+                    <TableCell sx={{ textAlign: "center" }}>
+                      <Buttoncomponent
+                        type="button"
+                        disable={
+                          dataPath.status === "verified"
+                            ? false
+                            : dataPath.status === "published"
+                            ? false
+                            : true
+                        }
+                        variant="contained"
+                        size="large"
+                        sx={{
+                          backgroundColor: "#E4ECF7",
+                          border: "1px solid blue",
+                          width: "12vw",
+                          color:
+                            dataPath.status === "verified" ? "orange" : "green",
+                          "&:hover": {
+                            color: "secondary.dark",
+                            border: "1px solid blue",
+                          },
+                        }}
+                        onClick={() => {
+                          viewOnClick(dataPath);
+                          // dispatch(facilityInfo(facility));
+                          // dispatch(editButton())
+                          // navigate("/provider/facility/update");
+                        }}
+                      >
+                        {dataPath.status}
+                      </Buttoncomponent>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    count={pathData.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    labelDisplayedRows={({ from, to, count }) =>
+                      `${from}-${to} of ${count !== -1 ? count : ` ${to}}`}`
+                    }
+                    backIconButtonProps={{
+                      color: "secondary",
+                    }}
+                    nextIconButtonProps={{ color: "secondary" }}
+                    showFirstButton={true}
+                    showLastButton={true}
+                    labelRowsPerPage={<span>Rows:</span>}
+                    sx={{
+                      ".MuiTablePagination-toolbar": {
+                        backgroundColor: "primary.light",
+                        // "rgba(100,100,100,0.5)"
+                      },
+                      ".MuiTablePagination-selectLabel, .MuiTablePagination-input":
+                        {
+                          fontWeight: "bold",
+                          color: "#173A5E",
+                        },
+                    }}
+                  />
+                </TableRow>
+              </TableFooter>
+            </Table>
+            <Box
+              sx={{
+                display: { xs: "flex", md: "none" },
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              {pathData.map((fac: any, i: any) => (
+                <TableRowRes key={i} fac={fac} />
+              ))}
+            </Box>
+          </>
+        ) : (
+          <Box
+            sx={{
+              padding:"2rem",
+              height: "5vh",
+              backgroundColor: "white",
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap:"0.5rem"
+            }}
+          >
+            <InsertDriveFile fontSize="large"/>
+            <Typography> No Files</Typography>
+           
+          </Box>
+        )}
       </Grid>
     </Box>
   );
