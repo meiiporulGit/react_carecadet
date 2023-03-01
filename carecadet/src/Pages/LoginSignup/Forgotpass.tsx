@@ -50,7 +50,7 @@ export default function Forgotpass() {
               axiosPrivate
                 .put("/provider/forgotpassword", Resetpass)
                 .then((res) => {
-                    console.log("Resetpass",res)
+                  
                   toast.success(res.data.message);
               
                 //   Cookie.set("token", JSON.stringify(res.data.data), {
