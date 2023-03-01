@@ -320,68 +320,53 @@ export default function PricelistUpload() {
   ];
 
   function csvJSON(csv: any) {
-    console.log("csvdata");
+   
     var lines = csv.split("\r\n");
-    console.log(lines, "lines")
     var result = [];
-    // var mandatoryfield=["FacilityNPI"]
+    var facilityExistCheck:any=[]
     var headers = lines[0].split(",");
     const mandatoryfield = headers.includes("FacilityNPI") && headers.includes("FacilityName");
-    console.log("mandatoryfield", mandatoryfield)
+
     if (mandatoryfield) {
-      console.log(headers, "headers");
       let index = headers.indexOf("FacilityNPI");
-      console.log(index, "indexofnpi")
-      const facilityNPI = facilityinput.facilityNPI;
-      const facilityName = facilityinput.facilityName;
-      for (var i = 1; i < lines.length - 1; i++) {
+     for (var i = 1; i < lines.length - 1; i++) {
         var obj: any = {};
-
-
         var currentline = lines[i].split(",");
-        console.log("currentline", currentline);
-        let storefacility = facilityinput.filter(
-          (data: any) => data.facilityNPI === currentline[index]
-        );
-        console.log(storefacility, "storefacility");
-        // if(storefacility[0]===undefined)
-        // {
-        //   toast.error(`${currentline[4]} is Invalid NPI`)
-        // }
-        var finalfacility =
-          storefacility[0] == undefined
-            ? "Facility name unavailable"
-            : storefacility[0].facilityName;
-
-
+       
+        let storefacility = facilityinput.filter((data: any) => data.facilityNPI === currentline[index]);
+       
+      if(storefacility[0]===undefined){
+        var facCheck=facilityExistCheck.includes(currentline[index])
+        if(!facCheck){
+          facilityExistCheck.push(currentline[index])
+        }
+     
+        
+      }else{
+        var finalfacility =storefacility[0] == undefined ? "Facility name unavailable": storefacility[0].facilityName;
+        
         obj["Organisationid"] = orgid[0].organizationID;
         for (var j = 0; j < headers.length; j++) {
           obj[headers[j]] = currentline[j];
         }
         obj["FacilityName"] = finalfacility;
         result.push(obj);
-        // data:{$push:[{result , facilityNPI}]}
       }
-      // console.log(result,"res")
+       
+      }
+     
+      if(facilityExistCheck.length===0){
       setCsvData(result);
       // return JSON.stringify(result); 
       var validateHeaders = knownObj.map((d) => d.headerName);
-      const knownHeaders = validateHeaders.filter((element) =>
-        headers.includes(element)
-      );
-      const isMatched =
-        knownHeaders.length === validateHeaders.length
+      const knownHeaders = validateHeaders.filter((element) => headers.includes(element));
+      const isMatched =knownHeaders.length === validateHeaders.length
       // &&
       // knownHeaders.every((value, index) => value === validateHeaders[index]);
       // console.log(validateHeaders,"validateHeaders")
 
-      if (
-        knownHeaders.length <= validateHeaders.length - 2 ||
-        headers.length > validateHeaders.length
-      ) {
-        toast.error(
-          "Please check the header name or download the sample csv format"
-        );
+      if (knownHeaders.length <= validateHeaders.length - 2 ||headers.length > validateHeaders.length) {
+        toast.error("Please check the header name or download the sample csv format");
       } else {
         if (validateHeaders.length === headers.length && isMatched) {
           setUnknownHeader(false);
@@ -392,7 +377,7 @@ export default function PricelistUpload() {
           // toast.error("format not match");
           // return { message: "error" };
           setUnknownHeader(true);
-
+          setPublishButton(true)
           console.log(headers, "headers");
           const unknownFormat = headers.map((da: any) => ({
             field: da,
@@ -406,10 +391,15 @@ export default function PricelistUpload() {
           return JSON.stringify(result);
         }
       }
+    }else{
+      toast.error(`${facilityExistCheck} Facility NPI not available in this organization`)
     }
-    else {
+   
+  }
+   else {
       toast.error("Please check your header name or download the sample format")
     }
+
   }
 
   const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -417,7 +407,12 @@ export default function PricelistUpload() {
       return;
     }
     const file = e.target.files[0];
+    console.log(file.size,"fileCheck")
     const { name } = file;
+    if (file.size >100000){
+      toast.warning("more than 1MB")
+    }
+
     setFilename(name);
     console.log("name", name);
     const reader = new FileReader();
@@ -448,6 +443,7 @@ export default function PricelistUpload() {
     // reader.readAsText(file);
 
     console.log(csvData);
+  
   };
 
   const upload = (e: any) => {
@@ -479,7 +475,7 @@ export default function PricelistUpload() {
           console.log("Success ", res);
           setColumns([]);
           setCsvData([]);
-
+          setPublishButton(false)
           toast.success(res.data.message);
         })
         .catch((err) => {
