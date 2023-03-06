@@ -32,7 +32,7 @@ interface rowProps{
 function TableRowRes({ fac, onButtonEdit }: rowProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  console.log(fac, "facilityRow");
+  // console.log(fac, "facilityRow");
   const [open, setOpen] = useState<boolean>(false);
   const [edit, setEdit] = useState<boolean>(false);
   const [data, setData] = useState<any>(fac);
@@ -406,8 +406,8 @@ export default function PricelistUploadthroFacility() {
     const file = e.target.files[0];
     const { name } = file;
     console.log(file.size,"fileCHeck")
-    if (file.size >100000){
-      toast.warning("more than 1MB")
+    if (file.size >1000000){
+      toast.warning("more than 10MB")
     }
     setFilename(name);
     console.log("name", name);

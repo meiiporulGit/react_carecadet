@@ -173,7 +173,7 @@ const OrganizationInfo = () => {
 
   const validationSchema = Yup.object().shape({
     organizationInformation: Yup.object().shape({
-      organizationName: Yup.string().required("Organization Name is required"),
+      organizationName: Yup.string().required("Organization Name is required").matches(/^[A-Za-z]+$/, 'Organization Name can only contain alphabets.'),
       streetAdd1: Yup.string().required("Address is required"),
       city: Yup.string()
         .required("City is required")
@@ -203,10 +203,10 @@ const OrganizationInfo = () => {
     contactPersonInformation: Yup.object().shape({
       firstName: Yup.string()
         .required("First Name is a required field")
-        .matches(/[a-zA-Z]/, "First Name can only contain alphabets."),
+        .matches(/^[A-Za-z]+$/, "First Name can only contain alphabets."),
       lastName: Yup.string()
         .required("Last Name is required")
-        .matches(/[a-zA-Z]/, "Last Name can only contain alphabets."),
+        .matches(/^[A-Za-z]+$/, "Last Name can only contain alphabets."),
       role: Yup.string()
         .required("Role is a required field")
         .matches(/[A-Za-z0-9]+$/, "Role can only contain alphabets and number"),
@@ -231,7 +231,7 @@ const OrganizationInfo = () => {
     {
       xs: 12,
       md: 12,
-      label: "Organization Name",
+      label: "Organization Name *",
       name: "organizationInformation.organizationName",
       placeholder: "Organization Name",
       type: "text",
@@ -239,7 +239,7 @@ const OrganizationInfo = () => {
     {
       xs: 12,
       md: 6,
-      label: "Street Address1",
+      label: "Street Address1 *",
       name: "organizationInformation.streetAdd1",
       placeholder: "Street Address1",
       type: "text",
@@ -281,7 +281,7 @@ const orgDetail2=[
   {
       xs: 12,
       md: 4,
-      label: "City",
+      label: "City *",
       name: "organizationInformation.city",
       placeholder: "City",
       type: "text",
@@ -289,7 +289,7 @@ const orgDetail2=[
     {
       xs: 12,
       md: 4,
-      label: "State",
+      label: "State *",
       name: "organizationInformation.state",
       placeholder: "State",
       type: "text",
@@ -297,7 +297,7 @@ const orgDetail2=[
     {
       xs: 12,
       md: 6,
-      label: "Phone",
+      label: "Phone *",
       name: "organizationInformation.phone",
       placeholder: "Phone Number",
       type: "text",
@@ -305,7 +305,7 @@ const orgDetail2=[
     {
       xs: 12,
       md: 6,
-      label: "Email",
+      label: "Email *",
       name: "organizationInformation.Email",
       placeholder: "Email",
       type: "email",
@@ -315,7 +315,7 @@ const orgDetail2=[
     {
       xs: 12,
       md: 6,
-      label: "First Name",
+      label: "First Name *",
       name: "contactPersonInformation.firstName",
       placeholder: "First Name",
       type: "text",
@@ -323,7 +323,7 @@ const orgDetail2=[
     {
       xs: 12,
       md: 6,
-      label: "Last Name",
+      label: "Last Name *",
       name: "contactPersonInformation.lastName",
       placeholder: "Last Name",
       type: "text",
@@ -332,7 +332,7 @@ const orgDetail2=[
     {
       xs: 12,
       md: 6,
-      label: "Role",
+      label: "Role *",
       name: "contactPersonInformation.role",
       placeholder: "Role",
       type: "text",
@@ -340,7 +340,7 @@ const orgDetail2=[
     {
       xs: 12,
       md: 6,
-      label: "Contact",
+      label: "Contact *",
       name: "contactPersonInformation.contactno",
       placeholder: "Contact Number",
       type: "text",
@@ -447,7 +447,7 @@ const orgDetail2=[
                     mb: "0.5rem",
                   }}
                 >
-               Zip Code
+               Zip Code *
                 </Typography>
              
                 <Field
@@ -480,8 +480,8 @@ const orgDetail2=[
                   helperText={<ErrorMessage name="organizationInformation.zipCode">
                   {(error) => <ErrorProps>{error}</ErrorProps>}
                     </ErrorMessage>}
-                  name="ServiceCode"
-                  label="Search serviceCode"
+                  name="zipCode"
+                  label="Zip Code"
                   onChange={handleChange}
                    variant="outlined"
                   sx={{
@@ -605,7 +605,7 @@ const orgDetail2=[
                     mb: "0.5rem",
                   }}
                 >
-                  Email
+                  Email *
                 </Typography>
                 <Field
                   as={TextField}

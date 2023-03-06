@@ -563,17 +563,17 @@ const EditOrganization = () => {
 
   const validationSchema = Yup.object().shape({
     organizationInformation: Yup.object().shape({
-      organizationName: Yup.string().required("Organization Name is required"),
+      organizationName: Yup.string().required("Organization Name is required").matches(/^[A-Za-z]+$/, 'Organization Name can only contain alphabets.'),
       streetAdd1: Yup.string().required("Address is required"),
-      city: Yup.string().required("City is required").matches(/[a-zA-Z]/, 'City can only contain alphabets.'),
-      state: Yup.string().required("State is required").matches(/[a-zA-Z]/, 'State can only contain alphabets.'),
+      city: Yup.string().required("City is required").matches(/^[A-Za-z]+$/, 'City can only contain alphabets.'),
+      state: Yup.string().required("State is required").matches(/^[A-Za-z]+$/, 'State can only contain alphabets.'),
       zipCode: Yup.string().required("Zip Code is required").matches(/^[A-Za-z0-9]+$/,"Zip Code can only contain alphabets and number"),
       Email: Yup.string().required("Email is required").email("invalid email"),
       phone:Yup.string().required("Phone is required").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/,"only numbers").test("len","Invalid Contact no", (val: any) => val && val.length === 10),
     }),
     contactPersonInformation: Yup.object().shape({
-      firstName: Yup.string().required("First Name is a required field").matches(/[a-zA-Z]/, 'First Name can only contain alphabets.'),
-      lastName: Yup.string().required("Last Name is required").matches(/[a-zA-Z]/, 'Last Name can only contain alphabets.'),
+      firstName: Yup.string().required("First Name is a required field").matches(/^[A-Za-z]+$/, 'First Name can only contain alphabets.'),
+      lastName: Yup.string().required("Last Name is required").matches(/^[A-Za-z]+$/, 'Last Name can only contain alphabets.'),
       role: Yup.string().required("Role is a required field").matches(/[A-Za-z0-9]+$/,"Role can only contain alphabets and number"),
       contactno: Yup.string().required("Contact is a required field").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/,"only numbers") .test("len","Invalid contact no", (val: any) => val && val.length === 10),
       email: Yup.string()
@@ -586,7 +586,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 12,
-      label: "Organization Name",
+      label: "Organization Name *",
       name: "organizationInformation.organizationName",
       placeholder: "Organization Name",
       type: "text",
@@ -594,7 +594,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 6,
-      label: "Street Address1",
+      label: "Street Address1 *",
       name: "organizationInformation.streetAdd1",
       placeholder: "Street Address1",
       type: "text",
@@ -610,7 +610,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 4,
-      label: "City",
+      label: "City *",
       name: "organizationInformation.city",
       placeholder: "City",
       type: "text",
@@ -618,7 +618,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 4,
-      label: "State",
+      label: "State *",
       name: "organizationInformation.state",
       placeholder: "State",
       type: "text",
@@ -626,7 +626,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 4,
-      label: "Zip Code",
+      label: "Zip Code *",
       name: "organizationInformation.zipCode",
       placeholder: "Zip Code",
       type: "text",
@@ -634,7 +634,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 6,
-      label: "Phone",
+      label: "Phone *",
       name: "organizationInformation.phone",
       placeholder: "Phone Number",
       type: "text",
@@ -642,7 +642,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 6,
-      label: "Email",
+      label: "Email *",
       name: "organizationInformation.Email",
       placeholder: "Email",
       type: "email",
@@ -652,7 +652,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 6,
-      label: "First Name",
+      label: "First Name *",
       name: "contactPersonInformation.firstName",
       placeholder: "First Name",
       type: "text",
@@ -660,7 +660,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 6,
-      label: "Last Name",
+      label: "Last Name *",
       name: "contactPersonInformation.lastName",
       placeholder: "Last Name",
       type: "text",
@@ -669,7 +669,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 6,
-      label: "Role",
+      label: "Role *",
       name: "contactPersonInformation.role",
       placeholder: "Role",
       type: "text",
@@ -677,7 +677,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 6,
-      label: "Contact",
+      label: "Contact *",
       name: "contactPersonInformation.contactno",
       placeholder: "Contact Number",
       type: "text",
@@ -685,7 +685,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 12,
-      label: "Email",
+      label: "Email *",
       name: "contactPersonInformation.email",
       placeholder: "Email",
       type: "email",

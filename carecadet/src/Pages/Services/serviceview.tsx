@@ -40,7 +40,7 @@ interface rowProps{
   fac:any
 }
 function Row({fac}:rowProps){
- console.log(fac,"facilityRow")
+//  console.log(fac,"facilityRow")
   const [open,setOpen]=useState<boolean>(false)
 return(
   <Box>

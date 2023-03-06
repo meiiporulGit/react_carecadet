@@ -40,7 +40,7 @@ interface rowProps{
 function TableRowRes({ fac, onButtonEdit }: rowProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  console.log(fac, "facilityRow");
+  // console.log(fac, "facilityRow");
   const [open, setOpen] = useState<boolean>(false);
   const [edit, setEdit] = useState<boolean>(false);
   const [data, setData] = useState<any>(fac);
@@ -329,10 +329,12 @@ export default function PricelistUpload() {
 
     if (mandatoryfield) {
       let index = headers.indexOf("FacilityNPI");
+     
+      // console.log(index,"index")
      for (var i = 1; i < lines.length - 1; i++) {
         var obj: any = {};
         var currentline = lines[i].split(",");
-       
+       console.log(currentline,"index")
         let storefacility = facilityinput.filter((data: any) => data.facilityNPI === currentline[index]);
        
       if(storefacility[0]===undefined){
@@ -392,6 +394,7 @@ export default function PricelistUpload() {
         }
       }
     }else{
+      console.log(facilityExistCheck)
       toast.error(`${facilityExistCheck} Facility NPI not available in this organization`)
     }
    
@@ -409,8 +412,8 @@ export default function PricelistUpload() {
     const file = e.target.files[0];
     console.log(file.size,"fileCheck")
     const { name } = file;
-    if (file.size >100000){
-      toast.warning("more than 1MB")
+    if (file.size >1000000){
+      toast.warning("more than 10MB")
     }
 
     setFilename(name);
