@@ -36,7 +36,7 @@ import clsx from "clsx";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import { axiosPrivate, baseURL } from "../../axios/axios";
 import { toast } from "react-toastify";
-import { KeyboardArrowDown, KeyboardArrowUp ,Edit} from "@mui/icons-material";
+import { KeyboardArrowDown, KeyboardArrowUp ,Edit,Delete} from "@mui/icons-material";
 
 interface forminitialValues {
   _id: string;
@@ -53,6 +53,7 @@ interface forminitialValues {
 interface rowProps{
   fac:any
   onButtonEdit: any;
+  handleDelete:any
 }
 
 
@@ -60,7 +61,7 @@ interface rowProps{
 
 
 
-function TableRowRes({ fac, onButtonEdit }: rowProps) {
+function TableRowRes({ fac, onButtonEdit ,handleDelete}: rowProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   console.log(fac, "facilityRow");
@@ -84,7 +85,10 @@ function TableRowRes({ fac, onButtonEdit }: rowProps) {
     onButtonEdit(data);
     console.log(onButtonEdit,"buttoncheck1")
   };
-
+  const onClickDelete = async (deleteFac:any)=>{
+    handleDelete(deleteFac)
+    console.log("deletefac",deleteFac)
+      }
   return (
     <Box>
       <Paper sx={{backgroundColor:"primary.light",padding:"0.3rem"}}>
@@ -105,11 +109,17 @@ function TableRowRes({ fac, onButtonEdit }: rowProps) {
             <Typography>{fac.FacilityName}</Typography>
             </Box>
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={1}>
             <Edit
               onClick={() => {
                 setEdit(true);
               }}
+            />
+          </Grid>
+          <Grid item xs={1}>
+            <Delete
+              onClick={()=>{onClickDelete(fac)}}
+             
             />
           </Grid>
         </Grid>
@@ -285,34 +295,39 @@ export default function ServiceEditpage() {
     //return result; //JavaScript object
     return JSON.stringify(result); //JSON
   }
+
   const update = (e: any) => {
     e.preventDefault();
+
     // if(output){
     //    let formData = new FormData();
     //  formData.append("screenshot", output);
     let datacheck = { name: filename, PriceList: csvEdit };
     axiosPrivate
       .put(`/service/bulkupdate`, datacheck)
-      //   let datacheck1 = { name: filename, PriceList: csvdel };
-      //   axios
-
-      // .delete(
-      //   "http://localhost:5200/bulkdelete", datacheck1
-
-      // )
       .then((res) => {
-       
-       
+      let datacheck1 = {data: { name: filename, PriceList: csvdel }};
+      axiosPrivate
+      
+        .delete(
+          `/service/bulkdelete`, datacheck1)
+  
+     
+        .then((res) => {
+          toast.success(res.data.message);
+          console.log("Success ", res);
+          // alert("success");
+      })
+      .then((res) => {
+        // alert("success");
         // dispatch(organizationEdit(orgdata))
         navigate("/provider/service/serviceview");
-        toast.success(res.data.message)
+    
         // actions.resetForm({
         //   values: initialValues,
         // });
       });
-
-    //  }
-  };
+    })};
   const currencyFormatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -334,19 +349,49 @@ export default function ServiceEditpage() {
   };
   const onButtonEdit = (e: any) => {
     var editData=data.map((d:any)=>{
-      if(d.SNo===e.SNo){
+      if(d.FacilityName===e.FacilityName){
         return e
-        console.log(e,"e1")
       }else{
         return d
-        console.log(d,"d1")
       }
     })
   
     console.log(editData,"checkEdit")
+    var findExistEdit= csvEdit.filter((dataCsv:any)=>dataCsv._id===e._id)
+    // console.log(findExistEdit,"findExist")
+    if(findExistEdit.length!==0){
+      const mapEdit=csvEdit.map((dat:any,i:any)=>{
+            if(dat._id===e._id){
+              return e
+            }else{
+              return dat
+            }
+      })
+      // console.log("mapEdit",mapEdit)
+      setcsvEdit(mapEdit)
+    }else{
+      setcsvEdit([...csvEdit,e])
+    }
     setData(editData)
       
     };
+
+
+    const handleDelete= (e:any)  =>{
+    
+      console.log("check")
+  
+      console.log(e,"echeck")
+//       const facid=e._id;
+// console.log("facid",facid)
+      setData(data.filter((row: any) => row._id !== e._id));
+    let store = data.filter((row: any) => row._id === e._id);
+    console.log(store, "store");
+      setcsvDel([...csvdel, store[0]._id]);
+      // var delData = { ...data, [e.target.name]: e.target.value };
+      // setData(delData);
+        
+      };
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     page: number
@@ -419,26 +464,26 @@ export default function ServiceEditpage() {
       align: "right",
       ...usdPrice,
     },
-    // {
-    //   field: "actions",
-    //   type: "actions",
-    //   headerName: "Actions",
-    //   headerClassName: "super-app-theme--header",
-    //   width: 100,
-    //   cellClassName: "actions",
-    //   getActions: (data: any) => {
-    //     let id = data.id;
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "Actions",
+      headerClassName: "super-app-theme--header",
+      width: 100,
+      cellClassName: "actions",
+      getActions: (data: any) => {
+        let id = data.id;
 
-    //     return [
-    //       <GridActionsCellItem
-    //         icon={<DeleteIcon />}
-    //         label="Delete"
-    //         onClick={handleDeleteClick(id)}
-    //         color="inherit"
-    //       />,
-    //     ];
-    //   },
-    // },
+        return [
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Delete"
+            onClick={handleDeleteClick(id)}
+            color="inherit"
+          />,
+        ];
+      },
+    },
   ];
 
   function CustomRow(props: any) {
@@ -569,6 +614,7 @@ export default function ServiceEditpage() {
                   key={i}
                   fac={fac}
                   onButtonEdit={(e: any) => onButtonEdit(e)}
+                  handleDelete={(e:any) => handleDelete(e)}
                 />
                 
                 </>
