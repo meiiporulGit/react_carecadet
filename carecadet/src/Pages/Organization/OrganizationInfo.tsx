@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import Cookie from "js-cookie";
 import FormTextField from "../../Components/Textfield";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 
@@ -26,7 +26,7 @@ import { axiosPrivate } from "../../axios/axios";
 import OrganizationLandingView from "./OrganizationLandingView";
 import { useNavigate } from "react-router-dom";
 import ErrorProps from "../../Components/Errorprops";
-
+import { storeLoginInfoupdate } from "../../Redux/ProviderRedux/LoginSlice";
 // import FileUploadService from './Fileupload/FileUpload';
 interface InitialValues {
   file: any;
@@ -51,34 +51,35 @@ interface InitialValues {
 }
 
 const OrganizationInfo = () => {
+  const dispatch = useAppDispatch();
   const select = useAppSelector((state) => state.providerAuth.login);
   const navigate = useNavigate();
 
   const [currentFile, setCurrentFile] = useState<any>();
   const [checked, setChecked] = React.useState<boolean>(false);
-  const [autoCompleteData,setAutoCompleteData]=React.useState<any>([])
+  const [autoCompleteData, setAutoCompleteData] = React.useState<any>([])
 
   const [fileName, setFileName] = useState<any>("");
 
   const fileInput = useRef<any>();
   // console.log(currentFile,'single');
 
-  useEffect(()=>{
-    axiosPrivate.get("/organization/cityStateList").then((res)=>{
-      console.log("citystate",res.data.data)
+  useEffect(() => {
+    axiosPrivate.get("/organization/cityStateList").then((res) => {
+      console.log("citystate", res.data.data)
       setAutoCompleteData(res.data.data)
-      
-    })
-  },[])
 
-  const CustomPaper = (props:any) => {
-    return <Paper elevation={8} sx={{backgroundColor:"#DCF0FA",color:"black"}}{...props} />;
+    })
+  }, [])
+
+  const CustomPaper = (props: any) => {
+    return <Paper elevation={8} sx={{ backgroundColor: "#DCF0FA", color: "black" }}{...props} />;
   };
 
   const OPTIONS_LIMIT = 10;
   const defaultFilterOptions = createFilterOptions();
-  
-  const filterOptions = (options:any, state:any) => {
+
+  const filterOptions = (options: any, state: any) => {
     return defaultFilterOptions(options, state).slice(0, OPTIONS_LIMIT);
   };
 
@@ -95,27 +96,70 @@ const OrganizationInfo = () => {
       Email: select.email,
     },
     contactPersonInformation: {
-      firstName: "",
-      lastName: "",
-      role: "",
+      firstName: select.firstName,
+      lastName: select.lastName,
+      role: select.userType,
       contactno: "",
-      email: "",
+      email: select.email,
     },
     file: "",
   };
+  const [errorMessage, setErrorMessage] = useState("")
   const SingleFileChange = () => {
     setCurrentFile(fileInput.current.files[0]);
     setFileName(fileInput.current.files[0].name);
+    console.log(currentFile, 'currentfile')
+    var file = document.getElementById("upload-photo");
+    if (/\.(jpe?g|png|gif)$/i.test(fileInput.current.files[0].name) === false) {
+      setErrorMessage("Unsupported File Format (Allowed PNG,JPG,JPEG,gif)")
+    }else{
+      setErrorMessage("")
+    }
+    // { alert("Uploaded file has unsupported format!"); } 
+
+
   };
 
 
 
-  const onSubmit = async (values: InitialValues, actions: any) => {
+  const onSubmit = async (values: InitialValues, actions: any,) => {
+    const orgprovider = {
+      providerID: select.userID,
+      firstName: values.contactPersonInformation.firstName,
+      lastName: values.contactPersonInformation.lastName,
+      role: values.contactPersonInformation.role,
+      contact: values.contactPersonInformation.contactno,
+      email: select.email,
+    };
+    alert(JSON.stringify(orgprovider, null, 2));
+    try {
+      axiosPrivate
+        .put("provider/updateProvider", orgprovider)
+      .then((res) => {
+        const updatelogininfo = {
+          firstName: values.contactPersonInformation.firstName,
+          lastName: values.contactPersonInformation.lastName
+        }
+
+        dispatch(storeLoginInfoupdate(updatelogininfo))
+        toast.success(res.data.message);
+        actions.resetForm({
+          values: initialValues,
+        });
+        navigate("/provider/facility/addFacility");
+      })
+      .catch((err) => {
+        console.log(err, "orgErr");
+        toast.error(err.message);
+      });
+    } catch (err) { }
+
     let formData = new FormData();
     formData.append("file", currentFile);
     //  formData.append("file", fileName);
     console.log(formData, "formData");
     console.log(currentFile, "curr");
+    console.log(values.file, 'imgfile')
     try {
       axiosPrivate
         .post("organization/image", formData, {
@@ -142,7 +186,7 @@ const OrganizationInfo = () => {
               lastName: values.contactPersonInformation.lastName,
               role: values.contactPersonInformation.role,
               contact: values.contactPersonInformation.contactno,
-              email: values.contactPersonInformation.email,
+              email: select.email,
             },
           };
           // alert(JSON.stringify(orgdata, null, 2));
@@ -167,10 +211,10 @@ const OrganizationInfo = () => {
         });
     } catch (err) {
       throw err;
-      console.log(err, "err");
+      // console.log(err, "err");
     }
   };
-
+  
   const validationSchema = Yup.object().shape({
     organizationInformation: Yup.object().shape({
       organizationName: Yup.string().required("Organization Name is required"),
@@ -277,8 +321,8 @@ const OrganizationInfo = () => {
     //   type: "text",
     // },
   ]
-const orgDetail2=[
-  {
+  const orgDetail2 = [
+    {
       xs: 12,
       md: 4,
       label: "City",
@@ -354,6 +398,7 @@ const orgDetail2=[
     //   type: "email",
     // },
   ];
+  
   return (
     <Paper
       elevation={9}
@@ -368,7 +413,8 @@ const orgDetail2=[
         onSubmit={onSubmit}
         validationSchema={validationSchema}
       >
-        {({ handleChange, setFieldValue, values }) => (
+        {({ handleChange, setFieldValue, values, touched,
+          errors, }) => (
           <Form>
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -385,16 +431,22 @@ const orgDetail2=[
                 </Typography>
               </Grid>
               <Grid xs={12}>
+
                 <label htmlFor="upload-photo">
+
                   <input
                     style={{ display: "none" }}
                     id="upload-photo"
-                    // name="upload-photo"
+                    name="file"
                     type="file"
-                    accept="image/*"
+                    hidden
+                    accept=".png,.jpg,.jpeg"
+                    value={values.file}
                     ref={fileInput}
                     onChange={SingleFileChange}
+                  
                   />
+
                   <Button
                     color="primary"
                     variant="contained"
@@ -403,10 +455,21 @@ const orgDetail2=[
                   >
                     Upload profile image
                   </Button>
+                 
+                  {/* <ErrorMessage name="file" /> */}
+
                 </label>
+
+                {errorMessage? (errorMessage && 
+                  <div style={{
+                    textAlign: "left",
+                    color: "red",
+                    fontSize: "0.9rem",
+                    marginTop: "0.6rem",
+                  }}>{errorMessage}</div>):(
                 <Box component="span" sx={{ marginLeft: "1rem" }}>
                   {fileName}
-                </Box>
+                </Box>)}
               </Grid>
 
               {organizationData.map((org, i) => (
@@ -438,96 +501,91 @@ const orgDetail2=[
                   />
                 </Grid>
               ))}
-              
-         <Grid item xs={12} md={4}>
-         <Typography
+
+              <Grid item xs={12} md={4}>
+                <Typography
                   // variant="h6"
                   sx={{
                     fontSize: "1.2rem",
                     mb: "0.5rem",
                   }}
                 >
-               Zip Code
+                  Zip Code
                 </Typography>
-             
+
                 <Field
-                          
-              name="organizationInformation.zipCode"
-              component={Autocomplete}
-               options = {autoCompleteData}
-               loading={autoCompleteData.length === 0}
-               PaperComponent={CustomPaper}
-              filterOptions = {filterOptions}
-               getOptionLabel={(option: any) => option.ZIP_CODE || option}         
-              freeSolo    
-             fullWidth={true}
-             value={values.organizationInformation.zipCode}
-             
-              onChange={(e: any, value: any) => {
-            
-                
-                console.log("value",value.ZIP_CODE)
-               
-               setFieldValue("organizationInformation.zipCode",value !== null ? value.ZIP_CODE :"");
-               setFieldValue("organizationInformation.city",value !== null ? value.city :"");
-               setFieldValue("organizationInformation.state",value !== null ? value.state :"");
-             
-                             }}
-                            
-               renderInput={(params: AutocompleteRenderInputParams) => (
-                <TextField
-                  {...params}
-                  helperText={<ErrorMessage name="organizationInformation.zipCode">
-                  {(error) => <ErrorProps>{error}</ErrorProps>}
-                    </ErrorMessage>}
-                  name="ServiceCode"
-                  label="Search serviceCode"
-                  onChange={handleChange}
-                   variant="outlined"
-                  sx={{
-                    ".MuiFormLabel-root ": {
-                      letterSpacing: "0.2rem",
-                      fontSize: "0.8rem",
-                    },
-                    ".MuiInputLabel-shrink": {
-                      letterSpacing: 0,
-                    },
-                    "& .MuiAutocomplete-popupIndicator": { transform: "none" }                  
+                  name="organizationInformation.zipCode"
+                  component={Autocomplete}
+                  options={autoCompleteData}
+                  loading={autoCompleteData.length === 0}
+                  PaperComponent={CustomPaper}
+                  filterOptions={filterOptions}
+                  getOptionLabel={(option: any) => option.ZIP_CODE || option}
+                  freeSolo
+                  fullWidth={true}
+                  value={values.organizationInformation.zipCode}
+
+                  onChange={(e: any, value: any) => {
+                    console.log("value", value.ZIP_CODE)
+                    setFieldValue("organizationInformation.zipCode", value !== null ? value.ZIP_CODE : "");
+                    setFieldValue("organizationInformation.city", value !== null ? value.city : "");
+                    setFieldValue("organizationInformation.state", value !== null ? value.state : "");
                   }}
-  
+
+                  renderInput={(params: AutocompleteRenderInputParams) => (
+                    <TextField
+                      {...params}
+                      helperText={<ErrorMessage name="organizationInformation.zipCode">
+                        {(error) => <ErrorProps>{error}</ErrorProps>}
+                      </ErrorMessage>}
+                      name="organizationInformation.zipCode"
+                      label="Search zipCode"
+                      onChange={handleChange}
+                      variant="outlined"
+                      sx={{
+                        ".MuiFormLabel-root ": {
+                          letterSpacing: "0.2rem",
+                          fontSize: "0.8rem",
+                        },
+                        ".MuiInputLabel-shrink": {
+                          letterSpacing: 0,
+                        },
+                        "& .MuiAutocomplete-popupIndicator": { transform: "none" }
+                      }}
+
+                    />
+                  )}
                 />
-              )}
-            />
-         </Grid>
-   {orgDetail2.map((org,i)=>(
-    <Grid item xs={org.xs} md={org.md} key={i}>
-    <Typography
-      // variant="h6"
-      sx={{
-        fontSize: "1.2rem",
-        mb: "0.5rem",
-      }}
-    >
-      {org.label}
-    </Typography>
-    <FormTextField
-      container={TextField}
-      name={org.name}
-      placeholder={org.placeholder}
-      type={org.type}
-      fullWidth={true}
-      autoComplete="text"
-      // autoComplete="new-country-area"
-      sx={{
-        "&::placeholder": {
-          // color: "green",
-          letterSpacing: "0.2rem",
-          // fontSize: "1rem",
-        },
-      }}
-    />
-  </Grid>
-   ))}
+              </Grid>
+              {orgDetail2.map((org, i) => (
+                <Grid item xs={org.xs} md={org.md} key={i}>
+                  <Typography
+                    // variant="h6"
+                    sx={{
+                      fontSize: "1.2rem",
+                      mb: "0.5rem",
+                    }}
+                  >
+                    {org.label}
+                  </Typography>
+                  <FormTextField
+                    container={TextField}
+                    name={org.name}
+                    placeholder={org.placeholder}
+                    type={org.type}
+                    fullWidth={true}
+                    autoComplete="text"
+                    // autoComplete="new-country-area"
+                    sx={{
+                      "&::placeholder": {
+                        // color: "green",
+                        letterSpacing: "0.2rem",
+                        // fontSize: "1rem",
+                      },
+                    }}
+                  />
+                </Grid>
+              ))}
               <Grid item xs={12}>
                 <Typography
                   mb={"0.5rem"}
@@ -570,33 +628,33 @@ const orgDetail2=[
                   />
                 </Grid>
               ))}
-              <Grid item xs={12}>
-              <FormControlLabel
-              sx={{
-                "& .MuiFormControlLabel-label": {
-                  color:"#BBC7D9",
-                  fontSize:"1.1rem"
-                } 
-              }}
-            control={
-              <Checkbox checked={checked} sx={{
-                "&.Mui-checked": {
-                  color: 'blue'
-                },
-                }}
-                onChange={(e:any)=>{
-                   setChecked(e.target.checked)
-                   if(e.target.checked===true){
-                   setFieldValue("contactPersonInformation.email",values.organizationInformation.Email)
-                }
-                else{
-                  setFieldValue("contactPersonInformation.email","")
-                }
-                  }}/>
-            }
-            label="Same as organization email"
-          />
-              </Grid>
+              {/* <Grid item xs={12}>
+                <FormControlLabel
+                  sx={{
+                    "& .MuiFormControlLabel-label": {
+                      color: "#BBC7D9",
+                      fontSize: "1.1rem"
+                    }
+                  }}
+                  control={
+                    <Checkbox checked={checked} sx={{
+                      "&.Mui-checked": {
+                        color: 'blue'
+                      },
+                    }}
+                      onChange={(e: any) => {
+                        setChecked(e.target.checked)
+                        if (e.target.checked === true) {
+                          setFieldValue("contactPersonInformation.email", values.organizationInformation.Email)
+                        }
+                        else {
+                          setFieldValue("contactPersonInformation.email", "")
+                        }
+                      }} />
+                  }
+                  label="Same as organization email"
+                />
+              </Grid> */}
               <Grid item xs={12} md={12}>
                 <Typography
                   // variant="h6"
@@ -605,13 +663,13 @@ const orgDetail2=[
                     mb: "0.5rem",
                   }}
                 >
-                  Email
+                  Email <span style = {{textAlign: "left",
+                    color: "red",
+                    fontSize: "0.9rem"}}>(* readOnly)</span>
                 </Typography>
                 <Field
                   as={TextField}
-                
-                  value={  values.contactPersonInformation.email}
-                 
+                  // value={values.contactPersonInformation.email}
                   sx={{
                     // boxShadow: "0 0 45px 1px red" ,
                     "&::placeholder": {
@@ -620,17 +678,25 @@ const orgDetail2=[
                       // fontSize: "1rem",
                     },
                   }}
-                  helperText={ <ErrorMessage name="contactPersonInformation.email">
-                  {(error) => <ErrorProps>{error}</ErrorProps>}
-                    </ErrorMessage>}
+                  helperText={
+                  //    <div style={{
+                  //   textAlign: "left",
+                  //   color: "red",
+                  //   fontSize: "0.9rem",
+                   
+                  // }} >readonly</div>
+                  <ErrorMessage name="contactPersonInformation.email">
+                    {(error) => <ErrorProps>{error}</ErrorProps>}
+                  </ErrorMessage>
+                  }
                   name="contactPersonInformation.email"
                   placeholder="Email"
                   type="email"
                   fullWidth={true}
                   autoComplete="text"
-                  
+                  inputProps = {{readOnly:true}}
                 />
-               
+
               </Grid>
 
               <Grid container item xs={12} justifyContent="right">

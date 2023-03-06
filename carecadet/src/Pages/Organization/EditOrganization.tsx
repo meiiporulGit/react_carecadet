@@ -390,7 +390,7 @@
 
 // export default EditOrganization;
 import React, { useState, useRef } from "react";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { TextField, Box, Typography, Grid, Paper, Button } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -399,6 +399,7 @@ import FormTextField from "../../Components/Textfield";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
+import { storeLoginInfoupdate } from "../../Redux/ProviderRedux/LoginSlice";
 import { organizationImage } from "../../Redux/ProviderRedux/orgSlice";
 import { axiosPrivate } from "../../axios/axios";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -434,8 +435,9 @@ const EditOrganization = () => {
   const [currentFile, setCurrentFile] = useState<any>();
   const [fileName, setFileName] = useState<any>("");
   const [buttonEdit,setButtonEdit]=useState<Boolean>(false)
+  const [errorMessage, setErrorMessage] = useState("")
   const select = useAppSelector((state) => state.providerOrganization.orgEditData[0]);
-  console.log(select)
+  console.log(select,"editorg")
   const image = useAppSelector((state) => state.providerOrganization.orgEditImage);
   console.log("imageedit", image);
   const data = useAppSelector(
@@ -474,14 +476,52 @@ const EditOrganization = () => {
     console.log(formData, "formDataonchangeedit");
     setCurrentFile(files[0]);
   };
+
   const SingleFileChange = () => {
     setCurrentFile(fileInput.current.files[0]);
     setFileName(fileInput.current.files[0].name);
     //     let formData = new FormData();
     //     formData.append("file", currentFile);
     // console.log(currentFile,'currentedit')
+    var file = document.getElementById("upload-photo");
+    if (/\.(jpe?g|png|gif)$/i.test(fileInput.current.files[0].name) === false) {
+      setErrorMessage("Unsupported File Format (Allowed PNG,JPG,JPEG,gif)")
+    }else{
+      setErrorMessage("")
+    }
   };
   const onSubmit = async (values: InitialValues, actions: any) => {
+    const orgprovider = {
+      providerID: select.providerID,
+      firstName: values.contactPersonInformation.firstName,
+      lastName: values.contactPersonInformation.lastName,
+      role: values.contactPersonInformation.role,
+      contact: values.contactPersonInformation.contactno,
+      email: select.email,
+    };
+    alert(JSON.stringify(orgprovider, null, 2));
+    try {
+      axiosPrivate
+        .put("provider/updateProvider", orgprovider)
+      .then((res) => {
+        const updatelogininfo = {
+          firstName: values.contactPersonInformation.firstName,
+          lastName: values.contactPersonInformation.lastName
+        }
+
+        dispatch(storeLoginInfoupdate(updatelogininfo))
+        toast.success(res.data.message);
+        actions.resetForm({
+          values: initialValues,
+        });
+        navigate("/provider/viewOrg");
+      })
+      .catch((err) => {
+        console.log(err, "orgErr");
+        toast.error(err.message);
+      });
+    } catch (err) { }
+
     let formData = new FormData();
     formData.append("file", currentFile);
     // formData.append("file", fileName);
@@ -682,14 +722,14 @@ const EditOrganization = () => {
       placeholder: "Contact Number",
       type: "text",
     },
-    {
-      xs:12,
-      md: 12,
-      label: "Email",
-      name: "contactPersonInformation.email",
-      placeholder: "Email",
-      type: "email",
-    },
+    // {
+    //   xs:12,
+    //   md: 12,
+    //   label: "Email",
+    //   name: "contactPersonInformation.email",
+    //   placeholder: "Email",
+    //   type: "email",
+    // },
   ];
   return (
     <Paper
@@ -784,9 +824,19 @@ const EditOrganization = () => {
                   Upload profile image
                 </Button>
               </label>
-              <Box component="span" sx={{ marginLeft: "1rem" }}>
+              {errorMessage? (errorMessage && 
+                  <div style={{
+                    textAlign: "left",
+                    color: "red",
+                    fontSize: "0.9rem",
+                    marginTop: "0.6rem",
+                  }}>{errorMessage}</div>):(
+                <Box component="span" sx={{ marginLeft: "1rem" }}>
+                  {fileName}
+                </Box>)}
+              {/* <Box component="span" sx={{ marginLeft: "1rem" }}>
                 {fileName}
-              </Box>
+              </Box> */}
             </Grid>
 
             {organizationData.map((org, i) => (
@@ -816,6 +866,7 @@ const EditOrganization = () => {
                 />
               </Grid>
             ))}
+            
 
             <Grid item xs={12}>
               <Typography
@@ -858,7 +909,49 @@ const EditOrganization = () => {
                 />
               </Grid>
             ))}
+ <Grid item xs={12} md={12}>
+                <Typography
+                  // variant="h6"
+                  sx={{
+                    fontSize: "1.2rem",
+                    mb: "0.5rem",
+                  }}
+                >
+                  Email <span style = {{textAlign: "left",
+                    color: "red",
+                    fontSize: "0.9rem"}}>(* readOnly)</span>
+                </Typography>
+                <Field
+                  as={TextField}
+                  // value={values.contactPersonInformation.email}
+                  sx={{
+                    // boxShadow: "0 0 45px 1px red" ,
+                    "&::placeholder": {
+                      // color: "green",
+                      letterSpacing: "0.2rem",
+                      // fontSize: "1rem",
+                    },
+                  }}
+                  // helperText={
+                  // //    <div style={{
+                  // //   textAlign: "left",
+                  // //   color: "red",
+                  // //   fontSize: "0.9rem",
+                   
+                  // // }} >readonly</div>
+                  // <ErrorMessage name="contactPersonInformation.email">
+                  //   {(error) => <ErrorProps>{error}</ErrorProps>}
+                  // </ErrorMessage>
+                  // }
+                  name="contactPersonInformation.email"
+                  placeholder="Email"
+                  type="email"
+                  fullWidth={true}
+                  autoComplete="text"
+                  inputProps = {{readOnly:true}}
+                />
 
+              </Grid>
             <Grid container item xs={12} justifyContent="right" >
               <Buttoncomponent
 
