@@ -250,6 +250,7 @@ export default function ServiceEditpage() {
     let store = data.filter((row: any) => row._id === id);
     console.log(store, "store");
     setcsvDel([...csvdel, store._id]);
+    toast.success("Successfully delete the service. Kindly click SAVE to update in DB")
   };
 
   const onCellEditCommit = async (cellData: any) => {
@@ -268,8 +269,10 @@ export default function ServiceEditpage() {
         return dd;
       });
       setcsvEdit(r);
+      toast.success("Successfully Edit the service. Kindly click SAVE to update in DB")
     } else {
       setcsvEdit([...csvEdit, { ...d[0], [field]: value }]);
+      toast.success("Successfully Edit the service. Kindly click SAVE to update in DB")
     }
   };
 
