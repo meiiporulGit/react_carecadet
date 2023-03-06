@@ -246,10 +246,17 @@ export default function ServiceEditpage() {
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
+    // setData(data.filter((row: any) => row._id !== id));
+    // let store = data.filter((row: any) => row._id === id);
+    // console.log(store, "store");
+    // setcsvDel([...csvdel, store[0]._id]);
+    // toast.success("Successfully delete the service. Kindly click SAVE to update in DB")
     setData(data.filter((row: any) => row._id !== id));
+    console.log("data1",data)
     let store = data.filter((row: any) => row._id === id);
-    console.log(store, "store");
-    setcsvDel([...csvdel, store._id]);
+    console.log(store[0]._id, "store");
+    setcsvDel([...csvdel, store[0]._id]);
+    console.log(csvdel,"checkdel")
     toast.success("Successfully delete the service. Kindly click SAVE to update in DB")
   };
 
@@ -298,10 +305,8 @@ export default function ServiceEditpage() {
     //return result; //JavaScript object
     return JSON.stringify(result); //JSON
   }
-
   const update = (e: any) => {
     e.preventDefault();
-
     // if(output){
     //    let formData = new FormData();
     //  formData.append("screenshot", output);
@@ -309,28 +314,32 @@ export default function ServiceEditpage() {
     axiosPrivate
       .put(`/service/bulkupdate`, datacheck)
       .then((res) => {
-      let datacheck1 = {data: { name: filename, PriceList: csvdel }};
-      axiosPrivate
-      
-        .delete(
-          `/service/bulkdelete`, datacheck1)
-  
-     
-        .then((res) => {
-          toast.success(res.data.message);
-          console.log("Success ", res);
-          // alert("success");
-      })
+        let datacheck1 = {data: { name: filename, PriceList: csvdel }};
+        axiosPrivate
+        
+          .delete(
+            `/service/bulkdelete`, datacheck1)
+    
+       
+          .then((res) => {
+            toast.success(res.data.message);
+            console.log("Success ", res);
+          })})
       .then((res) => {
-        // alert("success");
+       
+       
         // dispatch(organizationEdit(orgdata))
         navigate("/provider/service/serviceview");
-    
+        // toast.success(res.data.message)
         // actions.resetForm({
         //   values: initialValues,
         // });
       });
-    })};
+
+    //  }
+  };
+
+  
   const currencyFormatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -352,7 +361,7 @@ export default function ServiceEditpage() {
   };
   const onButtonEdit = (e: any) => {
     var editData=data.map((d:any)=>{
-      if(d.FacilityName===e.FacilityName){
+      if(d.facilityName===e.facilityName){
         return e
       }else{
         return d

@@ -324,7 +324,8 @@ export default function PricelistEditpage() {
         //   values: initialValues,
         // });
       });
-    })};
+    }
+    )};
       //   let datacheck1 = { name: filename, PriceList: csvdel };
       //   axios
       // .delete(
