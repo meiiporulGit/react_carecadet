@@ -122,9 +122,12 @@ const [zipDisable,setZipDisable]=useState(false)
 
   };
 
-
+  // const onSubmit = async (values: InitialValues, actions: any,) => {
+  //   console.log(values,"checkValues")
+  // }
 
   const onSubmit = async (values: InitialValues, actions: any,) => {
+    console.log(values,"checkValues")
     const orgprovider = {
       providerID: select.userID,
       firstName: values.contactPersonInformation.firstName,
@@ -148,7 +151,7 @@ const [zipDisable,setZipDisable]=useState(false)
         actions.resetForm({
           values: initialValues,
         });
-        navigate("/provider/facility/addFacility");
+        // navigate("/provider/facility/addFacility");
       })
       .catch((err) => {
         console.log(err, "orgErr");
@@ -647,7 +650,89 @@ const [zipDisable,setZipDisable]=useState(false)
                   inputProps = {{readOnly:zipDisable}}
                 />
               </Grid>
-             
+              <Grid item xs={12} md={6}>
+                <Typography
+                  // variant="h6"
+                  sx={{
+                    fontSize: "1.2rem",
+                    mb: "0.5rem",
+                  }}
+                >
+                  Phone No *
+                </Typography>
+                <Field
+                  as={TextField}
+                  // value={values.contactPersonInformation.email}
+                  sx={{
+                    // boxShadow: "0 0 45px 1px red" ,
+                    "&::placeholder": {
+                      // color: "green",
+                      letterSpacing: "0.2rem",
+                      // fontSize: "1rem",
+                    },
+                  }}
+                  helperText={
+                  //    <div style={{
+                  //   textAlign: "left",
+                  //   color: "red",
+                  //   fontSize: "0.9rem",
+                   
+                  // }} >readonly</div>
+                  <ErrorMessage name="organizationInformation.phone">
+                    {(error) => <ErrorProps>{error}</ErrorProps>}
+                  </ErrorMessage>
+                  }
+                  name="organizationInformation.phone"
+                  placeholder="Phone Number"
+                  type="text"
+                  fullWidth={true}
+                  autoComplete="text"
+               
+                />
+
+              </Grid>
+              
+              <Grid item xs={12} md={6}>
+                <Typography
+                  // variant="h6"
+                  sx={{
+                    fontSize: "1.2rem",
+                    mb: "0.5rem",
+                  }}
+                >
+                  Email *
+                </Typography>
+                <Field
+                  as={TextField}
+                  // value={values.contactPersonInformation.email}
+                  sx={{
+                    // boxShadow: "0 0 45px 1px red" ,
+                    "&::placeholder": {
+                      // color: "green",
+                      letterSpacing: "0.2rem",
+                      // fontSize: "1rem",
+                    },
+                  }}
+                  helperText={
+                  //    <div style={{
+                  //   textAlign: "left",
+                  //   color: "red",
+                  //   fontSize: "0.9rem",
+                   
+                  // }} >readonly</div>
+                  <ErrorMessage name="organizationInformation.Email">
+                    {(error) => <ErrorProps>{error}</ErrorProps>}
+                  </ErrorMessage>
+                  }
+                  name="organizationInformation.Email"
+                  placeholder="Email"
+                  type="email"
+                  fullWidth={true}
+                  autoComplete="text"
+               
+                />
+
+              </Grid>
              
               <Grid item xs={12}>
                 <Typography
