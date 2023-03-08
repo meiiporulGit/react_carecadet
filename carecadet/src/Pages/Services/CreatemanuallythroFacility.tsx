@@ -1,5 +1,5 @@
 import React from "react";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useState, useEffect } from "react";
 import * as Yup from "yup";
 import { TextField, Box, Typography, Grid, Paper,Autocomplete,
@@ -15,6 +15,7 @@ import { axiosPrivate, baseURL } from "../../axios/axios";
 import Pricelistlandingpage from "./pricelistlandingpage";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import ErrorProps from "../../Components/Errorprops";
 
 interface InitialValues {
   Organisationid: string;
@@ -93,10 +94,8 @@ const CreateServicethroFacility = () => {
 
   const validationSchema = Yup.object().shape({
     ServiceCode: Yup.string().required("Service Code is required"),
-    DiagnosisTestorServiceName: Yup.string().required(
-      "Service Name is required"
-    ),
-    FacilityPrices: Yup.string().required("Service Price is required"),
+    DiagnosisTestorServiceName: Yup.string().required("Service Name is required"),
+    FacilityPrices: Yup.string().required("Facility price is required").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/,"only numbers"),
   });
 
  
@@ -141,7 +140,7 @@ const CreateServicethroFacility = () => {
                     mb: "0.5rem",
                   }}
                 >
-                 Service Code
+                 Service Code *
                 </Typography>
              
                 <Field
@@ -173,6 +172,10 @@ const CreateServicethroFacility = () => {
                   label="Search Service Code"
                   onChange={handleChange}
                    variant="outlined"
+                   helperText={
+                    <ErrorMessage name="ServiceCode">
+                      {(error) => <ErrorProps>{error}</ErrorProps>}
+                    </ErrorMessage>}
                   sx={{
                     ".MuiFormLabel-root ": {
                       letterSpacing: "0.2rem",
@@ -198,7 +201,7 @@ const CreateServicethroFacility = () => {
                     mb: "0.5rem",
                   }}
                 >
-                 DiagnosisTest or Service Name
+                 DiagnosisTest or Service Name *
                 </Typography>
                 <Field
                label="Service Name"
@@ -224,6 +227,10 @@ filterOptions = {filterOptions}
                   label="Search Service Name"
                   onChange={handleChange}
                    variant="outlined"
+                   helperText={
+                    <ErrorMessage name="DiagnosisTestorServiceName">
+                      {(error) => <ErrorProps>{error}</ErrorProps>}
+                    </ErrorMessage>}
                   sx={{
                     ".MuiFormLabel-root ": {
                       letterSpacing: "0.2rem",
@@ -372,7 +379,7 @@ filterOptions = {filterOptions}
               
                 }}
               >
-                Facility Prices
+                Facility Prices *
               </Typography>
               <FormTextField
                 container={TextField}

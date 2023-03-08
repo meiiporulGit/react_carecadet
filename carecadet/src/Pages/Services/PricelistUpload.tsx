@@ -161,6 +161,7 @@ function TableRowRes({ fac, onButtonEdit }: rowProps) {
                 value={data.FacilityPrices}
                 name="FacilityPrices"
                 onChange={(e) => editOnchange(e)}
+                type="number"
               />
             )}
           </Typography>
@@ -312,6 +313,7 @@ export default function PricelistUpload() {
     {
       field: "FacilityPrices",
       headerName: "Facility Prices",
+      type:"number",
       editable: true,
       width: 100,
       align: "right",
@@ -353,6 +355,7 @@ export default function PricelistUpload() {
         }
         obj["FacilityName"] = finalfacility;
         result.push(obj);
+        console.log(result,"rescheck")
       }
        
       }
