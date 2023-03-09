@@ -422,7 +422,7 @@ const Navbar = () => {
                     navigate("/provider/login")
                   }
                   else if (char === "patient") {
-                    navigate("/")
+                    navigate("/provider/login")
                   }
                 }}
 
@@ -693,7 +693,7 @@ const Navbar = () => {
             ) : (<Typography
               onClick={() => {
                 if (char === "provider") { navigate("/provider/login") }
-                else if (char === "patient") { navigate("/") }
+                else if (char === "patient") { navigate("/provider/login") }
               }
               }
 

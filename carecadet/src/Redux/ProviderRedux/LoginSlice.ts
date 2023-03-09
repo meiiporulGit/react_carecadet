@@ -60,6 +60,14 @@ export const loginSlice = createSlice({
         login: action.payload,
       };
     },
+    storeLoginInfoupdate: (state, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        login: {...state.login,["firstName"]:action.payload.firstName,
+        ["lastName"]:action.payload.lastName},
+      };
+    },
+    
     logoutButton: (state) => {
       return {
         ...state,
@@ -106,6 +114,7 @@ export const {
   tabValueNav,
   loginButton,
   accessTokentest,
+  storeLoginInfoupdate
   // editButton
 } = loginSlice.actions;
 // Other code such as selectors can use the imported `RootState` type

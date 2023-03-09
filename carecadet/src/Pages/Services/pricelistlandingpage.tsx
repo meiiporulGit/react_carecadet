@@ -38,7 +38,7 @@ interface rowProps{
   fac:any
 }
 function Row({fac}:rowProps){
- console.log(fac,"facilityRow")
+//  console.log(fac,"facilityRow")
   const [open,setOpen]=useState<boolean>(false)
 return(
   <Box>
@@ -149,7 +149,8 @@ export default function Pricelistlandingpage() {
       field: "DiagnosisTestorServiceName",
       headerName: "Diagnosis Test/Service Name",
       headerClassName: "super-app-theme--header",
-      width: 405,
+      // width: 405,
+      flex:2,
     },
     // {
     //   field: "FacilityName",
@@ -167,7 +168,8 @@ export default function Pricelistlandingpage() {
       field: "OrganisationPrices",
       headerName: "Organisation Prices",
       headerClassName: "super-app-theme--header",
-      width: 200,
+      // width: 200,
+      flex:1,
       type: "number",
       align: "right",
       ...usdPrice,
@@ -176,13 +178,15 @@ export default function Pricelistlandingpage() {
       field: "FacilityNPI",
       headerName: "FacilityNPI",
       headerClassName: "super-app-theme--header",
-      width: 200,
+      // width: 200,
+      flex:1,
     },
     {
       field: "FacilityPrices",
       headerName: "Facility Prices",
       headerClassName: "super-app-theme--header",
-      width: 200,
+      // width: 200,
+      flex:1,
       type: "number",
       align: "right",
       ...usdPrice,

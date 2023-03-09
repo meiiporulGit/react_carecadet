@@ -32,7 +32,7 @@ interface rowProps{
 function TableRowRes({ fac, onButtonEdit }: rowProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  console.log(fac, "facilityRow");
+  // console.log(fac, "facilityRow");
   const [open, setOpen] = useState<boolean>(false);
   const [edit, setEdit] = useState<boolean>(false);
   const [data, setData] = useState<any>(fac);
@@ -244,25 +244,29 @@ export default function PricelistUploadthroFacility() {
       field: "ServiceCode",
       headerName: "Service Code",
       editable: true,
-      width: 100,
+      flex:1,
+      // width: 100,
     },
     {
       field: "DiagnosisTestorServiceName",
       headerName: "Diagnosis Test/Service Name",
       editable: true,
-      width: 350,
+      flex:2
+      // width: 350,
     },
     {
       field: "FacilityName",
       headerName: "Facility Name",
       editable: false,
-      width: 100,
+      flex:2
+      // width: 100,
     },
     {
       field: "OrganisationPrices",
       headerName: "Organisation Prices",
       editable: true,
-      width: 100,
+      flex:1,
+      // width: 100,
       align: "right",
       ...usdPrice,
     },
@@ -270,13 +274,15 @@ export default function PricelistUploadthroFacility() {
       field: "FacilityNPI",
       headerName: "FacilityNPI",
       editable: false,
-      width: 100,
+      flex:1
+      // width: 100,
     },
     {
       field: "FacilityPrices",
       headerName: "Facility Prices",
       editable: true,
-      width: 100,
+      flex:1,
+      // width: 100,
       align: "right",
       ...usdPrice,
     },
@@ -369,7 +375,9 @@ export default function PricelistUploadthroFacility() {
     
       toast.error(
         "Please check the header name or download the sample csv format"
+      
       );
+      
     } else {
       if (validateHeaders.length === headers.length && isMatched) {
         setUnknownHeader(false);
@@ -406,8 +414,8 @@ export default function PricelistUploadthroFacility() {
     const file = e.target.files[0];
     const { name } = file;
     console.log(file.size,"fileCHeck")
-    if (file.size >100000){
-      toast.warning("more than 1MB")
+    if (file.size >1000000){
+      toast.warning("more than 10MB")
     }
     setFilename(name);
     console.log("name", name);
@@ -461,6 +469,7 @@ export default function PricelistUploadthroFacility() {
           setCsvData([]);
           setPublishButton(false)
           toast.success(res.data.message);
+          navigate("/provider/facility/viewFacility");
         })
         .catch((err) => {
           console.log(err, "cdfjdk");

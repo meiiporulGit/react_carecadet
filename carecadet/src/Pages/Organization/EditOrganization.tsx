@@ -390,7 +390,7 @@
 
 // export default EditOrganization;
 import React, { useState, useRef } from "react";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { TextField, Box, Typography, Grid, Paper, Button } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -399,6 +399,7 @@ import FormTextField from "../../Components/Textfield";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
+import { storeLoginInfoupdate } from "../../Redux/ProviderRedux/LoginSlice";
 import { organizationImage } from "../../Redux/ProviderRedux/orgSlice";
 import { axiosPrivate } from "../../axios/axios";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -434,8 +435,9 @@ const EditOrganization = () => {
   const [currentFile, setCurrentFile] = useState<any>();
   const [fileName, setFileName] = useState<any>("");
   const [buttonEdit,setButtonEdit]=useState<Boolean>(false)
+  const [errorMessage, setErrorMessage] = useState("")
   const select = useAppSelector((state) => state.providerOrganization.orgEditData[0]);
-  console.log(select)
+  console.log(select,"editorg")
   const image = useAppSelector((state) => state.providerOrganization.orgEditImage);
   console.log("imageedit", image);
   const data = useAppSelector(
@@ -474,14 +476,52 @@ const EditOrganization = () => {
     console.log(formData, "formDataonchangeedit");
     setCurrentFile(files[0]);
   };
+
   const SingleFileChange = () => {
     setCurrentFile(fileInput.current.files[0]);
     setFileName(fileInput.current.files[0].name);
     //     let formData = new FormData();
     //     formData.append("file", currentFile);
     // console.log(currentFile,'currentedit')
+    var file = document.getElementById("upload-photo");
+    if (/\.(jpe?g|png|gif)$/i.test(fileInput.current.files[0].name) === false) {
+      setErrorMessage("Unsupported File Format (Allowed PNG,JPG,JPEG,gif)")
+    }else{
+      setErrorMessage("")
+    }
   };
   const onSubmit = async (values: InitialValues, actions: any) => {
+    const orgprovider = {
+      providerID: select.providerID,
+      firstName: values.contactPersonInformation.firstName,
+      lastName: values.contactPersonInformation.lastName,
+      role: values.contactPersonInformation.role,
+      contact: values.contactPersonInformation.contactno,
+      email: select.email,
+    };
+    alert(JSON.stringify(orgprovider, null, 2));
+    try {
+      axiosPrivate
+        .put("provider/updateProvider", orgprovider)
+      .then((res) => {
+        const updatelogininfo = {
+          firstName: values.contactPersonInformation.firstName,
+          lastName: values.contactPersonInformation.lastName
+        }
+
+        dispatch(storeLoginInfoupdate(updatelogininfo))
+        toast.success(res.data.message);
+        actions.resetForm({
+          values: initialValues,
+        });
+        navigate("/provider/viewOrg");
+      })
+      .catch((err) => {
+        console.log(err, "orgErr");
+        toast.error(err.message);
+      });
+    } catch (err) { }
+
     let formData = new FormData();
     formData.append("file", currentFile);
     // formData.append("file", fileName);
@@ -563,17 +603,17 @@ const EditOrganization = () => {
 
   const validationSchema = Yup.object().shape({
     organizationInformation: Yup.object().shape({
-      organizationName: Yup.string().required("Organization Name is required"),
+      organizationName: Yup.string().required("Organization Name is required").matches(/^[A-Za-z]+$/, 'Organization Name can only contain alphabets.'),
       streetAdd1: Yup.string().required("Address is required"),
-      city: Yup.string().required("City is required").matches(/[a-zA-Z]/, 'City can only contain alphabets.'),
-      state: Yup.string().required("State is required").matches(/[a-zA-Z]/, 'State can only contain alphabets.'),
+      city: Yup.string().required("City is required").matches(/^[A-Za-z]+$/, 'City can only contain alphabets.'),
+      state: Yup.string().required("State is required").matches(/^[A-Za-z]+$/, 'State can only contain alphabets.'),
       zipCode: Yup.string().required("Zip Code is required").matches(/^[A-Za-z0-9]+$/,"Zip Code can only contain alphabets and number"),
       Email: Yup.string().required("Email is required").email("invalid email"),
       phone:Yup.string().required("Phone is required").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/,"only numbers").test("len","Invalid Contact no", (val: any) => val && val.length === 10),
     }),
     contactPersonInformation: Yup.object().shape({
-      firstName: Yup.string().required("First Name is a required field").matches(/[a-zA-Z]/, 'First Name can only contain alphabets.'),
-      lastName: Yup.string().required("Last Name is required").matches(/[a-zA-Z]/, 'Last Name can only contain alphabets.'),
+      firstName: Yup.string().required("First Name is a required field").matches(/^[A-Za-z]+$/, 'First Name can only contain alphabets.'),
+      lastName: Yup.string().required("Last Name is required").matches(/^[A-Za-z]+$/, 'Last Name can only contain alphabets.'),
       role: Yup.string().required("Role is a required field").matches(/[A-Za-z0-9]+$/,"Role can only contain alphabets and number"),
       contactno: Yup.string().required("Contact is a required field").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/,"only numbers") .test("len","Invalid contact no", (val: any) => val && val.length === 10),
       email: Yup.string()
@@ -586,7 +626,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 12,
-      label: "Organization Name",
+      label: "Organization Name *",
       name: "organizationInformation.organizationName",
       placeholder: "Organization Name",
       type: "text",
@@ -594,7 +634,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 6,
-      label: "Street Address1",
+      label: "Street Address1 *",
       name: "organizationInformation.streetAdd1",
       placeholder: "Street Address1",
       type: "text",
@@ -610,7 +650,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 4,
-      label: "City",
+      label: "City *",
       name: "organizationInformation.city",
       placeholder: "City",
       type: "text",
@@ -618,7 +658,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 4,
-      label: "State",
+      label: "State *",
       name: "organizationInformation.state",
       placeholder: "State",
       type: "text",
@@ -626,7 +666,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 4,
-      label: "Zip Code",
+      label: "Zip Code *",
       name: "organizationInformation.zipCode",
       placeholder: "Zip Code",
       type: "text",
@@ -634,7 +674,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 6,
-      label: "Phone",
+      label: "Phone *",
       name: "organizationInformation.phone",
       placeholder: "Phone Number",
       type: "text",
@@ -642,7 +682,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 6,
-      label: "Email",
+      label: "Email *",
       name: "organizationInformation.Email",
       placeholder: "Email",
       type: "email",
@@ -652,7 +692,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 6,
-      label: "First Name",
+      label: "First Name *",
       name: "contactPersonInformation.firstName",
       placeholder: "First Name",
       type: "text",
@@ -660,7 +700,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 6,
-      label: "Last Name",
+      label: "Last Name *",
       name: "contactPersonInformation.lastName",
       placeholder: "Last Name",
       type: "text",
@@ -669,7 +709,7 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 6,
-      label: "Role",
+      label: "Role *",
       name: "contactPersonInformation.role",
       placeholder: "Role",
       type: "text",
@@ -677,19 +717,19 @@ const EditOrganization = () => {
     {
       xs:12,
       md: 6,
-      label: "Contact",
+      label: "Contact *",
       name: "contactPersonInformation.contactno",
       placeholder: "Contact Number",
       type: "text",
     },
-    {
-      xs:12,
-      md: 12,
-      label: "Email",
-      name: "contactPersonInformation.email",
-      placeholder: "Email",
-      type: "email",
-    },
+    // {
+    //   xs:12,
+    //   md: 12,
+    //   label: "Email",
+    //   name: "contactPersonInformation.email",
+    //   placeholder: "Email",
+    //   type: "email",
+    // },
   ];
   return (
     <Paper
@@ -784,9 +824,19 @@ const EditOrganization = () => {
                   Upload profile image
                 </Button>
               </label>
-              <Box component="span" sx={{ marginLeft: "1rem" }}>
+              {errorMessage? (errorMessage && 
+                  <div style={{
+                    textAlign: "left",
+                    color: "red",
+                    fontSize: "0.9rem",
+                    marginTop: "0.6rem",
+                  }}>{errorMessage}</div>):(
+                <Box component="span" sx={{ marginLeft: "1rem" }}>
+                  {fileName}
+                </Box>)}
+              {/* <Box component="span" sx={{ marginLeft: "1rem" }}>
                 {fileName}
-              </Box>
+              </Box> */}
             </Grid>
 
             {organizationData.map((org, i) => (
@@ -816,6 +866,7 @@ const EditOrganization = () => {
                 />
               </Grid>
             ))}
+            
 
             <Grid item xs={12}>
               <Typography
@@ -858,7 +909,49 @@ const EditOrganization = () => {
                 />
               </Grid>
             ))}
+ <Grid item xs={12} md={12}>
+                <Typography
+                  // variant="h6"
+                  sx={{
+                    fontSize: "1.2rem",
+                    mb: "0.5rem",
+                  }}
+                >
+                  Email <span style = {{textAlign: "left",
+                    color: "red",
+                    fontSize: "0.9rem"}}>(* readOnly)</span>
+                </Typography>
+                <Field
+                  as={TextField}
+                  // value={values.contactPersonInformation.email}
+                  sx={{
+                    // boxShadow: "0 0 45px 1px red" ,
+                    "&::placeholder": {
+                      // color: "green",
+                      letterSpacing: "0.2rem",
+                      // fontSize: "1rem",
+                    },
+                  }}
+                  // helperText={
+                  // //    <div style={{
+                  // //   textAlign: "left",
+                  // //   color: "red",
+                  // //   fontSize: "0.9rem",
+                   
+                  // // }} >readonly</div>
+                  // <ErrorMessage name="contactPersonInformation.email">
+                  //   {(error) => <ErrorProps>{error}</ErrorProps>}
+                  // </ErrorMessage>
+                  // }
+                  name="contactPersonInformation.email"
+                  placeholder="Email"
+                  type="email"
+                  fullWidth={true}
+                  autoComplete="text"
+                  inputProps = {{readOnly:true}}
+                />
 
+              </Grid>
             <Grid container item xs={12} justifyContent="right" >
               <Buttoncomponent
 

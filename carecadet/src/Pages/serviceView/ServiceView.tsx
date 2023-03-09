@@ -31,7 +31,7 @@ interface rowProps {
 function TableRowRes({ fac }: rowProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  console.log(fac, "facilityRow");
+  // console.log(fac, "facilityRow");
   const [open, setOpen] = useState<boolean>(false);
 
   const viewOnClick = (path: any) => {

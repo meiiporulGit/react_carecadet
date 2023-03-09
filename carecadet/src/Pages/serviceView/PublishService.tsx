@@ -22,7 +22,7 @@ interface rowProps {
 function TableRowRes({ fac}: rowProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  console.log(fac, "facilityRow");
+  // console.log(fac, "facilityRow");
   const [open, setOpen] = useState<boolean>(false);
   const [edit, setEdit] = useState<boolean>(false);
   const [data, setData] = useState<any>(fac);

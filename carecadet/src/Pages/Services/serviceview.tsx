@@ -40,7 +40,7 @@ interface rowProps{
   fac:any
 }
 function Row({fac}:rowProps){
- console.log(fac,"facilityRow")
+//  console.log(fac,"facilityRow")
   const [open,setOpen]=useState<boolean>(false)
 return(
   <Box>
@@ -143,19 +143,22 @@ export default function ServiceViewPage() {
       field: "FacilityName",
       headerName: "Facility Name",
       headerClassName: "super-app-theme--header",
-      width: 300,
+      // width: 300,
+      flex:2,
     },
     {
       field: "FacilityNPI",
       headerName: "FacilityNPI",
       headerClassName: "super-app-theme--header",
-      width: 290,
+      // width: 290,
+      flex:1,
     },
     {
       field: "OrganisationPrices",
       headerName: "Organisation Prices",
       headerClassName: "super-app-theme--header",
-      width: 200,
+      // width: 200,
+      flex:1,
       align: "right",
       ...usdPrice,
     },
@@ -164,7 +167,8 @@ export default function ServiceViewPage() {
       field: "FacilityPrices",
       headerName: "Facility Prices",
       headerClassName: "super-app-theme--header",
-      width: 500,
+      // width: 500,
+      flex:1,
       align: "right",
       ...usdPrice,
     },

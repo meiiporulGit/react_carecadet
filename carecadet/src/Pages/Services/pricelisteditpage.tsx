@@ -36,7 +36,7 @@ import clsx from "clsx";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import { axiosPrivate, baseURL } from "../../axios/axios";
 import { toast } from "react-toastify";
-import { KeyboardArrowDown, KeyboardArrowUp ,Edit} from "@mui/icons-material";
+import { KeyboardArrowDown, KeyboardArrowUp ,Edit, Delete} from "@mui/icons-material";
 
 interface forminitialValues {
   _id: string;
@@ -52,6 +52,7 @@ interface forminitialValues {
 interface rowProps{
   fac:any
   onButtonEdit: any;
+  handleDelete:any
 }
 
 
@@ -59,25 +60,38 @@ interface rowProps{
 
 
 
-function TableRowRes({ fac, onButtonEdit }: rowProps) {
+function TableRowRes({ fac, onButtonEdit , handleDelete}: rowProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  // console.log(fac, "facilityRow");
+  const [csvEdit, setcsvEdit] = useState([] as any);
   console.log(fac, "facilityRow");
   const [open, setOpen] = useState<boolean>(false);
   const [edit, setEdit] = useState<boolean>(false);
   const [data, setData] = useState<any>(fac);
-
+ 
   const editOnchange = (e: any) => {
     console.log(e.target.name, e.target.value);
     var editData = { ...data, [e.target.name]: e.target.value };
     setData(editData);
   };
 
-  const onButton = () => {
+  const onButton =async (cellData: any)=> {
     setEdit(false);
     onButtonEdit(data);
+    console.log(data,"data11111")
+
+      setcsvEdit(data)
+      console.log(csvEdit,"csvEdit")
+
+      
+   
   };
 
+  const onClickDelete = async (deleteFac:any)=>{
+handleDelete(deleteFac)
+console.log("deletefac",deleteFac)
+  }
   return (
     <Box>
       <Paper sx={{backgroundColor:"primary.light",padding:"0.3rem"}}>
@@ -98,11 +112,17 @@ function TableRowRes({ fac, onButtonEdit }: rowProps) {
             <Typography>{fac.DiagnosisTestorServiceName}</Typography>
             </Box>
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={1}>
             <Edit
               onClick={() => {
                 setEdit(true);
               }}
+            />
+          </Grid>
+          <Grid item xs={1}>
+            <Delete
+              onClick={()=>{onClickDelete(fac)}}
+             
             />
           </Grid>
         </Grid>
@@ -219,15 +239,19 @@ export default function PricelistEditpage() {
 
   const handleDeleteClick = (id: GridRowId) => () => {
     setData(data.filter((row: any) => row._id !== id));
+    console.log("data1",data)
     let store = data.filter((row: any) => row._id === id);
     console.log(store[0]._id, "store");
     setcsvDel([...csvdel, store[0]._id]);
     console.log(csvdel,"checkdel")
+    toast.success("Successfully delete the service. Kindly click SAVE to update in DB")
   };
 
   const onCellEditCommit = async (cellData: any) => {
     const { id, field, value } = cellData;
     console.log(cellData);
+    console.log(data,"dataaa")
+    console.log(csvEdit,"csvEdit")
     let d = data.filter((data1: any) => data1._id === id);
 
     let dd = csvEdit.filter((ddd: any) => ddd._id === id);
@@ -241,8 +265,10 @@ export default function PricelistEditpage() {
         return dd;
       });
       setcsvEdit(r);
+      toast.success("Successfully Edit the service. Kindly click SAVE to update in DB")
     } else {
       setcsvEdit([...csvEdit, { ...d[0], [field]: value }]);
+      toast.success("Successfully Edit the service. Kindly click SAVE to update in DB")
     }
   };
 
@@ -270,6 +296,7 @@ export default function PricelistEditpage() {
   }
   const update = (e: any) => {
     e.preventDefault();
+
     // if(output){
     //    let formData = new FormData();
     //  formData.append("screenshot", output);
@@ -297,7 +324,8 @@ export default function PricelistEditpage() {
         //   values: initialValues,
         // });
       });
-    })};
+    }
+    )};
       //   let datacheck1 = { name: filename, PriceList: csvdel };
       //   axios
       // .delete(
@@ -334,7 +362,7 @@ export default function PricelistEditpage() {
   };
   const onButtonEdit = (e: any) => {
     var editData=data.map((d:any)=>{
-      if(d.SNo===e.SNo){
+      if(d.DiagnosisTestorServiceName===e.DiagnosisTestorServiceName){
         return e
       }else{
         return d
@@ -342,9 +370,43 @@ export default function PricelistEditpage() {
     })
   
     console.log(editData,"checkEdit")
+    var findExistEdit= csvEdit.filter((dataCsv:any)=>dataCsv._id===e._id)
+    // console.log(findExistEdit,"findExist")
+    if(findExistEdit.length!==0){
+      const mapEdit=csvEdit.map((dat:any,i:any)=>{
+            if(dat._id===e._id){
+              return e
+            }else{
+              return dat
+            }
+      })
+      // console.log("mapEdit",mapEdit)
+      setcsvEdit(mapEdit)
+    }else{
+      setcsvEdit([...csvEdit,e])
+    }
     setData(editData)
       
     };
+
+
+    const handleDelete= (e:any)  =>{
+    
+      console.log("check")
+  
+      console.log(e,"echeck")
+//       const facid=e._id;
+// console.log("facid",facid)
+      setData(data.filter((row: any) => row._id !== e._id));
+    let store = data.filter((row: any) => row._id === e._id);
+    console.log(store, "store");
+      setcsvDel([...csvdel, store[0]._id]);
+      // var delData = { ...data, [e.target.name]: e.target.value };
+      // setData(delData);
+        
+      };
+
+
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     page: number
@@ -377,7 +439,8 @@ export default function PricelistEditpage() {
       field: "DiagnosisTestorServiceName",
       headerName: "Diagnosis Test/Service Name",
       headerClassName: "super-app-theme--header",
-      width: 400,
+      flex:2,
+      // width: 400,
       // editable: true,
     },
     // {
@@ -390,7 +453,8 @@ export default function PricelistEditpage() {
       field: "OrganisationPrices",
       headerName: "Organisation Prices",
       headerClassName: "super-app-theme--header",
-      width: 200,
+      // width: 200,
+      flex:1,
       editable: true,
       align:'right',
       ...usdPrice
@@ -405,7 +469,8 @@ export default function PricelistEditpage() {
       field: "FacilityPrices",
       headerName: "Facility Prices",
       headerClassName: "super-app-theme--header",
-      width: 100,
+      // width: 100,
+      flex:1,
       editable: true,
       align:'right',
       ...usdPrice
@@ -415,7 +480,8 @@ export default function PricelistEditpage() {
       type: "actions",
       headerName: "Actions",
       headerClassName: "super-app-theme--header",
-      width: 130,
+      flex:1,
+      // width: 130,
       cellClassName: "actions",
       getActions: (data: any) => {
         let id = data.id;
@@ -561,6 +627,8 @@ sx={{
                   key={i}
                   fac={fac}
                   onButtonEdit={(e: any) => onButtonEdit(e)}
+                  handleDelete={(e:any) => handleDelete(e)}
+                 
                 />
                 
                 </>
