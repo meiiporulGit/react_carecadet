@@ -30,7 +30,7 @@ const schema = yup.object().shape({
   password: yup
     .string()
     .required("Password is a required field")
-    .min(4, 'Too Short!')
+    
      .max(50, 'Too Long!')
     
     .min(4, "Password must be at least 4 characters")

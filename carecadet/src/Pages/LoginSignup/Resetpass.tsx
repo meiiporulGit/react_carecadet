@@ -22,9 +22,16 @@ import { axiosPrivate } from "../../axios/axios";
 const schema = yup.object().shape({
  
   password: yup
-    .string()
-    .required("password is a required field")
-    .min(4, "password must be at least 4 characters"),
+  .string()
+  .required("Password is a required field")
+  .min(4, "Password must be at least 4 characters")
+   .max(50, 'Too Long!')
+   .matches(/[a-z]+/, "One lowercase character")
+  .matches(/[A-Z]+/, "One uppercase character")
+  .matches(/[@$!%*#?&]+/, "One special character")
+  .matches(/\d+/, "One number"),
+  passwordConfirmation: yup.string()
+  .oneOf([yup.ref('password'), null], 'Passwords must match')
 });
 export default function Resetpass() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -39,10 +46,11 @@ export default function Resetpass() {
         <Grid item md={7} sx={{ display: "flex", justifyContent: "center" }}>
             
           <Formik
-            // validationSchema={schema}
+            validationSchema={schema}
             initialValues={{
             
               password: "",
+              passwordConfirmation:"",
               userType: "PROVIDER",
             }}
             
@@ -109,6 +117,33 @@ export default function Resetpass() {
                 <FormTextField
                   container={TextField}
                   name="password"
+                  placeholder="Password"
+                  type="password"
+                  autoComplete="new-country-area"
+                  sx={{
+                    width: {md:"20vw"},
+                    "&::placeholder": {
+                      color: "#728AB7",
+                      letterSpacing: "0.2rem",
+                      fontSize: "1rem",
+                    },
+                  }}
+                />
+              </Grid>
+              <Grid>
+                <Typography
+                  // variant="h6"
+                  sx={{
+                    fontSize: "1.2rem",
+                    mb: "0.5rem",
+                    color: "#728AB7",
+                  }}
+                >
+               Confirm Password
+                </Typography>
+                <FormTextField
+                  container={TextField}
+                  name="passwordConfirmation"
                   placeholder="Password"
                   type="password"
                   autoComplete="new-country-area"

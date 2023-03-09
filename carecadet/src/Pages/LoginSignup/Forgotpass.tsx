@@ -64,7 +64,7 @@ export default function Forgotpass() {
                 //   dispatch(loginButton());
                 //   console.log(res);
          
-                //   navigate("/provider/resetpass");
+                  // navigate("/provider/resetpass");
                 })
                 .catch((err) => {
                   
