@@ -21,12 +21,21 @@ import { axiosPrivate } from "../../axios/axios";
 const schema = yup.object().shape({
   email: yup
     .string()
+    .min(2, 'Too Short!')
+     .max(50, 'Too Long!')
     .required("Email is a required field")
     .email("Invalid email"),
   password: yup
     .string()
     .required("password is a required field")
-    .min(4, "password must be at least 4 characters"),
+    .min(4, "Password must be at least 4 characters")
+    .max(50, 'Too Long!')
+    .required("Password is a required field")
+    
+    .matches(/[a-z]+/, "One lowercase character")
+    .matches(/[A-Z]+/, "One uppercase character")
+    .matches(/[@$!%*#?&]+/, "One special character")
+    .matches(/\d+/, "One number")
 });
 export default function Login() {
   const navigate = useNavigate();
