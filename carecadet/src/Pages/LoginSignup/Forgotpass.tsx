@@ -7,7 +7,7 @@ import login from "../../Images/login.jpg";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import Cookie from "js-cookie";
-
+import { useState } from "react";
 import FormTextField from "../../Components/Textfield";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 
@@ -26,6 +26,7 @@ const schema = yup.object().shape({
 
 });
 export default function Forgotpass() {
+  const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   return (
@@ -40,7 +41,7 @@ export default function Forgotpass() {
             
             }}
             onSubmit={(values) => {
-              
+              setIsLoading(true)  
               const Resetpass = {
                 email: values.email,
               
@@ -52,19 +53,8 @@ export default function Forgotpass() {
                 .then((res) => {
                   
                   toast.success(res.data.message);
-              
-                //   Cookie.set("token", JSON.stringify(res.data.data), {
-                //     secure: true,
-                //     sameSite: "strict",
-                //     path: "/",
-                //   }
-                //   );
-                 
-                //   dispatch(storeLoginInfo(res.data.data));
-                //   dispatch(loginButton());
-                //   console.log(res);
-         
-                  // navigate("/provider/resetpass");
+                  setIsLoading(false)
+                
                 })
                 .catch((err) => {
                   
@@ -122,6 +112,7 @@ export default function Forgotpass() {
               <Grid item>
                 <Buttoncomponent
                   type="submit"
+                  disable={isLoading}
                   size="large"
                   fullWidth={false}
                   variant="contained"

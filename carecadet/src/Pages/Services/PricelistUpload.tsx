@@ -366,11 +366,7 @@ export default function PricelistUpload() {
         obj["FacilityName"] = finalfacility;
         result.push(obj);
         console.log(result,"rescheck")
-        
-        for(i=0; i<headers.length; i++){
-        
-
-        }
+     
       }
        
       }
