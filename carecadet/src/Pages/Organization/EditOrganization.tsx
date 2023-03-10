@@ -431,13 +431,13 @@ interface InitialValues {
 
 const EditOrganization = () => {
   const dispatch = useAppDispatch();
-  const{ pathname}=useLocation()
+  const { pathname } = useLocation()
   const [currentFile, setCurrentFile] = useState<any>();
   const [fileName, setFileName] = useState<any>("");
-  const [buttonEdit,setButtonEdit]=useState<Boolean>(false)
+  const [buttonEdit, setButtonEdit] = useState<Boolean>(false)
   const [errorMessage, setErrorMessage] = useState("")
   const select = useAppSelector((state) => state.providerOrganization.orgEditData[0]);
-  console.log(select,"editorg")
+  console.log(select, "editorg")
   const image = useAppSelector((state) => state.providerOrganization.orgEditImage);
   console.log("imageedit", image);
   const data = useAppSelector(
@@ -486,7 +486,7 @@ const EditOrganization = () => {
     var file = document.getElementById("upload-photo");
     if (/\.(jpe?g|png|gif)$/i.test(fileInput.current.files[0].name) === false) {
       setErrorMessage("Unsupported File Format (Allowed PNG,JPG,JPEG,gif)")
-    }else{
+    } else {
       setErrorMessage("")
     }
   };
@@ -503,23 +503,23 @@ const EditOrganization = () => {
     try {
       axiosPrivate
         .put("provider/updateProvider", orgprovider)
-      .then((res) => {
-        const updatelogininfo = {
-          firstName: values.contactPersonInformation.firstName,
-          lastName: values.contactPersonInformation.lastName
-        }
+        .then((res) => {
+          const updatelogininfo = {
+            firstName: values.contactPersonInformation.firstName,
+            lastName: values.contactPersonInformation.lastName
+          }
 
-        dispatch(storeLoginInfoupdate(updatelogininfo))
-        toast.success(res.data.message);
-        actions.resetForm({
-          values: initialValues,
+          dispatch(storeLoginInfoupdate(updatelogininfo))
+          toast.success(res.data.message);
+          actions.resetForm({
+            values: initialValues,
+          });
+          navigate("/provider/viewOrg");
+        })
+        .catch((err) => {
+          console.log(err, "orgErr");
+          toast.error(err.message);
         });
-        navigate("/provider/viewOrg");
-      })
-      .catch((err) => {
-        console.log(err, "orgErr");
-        toast.error(err.message);
-      });
     } catch (err) { }
 
     let formData = new FormData();
@@ -566,19 +566,19 @@ const EditOrganization = () => {
               // alert("success");
               // dispatch(organizationEdit(orgdata))
               toast.success(res.data.message)
-              if(buttonEdit){
-                navigate("/provider/viewOrg",{ state: { previousPath: pathname } });
-              }else{
-              navigate("/provider/facility/viewFacility",{ state: { previousPath: pathname } });
+              if (buttonEdit) {
+                navigate("/provider/viewOrg", { state: { previousPath: pathname } });
+              } else {
+                navigate("/provider/facility/viewFacility", { state: { previousPath: pathname } });
               }
               // actions.resetForm({
               //   values: initialValues,
               // });
-            }).catch(err=>{
+            }).catch(err => {
               toast.error(err.message)
             })
         });
-    } catch {}
+    } catch { }
   };
 
   // const validationSchema = Yup.object().shape({
@@ -607,15 +607,15 @@ const EditOrganization = () => {
       streetAdd1: Yup.string().required("Address is required"),
       city: Yup.string().required("City is required").matches(/^[A-Za-z]+$/, 'City can only contain alphabets.'),
       state: Yup.string().required("State is required").matches(/^[A-Za-z]+$/, 'State can only contain alphabets.'),
-      zipCode: Yup.string().required("Zip Code is required").matches(/^[A-Za-z0-9]+$/,"Zip Code can only contain alphabets and number"),
+      zipCode: Yup.string().required("Zip Code is required").matches(/^[A-Za-z0-9]+$/, "Zip Code can only contain alphabets and number"),
       Email: Yup.string().required("Email is required").email("invalid email"),
-      phone:Yup.string().required("Phone is required").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/,"only numbers").test("len","Invalid Contact no", (val: any) => val && val.length === 10),
+      phone: Yup.string().required("Phone is required").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/, "only numbers").test("len", "Invalid Contact no", (val: any) => val && val.length === 10),
     }),
     contactPersonInformation: Yup.object().shape({
       firstName: Yup.string().required("First Name is a required field").matches(/^[A-Za-z]+$/, 'First Name can only contain alphabets.'),
       lastName: Yup.string().required("Last Name is required").matches(/^[A-Za-z]+$/, 'Last Name can only contain alphabets.'),
-      role: Yup.string().required("Role is a required field").matches(/[A-Za-z0-9]+$/,"Role can only contain alphabets and number"),
-      contactno: Yup.string().required("Contact is a required field").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/,"only numbers") .test("len","Invalid contact no", (val: any) => val && val.length === 10),
+      role: Yup.string().required("Role is a required field").matches(/[A-Za-z0-9]+$/, "Role can only contain alphabets and number"),
+      contactno: Yup.string().required("Contact is a required field").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/, "only numbers").test("len", "Invalid contact no", (val: any) => val && val.length === 10),
       email: Yup.string()
         .required("Email is a required field")
         .email("invalid email"),
@@ -624,7 +624,7 @@ const EditOrganization = () => {
 
   const organizationData = [
     {
-      xs:12,
+      xs: 12,
       md: 12,
       label: "Organization Name *",
       name: "organizationInformation.organizationName",
@@ -632,7 +632,7 @@ const EditOrganization = () => {
       type: "text",
     },
     {
-      xs:12,
+      xs: 12,
       md: 6,
       label: "Street Address1 *",
       name: "organizationInformation.streetAdd1",
@@ -640,7 +640,7 @@ const EditOrganization = () => {
       type: "text",
     },
     {
-      xs:12,
+      xs: 12,
       md: 6,
       label: "Street Address2",
       name: "organizationInformation.streetAdd2",
@@ -648,7 +648,7 @@ const EditOrganization = () => {
       type: "text",
     },
     {
-      xs:12,
+      xs: 12,
       md: 4,
       label: "City *",
       name: "organizationInformation.city",
@@ -656,7 +656,7 @@ const EditOrganization = () => {
       type: "text",
     },
     {
-      xs:12,
+      xs: 12,
       md: 4,
       label: "State *",
       name: "organizationInformation.state",
@@ -664,7 +664,7 @@ const EditOrganization = () => {
       type: "text",
     },
     {
-      xs:12,
+      xs: 12,
       md: 4,
       label: "Zip Code *",
       name: "organizationInformation.zipCode",
@@ -672,7 +672,7 @@ const EditOrganization = () => {
       type: "text",
     },
     {
-      xs:12,
+      xs: 12,
       md: 6,
       label: "Phone *",
       name: "organizationInformation.phone",
@@ -680,7 +680,7 @@ const EditOrganization = () => {
       type: "text",
     },
     {
-      xs:12,
+      xs: 12,
       md: 6,
       label: "Email *",
       name: "organizationInformation.Email",
@@ -690,7 +690,7 @@ const EditOrganization = () => {
   ];
   const contactPersonData = [
     {
-      xs:12,
+      xs: 12,
       md: 6,
       label: "First Name *",
       name: "contactPersonInformation.firstName",
@@ -698,7 +698,7 @@ const EditOrganization = () => {
       type: "text",
     },
     {
-      xs:12,
+      xs: 12,
       md: 6,
       label: "Last Name *",
       name: "contactPersonInformation.lastName",
@@ -706,22 +706,22 @@ const EditOrganization = () => {
       type: "text",
     },
 
-    {
-      xs:12,
-      md: 6,
-      label: "Role *",
-      name: "contactPersonInformation.role",
-      placeholder: "Role",
-      type: "text",
-    },
-    {
-      xs:12,
-      md: 6,
-      label: "Contact *",
-      name: "contactPersonInformation.contactno",
-      placeholder: "Contact Number",
-      type: "text",
-    },
+    // {
+    //   xs:12,
+    //   md: 6,
+    //   label: "Role *",
+    //   name: "contactPersonInformation.role",
+    //   placeholder: "Role",
+    //   type: "text",
+    // },
+    // {
+    //   xs:12,
+    //   md: 6,
+    //   label: "Contact *",
+    //   name: "contactPersonInformation.contactno",
+    //   placeholder: "Contact Number",
+    //   type: "text",
+    // },
     // {
     //   xs:12,
     //   md: 12,
@@ -824,13 +824,13 @@ const EditOrganization = () => {
                   Upload profile image
                 </Button>
               </label>
-              {errorMessage? (errorMessage && 
-                  <div style={{
-                    textAlign: "left",
-                    color: "red",
-                    fontSize: "0.9rem",
-                    marginTop: "0.6rem",
-                  }}>{errorMessage}</div>):(
+              {errorMessage ? (errorMessage &&
+                <div style={{
+                  textAlign: "left",
+                  color: "red",
+                  fontSize: "0.9rem",
+                  marginTop: "0.6rem",
+                }}>{errorMessage}</div>) : (
                 <Box component="span" sx={{ marginLeft: "1rem" }}>
                   {fileName}
                 </Box>)}
@@ -840,7 +840,7 @@ const EditOrganization = () => {
             </Grid>
 
             {organizationData.map((org, i) => (
-              <Grid item xs={org.xs}  md={org.md}key={i}>
+              <Grid item xs={org.xs} md={org.md} key={i}>
                 <Typography
                   // variant="h6"
                   sx={{
@@ -866,7 +866,7 @@ const EditOrganization = () => {
                 />
               </Grid>
             ))}
-            
+
 
             <Grid item xs={12}>
               <Typography
@@ -909,7 +909,45 @@ const EditOrganization = () => {
                 />
               </Grid>
             ))}
- <Grid item xs={12} md={12}>
+             <Grid item xs={12} md={6}>
+              <Typography
+                // variant="h6"
+                sx={{
+                  fontSize: "1.2rem",
+                  mb: "0.5rem",
+                }}
+              >
+                Role  <Typography 
+                  display="inline"
+                    style={{
+                      textAlign: "left",
+                      color: "red", 
+                      fontSize: "0.7rem",
+                   
+                    }}>(* Readonly)</Typography>
+              </Typography>
+              <Field
+                as={TextField}
+                
+                sx={{
+                  // boxShadow: "0 0 45px 1px red" ,
+                  "&::placeholder": {
+                    // color: "green",
+                    letterSpacing: "0.2rem",
+                    // fontSize: "1rem",
+                  },
+                }}
+            
+                name="contactPersonInformation.role"
+                placeholder="Role"
+                type="text"
+                fullWidth={true}
+                autoComplete="text"
+                inputProps={{ readOnly: true }}
+              />
+
+            </Grid>
+            <Grid item xs={12} md={6}>
                 <Typography
                   // variant="h6"
                   sx={{
@@ -917,13 +955,10 @@ const EditOrganization = () => {
                     mb: "0.5rem",
                   }}
                 >
-                  Email <span style = {{textAlign: "left",
-                    color: "red",
-                    fontSize: "0.9rem"}}>(* readOnly)</span>
+                  Contact Number *
                 </Typography>
                 <Field
                   as={TextField}
-                  // value={values.contactPersonInformation.email}
                   sx={{
                     // boxShadow: "0 0 45px 1px red" ,
                     "&::placeholder": {
@@ -932,26 +967,62 @@ const EditOrganization = () => {
                       // fontSize: "1rem",
                     },
                   }}
-                  // helperText={
-                  // //    <div style={{
-                  // //   textAlign: "left",
-                  // //   color: "red",
-                  // //   fontSize: "0.9rem",
-                   
-                  // // }} >readonly</div>
-                  // <ErrorMessage name="contactPersonInformation.email">
-                  //   {(error) => <ErrorProps>{error}</ErrorProps>}
-                  // </ErrorMessage>
-                  // }
-                  name="contactPersonInformation.email"
-                  placeholder="Email"
-                  type="email"
+                 
+                  name="contactPersonInformation.contactno"
+                  placeholder="Contact Number"
+                  type="number"
                   fullWidth={true}
                   autoComplete="text"
-                  inputProps = {{readOnly:true}}
                 />
-
               </Grid>
+            <Grid item xs={12} md={12}>
+              <Typography
+                // variant="h6"
+                sx={{
+                  fontSize: "1.2rem",
+                  mb: "0.5rem",
+                }}
+              >
+                Email  <Typography 
+                  display="inline"
+                    style={{
+                      textAlign: "left",
+                      color: "red", 
+                      fontSize: "0.7rem",
+              
+                    }}>(* Readonly)</Typography>
+              </Typography>
+              <Field
+                as={TextField}
+                // value={values.contactPersonInformation.email}
+                sx={{
+                  // boxShadow: "0 0 45px 1px red" ,
+                  "&::placeholder": {
+                    // color: "green",
+                    letterSpacing: "0.2rem",
+                    // fontSize: "1rem",
+                  },
+                }}
+                // helperText={
+                // //    <div style={{
+                // //   textAlign: "left",
+                // //   color: "red",
+                // //   fontSize: "0.9rem",
+
+                // // }} >readonly</div>
+                // <ErrorMessage name="contactPersonInformation.email">
+                //   {(error) => <ErrorProps>{error}</ErrorProps>}
+                // </ErrorMessage>
+                // }
+                name="contactPersonInformation.email"
+                placeholder="Email"
+                type="email"
+                fullWidth={true}
+                autoComplete="text"
+                inputProps={{ readOnly: true }}
+              />
+
+            </Grid>
             <Grid container item xs={12} justifyContent="right" >
               <Buttoncomponent
 
@@ -960,7 +1031,7 @@ const EditOrganization = () => {
                 fullWidth={false}
                 variant="contained"
                 sx={{
-                 display:{xs:"none",md:"block"},
+                  display: { xs: "none", md: "block" },
                   backgroundColor: "secondary.dark",
                   width: "10vw",
                   color: "#fff",
@@ -980,11 +1051,11 @@ const EditOrganization = () => {
                 size="large"
                 fullWidth={false}
                 variant="contained"
-                onClick={()=>{
+                onClick={() => {
                   setButtonEdit(true)
                 }}
                 sx={{
-                 display:{xs:"flex",md:"none"},
+                  display: { xs: "flex", md: "none" },
                   backgroundColor: "secondary.dark",
                   width: "15vw",
                   color: "#fff",

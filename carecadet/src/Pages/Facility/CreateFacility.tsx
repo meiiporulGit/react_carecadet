@@ -1,4 +1,4 @@
-import React from "react";
+ import React from "react";
 import { useState, useEffect } from "react";
 import { Formik, Form, ErrorMessage, Field, FormikProps } from "formik";
 import * as Yup from "yup";
@@ -42,8 +42,10 @@ interface forminitialValues {
   organizationID: string,
   facilityNPI?: string | number;
   facilityName: string;
-  facilityType: string;
- othersFacilityType:string;
+  // facilityType:string;
+  // othersFacilityType:string;
+  MainfacilityType: string;
+  OthersfacilityType: string;
   addressLine1: string;
   addressLine2?: string;
   city: string;
@@ -60,8 +62,8 @@ export default function CreateFacility() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [checkInfo, setCheckInfo]=useState<any>([])
-
+  const [checkInfo, setCheckInfo] = useState<any>([])
+  const [disabled, setDisabled] = useState<boolean>(false)
   const data = useAppSelector(state => state.providerAuth.login);
   console.log("datafaciltiy", data);
   const orgID = useAppSelector((state) => state.providerOrganization.orgEditData);
@@ -70,8 +72,10 @@ export default function CreateFacility() {
     organizationID: orgID[0].organizationID,
     facilityNPI: "",
     facilityName: "",
-    facilityType: "",
-   othersFacilityType:"",
+    // facilityType:"",
+    // othersFacilityType:"",
+    MainfacilityType: "",
+    OthersfacilityType: "",
     addressLine1: "",
     addressLine2: "",
     city: "",
@@ -83,14 +87,21 @@ export default function CreateFacility() {
     longitude: ""
   };
 
-  
+// const options = [
+//   { value: "1- Primary care", item: "1- Primary care" },
+//   { value: "2- Urgent Care", item: "2- Urgent Care" },
+//   { value: "3- Dentist Office", item: "3- Dentist Office" },
+//   {value:"4- Imaging and Laboratory",item: "4- Imaging and Laboratory"},
+//   {value:"5- Hospital",item:"5- Hospital"},
+//   {value:"6- Others",item:"6- Others"}
+// ];
   useEffect(() => {
     const fetchFacilityNPI = async () => {
       await axiosPrivate.get(`/facility/findfacilityNPI`)
         .then((res) => {
           console.log(res.data, 'nppes')
           //  dispatch(nppesInfo(res.data))
-           setCheckInfo(res.data)
+          setCheckInfo(res.data)
         })
         .catch((e) => console.log(e));
       // .then (res => {setInfo(res.data);
@@ -121,36 +132,24 @@ export default function CreateFacility() {
   const options = useAppSelector((state) => state.providerFacility.facilityTypedata)
   console.log(options, 'options')
   const validationSchema = Yup.object().shape({
-    facilityNPI: Yup.string().required("FacilityNPI is required"),
+    facilityNPI: Yup.string().required("FacilityNPI is required").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/, "only numbers").test("len", " Invalid NPI", (val: any) => val && val.length === 10),
     facilityName: Yup.string().required("Facility Name is required"),
-    facilityType: Yup.string().required("Facility Type is required"),
+    // facilityType: Yup.string().required("Facility Type is required"),
     //facilityTypeOthers: Yup.string().required("Required"),
+    MainfacilityType:Yup.string().required("Facility Type is Required"),
     addressLine1: Yup.string().required("Street Address1 is required"),
     // addressLine2: Yup.string().required("Required field"),
-    city: Yup.string().nullable().required("City is required").matches(/[a-zA-Z]/, 'City name should be alpha-characters'),
+    city: Yup.string().nullable().required("City is required").matches(/^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/, 'City name should be alpha-characters'),
     zipCode: Yup.string()
       .required("Zipcode is required")
-     .test("len", (val: any) => val && val.length === 5)
-     .matches(/^[A-Za-z0-9]+$/,"Zipcode should be alpha-numeric characters"),
-    state: Yup.string().nullable().required("State is required").matches(/[a-zA-Z]/, 'State name should be alpha-characters'),
-    contact: Yup.string().required("Phone is required").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/,"only numbers").test("len"," Invalid Contact no",(val: any) => val && val.length === 10),
+      .test("len", (val: any) => val && val.length === 5)
+      .matches(/^[A-Za-z0-9]+$/, "Zipcode should be alpha-numeric characters"),
+    state: Yup.string().nullable().required("State is required").matches(/[a-zA-Z]/, 'State name should be alpha-characters').min(2, 'State must be at least 2 characters.')
+    .max(100, 'State has a maximum limit of 100 characters.'),
+    contact: Yup.string().required("Phone is required").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/, "only numbers").test("len", " Invalid Contact no", (val: any) => val && val.length === 10),
     email: Yup.string().email().required("Email is required")
   });
-  // const validationSchema = Yup.object().shape({
-  //   facilityNPI: Yup.string().required("Required"),
-  //   facilityName: Yup.string().required("Required"),
-  //   facilityType: Yup.string().required("Required"),
-  //   //facilityTypeOthers: Yup.string().required("Required"),
-  //   addressLine1: Yup.string().required("Required"),
-  //   // addressLine2: Yup.string().required("Required field"),
-  //   city: Yup.string().nullable().required("Required"),
-  //   zipCode: Yup.string()
-  //     .required("Required"),
-  //   // .test("len", (val: any) => val && val.length === 5),
-  //   state: Yup.string().nullable().required("Required"),
-  //   contact: Yup.string().required(" Required"),
-  //   email: Yup.string().email().required("Required"),
-  // });
+ 
 
   const onSubmit = (values: forminitialValues, actions: any) => {
     const facilitydata = {
@@ -159,7 +158,12 @@ export default function CreateFacility() {
       facilityNPI: values.facilityNPI,
       facilityName: values.facilityName,
       // facilityType: values.facilityType,
-      facilityType: values.facilityType === "6- Others" ? values.othersFacilityType : values.facilityType,
+      // facilityType: values.facilityType === "6- Others" ? (values.othersFacilityType) : values.facilityType,
+      facilityType:{
+        MainfacilityType:values.MainfacilityType,
+        OthersfacilityType:values.OthersfacilityType
+        // values.OthersfacilityType === "" ? values.MainfacilityType : values.OthersfacilityType
+      },
       address: {
         addressLine1: values.addressLine1,
         addressLine2: values.addressLine2,
@@ -169,12 +173,13 @@ export default function CreateFacility() {
       },
       email: values.email,
       contact: values.contact,
-      GPSCoordinate:{   
+      GPSCoordinate: {
         latitude: values.latitude,
-        longitude: values.longitude}
-   
+        longitude: values.longitude
+      }
+
     };
-    // alert(JSON.stringify(facilitydata, null, 2));
+     alert(JSON.stringify(facilitydata, null, 2));
     actions.resetForm({
       values: initialValues,
     });
@@ -191,14 +196,12 @@ export default function CreateFacility() {
       });
   };
 
-  const CustomPaper = (props:any) => {
-    return <Paper elevation={8} sx={{backgroundColor:"#DCF0FA",color:"black"}}{...props} />;
+  const CustomPaper = (props: any) => {
+    return <Paper elevation={8} sx={{ backgroundColor: "#DCF0FA", color: "black" }}{...props} />;
   };
 
   return (
     <Box>
-
-
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -222,8 +225,8 @@ export default function CreateFacility() {
                   Add Facility Information
                 </Typography>
               </Grid>
-             
-                <Grid item xs={12} sm={12}
+
+              <Grid item xs={12} sm={12}
               // style={{ marginLeft: "70%" }}
               >
                 <Typography
@@ -234,23 +237,19 @@ export default function CreateFacility() {
                     mb: "0.3rem",
                   }}
                 >
-                  Search Facility NPI
+                  Search Facility NPI <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
-       
+
                 <Field
                   name="facilityNPI"
                   component={Autocomplete}
                   filterOptions={filterOptions}
-               
                   options={checkInfo}
-                
                   PaperComponent={CustomPaper}
                   getOptionLabel={(option: any) => option.facilityNPI || option}
-               
                   freeSolo
-                 
                   onChange={(e: any, value: any) => {
-
+                    { value !== null ? setDisabled(true) : setDisabled(false) }
                     console.log(value, "imanualentervalue");
                     setFieldValue("facilityName", value !== null ? value.facilityName : "");
                     setFieldValue("facilityNPI", value !== null ? value.facilityNPI : "");
@@ -301,9 +300,9 @@ export default function CreateFacility() {
                       }}
                     />
                   )}
-                />            
+                />
               </Grid>
-             
+
               <Grid item xs={12} sm={6}>
                 <Typography
                   sx={{
@@ -313,16 +312,22 @@ export default function CreateFacility() {
                     mb: "0.3rem",
                   }}
                 >
-                  Facility Name
+                  Facility Name <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
-                <FormTextField
-                  container={TextField}
+                <Field
+                  as={TextField}
                   label="Facility Name"
                   name="facilityName"
                   placeholder="FacilityName"
                   type="text"
                   fullWidth={true}
                   autoComplete="new-country-area"
+                  helperText={
+                    <ErrorMessage name="facilityName">
+                      {(error) => <ErrorProps>{error}</ErrorProps>}
+                    </ErrorMessage>
+                  }
+                  inputProps={{ readOnly: disabled }}
                   sx={{
                     ".MuiFormLabel-root ": {
                       letterSpacing: "0.2rem",
@@ -347,11 +352,11 @@ export default function CreateFacility() {
                     mb: "0.3rem",
                   }}
                 >
-                  Facility Type
+                  Facility Type <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
                 <FormControl sx={{ width: "100%" }}>
                   <InputLabel sx={{ letterSpacing: "0.2rem", fontSize: "0.8rem", "&.MuiInputLabel-shrink": { letterSpacing: 0 } }}>Facility Type</InputLabel>
-                  <Field as={Select} name="facilityType" label="Facility Type">
+                  <Field as={Select} name="MainfacilityType" label="Facility Type">
                     {(options || []).map((select: any, index: any) => (
                       <MenuItem key={index + 1} value={select.value}>
                         {select.item}
@@ -360,7 +365,7 @@ export default function CreateFacility() {
 
                   </Field>
 
-                  <ErrorMessage name="facilityType">
+                  <ErrorMessage name="MainfacilityType">
                     {(error) => (
                       <ErrorProps >
                         {error}
@@ -368,15 +373,17 @@ export default function CreateFacility() {
                     )}
                   </ErrorMessage>
                 </FormControl>
-                {values.facilityType === "6- Others" ? (<FormTextField
-                    container={TextField}
+                {values.MainfacilityType=== "6- Others" ?
+                  (<Field
+                    as={TextField}
                     label="Enter Options for Others"
-                    name="othersFacilityType"
-                    placeholder="Facility Type"
+                    name="OthersfacilityType"
+                    placeholder="Enter options for facility Type"
                     type="text"
+                    fullWidth
                     autoComplete="new-country-area"
                     sx={{
-                      mt: "0.3rem",
+                      mt: "0.7rem",
                       ".MuiFormLabel-root ": {
                         letterSpacing: "0.2rem",
                         fontSize: "0.8rem",
@@ -386,11 +393,8 @@ export default function CreateFacility() {
                       },
                     }}
                   />
-                ): null                  
+                  ) : null
                 }
-                
-
-              
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Typography
@@ -401,16 +405,22 @@ export default function CreateFacility() {
                     mb: "0.3rem",
                   }}
                 >
-                  Street Address1
+                  Street Address1 <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
-                <FormTextField
-                  container={TextField}
+                <Field
+                  as={TextField}
                   label="Street Address1"
                   name="addressLine1"
                   placeholder="Street Address1"
                   type="text"
                   fullWidth={true}
                   autoComplete="new-country-area"
+                  helperText={
+                    <ErrorMessage name="addressLine1">
+                      {(error) => <ErrorProps>{error}</ErrorProps>}
+                    </ErrorMessage>
+                  }
+                  inputProps={{ readOnly: disabled }}
                   sx={{
                     ".MuiFormLabel-root ": {
                       letterSpacing: "0.2rem",
@@ -433,14 +443,20 @@ export default function CreateFacility() {
                 >
                   Street Address2
                 </Typography>
-                <FormTextField
-                  container={TextField}
+                <Field
+                  as={TextField}
                   label="Street Address2"
                   name="addressLine2"
                   placeholder="Street Address2"
                   type="text"
                   fullWidth={true}
                   autoComplete="new-country-area"
+                  helperText={
+                    <ErrorMessage name="addressLine2">
+                      {(error) => <ErrorProps>{error}</ErrorProps>}
+                    </ErrorMessage>
+                  }
+                  inputProps={{ readOnly: disabled }}
                   sx={{
                     ".MuiFormLabel-root ": {
                       letterSpacing: "0.2rem",
@@ -461,16 +477,22 @@ export default function CreateFacility() {
                     mb: "0.3rem",
                   }}
                 >
-                  City
+                  City <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
-                <FormTextField
-                  container={TextField}
+                <Field
+                  as={TextField}
                   label="City"
                   name="city"
                   placeholder="City"
                   type="text"
                   fullWidth={true}
                   autoComplete="new-country-area"
+                  helperText={
+                    <ErrorMessage name="city">
+                      {(error) => <ErrorProps>{error}</ErrorProps>}
+                    </ErrorMessage>
+                  }
+                  inputProps={{ readOnly: disabled }}
                   sx={{
                     ".MuiFormLabel-root ": {
                       letterSpacing: "0.2rem",
@@ -491,16 +513,22 @@ export default function CreateFacility() {
                     mb: "0.3rem",
                   }}
                 >
-                  State
+                  State <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
-                <FormTextField
-                  container={TextField}
+                <Field
+                  as={TextField}
                   label="State"
                   name="state"
                   placeholder="State"
                   type="text"
                   fullWidth={true}
                   autoComplete="new-country-area"
+                  helperText={
+                    <ErrorMessage name="state">
+                      {(error) => <ErrorProps>{error}</ErrorProps>}
+                    </ErrorMessage>
+                  }
+                  inputProps={{ readOnly: disabled }}
                   sx={{
                     ".MuiFormLabel-root ": {
                       letterSpacing: "0.2rem",
@@ -521,16 +549,22 @@ export default function CreateFacility() {
                     mb: "0.3rem",
                   }}
                 >
-                  ZipCode
+                  ZipCode <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
-                <FormTextField
-                  container={TextField}
+                <Field
+                  as={TextField}
                   label="ZipCode"
                   name="zipCode"
                   placeholder="ZipCode"
                   type="text"
                   fullWidth={true}
                   autoComplete="new-country-area"
+                  helperText={
+                    <ErrorMessage name="zipCode">
+                      {(error) => <ErrorProps>{error}</ErrorProps>}
+                    </ErrorMessage>
+                  }
+                  inputProps={{ readOnly: disabled }}
                   sx={{
                     ".MuiFormLabel-root ": {
                       letterSpacing: "0.2rem",
@@ -551,7 +585,7 @@ export default function CreateFacility() {
                     mb: "0.3rem",
                   }}
                 >
-                  Phone
+                  Phone <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
                 <FormTextField
                   container={TextField}
@@ -581,7 +615,7 @@ export default function CreateFacility() {
                     mb: "0.3rem",
                   }}
                 >
-                  Email
+                  Email <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
                 <FormTextField
                   container={TextField}
