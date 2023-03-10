@@ -38,9 +38,8 @@ export default function Forgotpass() {
             initialValues={{
               email: "",
               userType: "PROVIDER"
-            
-            }}
-            onSubmit={(values) => {
+                        }}
+            onSubmit={(values,{setSubmitting, resetForm}) => {
               setIsLoading(true)  
               const Resetpass = {
                 email: values.email,
@@ -51,9 +50,9 @@ export default function Forgotpass() {
               axiosPrivate
                 .put("/provider/forgotpassword", Resetpass)
                 .then((res) => {
-                  
+                  setIsLoading(false) 
                   toast.success(res.data.message);
-                  setIsLoading(false)
+                  
                 
                 })
                 .catch((err) => {
@@ -61,8 +60,12 @@ export default function Forgotpass() {
                   toast.error(err.message);
                  
                 });
+                // setSubmitting(true);
+                // setSubmitting(false);
+                resetForm();
             }}
           >
+            {({values,isSubmitting,resetForm})=>(
             <Form >
         
               <Typography variant="h4" sx={{ mt: 12, color: "#728AB7" }}>
@@ -128,12 +131,20 @@ export default function Forgotpass() {
                       fontSize: "1rem",
                     },
                   }}
-                >
-                  Recovery Email
+                                 >
+  {isLoading && (
+                    <i
+                      className="fa fa-refresh fa-spin"
+                      style={{ marginRight: "5px" }}
+                    />
+                  )}
+                      {isLoading && <span>Sending Email</span>}
+          {!isLoading && <span>Recovery email</span>}
                 </Buttoncomponent>
               </Grid>
               
             </Form>
+            )}
           </Formik>
         </Grid>
         <Grid
