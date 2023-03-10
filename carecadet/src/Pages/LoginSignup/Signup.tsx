@@ -16,16 +16,29 @@ import { axiosPrivate, baseURL } from "../../axios/axios";
 // }
 //create schema
 const schema = yup.object().shape({
-  firstName: yup.string().required("firstname is a required field"),
-  lastName: yup.string().required("lastname is a required field"),
+  firstName: yup.string().required("Firstname is a required field")
+  
+  .matches(/^[A-Za-z ]*$/,"First Name can only contain alphabets."),
+  lastName: yup.string().required("Lastname is a required field")
+  .matches(/^[A-Za-z ]*$/,"First Name can only contain alphabets."),
   email: yup
     .string()
+    .min(2, 'Too Short!')
+     .max(50, 'Too Long!')
     .required("Email is a required field")
     .email("Invalid email"),
   password: yup
     .string()
     .required("Password is a required field")
-    .min(4, "Password must be at least 4 characters"),
+    
+     .max(50, 'Too Long!')
+    
+    .min(4, "Password must be at least 4 characters")
+    .matches(/[a-z]+/, "One lowercase character")
+    .matches(/[A-Z]+/, "One uppercase character")
+    .matches(/[@$!%*#?&]+/, "One special character")
+    .matches(/\d+/, "One number")
+ 
 });
 
 export default function Signup() {
