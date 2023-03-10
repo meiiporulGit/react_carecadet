@@ -106,7 +106,7 @@ const OrganizationInfo = () => {
     file: "",
   };
   const [errorMessage, setErrorMessage] = useState("")
-const [zipDisable,setZipDisable]=useState(false)
+  const [zipDisable, setZipDisable] = useState(false)
 
   const SingleFileChange = () => {
     setCurrentFile(fileInput.current.files[0]);
@@ -115,7 +115,7 @@ const [zipDisable,setZipDisable]=useState(false)
     var file = document.getElementById("upload-photo");
     if (/\.(jpe?g|png|gif)$/i.test(fileInput.current.files[0].name) === false) {
       setErrorMessage("Unsupported File Format (Allowed PNG,JPG,JPEG,gif)")
-    }else{
+    } else {
       setErrorMessage("")
     }
     // { alert("Uploaded file has unsupported format!"); } 
@@ -142,11 +142,11 @@ const [zipDisable,setZipDisable]=useState(false)
     try {
       axiosPrivate
         .put("provider/updateProvider", orgprovider)
-      .then((res) => {
-        const updatelogininfo = {
-          firstName: values.contactPersonInformation.firstName,
-          lastName: values.contactPersonInformation.lastName
-        }
+        .then((res) => {
+          const updatelogininfo = {
+            firstName: values.contactPersonInformation.firstName,
+            lastName: values.contactPersonInformation.lastName
+          }
 
         dispatch(storeLoginInfoupdate(updatelogininfo))
         toast.success(res.data.message);
@@ -227,7 +227,7 @@ const [zipDisable,setZipDisable]=useState(false)
       // console.log(err, "err");
     }
   };
-  
+
   const validationSchema = Yup.object().shape({
     organizationInformation: Yup.object().shape({
       organizationName: Yup.string().required("Organization Name is required"),
@@ -386,22 +386,22 @@ const [zipDisable,setZipDisable]=useState(false)
       type: "text",
     },
 
-    {
-      xs: 12,
-      md: 6,
-      label: "Role *",
-      name: "contactPersonInformation.role",
-      placeholder: "Role",
-      type: "text",
-    },
-    {
-      xs: 12,
-      md: 6,
-      label: "Contact *",
-      name: "contactPersonInformation.contactno",
-      placeholder: "Contact Number",
-      type: "text",
-    },
+    // {
+    //   xs: 12,
+    //   md: 6,
+    //   label: "Role *",
+    //   name: "contactPersonInformation.role",
+    //   placeholder: "Role",
+    //   type: "text",
+    // },
+    // {
+    //   xs: 12,
+    //   md: 6,
+    //   label: "Contact *",
+    //   name: "contactPersonInformation.contactno",
+    //   placeholder: "Contact Number",
+    //   type: "text",
+    // },
     // {
     //   xs: 12,
     //   md: 12,
@@ -411,7 +411,7 @@ const [zipDisable,setZipDisable]=useState(false)
     //   type: "email",
     // },
   ];
-  
+
   return (
     <Paper
       elevation={9}
@@ -426,8 +426,7 @@ const [zipDisable,setZipDisable]=useState(false)
         onSubmit={onSubmit}
         validationSchema={validationSchema}
       >
-        {({ handleChange, setFieldValue, values, touched,
-          errors, }) => (
+        {({ handleChange, setFieldValue, values }) => (
           <Form>
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -444,9 +443,7 @@ const [zipDisable,setZipDisable]=useState(false)
                 </Typography>
               </Grid>
               <Grid xs={12}>
-
                 <label htmlFor="upload-photo">
-
                   <input
                     style={{ display: "none" }}
                     id="upload-photo"
@@ -457,9 +454,7 @@ const [zipDisable,setZipDisable]=useState(false)
                     value={values.file}
                     ref={fileInput}
                     onChange={SingleFileChange}
-                  
                   />
-
                   <Button
                     color="primary"
                     variant="contained"
@@ -468,21 +463,21 @@ const [zipDisable,setZipDisable]=useState(false)
                   >
                     Upload profile image
                   </Button>
-                 
+
                   {/* <ErrorMessage name="file" /> */}
 
                 </label>
 
-                {errorMessage? (errorMessage && 
+                {errorMessage ? (errorMessage &&
                   <div style={{
                     textAlign: "left",
                     color: "red",
                     fontSize: "0.9rem",
                     marginTop: "0.6rem",
-                  }}>{errorMessage}</div>):(
-                <Box component="span" sx={{ marginLeft: "1rem" }}>
-                  {fileName}
-                </Box>)}
+                  }}>{errorMessage}</div>) : (
+                  <Box component="span" sx={{ marginLeft: "1rem" }}>
+                    {fileName}
+                  </Box>)}
               </Grid>
 
               {organizationData.map((org, i) => (
@@ -523,7 +518,7 @@ const [zipDisable,setZipDisable]=useState(false)
                     mb: "0.5rem",
                   }}
                 >
-               Zip Code *
+                  Zip Code *
                 </Typography>
 
                 <Field
@@ -576,20 +571,20 @@ const [zipDisable,setZipDisable]=useState(false)
                                   
                   }}
 
-                
-                />)}/>
+
+                    />)} />
               </Grid>
-              <Grid item xs={12} md ={4}>
-              <Typography
-                    // variant="h6"
-                    sx={{
-                      fontSize: "1.2rem",
-                      mb: "0.5rem",
-                    }}
-                  >
-                    City *
-                  </Typography>
-                  <Field
+              <Grid item xs={12} md={4}>
+                <Typography
+                  // variant="h6"
+                  sx={{
+                    fontSize: "1.2rem",
+                    mb: "0.5rem",
+                  }}
+                >
+                  City *
+                </Typography>
+                <Field
                   as={TextField}
                   value={values.organizationInformation.city}
                   sx={{
@@ -601,15 +596,15 @@ const [zipDisable,setZipDisable]=useState(false)
                     },
                   }}
                   helperText={
-                  //    <div style={{
-                  //   textAlign: "left",
-                  //   color: "red",
-                  //   fontSize: "0.9rem",
-                   
-                  // }} >readonly</div>
-                  <ErrorMessage name="organizationInformation.city">
-                    {(error) => <ErrorProps>{error}</ErrorProps>}
-                  </ErrorMessage>
+                    //    <div style={{
+                    //   textAlign: "left",
+                    //   color: "red",
+                    //   fontSize: "0.9rem",
+
+                    // }} >readonly</div>
+                    <ErrorMessage name="organizationInformation.city">
+                      {(error) => <ErrorProps>{error}</ErrorProps>}
+                    </ErrorMessage>
                   }
                   name="organizationInformation.city"
                   placeholder="City"
@@ -626,17 +621,17 @@ const [zipDisable,setZipDisable]=useState(false)
                   }}
                 />
               </Grid>
-              <Grid item xs={12} md ={4}>
-              <Typography
-                    // variant="h6"
-                    sx={{
-                      fontSize: "1.2rem",
-                      mb: "0.5rem",
-                    }}
-                  >
-                    State *
-                  </Typography>
-                  <Field
+              <Grid item xs={12} md={4}>
+                <Typography
+                  // variant="h6"
+                  sx={{
+                    fontSize: "1.2rem",
+                    mb: "0.5rem",
+                  }}
+                >
+                  State *
+                </Typography>
+                <Field
                   as={TextField}
                   value={values.organizationInformation.state}
                   sx={{
@@ -648,15 +643,15 @@ const [zipDisable,setZipDisable]=useState(false)
                     },
                   }}
                   helperText={
-                  //    <div style={{
-                  //   textAlign: "left",
-                  //   color: "red",
-                  //   fontSize: "0.9rem",
-                   
-                  // }} >readonly</div>
-                  <ErrorMessage name="organizationInformation.state">
-                    {(error) => <ErrorProps>{error}</ErrorProps>}
-                  </ErrorMessage>
+                    //    <div style={{
+                    //   textAlign: "left",
+                    //   color: "red",
+                    //   fontSize: "0.9rem",
+
+                    // }} >readonly</div>
+                    <ErrorMessage name="organizationInformation.state">
+                      {(error) => <ErrorProps>{error}</ErrorProps>}
+                    </ErrorMessage>
                   }
                   name="organizationInformation.state"
                   placeholder="state"
@@ -709,9 +704,8 @@ const [zipDisable,setZipDisable]=useState(false)
                   }
                
                 />
-
               </Grid>
-              
+
               <Grid item xs={12} md={6}>
                 <Typography
                   // variant="h6"
@@ -734,26 +728,26 @@ const [zipDisable,setZipDisable]=useState(false)
                     },
                   }}
                   helperText={
-                  //    <div style={{
-                  //   textAlign: "left",
-                  //   color: "red",
-                  //   fontSize: "0.9rem",
-                   
-                  // }} >readonly</div>
-                  <ErrorMessage name="organizationInformation.Email">
-                    {(error) => <ErrorProps>{error}</ErrorProps>}
-                  </ErrorMessage>
+                    //    <div style={{
+                    //   textAlign: "left",
+                    //   color: "red",
+                    //   fontSize: "0.9rem",
+
+                    // }} >readonly</div>
+                    <ErrorMessage name="organizationInformation.Email">
+                      {(error) => <ErrorProps>{error}</ErrorProps>}
+                    </ErrorMessage>
                   }
                   name="organizationInformation.Email"
                   placeholder="Email"
                   type="email"
                   fullWidth={true}
                   autoComplete="text"
-               
+
                 />
 
               </Grid>
-             
+
               <Grid item xs={12}>
                 <Typography
                   mb={"0.5rem"}
@@ -823,6 +817,84 @@ const [zipDisable,setZipDisable]=useState(false)
                   label="Same as organization email"
                 />
               </Grid> */}
+
+              <Grid item xs={12} md={6}>
+                <Typography
+                  // variant="h6"
+                  sx={{
+                    fontSize: "1.2rem",
+                    mb: "0.5rem",
+                  }}
+                >
+                  Role  <Typography 
+                  display="inline"
+                    style={{
+                      textAlign: "left",
+                      color: "red", 
+                      fontSize: "0.7rem",
+                   
+                    }}>(* Readonly)</Typography>
+                </Typography>
+                <Field
+                  as={TextField}
+
+                  sx={{
+                    // boxShadow: "0 0 45px 1px red" ,
+                    "&::placeholder": {
+                      // color: "green",
+                      letterSpacing: "0.2rem",
+                      // fontSize: "1rem",
+                    },
+                  }}
+                  helperText={
+                    <ErrorMessage name="contactPersonInformation.role">
+                      {(error) => <ErrorProps>{error}</ErrorProps>}
+                    </ErrorMessage>
+                  }
+                  name="contactPersonInformation.role"
+                  placeholder="Role"
+                  type="text"
+                  fullWidth={true}
+                  autoComplete="text"
+                  inputProps={{ readOnly: true }}
+                />
+
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Typography
+                  // variant="h6"
+                  sx={{
+                    fontSize: "1.2rem",
+                    mb: "0.5rem",
+                  }}
+                >
+                  Contact Number *
+                </Typography>
+                <Field
+                  as={TextField}
+
+                  sx={{
+                    // boxShadow: "0 0 45px 1px red" ,
+                    "&::placeholder": {
+                      // color: "green",
+                      letterSpacing: "0.2rem",
+                      // fontSize: "1rem",
+                    },
+                  }}
+                  helperText={
+                    <ErrorMessage name="contactPersonInformation.contactno">
+                      {(error) => <ErrorProps>{error}</ErrorProps>}
+                    </ErrorMessage>
+                  }
+                  name="contactPersonInformation.contactno"
+                  placeholder="Contact Number"
+                  type="number"
+                  fullWidth={true}
+                  autoComplete="text"
+
+                />
+
+              </Grid>
               <Grid item xs={12} md={12}>
                 <Typography
                   // variant="h6"
@@ -831,7 +903,14 @@ const [zipDisable,setZipDisable]=useState(false)
                     mb: "0.5rem",
                   }}
                 >
-                  Email *
+                  Email  <Typography 
+                  display="inline"
+                    style={{
+                      textAlign: "left",
+                      color: "red", 
+                      fontSize: "0.7rem",
+                   
+                    }}>(* Readonly)</Typography>
                 </Typography>
                 <Field
                   as={TextField}
@@ -845,22 +924,22 @@ const [zipDisable,setZipDisable]=useState(false)
                     },
                   }}
                   helperText={
-                  //    <div style={{
-                  //   textAlign: "left",
-                  //   color: "red",
-                  //   fontSize: "0.9rem",
-                   
-                  // }} >readonly</div>
-                  <ErrorMessage name="contactPersonInformation.email">
-                    {(error) => <ErrorProps>{error}</ErrorProps>}
-                  </ErrorMessage>
+                    //    <div style={{
+                    //   textAlign: "left",
+                    //   color: "red",
+                    //   fontSize: "0.9rem",
+
+                    // }} >readonly</div>
+                    <ErrorMessage name="contactPersonInformation.email">
+                      {(error) => <ErrorProps>{error}</ErrorProps>}
+                    </ErrorMessage>
                   }
                   name="contactPersonInformation.email"
                   placeholder="Email"
                   type="email"
                   fullWidth={true}
                   autoComplete="text"
-                  inputProps = {{readOnly:true}}
+                  inputProps={{ readOnly: true }}
                 />
 
               </Grid>

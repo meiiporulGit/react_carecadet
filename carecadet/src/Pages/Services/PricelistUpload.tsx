@@ -10,6 +10,7 @@ import {
   GridColTypeDef,
   GridValueFormatterParams,
   GridColumns,
+  
 } from "@mui/x-data-grid";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
@@ -19,6 +20,7 @@ import { axiosPrivate, baseURL } from "../../axios/axios";
 
 import { toast } from "react-toastify";
 import { KeyboardArrowDown, KeyboardArrowUp ,Edit} from "@mui/icons-material";
+import { light } from "@mui/material/styles/createPalette";
 
 
 type cvsItem = {
@@ -161,6 +163,7 @@ function TableRowRes({ fac, onButtonEdit }: rowProps) {
                 value={data.FacilityPrices}
                 name="FacilityPrices"
                 onChange={(e) => editOnchange(e)}
+                type="number"
               />
             )}
           </Typography>
@@ -274,32 +277,37 @@ export default function PricelistUpload() {
       field: "SNo",
       headerName: "S.No",
       editable: true,
+      // flex: 1,
       width: 100,
     },
     {
       field: "ServiceCode",
       headerName: "Service Code",
       editable: true,
-      width: 100,
+      flex: 1,
+      // width: 100,
     },
     {
       field: "DiagnosisTestorServiceName",
       headerName: "Diagnosis Test/Service Name",
       editable: true,
-      width: 350,
+      flex: 2,
+      // width: 350,
     },
 
     {
       field: "FacilityName",
       headerName: "FacilityName",
       editable: true,
-      width: 250,
+      flex: 2,
+      // width: 250,
     },
     {
       field: "OrganisationPrices",
       headerName: "Organisation Prices",
       editable: true,
-      width: 100,
+      // width: 100,
+      flex: 1,
       align: "right",
       ...usdPrice,
     },
@@ -307,13 +315,16 @@ export default function PricelistUpload() {
       field: "FacilityNPI",
       headerName: "FacilityNPI",
       editable: true,
-      width: 100,
+      flex: 1,
+      // width: 100,
     },
     {
       field: "FacilityPrices",
       headerName: "Facility Prices",
+      type:"number",
       editable: true,
-      width: 100,
+      // width: 100,
+      flex: 1,
       align: "right",
       ...usdPrice,
     },
@@ -346,17 +357,24 @@ export default function PricelistUpload() {
         
       }else{
         var finalfacility =storefacility[0] == undefined ? "Facility name unavailable": storefacility[0].facilityName;
-        
+        var format = /^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/;
         obj["Organisationid"] = orgid[0].organizationID;
         for (var j = 0; j < headers.length; j++) {
           obj[headers[j]] = currentline[j];
+          
         }
         obj["FacilityName"] = finalfacility;
         result.push(obj);
+        console.log(result,"rescheck")
+        
+        for(i=0; i<headers.length; i++){
+        
+
+        }
       }
        
       }
-     
+      
       if(facilityExistCheck.length===0){
       setCsvData(result);
       // return JSON.stringify(result); 
@@ -369,6 +387,7 @@ export default function PricelistUpload() {
 
       if (knownHeaders.length <= validateHeaders.length - 2 ||headers.length > validateHeaders.length) {
         toast.error("Please check the header name or download the sample csv format");
+       
       } else {
         if (validateHeaders.length === headers.length && isMatched) {
           setUnknownHeader(false);
@@ -397,10 +416,11 @@ export default function PricelistUpload() {
       console.log(facilityExistCheck)
       toast.error(`${facilityExistCheck} Facility NPI not available in this organization`)
     }
-   
+    
   }
    else {
       toast.error("Please check your header name or download the sample format")
+     
     }
 
   }
@@ -479,7 +499,10 @@ export default function PricelistUpload() {
           setColumns([]);
           setCsvData([]);
           setPublishButton(false)
+         
           toast.success(res.data.message);
+          navigate("/provider/service/listService");
+          
         })
         .catch((err) => {
           console.log(err, "cdfjdk");

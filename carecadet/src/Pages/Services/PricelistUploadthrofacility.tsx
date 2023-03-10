@@ -246,25 +246,29 @@ export default function PricelistUploadthroFacility() {
       field: "ServiceCode",
       headerName: "Service Code",
       editable: true,
-      width: 100,
+      flex:1,
+      // width: 100,
     },
     {
       field: "DiagnosisTestorServiceName",
       headerName: "Diagnosis Test/Service Name",
       editable: true,
-      width: 350,
+      flex:2
+      // width: 350,
     },
     {
       field: "FacilityName",
       headerName: "Facility Name",
       editable: false,
-      width: 100,
+      flex:2
+      // width: 100,
     },
     {
       field: "OrganisationPrices",
       headerName: "Organisation Prices",
       editable: true,
-      width: 100,
+      flex:1,
+      // width: 100,
       align: "right",
       ...usdPrice,
     },
@@ -272,13 +276,15 @@ export default function PricelistUploadthroFacility() {
       field: "FacilityNPI",
       headerName: "FacilityNPI",
       editable: false,
-      width: 100,
+      flex:1
+      // width: 100,
     },
     {
       field: "FacilityPrices",
       headerName: "Facility Prices",
       editable: true,
-      width: 100,
+      flex:1,
+      // width: 100,
       align: "right",
       ...usdPrice,
     },
@@ -371,7 +377,9 @@ export default function PricelistUploadthroFacility() {
     
       toast.error(
         "Please check the header name or download the sample csv format"
+      
       );
+      
     } else {
       if (validateHeaders.length === headers.length && isMatched) {
         setUnknownHeader(false);
@@ -465,7 +473,7 @@ export default function PricelistUploadthroFacility() {
           setPublishButton(false)
           setIsLoading(false)
           toast.success(res.data.message);
-          
+          navigate("/provider/facility/viewFacility");
         })
         .catch((err) => {
           setIsLoading(false)
