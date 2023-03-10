@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Paper, TextField, Box,Grid,Button, Typography,TablePagination ,Collapse,IconButton} from "@mui/material";
+import { Paper, TextField, Box,Grid,Button, Typography,TablePagination ,Collapse,IconButton, CircularProgress, Table, TableHead, TableRow, TableCell, TableBody, TableFooter} from "@mui/material";
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -68,6 +68,7 @@ export default function Pricelistlandingpage() {
   const [pageSize, setPagesize] = useState(5);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
+  const [dataCheck,setDataCheck]=useState(false)
   const dispatch = useAppDispatch();
   // const facilityid=useAppSelector((state)=>state.editFacility.service);
   // console.log("facilityid", facilityid);
@@ -87,13 +88,16 @@ export default function Pricelistlandingpage() {
     getData();
   }, []);
   const getData = async () => {
+    setDataCheck(true)
     const pricelistdetails = await axiosPrivate.get(
       `/service/getPriceListbyFacility?facilityNPI=${facilityinput.facilityNPI}&Organisationid=${orgid[0].organizationID}`
     );
     const data = pricelistdetails.data.data;
     if (data.length == 0) {
+      setDataCheck(false)
       navigate("/provider/facility/pricelistthrofacility");
     } else {
+      setDataCheck(false)
       setData(pricelistdetails.data.data);
     }
 
@@ -213,14 +217,8 @@ export default function Pricelistlandingpage() {
 
   return (
     <>
-      <Paper
-        // elevation={9}
-        sx={{
-          backgroundColor: "primary.light",
-          padding: "0.2rem",
-          // borderRadius: "15px",
-          // height: "88.8vh",
-        }}
+    {!dataCheck?<Box
+      
       >
         <>
           {/* <TextField
@@ -321,43 +319,133 @@ export default function Pricelistlandingpage() {
               <EditIcon />
             </Avatar>
           </Box>
-          <Box
-            sx={{
-              "& .super-app-theme--header": {
-                backgroundColor: "#4D77FF",
-              },
-              // height: 400,
-              width: 1,
-              "& .odd": {
-                bgcolor: "white",
-              },
-              "& .even": {
-                bgcolor: "secondary.light",
-              },
-            }}
-          >
-            <DataGrid
-              autoHeight
-              autoPageSize
-              getRowId={(row) => row._id}
-              rows={data}
-              columns={columns}
-              pagination={true}
-              pageSize={pageSize}
-              onPageSizeChange={(newPageSize) => setPagesize(newPageSize)}
-              rowsPerPageOptions={[5, 10, 20]}
-              sx={{
-                display:{xs:"none",md:"block"},
-                fontSize: "1rem",
-                backgroundColor: "lightgray",
-                borderColor: "primary.light",
-                "& .MuiDataGrid-cell:hover": {
-                  color: "white",
-                },
-              }}
-              components={{ Row: CustomRow }}
-            />
-          </Box>
+          <Table
+              sx={{ maxWidth: "100%", display: { xs: "none", md: "table" } }}
+            >
+              <TableHead sx={{ backgroundColor: "#4D77FF" }}>
+                <TableRow>
+                  {/* <TableCell
+                sx={{
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                providerID
+              </TableCell> */}
+                  <TableCell
+                    sx={{
+                      fontSize: "1rem",
+                      fontWeight: "bold",
+                      textAlign: "left",
+                    }}
+                  >
+                   Service Code
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      fontSize: "1rem",
+                      fontWeight: "bold",
+                      textAlign: "left",
+                    }}
+                  >
+                   DiagnosisTest / ServiceName
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      fontSize: "1rem",
+                      fontWeight: "bold",
+                      textAlign: "left",
+                    }}
+                  >
+                   Organization Prices
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      fontSize: "1rem",
+                      fontWeight: "bold",
+                      textAlign: "left",
+                    }}
+                  >
+                  Facility Prices
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {(rowsPerPage > 0
+                  ? data.slice(
+                      page * rowsPerPage,
+                      page * rowsPerPage + rowsPerPage
+                    )
+                  : data
+                ).map((dataPath: any, i: any) => (
+                  <TableRow
+                    key={i}
+                    sx={{
+                      backgroundColor: (i + 1) % 2 === 0 ? "#B4C8FC" : "white",
+                    }}
+                  >
+                    {/* <TableCell sx={{ fontSize: "0.8rem", textAlign: "center" }}>
+                  {dataPath.providerID}
+                </TableCell> */}
+                    <TableCell sx={{ fontSize: "1rem", textAlign: "left" }}>
+                      {/* {dataPath.filePath.split("/")[2]} */}
+                      {dataPath.ServiceCode}
+                    </TableCell>
+                    <TableCell sx={{ fontSize: "1rem", textAlign: "left" }}>
+                      {/* {dataPath.filePath.split("/")[2]} */}
+                      {dataPath.DiagnosisTestorServiceName}
+                    </TableCell>
+                    <TableCell sx={{ fontSize: "1rem", textAlign: "right" }}>
+                      {/* {dataPath.filePath.split("/")[2]} */}
+                      
+                      {dataPath.OrganisationPrices===null?"":"$"+Number(dataPath.OrganisationPrices).toLocaleString()}
+                    </TableCell>
+                    <TableCell sx={{ fontSize: "1rem", textAlign: "right" }}>
+                      {/* {dataPath.filePath.split("/")[2]} */}
+                      {dataPath.FacilityPrices===null?"":"$"+Number(dataPath.FacilityPrices).toLocaleString()}
+                   
+                    </TableCell>
+
+               
+                  </TableRow>
+                ))}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    count={data.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    labelDisplayedRows={({ from, to, count }) =>
+                      `${from}-${to} of ${count !== -1 ? count : ` ${to}}`}`
+                    }
+                    backIconButtonProps={{
+                      color: "secondary",
+                    }}
+                    nextIconButtonProps={{ color: "secondary" }}
+                    showFirstButton={true}
+                    showLastButton={true}
+                    labelRowsPerPage={<span>Rows:</span>}
+                    sx={{
+                      ".MuiTablePagination-toolbar": {
+                        backgroundColor: "primary.light",
+                        // "rgba(100,100,100,0.5)"
+                      },
+                      ".MuiTablePagination-selectLabel, .MuiTablePagination-input":
+                        {
+                          fontWeight: "bold",
+                          color: "#173A5E",
+                        },
+                    }}
+                  />
+                </TableRow>
+              </TableFooter>
+            </Table>
           <Box sx={{display:{xs:"flex",md:"none"},flexDirection:"column",gap:"1rem"}}>
         {data.map((fac:any,i:any)=>(
          
@@ -394,7 +482,23 @@ export default function Pricelistlandingpage() {
                 }}/>
         </Box>
         </>
-      </Paper>
+      </Box> :  <Box
+              sx={{
+                backgroundColor:"primary.light",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "84vh",
+              }}
+            >
+              <Box>
+                <CircularProgress color="inherit" size={50} />
+                <Typography>Loading</Typography>
+              </Box>
+            </Box>}
+  
+      
+     
     </>
   );
 }

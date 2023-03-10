@@ -1,5 +1,16 @@
 import { useEffect, useState } from "react";
-import { Paper, Grid, Box,Button, Typography, Collapse, IconButton,TablePagination,TextField } from "@mui/material";
+import {
+  Paper,
+  Grid,
+  Box,
+  Button,
+  Typography,
+  Collapse,
+  IconButton,
+  TablePagination,
+  TextField,
+  CircularProgress,
+} from "@mui/material";
 import axios from "axios";
 import {
   GridRowsProp,
@@ -36,7 +47,12 @@ import clsx from "clsx";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import { axiosPrivate, baseURL } from "../../axios/axios";
 import { toast } from "react-toastify";
-import { KeyboardArrowDown, KeyboardArrowUp ,Edit, Delete} from "@mui/icons-material";
+import {
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+  Edit,
+  Delete,
+} from "@mui/icons-material";
 
 interface forminitialValues {
   _id: string;
@@ -47,20 +63,15 @@ interface forminitialValues {
   OrganisationPrices: string;
   FacilityNPI?: string;
   FacilityPrices: string;
-  GridAlignment : 'left' | 'right' | 'center';
+  GridAlignment: "left" | "right" | "center";
 }
-interface rowProps{
-  fac:any
+interface rowProps {
+  fac: any;
   onButtonEdit: any;
-  handleDelete:any
+  handleDelete: any;
 }
 
-
-
-
-
-
-function TableRowRes({ fac, onButtonEdit , handleDelete}: rowProps) {
+function TableRowRes({ fac, onButtonEdit, handleDelete }: rowProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   // console.log(fac, "facilityRow");
@@ -69,47 +80,45 @@ function TableRowRes({ fac, onButtonEdit , handleDelete}: rowProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [edit, setEdit] = useState<boolean>(false);
   const [data, setData] = useState<any>(fac);
- 
+
   const editOnchange = (e: any) => {
     console.log(e.target.name, e.target.value);
     var editData = { ...data, [e.target.name]: e.target.value };
     setData(editData);
   };
 
-  const onButton =async (cellData: any)=> {
+  const onButton = async (cellData: any) => {
     setEdit(false);
     onButtonEdit(data);
-    console.log(data,"data11111")
+    console.log(data, "data11111");
 
-      setcsvEdit(data)
-      console.log(csvEdit,"csvEdit")
-
-      
-   
+    setcsvEdit(data);
+    console.log(csvEdit, "csvEdit");
   };
 
-  const onClickDelete = async (deleteFac:any)=>{
-handleDelete(deleteFac)
-console.log("deletefac",deleteFac)
-  }
+  const onClickDelete = async (deleteFac: any) => {
+    handleDelete(deleteFac);
+    console.log("deletefac", deleteFac);
+  };
   return (
     <Box>
-      <Paper sx={{backgroundColor:"primary.light",padding:"0.3rem"}}>
+      <Paper sx={{ backgroundColor: "primary.light", padding: "0.3rem" }}>
         <Grid container>
-          <Grid item xs={10} >
-            <Box sx={{display:"flex",flexWrap:"nowrap",alignItems:"center"}}>
-            <IconButton
-           
-              aria-label="expand row"
-              size="small"
-              onClick={() => {
-                setOpen(!open)
-                setEdit(false)
-              }}
+          <Grid item xs={10}>
+            <Box
+              sx={{ display: "flex", flexWrap: "nowrap", alignItems: "center" }}
             >
-              {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-            </IconButton>
-            <Typography>{fac.DiagnosisTestorServiceName}</Typography>
+              <IconButton
+                aria-label="expand row"
+                size="small"
+                onClick={() => {
+                  setOpen(!open);
+                  setEdit(false);
+                }}
+              >
+                {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+              </IconButton>
+              <Typography>{fac.DiagnosisTestorServiceName}</Typography>
             </Box>
           </Grid>
           <Grid item xs={1}>
@@ -121,8 +130,9 @@ console.log("deletefac",deleteFac)
           </Grid>
           <Grid item xs={1}>
             <Delete
-              onClick={()=>{onClickDelete(fac)}}
-             
+              onClick={() => {
+                onClickDelete(fac);
+              }}
             />
           </Grid>
         </Grid>
@@ -130,7 +140,7 @@ console.log("deletefac",deleteFac)
       <Collapse in={open} timeout="auto" unmountOnExit>
         <Paper
           sx={{
-            backgroundColor:"primary.light",
+            backgroundColor: "primary.light",
             display: "flex",
             flexDirection: "column",
             mt: "0.2rem",
@@ -138,28 +148,27 @@ console.log("deletefac",deleteFac)
           }}
         >
           <Grid container>
-          {edit ?
-            <Grid item justifyContent={"flex-end"}> <Button onClick={onButton}>save</Button></Grid> : null}
+            {edit ? (
+              <Grid item justifyContent={"flex-end"}>
+                {" "}
+                <Button onClick={onButton}>save</Button>
+              </Grid>
+            ) : null}
           </Grid>
-          <Grid  container item xs={12}>
-            <Grid item xs={6} >
-            <Typography sx={{ color: "blue" }}>
-              Organization ID{" "}
-            </Typography>
+          <Grid container item xs={12}>
+            <Grid item xs={6}>
+              <Typography sx={{ color: "blue" }}>Organization ID </Typography>
             </Grid>
-            <Grid item xs={2} >
-            <Typography sx={{ color: "blue" }}>
-             :
-            </Typography>
+            <Grid item xs={2}>
+              <Typography sx={{ color: "blue" }}>:</Typography>
             </Grid>
-            <Grid item xs={4} >
-            <Typography sx={{ color: "blue" }}>
-            {fac.Organisationid}
-            </Typography>
+            <Grid item xs={4}>
+              <Typography sx={{ color: "blue" }}>
+                {fac.Organisationid}
+              </Typography>
             </Grid>
           </Grid>
 
-         
           <Typography sx={{ display: "flex" }}>
             {" "}
             <Typography sx={{ color: "blue" }}>Service Code </Typography> :{" "}
@@ -172,8 +181,9 @@ console.log("deletefac",deleteFac)
           </Typography>
           <Typography sx={{ display: "flex" }}>
             {" "}
-            <Typography sx={{ color: "blue" }}>Facility Name </Typography> :{" "}
-            {fac.FacilityName}
+            <Typography sx={{ color: "blue" }}>
+              Facility Name{" "}
+            </Typography> : {fac.FacilityName}
           </Typography>
           <Typography sx={{ display: "flex" }}>
             {" "}
@@ -219,19 +229,30 @@ export default function PricelistEditpage() {
   const [filename, setFilename] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   // const facilityid=useAppSelector((state)=>state.editFacility.service);
   // console.log("facilityid", facilityid);
   // const [totalPages, setTotalPages] = useState(10);
-  const orgid = useAppSelector((state) => state.providerOrganization.orgEditData);
-  const facilityinput = useAppSelector(    (state) => state.providerService.serviceData  );
+  const orgid = useAppSelector(
+    (state) => state.providerOrganization.orgEditData
+  );
+  const facilityinput = useAppSelector(
+    (state) => state.providerService.serviceData
+  );
   console.log(facilityinput, "facip");
   const getData = async () => {
-    const pricelistdetails = await axiosPrivate.get(
-      `/service/getPriceListbyFacility?facilityNPI=${facilityinput.facilityNPI}&Organisationid=${orgid[0].organizationID}`
-    );
-    setData(pricelistdetails.data.data);
-    console.log(pricelistdetails.data, "pricelist");
+    setIsLoading(true);
+    await axiosPrivate
+      .get(
+        `/service/getPriceListbyFacility?facilityNPI=${facilityinput.facilityNPI}&Organisationid=${orgid[0].organizationID}`
+      )
+      .then((res) => {
+        setData(res.data.data);
+        setIsLoading(false)
+      }).catch(err=>console.log(err))
+
+    
   };
   useEffect(() => {
     getData();
@@ -239,19 +260,21 @@ export default function PricelistEditpage() {
 
   const handleDeleteClick = (id: GridRowId) => () => {
     setData(data.filter((row: any) => row._id !== id));
-    console.log("data1",data)
+    console.log("data1", data);
     let store = data.filter((row: any) => row._id === id);
     console.log(store[0]._id, "store");
     setcsvDel([...csvdel, store[0]._id]);
-    console.log(csvdel,"checkdel")
-    toast.success("Successfully delete the service. Kindly click SAVE to update in DB")
+    console.log(csvdel, "checkdel");
+    toast.success(
+      "Successfully delete the service. Kindly click SAVE to update in DB"
+    );
   };
 
   const onCellEditCommit = async (cellData: any) => {
     const { id, field, value } = cellData;
     console.log(cellData);
-    console.log(data,"dataaa")
-    console.log(csvEdit,"csvEdit")
+    console.log(data, "dataaa");
+    console.log(csvEdit, "csvEdit");
     let d = data.filter((data1: any) => data1._id === id);
 
     let dd = csvEdit.filter((ddd: any) => ddd._id === id);
@@ -265,10 +288,14 @@ export default function PricelistEditpage() {
         return dd;
       });
       setcsvEdit(r);
-      toast.success("Successfully Edit the service. Kindly click SAVE to update in DB")
+      toast.success(
+        "Successfully Edit the service. Kindly click SAVE to update in DB"
+      );
     } else {
       setcsvEdit([...csvEdit, { ...d[0], [field]: value }]);
-      toast.success("Successfully Edit the service. Kindly click SAVE to update in DB")
+      toast.success(
+        "Successfully Edit the service. Kindly click SAVE to update in DB"
+      );
     }
   };
 
@@ -295,117 +322,110 @@ export default function PricelistEditpage() {
     return JSON.stringify(result); //JSON
   }
   const update = (e: any) => {
+    setIsLoading(true)
     e.preventDefault();
 
     // if(output){
     //    let formData = new FormData();
     //  formData.append("screenshot", output);
     let datacheck = { name: filename, PriceList: csvEdit };
-    axiosPrivate
-      .put(`/service/bulkupdate`, datacheck)
-      .then((res) => {
-      let datacheck1 = {data: { name: filename, PriceList: csvdel }};
+    axiosPrivate.put(`/service/bulkupdate`, datacheck).then((res) => {
+      let datacheck1 = { data: { name: filename, PriceList: csvdel } };
       axiosPrivate
-      
-        .delete(
-          `/service/bulkdelete`, datacheck1)
-  
-     
+
+        .delete(`/service/bulkdelete`, datacheck1)
+
         .then((res) => {
+          setIsLoading(false)
           toast.success(res.data.message);
           console.log("Success ", res);
           // alert("success");
-      })
-      .then((res) => {
-        // alert("success");
-        // dispatch(organizationEdit(orgdata))
-        navigate("/provider/facility/pricelistlanding")
-        // actions.resetForm({
-        //   values: initialValues,
-        // });
-      });
-    }
-    )};
-      //   let datacheck1 = { name: filename, PriceList: csvdel };
-      //   axios
-      // .delete(
-      //   "http://localhost:5200/bulkdelete", datacheck1
+        })
+        .then((res) => {
+          // alert("success");
+          // dispatch(organizationEdit(orgdata))
+         
+          navigate("/provider/facility/pricelistlanding");
+          // actions.resetForm({
+          //   values: initialValues,
+          // });
+        });
+    });
+  };
+  //   let datacheck1 = { name: filename, PriceList: csvdel };
+  //   axios
+  // .delete(
+  //   "http://localhost:5200/bulkdelete", datacheck1
 
-      // )
-      // .then((res) => {
-      //   console.log("Success ", res);
-      //   alert("success");
-      // });
+  // )
+  // .then((res) => {
+  //   console.log("Success ", res);
+  //   alert("success");
+  // });
 
-     
-    //  }
+  //  }
   // };
 
-  const currencyFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
+  const currencyFormatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
   });
-  
+
   const usdPrice: GridColTypeDef = {
-    type: 'string',
+    type: "string",
     width: 250,
     // valueFormatter: ({ value }) => currencyFormatter.format(parseFloat(value)),
     valueFormatter: (params: GridValueFormatterParams<number>) => {
       if (params.value == null) {
-        return '';
+        return "";
       }
 
-      const valueFormatted = Number(params.value ).toLocaleString();
+      const valueFormatted = Number(params.value).toLocaleString();
       return `$ ${valueFormatted} `;
     },
-    cellClassName: 'font-tabular-nums',
+    cellClassName: "font-tabular-nums",
   };
   const onButtonEdit = (e: any) => {
-    var editData=data.map((d:any)=>{
-      if(d.DiagnosisTestorServiceName===e.DiagnosisTestorServiceName){
-        return e
-      }else{
-        return d
+    var editData = data.map((d: any) => {
+      if (d.DiagnosisTestorServiceName === e.DiagnosisTestorServiceName) {
+        return e;
+      } else {
+        return d;
       }
-    })
-  
-    console.log(editData,"checkEdit")
-    var findExistEdit= csvEdit.filter((dataCsv:any)=>dataCsv._id===e._id)
+    });
+
+    console.log(editData, "checkEdit");
+    var findExistEdit = csvEdit.filter((dataCsv: any) => dataCsv._id === e._id);
     // console.log(findExistEdit,"findExist")
-    if(findExistEdit.length!==0){
-      const mapEdit=csvEdit.map((dat:any,i:any)=>{
-            if(dat._id===e._id){
-              return e
-            }else{
-              return dat
-            }
-      })
+    if (findExistEdit.length !== 0) {
+      const mapEdit = csvEdit.map((dat: any, i: any) => {
+        if (dat._id === e._id) {
+          return e;
+        } else {
+          return dat;
+        }
+      });
       // console.log("mapEdit",mapEdit)
-      setcsvEdit(mapEdit)
-    }else{
-      setcsvEdit([...csvEdit,e])
-    }
-    setData(editData)
-      
-    };
+      setcsvEdit(mapEdit);
+    } else {
+      setcsvEdit([...csvEdit, e]);
+    }
+    setData(editData);
+  };
 
+  const handleDelete = (e: any) => {
+    console.log("check");
 
-    const handleDelete= (e:any)  =>{
-    
-      console.log("check")
-  
-      console.log(e,"echeck")
-//       const facid=e._id;
-// console.log("facid",facid)
-      setData(data.filter((row: any) => row._id !== e._id));
+    console.log(e, "echeck");
+    //       const facid=e._id;
+    // console.log("facid",facid)
+    setData(data.filter((row: any) => row._id !== e._id));
     let store = data.filter((row: any) => row._id === e._id);
     console.log(store, "store");
-      setcsvDel([...csvdel, store[0]._id]);
-      // var delData = { ...data, [e.target.name]: e.target.value };
-      // setData(delData);
-        
-      };
-
+    setcsvDel([...csvdel, store[0]._id]);
+    // var delData = { ...data, [e.target.name]: e.target.value };
+    // setData(delData);
+  };
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -454,8 +474,8 @@ export default function PricelistEditpage() {
       headerClassName: "super-app-theme--header",
       width: 200,
       editable: true,
-      align:'right',
-      ...usdPrice
+      align: "right",
+      ...usdPrice,
     },
     // {
     //   field: "FacilityNPI",
@@ -469,8 +489,8 @@ export default function PricelistEditpage() {
       headerClassName: "super-app-theme--header",
       width: 100,
       editable: true,
-      align:'right',
-      ...usdPrice
+      align: "right",
+      ...usdPrice,
     },
     {
       field: "actions",
@@ -515,19 +535,16 @@ export default function PricelistEditpage() {
 
   return (
     <>
-       <Box
+      <Box
+        sx={{
+          backgroundColor: "primary.light",
+          // padding: "1.5rem",
+          borderRadius: "15px",
+          height: "88.8vh",
 
-sx={{
-  backgroundColor: "primary.light",
-  // padding: "1.5rem",
-  borderRadius: "15px",
-  height: "88.8vh",
-
-
-
-  // height: "88.8vh",
-}}
->
+          // height: "88.8vh",
+        }}
+      >
         <Typography
           mb={"0.5rem"}
           sx={{
@@ -537,7 +554,7 @@ sx={{
             fontSize: "1.5rem",
           }}
         >
-         {facilityinput.facilityName} Pricelist
+          {facilityinput.facilityName} Pricelist
         </Typography>
         {/* <Typography sx={{ fontSize: "1.5rem",}}> <div>{facilityinput.facilityName}</div></Typography> */}
         {/* <Grid container item xs={12} justifyContent="left">
@@ -588,11 +605,14 @@ sx={{
               columns={columns}
               pagination={true}
               pageSize={pageSize}
+              loading={isLoading}
               onPageSizeChange={(newPageSize) => setPagesize(newPageSize)}
               rowsPerPageOptions={[5, 10, 20]}
               onCellEditCommit={onCellEditCommit}
               sx={{
-                maxWidth: "100%",display:{xs:"none",md:"block"}, mt:1 ,
+                maxWidth: "100%",
+                display: { xs: "none", md: "block" },
+                mt: 1,
                 fontSize: "1rem",
                 backgroundColor: "lightgray",
                 borderColor: "primary.light",
@@ -603,66 +623,75 @@ sx={{
               components={{ Row: CustomRow }}
             />
           </Box>
-          < Box
-              sx={{
-                
-                display: { xs: "flex", md: "none" },
-                flexDirection: "column",
-                gap: "1rem",
-              }}
-            >
-              { (rowsPerPage > 0
-              ? data.slice(
-                  page * rowsPerPage,
-                  page * rowsPerPage + rowsPerPage
-                )
+          <Box
+            sx={{
+              display: { xs: "flex", md: "none" },
+              flexDirection: "column",
+              gap: "1rem",
+            }}
+          >
+            {(rowsPerPage > 0
+              ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : data
             ).map((fac: any, i: any) => (
               <>
-                <TableRowRes
+              {!isLoading?<TableRowRes
                   key={i}
                   fac={fac}
                   onButtonEdit={(e: any) => onButtonEdit(e)}
-                  handleDelete={(e:any) => handleDelete(e)}
-                 
-                />
-                
-                </>
-              ))}
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                count={data.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                labelDisplayedRows={({ from, to, count }) =>
-                  `${from}-${to} of ${count !== -1 ? count : ` ${to}}`}`
-                }
-                backIconButtonProps={{
-                  color: "secondary",
-                }}
-                nextIconButtonProps={{ color: "secondary" }}
-                showFirstButton={true}
-                showLastButton={true}
-                labelRowsPerPage={<span>Rows:</span>}
+                  handleDelete={(e: any) => handleDelete(e)}
+                />:  <Box
                 sx={{
-                  ".MuiTablePagination-toolbar": {
-                    backgroundColor: "primary.light",
-                    // "rgba(100,100,100,0.5)"
-                  },
-                  ".MuiTablePagination-selectLabel, .MuiTablePagination-input":
-                    {
-                      fontWeight: "bold",
-                      color: "#173A5E",
-                    },
-                }}/>
-            </Box>
-          <Buttoncomponent
+                  backgroundColor:"primary.light",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "84vh",
+                }}
+              >
+                <Box>
+                  <CircularProgress color="inherit" size={50} />
+                  <Typography>Loading</Typography>
+                </Box>
+              </Box>}
+                
+              </>
+            ))}
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              count={data.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              labelDisplayedRows={({ from, to, count }) =>
+                `${from}-${to} of ${count !== -1 ? count : ` ${to}}`}`
+              }
+              backIconButtonProps={{
+                color: "secondary",
+              }}
+              nextIconButtonProps={{ color: "secondary" }}
+              showFirstButton={true}
+              showLastButton={true}
+              labelRowsPerPage={<span>Rows:</span>}
+              sx={{
+                ".MuiTablePagination-toolbar": {
+                  backgroundColor: "primary.light",
+                  // "rgba(100,100,100,0.5)"
+                },
+                ".MuiTablePagination-selectLabel, .MuiTablePagination-input": {
+                  fontWeight: "bold",
+                  color: "#173A5E",
+                },
+              }}
+            />
+          </Box>
+          {isLoading?null:<Buttoncomponent
             type="submit"
             variant="contained"
             size="large"
             color="primary"
+            disable={isLoading}
             // onClick={onSave}
             onClick={(e) => update(e)}
             sx={{
@@ -679,7 +708,8 @@ sx={{
             }}
           >
             Save
-          </Buttoncomponent>
+          </Buttoncomponent>}
+          
           {/* {JSON.stringify(csvEdit)}
           <br />
 

@@ -58,6 +58,7 @@ const OrganizationInfo = () => {
   const [currentFile, setCurrentFile] = useState<any>();
   const [checked, setChecked] = React.useState<boolean>(false);
   const [autoCompleteData, setAutoCompleteData] = React.useState<any>([])
+  const [isLoading,setIsLoading]=useState<boolean>(false)
 
   const [fileName, setFileName] = useState<any>("");
 
@@ -127,6 +128,7 @@ const [zipDisable,setZipDisable]=useState(false)
   // }
 
   const onSubmit = async (values: InitialValues, actions: any,) => {
+    setIsLoading(true)
     console.log(values,"checkValues")
     const orgprovider = {
       providerID: select.userID,
@@ -136,7 +138,7 @@ const [zipDisable,setZipDisable]=useState(false)
       contact: values.contactPersonInformation.contactno,
       email: select.email,
     };
-    alert(JSON.stringify(orgprovider, null, 2));
+    // alert(JSON.stringify(orgprovider, null, 2));
     try {
       axiosPrivate
         .put("provider/updateProvider", orgprovider)
@@ -151,9 +153,11 @@ const [zipDisable,setZipDisable]=useState(false)
         actions.resetForm({
           values: initialValues,
         });
+        
         // navigate("/provider/facility/addFacility");
       })
       .catch((err) => {
+        setIsLoading(false)
         console.log(err, "orgErr");
         toast.error(err.message);
       });
@@ -203,18 +207,22 @@ const [zipDisable,setZipDisable]=useState(false)
               actions.resetForm({
                 values: initialValues,
               });
+              setIsLoading(false)
               navigate("/provider/facility/addFacility");
             })
             .catch((err) => {
+              setIsLoading(false)
               console.log(err, "orgErr");
               toast.error(err.message);
             });
         })
         .catch((err) => {
+          setIsLoading(false)
           console.log(err, "imgerr");
           toast.error(err.message);
         });
     } catch (err) {
+      setIsLoading(false)
       throw err;
       // console.log(err, "err");
     }
@@ -222,14 +230,14 @@ const [zipDisable,setZipDisable]=useState(false)
   
   const validationSchema = Yup.object().shape({
     organizationInformation: Yup.object().shape({
-      organizationName: Yup.string().required("Organization Name is required").matches(/^[A-Za-z]+$/, 'Organization Name can only contain alphabets.'),
+      organizationName: Yup.string().required("Organization Name is required"),
       streetAdd1: Yup.string().required("Address is required"),
       city: Yup.string()
         .required("City is required")
-        .matches(/[a-zA-Z]/, "City can only contain alphabets."),
+        .matches(/^[A-Za-z -]+$/, "City can only contain alphabets."),
       state: Yup.string()
         .required("State is required")
-        .matches(/[a-zA-Z]/, "State can only contain alphabets."),
+        .matches(/^[A-Za-z -]+$/, "State can only contain alphabets."),
       zipCode: Yup.string()
         .required("Zip Code is required")
         .matches(
@@ -252,10 +260,10 @@ const [zipDisable,setZipDisable]=useState(false)
     contactPersonInformation: Yup.object().shape({
       firstName: Yup.string()
         .required("First Name is a required field")
-        .matches(/^[A-Za-z]+$/, "First Name can only contain alphabets."),
+        .matches(/^[A-Za-z -]+$/, "First Name can only contain alphabets."),
       lastName: Yup.string()
         .required("Last Name is required")
-        .matches(/^[A-Za-z]+$/, "Last Name can only contain alphabets."),
+        .matches(/^[A-Za-z -]+$/, "Last Name can only contain alphabets."),
       role: Yup.string()
         .required("Role is a required field")
         .matches(/[A-Za-z0-9]+$/, "Role can only contain alphabets and number"),
@@ -552,8 +560,8 @@ const [zipDisable,setZipDisable]=useState(false)
                   helperText={<ErrorMessage name="organizationInformation.zipCode">
                   {(error) => <ErrorProps>{error}</ErrorProps>}
                     </ErrorMessage>}
-                  name="zipCode"
-                  label="Zip Code"
+                  name="organizationInformation.zipCode"
+                  placeholder="Zip Code"
                   onChange={handleChange}
                    variant="outlined"
                   sx={{
@@ -564,7 +572,8 @@ const [zipDisable,setZipDisable]=useState(false)
                     ".MuiInputLabel-shrink": {
                       letterSpacing: 0,
                     },
-                    "& .MuiAutocomplete-popupIndicator": { transform: "none" }                  
+                    "& .MuiAutocomplete-popupIndicator": { transform: "none" }    
+                                  
                   }}
 
                 
@@ -607,7 +616,14 @@ const [zipDisable,setZipDisable]=useState(false)
                   type="text"
                   fullWidth={true}
                   autoComplete="text"
-                  inputProps = {{readOnly:zipDisable}}
+                  inputProps={{
+                    sx: { "&::placeholder": {
+                      // color: "green",
+                      letterSpacing: "0.2rem",
+                      // fontSize: "1rem",
+                    },},
+                    readOnly:zipDisable
+                  }}
                 />
               </Grid>
               <Grid item xs={12} md ={4}>
@@ -647,7 +663,16 @@ const [zipDisable,setZipDisable]=useState(false)
                   type="text"
                   fullWidth={true}
                   autoComplete="text"
-                  inputProps = {{readOnly:zipDisable}}
+                  
+                    
+                  inputProps={{
+                    sx: { "&::placeholder": {
+                      // color: "green",
+                      letterSpacing: "0.2rem",
+                      // fontSize: "1rem",
+                    },},
+                    readOnly:zipDisable
+                  }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -662,31 +687,26 @@ const [zipDisable,setZipDisable]=useState(false)
                 </Typography>
                 <Field
                   as={TextField}
-                  // value={values.contactPersonInformation.email}
-                  sx={{
-                    // boxShadow: "0 0 45px 1px red" ,
-                    "&::placeholder": {
-                      // color: "green",
-                      letterSpacing: "0.2rem",
-                      // fontSize: "1rem",
-                    },
-                  }}
-                  helperText={
-                  //    <div style={{
-                  //   textAlign: "left",
-                  //   color: "red",
-                  //   fontSize: "0.9rem",
-                   
-                  // }} >readonly</div>
-                  <ErrorMessage name="organizationInformation.phone">
-                    {(error) => <ErrorProps>{error}</ErrorProps>}
-                  </ErrorMessage>
-                  }
                   name="organizationInformation.phone"
                   placeholder="Phone Number"
                   type="text"
                   fullWidth={true}
                   autoComplete="text"
+                  
+                  inputProps={{
+                    sx: { "&::placeholder": {
+                      // color: "green",
+                      letterSpacing: "0.2rem",
+                      // fontSize: "1rem",
+                    },},
+                  }}
+                  
+                  helperText={
+               
+                  <ErrorMessage name="organizationInformation.phone">
+                    {(error) => <ErrorProps>{error}</ErrorProps>}
+                  </ErrorMessage>
+                  }
                
                 />
 
@@ -851,6 +871,7 @@ const [zipDisable,setZipDisable]=useState(false)
                   size="large"
                   fullWidth={false}
                   variant="contained"
+                  disable={isLoading}
                   sx={{
                     backgroundColor: "secondary.dark",
                     width: "10vw",

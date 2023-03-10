@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { Grid, Typography, Button, Paper, Box, Container ,Collapse, IconButton,TablePagination,TextField} from "@mui/material";
+import { Grid, Typography, Button, Paper, Box, Container ,Collapse, IconButton,TablePagination,TextField, CircularProgress} from "@mui/material";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 import { ChangeEvent } from "react";
 import { useNavigate } from "react-router";
@@ -36,6 +36,7 @@ function TableRowRes({ fac, onButtonEdit }: rowProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [edit, setEdit] = useState<boolean>(false);
   const [data, setData] = useState<any>(fac);
+ 
 
   const editOnchange = (e: any) => {
     console.log(e.target.name, e.target.value);
@@ -171,6 +172,7 @@ export default function PricelistUploadthroFacility() {
   const [page, setPage] = useState(0);
   const [unknownHeader, setUnknownHeader] = useState<boolean>(false);
   const [publishButton, setPublishButton] = useState<boolean>(false);
+  const [isLoading,setIsLoading]=useState<boolean>(false)
   const navigate = useNavigate();
 
   const data = useAppSelector((state) => state.providerAuth.login);
@@ -443,6 +445,7 @@ export default function PricelistUploadthroFacility() {
 
   const upload = (e: any) => {
     e.preventDefault();
+    setIsLoading(true)
     // if(output){
     //    let formData = new FormData();
     //  formData.append("screenshot", output);
@@ -460,9 +463,12 @@ export default function PricelistUploadthroFacility() {
           setColumns([]);
           setCsvData([]);
           setPublishButton(false)
+          setIsLoading(false)
           toast.success(res.data.message);
+          
         })
         .catch((err) => {
+          setIsLoading(false)
           console.log(err, "cdfjdk");
           toast.error(err.message);
         });
@@ -520,6 +526,7 @@ export default function PricelistUploadthroFacility() {
 
   const onSubmit = (e: any) => {
     e.preventDefault();
+    setIsLoading(true)
     // if(output){
     //    let formData = new FormData();
     //  formData.append("screenshot", output);
@@ -539,13 +546,16 @@ export default function PricelistUploadthroFacility() {
         // }
       )
       .then((res) => {
+      
         console.log("Success ", res);
         // alert("success");
         toast.success(res.data.message);
         navigate("/provider/facility/pricelistlanding");
+        setIsLoading(false)
       })
       
       .catch((err) => {
+        setIsLoading(false)
         console.log(err, "cdfjdk");
         toast.error(err.message);
       });
@@ -693,7 +703,10 @@ export default function PricelistUploadthroFacility() {
           <Box sx={{mt:2,fontWeight:"bold"}}>{filename}</Box>
         </Box>
         {columns.length !== 0 ? (
-          <>
+          <Box >
+          
+           
+      
             <DataGrid
               autoHeight
               rows={csvData}
@@ -701,6 +714,8 @@ export default function PricelistUploadthroFacility() {
               getRowId={(row: any) => row.SNo}
               pagination={true}
               pageSize={pageSize}
+              loading={isLoading}
+            
               onPageSizeChange={(newPageSize: number) =>
                 setPagesize(newPageSize)
               }
@@ -774,6 +789,7 @@ export default function PricelistUploadthroFacility() {
                 variant="contained"
                 size="large"
                 color="primary"
+                disable={isLoading}
                 onClick={upload}
                 sx={{
                   mt: 2,
@@ -797,6 +813,7 @@ export default function PricelistUploadthroFacility() {
             variant="contained"
             size="large"
             color="primary"
+            disable={isLoading}
             sx={{
               mt: 2,
               backgroundColor: "secondary.dark",
@@ -815,7 +832,7 @@ export default function PricelistUploadthroFacility() {
           </Buttoncomponent>
 }
             </Box>
-          </>
+          </Box>
         ) : null}
       
     </Box>
