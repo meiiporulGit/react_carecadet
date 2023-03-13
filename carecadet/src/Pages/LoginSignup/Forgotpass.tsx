@@ -7,7 +7,7 @@ import login from "../../Images/login.jpg";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import Cookie from "js-cookie";
-
+import { useState } from "react";
 import FormTextField from "../../Components/Textfield";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 
@@ -26,6 +26,7 @@ const schema = yup.object().shape({
 
 });
 export default function Forgotpass() {
+  const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   return (
@@ -37,10 +38,9 @@ export default function Forgotpass() {
             initialValues={{
               email: "",
               userType: "PROVIDER"
-            
-            }}
-            onSubmit={(values) => {
-              
+                        }}
+            onSubmit={(values,{setSubmitting, resetForm}) => {
+              setIsLoading(true)  
               const Resetpass = {
                 email: values.email,
               
@@ -50,29 +50,22 @@ export default function Forgotpass() {
               axiosPrivate
                 .put("/provider/forgotpassword", Resetpass)
                 .then((res) => {
-                  
+                  setIsLoading(false) 
                   toast.success(res.data.message);
-              
-                //   Cookie.set("token", JSON.stringify(res.data.data), {
-                //     secure: true,
-                //     sameSite: "strict",
-                //     path: "/",
-                //   }
-                //   );
-                 
-                //   dispatch(storeLoginInfo(res.data.data));
-                //   dispatch(loginButton());
-                //   console.log(res);
-         
-                  // navigate("/provider/resetpass");
+                  
+                
                 })
                 .catch((err) => {
                   
                   toast.error(err.message);
                  
                 });
+                // setSubmitting(true);
+                // setSubmitting(false);
+                resetForm();
             }}
           >
+            {({values,isSubmitting,resetForm})=>(
             <Form >
         
               <Typography variant="h4" sx={{ mt: 12, color: "#728AB7" }}>
@@ -122,6 +115,7 @@ export default function Forgotpass() {
               <Grid item>
                 <Buttoncomponent
                   type="submit"
+                  disable={isLoading}
                   size="large"
                   fullWidth={false}
                   variant="contained"
@@ -137,12 +131,20 @@ export default function Forgotpass() {
                       fontSize: "1rem",
                     },
                   }}
-                >
-                  Recovery Email
+                                 >
+  {isLoading && (
+                    <i
+                      className="fa fa-refresh fa-spin"
+                      style={{ marginRight: "5px" }}
+                    />
+                  )}
+                      {isLoading && <span>Sending Email</span>}
+          {!isLoading && <span>Recovery email</span>}
                 </Buttoncomponent>
               </Grid>
               
             </Form>
+            )}
           </Formik>
         </Grid>
         <Grid

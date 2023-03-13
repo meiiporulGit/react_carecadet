@@ -140,7 +140,7 @@ const CreateServicethroFacility = () => {
                     mb: "0.5rem",
                   }}
                 >
-                 Service Code *
+                 Service Code <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
              
                 <Field
@@ -201,7 +201,7 @@ const CreateServicethroFacility = () => {
                     mb: "0.5rem",
                   }}
                 >
-                 DiagnosisTest or Service Name *
+                 DiagnosisTest or Service Name <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
                 <Field
                label="Service Name"
@@ -379,7 +379,7 @@ filterOptions = {filterOptions}
               
                 }}
               >
-                Facility Prices *
+                Facility Prices <Typography display="inline" sx={{color:"red"}}>*</Typography>
               </Typography>
               <FormTextField
                 container={TextField}

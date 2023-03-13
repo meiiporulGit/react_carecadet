@@ -288,7 +288,7 @@ const OrganizationInfo = () => {
     {
       xs: 12,
       md: 12,
-      label: "Organization Name *",
+      label: "Organization Name ",
       name: "organizationInformation.organizationName",
       placeholder: "Organization Name",
       type: "text",
@@ -296,19 +296,19 @@ const OrganizationInfo = () => {
     {
       xs: 12,
       md: 6,
-      label: "Street Address1 *",
+      label: "Street Address1 ",
       name: "organizationInformation.streetAdd1",
       placeholder: "Street Address1",
       type: "text",
     },
-    {
-      xs: 12,
-      md: 6,
-      label: "Street Address2",
-      name: "organizationInformation.streetAdd2",
-      placeholder: "Street Address2",
-      type: "text",
-    },
+    // {
+    //   xs: 12,
+    //   md: 6,
+    //   label: "Street Address2",
+    //   name: "organizationInformation.streetAdd2",
+    //   placeholder: "Street Address2",
+    //   type: "text",
+    // },
     // {
     //   xs: 12,
     //   md: 4,
@@ -372,7 +372,7 @@ const OrganizationInfo = () => {
     {
       xs: 12,
       md: 6,
-      label: "First Name *",
+      label: "First Name ",
       name: "contactPersonInformation.firstName",
       placeholder: "First Name",
       type: "text",
@@ -380,7 +380,7 @@ const OrganizationInfo = () => {
     {
       xs: 12,
       md: 6,
-      label: "Last Name *",
+      label: "Last Name ",
       name: "contactPersonInformation.lastName",
       placeholder: "Last Name",
       type: "text",
@@ -489,7 +489,7 @@ const OrganizationInfo = () => {
                       mb: "0.5rem",
                     }}
                   >
-                    {org.label}
+                    {org.label} <Typography display="inline" sx={{color:"red"}}>*</Typography>
                   </Typography>
                   <FormTextField
                     container={TextField}
@@ -509,7 +509,33 @@ const OrganizationInfo = () => {
                   />
                 </Grid>
               ))}
-
+<Grid item xs={12} md={6}>
+                <Typography
+                  // variant="h6"
+                  sx={{
+                    fontSize: "1.2rem",
+                    mb: "0.5rem",
+                  }}
+                >
+                 Street Address 2  
+                </Typography>
+                <Field
+                  as={TextField}
+                  name="organizationInformation.streetAdd2"
+                  placeholder="Street Address2"
+                  type="text"
+                  fullWidth={true}
+                  autoComplete="text"
+                  
+                  inputProps={{
+                    sx: { "&::placeholder": {
+                      // color: "green",
+                      letterSpacing: "0.2rem",
+                      // fontSize: "1rem",
+                    },},
+                  }}               
+                />
+              </Grid>
               <Grid item xs={12} md={4}>
                 <Typography
                   // variant="h6"
@@ -518,7 +544,7 @@ const OrganizationInfo = () => {
                     mb: "0.5rem",
                   }}
                 >
-                  Zip Code *
+                  Zip Code  <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
 
                 <Field
@@ -582,7 +608,7 @@ const OrganizationInfo = () => {
                     mb: "0.5rem",
                   }}
                 >
-                  City *
+                  City  <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
                 <Field
                   as={TextField}
@@ -629,7 +655,7 @@ const OrganizationInfo = () => {
                     mb: "0.5rem",
                   }}
                 >
-                  State *
+                  State  <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
                 <Field
                   as={TextField}
@@ -678,7 +704,7 @@ const OrganizationInfo = () => {
                     mb: "0.5rem",
                   }}
                 >
-                  Phone No *
+                  Phone No  <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
                 <Field
                   as={TextField}
@@ -714,7 +740,7 @@ const OrganizationInfo = () => {
                     mb: "0.5rem",
                   }}
                 >
-                  Email *
+                  Email  <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
                 <Field
                   as={TextField}
@@ -770,7 +796,7 @@ const OrganizationInfo = () => {
                       mb: "0.5rem",
                     }}
                   >
-                    {person.label}
+                    {person.label} <Typography display="inline" sx={{color:"red"}}>*</Typography>
                   </Typography>
                   <FormTextField
                     container={TextField}
@@ -832,9 +858,9 @@ const OrganizationInfo = () => {
                       textAlign: "left",
                       color: "red", 
                       fontSize: "0.7rem",
-                   
+                      marginBottom:"1rem"
                     }}>(* Readonly)</Typography>
-                </Typography>
+                  </Typography>
                 <Field
                   as={TextField}
 
@@ -868,7 +894,7 @@ const OrganizationInfo = () => {
                     mb: "0.5rem",
                   }}
                 >
-                  Contact Number *
+                  Contact Number  <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
                 <Field
                   as={TextField}
@@ -909,7 +935,7 @@ const OrganizationInfo = () => {
                       textAlign: "left",
                       color: "red", 
                       fontSize: "0.7rem",
-                   
+                      marginBottom:"1rem"
                     }}>(* Readonly)</Typography>
                 </Typography>
                 <Field

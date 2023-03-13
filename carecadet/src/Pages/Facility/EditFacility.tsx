@@ -60,7 +60,7 @@ interface forminitialValues {
 export default function UpdateFacility() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
+  const [isLoading,setIsLoading]=useState<boolean>(false)
   const getid = useAppSelector(state => state.providerAuth.login);
   const facilityinput = useAppSelector(
     (state: { providerFacility: { fData: any } }) => state.providerFacility.fData
@@ -103,6 +103,7 @@ export default function UpdateFacility() {
     email: Yup.string().email().required("Email is required")
   });
   const onSubmit = (values: forminitialValues, actions: any) => {
+    setIsLoading(true)
     const facilitydata = {
       facilityID: facilityinput.facilityID,
       providerID: values.providerID,
@@ -145,9 +146,13 @@ export default function UpdateFacility() {
         // alert('updated')
         toast.success("Successfully Updated");
         console.log("i", res.data);
+        setIsLoading(false)
         navigate("/provider/facility/viewFacility");
       })
-      .catch((e) => console.log(e));
+      .catch(err => {
+        setIsLoading(false)
+        toast.error(err.message)
+      });
   };
 
   return (
@@ -486,6 +491,7 @@ export default function UpdateFacility() {
                   size="large"
                   fullWidth={false}
                   variant="contained"
+                  disable={isLoading}
                   sx={{
                     backgroundColor: "secondary.dark",
                     width: "10vw",
@@ -498,7 +504,7 @@ export default function UpdateFacility() {
                     },
                   }}
                 >
-                  Submit
+                Update
                 </Buttoncomponent>
               </Grid>
             </Grid>

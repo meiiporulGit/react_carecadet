@@ -430,6 +430,14 @@ export default function ViewFacility() {
                           // dsearch.ServiceCode
                         }
                       </Typography>
+                      <Typography
+                        sx={{ fontSize: "1rem", color: "blue", mb: "10px" }}
+                      >
+                       Distance: {
+                          dsearch.distance
+                       
+                        } miles
+                      </Typography>
                       {/* <Button variant="contained">Humana</Button>
            <Button variant="contained">Humana</Button>
            <Button variant="contained">Antenna</Button>
