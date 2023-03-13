@@ -52,7 +52,7 @@ interface InitialValues {
 
 const OrganizationInfo = () => {
   const dispatch = useAppDispatch();
-  const select = useAppSelector((state) => state.providerAuth.login);
+  const dataLogin = useAppSelector((state) => state.providerAuth.login);
   const navigate = useNavigate();
 
   const [currentFile, setCurrentFile] = useState<any>();
@@ -94,14 +94,14 @@ const OrganizationInfo = () => {
       state: "",
       zipCode: "",
       phone: "",
-      Email: select.email,
+      Email: dataLogin.email,
     },
     contactPersonInformation: {
-      firstName: select.firstName,
-      lastName: select.lastName,
-      role: select.userType,
+      firstName: dataLogin.firstName,
+      lastName: dataLogin.lastName,
+      role: dataLogin.userType,
       contactno: "",
-      email: select.email,
+      email: dataLogin.email,
     },
     file: "",
   };
@@ -131,12 +131,12 @@ const OrganizationInfo = () => {
     setIsLoading(true)
     console.log(values,"checkValues")
     const orgprovider = {
-      providerID: select.userID,
+      providerID: dataLogin.userID,
       firstName: values.contactPersonInformation.firstName,
       lastName: values.contactPersonInformation.lastName,
       role: values.contactPersonInformation.role,
       contact: values.contactPersonInformation.contactno,
-      email: select.email,
+      email: dataLogin.email,
     };
     // alert(JSON.stringify(orgprovider, null, 2));
     try {
@@ -178,7 +178,7 @@ const OrganizationInfo = () => {
         })
         .then((res) => {
           const orgdata = {
-            providerID: select.userID,
+            providerID: dataLogin.userID,
             organizationName: values.organizationInformation.organizationName,
             orgImg: res.data.data ? res.data.data.filename : "",
             address: {
@@ -195,7 +195,7 @@ const OrganizationInfo = () => {
               lastName: values.contactPersonInformation.lastName,
               role: values.contactPersonInformation.role,
               contact: values.contactPersonInformation.contactno,
-              email: select.email,
+              email: dataLogin.email,
             },
           };
           // alert(JSON.stringify(orgdata, null, 2));

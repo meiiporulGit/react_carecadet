@@ -238,6 +238,7 @@ const Navbar = () => {
   const location = useLocation();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorElSign, setAnchorElSign] = React.useState<any>(null);
 
   const char =
     location.pathname.split("/")[1] === ""
@@ -245,8 +246,12 @@ const Navbar = () => {
       : location.pathname.split("/")[1];
   console.log(char, 'char')
   const open = Boolean(anchorEl);
+  const openSign = Boolean(anchorElSign);
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
+  };
+  const handleClickSign = (event: any) => {
+    setAnchorElSign(event.currentTarget);
   };
   const handleOpenNavMenu = (event: any) => {
     setAnchorElNav(event.currentTarget);
@@ -287,6 +292,9 @@ const Navbar = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  const handleCloseSign = () => {
+    setAnchorElSign(null);
   };
 
   return (
@@ -367,6 +375,69 @@ const Navbar = () => {
                 </Link>
               ))}
 
+              {providerLogout||patientLogout||adminLogout?null: 
+              <Box
+               
+
+                sx={{
+                  display: "flex",
+                 
+                  p: "0.5rem 1rem",
+                  // alignItems: "center",
+                  // flexWrap: "nowrap",
+                  // gap: "0.5rem",
+                  color: "blue",
+                  cursor: "pointer",
+                  // ":hover": {
+                  //   color: "white",
+                  // },
+                }}
+              >
+
+<Typography  onClick={handleClickSign} variant="button" sx={{ fontSize: "1.1rem",}}>
+                SIGNIN
+              </Typography>
+              <Menu
+                  id="basic-menu"
+                  anchorEl={anchorElSign}
+                  open={openSign}
+                  onClose={handleCloseSign}
+                  MenuListProps={{
+                    "aria-labelledby": "basic-button",
+                  }}
+                  PaperProps={{
+                    style: {
+                      width: "20ch",
+                      background: "#DEFFF8",
+                    },
+                  }}
+                  sx={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}
+                >
+                  <MenuItem 
+                
+                    onClick={() => {
+                      handleCloseSign();
+                      handleCloseNavMenu()
+                      navigate("/provider/login")
+                      
+                    }}
+                  >
+                    Provider
+                  </MenuItem>
+                  <Divider/>
+                  <MenuItem
+                    onClick={() => {
+                      handleCloseSign();
+                      handleCloseNavMenu()
+                      navigate("/provider/login")
+                      
+                    }}
+                  >
+                    Patient
+                  </MenuItem>
+                </Menu>
+              </Box>}
+
               {providerLogout ? (
                 <Box sx={{ display: "flex", flexDirection: "column" }}>
                   <Divider />
@@ -416,35 +487,8 @@ const Navbar = () => {
                     <LogoutTwoTone /> Logout
                   </Box>
                 </Box>
-              ) : <Box
-                onClick={() => {
-                  if (char === "provider") {
-                    navigate("/provider/login")
-                  }
-                  else if (char === "patient") {
-                    navigate("/provider/login")
-                  }
-                }}
-
-                sx={{
-                  display: "flex",
-                  fontSize: "1.2rem",
-                  p: "1rem",
-                  // alignItems: "center",
-                  // flexWrap: "nowrap",
-                  // gap: "0.5rem",
-                  color: "blue",
-                  cursor: "pointer",
-                  // ":hover": {
-                  //   color: "white",
-                  // },
-                }}
-              >
-
-                <Typography textAlign={"center"}>
-                  SIGNIN
-                </Typography>
-              </Box>
+              ) :
+              null
                 //   <Buttoncomponent
                 //   type="button"
                 //   size="small"
@@ -618,6 +662,60 @@ const Navbar = () => {
               ))}
 
             </Box>
+            {providerLogout||patientLogout||adminLogout?null:(
+            <Typography
+           
+
+              sx={{
+                display: "flex",
+                justifyContent: "space-evenly", 
+                cursor: "pointer",
+                ":hover": {
+                  color: "blue",
+                },
+              }}
+            >
+              <Typography  onClick={handleClickSign} variant="button" sx={{ fontSize: "1.2rem" }}>
+                SIGNIN
+              </Typography>
+              <Menu
+                  id="basic-menu"
+                  anchorEl={anchorElSign}
+                  open={openSign}
+                  onClose={handleCloseSign}
+                  MenuListProps={{
+                    "aria-labelledby": "basic-button",
+                  }}
+                  PaperProps={{
+                    style: {
+                      width: "20ch",
+                      background: "#DEFFF8",
+                    },
+                  }}
+                  sx={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}
+                >
+                  <MenuItem 
+                
+                    onClick={() => {
+                      handleCloseSign();
+                      navigate("/provider/login")
+                      
+                    }}
+                  >
+                    Provider
+                  </MenuItem>
+                  <Divider/>
+                  <MenuItem
+                    onClick={() => {
+                      handleCloseSign();
+                      navigate("/provider/login")
+                      
+                    }}
+                  >
+                    Patient
+                  </MenuItem>
+                </Menu>
+            </Typography>)}
             {providerLogout ? (
               <Box sx={{ display: "flex" }}>
                 {/* <Buttoncomponent
@@ -690,26 +788,7 @@ const Navbar = () => {
                   </MenuItem>
                 </Menu>
               </Box>
-            ) : (<Typography
-              onClick={() => {
-                if (char === "provider") { navigate("/provider/login") }
-                else if (char === "patient") { navigate("/provider/login") }
-              }
-              }
-
-              sx={{
-                display: "flex",
-                justifyContent: "space-evenly", 
-                cursor: "pointer",
-                ":hover": {
-                  color: "blue",
-                },
-              }}
-            >
-              <Typography variant="button" sx={{ fontSize: "1.2rem" }}>
-                SIGNIN
-              </Typography>
-            </Typography>)}
+            ) : null}
 
             {/* {patientLogout ? (
               <Box>

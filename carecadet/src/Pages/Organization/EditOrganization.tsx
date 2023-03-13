@@ -53,15 +53,15 @@ const EditOrganization = () => {
   const [zipDisable,setZipDisable]=useState<Boolean>(true)
   const [autoCompleteData,setAutoCompleteData]=useState<any>([])
   const [isLoading,setIsLoading]=useState<boolean>(false)
-  const select = useAppSelector((state) => state.providerOrganization.orgEditData[0]);
-  console.log(select, "editorg")
+  const selectOrg = useAppSelector((state) => state.providerOrganization.orgEditData[0]);
+  console.log(selectOrg, "editorg")
   const image = useAppSelector((state) => state.providerOrganization.orgEditImage);
   console.log("imageedit", image);
-  const data = useAppSelector(
+  const dataLogin = useAppSelector(
     (state: { providerAuth: { login: any } }) => state.providerAuth.login
   );
   const navigate = useNavigate();
-  console.log(select, "shjjhjh");
+  console.log(selectOrg, "shjjhjh");
   const fileInput = useRef<any>();
 
   useEffect(() => {
@@ -85,24 +85,24 @@ const EditOrganization = () => {
 
   const initialValues: InitialValues = {
     organizationInformation: {
-      providerID: select.providerID,
-      organizationName: select.organizationName,
-      streetAdd1: select.address.addressLine1,
-      streetAdd2: select.address.addressLine2,
-      city: select.address.city,
-      state: select.address.state,
-      zipCode: select.address.zipCode,
-      phone: select.contact,
-      Email: select.email,
-      orgImg: select.orgImg,
+      providerID: selectOrg.providerID,
+      organizationName: selectOrg.organizationName,
+      streetAdd1: selectOrg.address.addressLine1,
+      streetAdd2: selectOrg.address.addressLine2,
+      city: selectOrg.address.city,
+      state: selectOrg.address.state,
+      zipCode: selectOrg.address.zipCode,
+      phone: selectOrg.contact,
+      Email: selectOrg.email,
+      orgImg: selectOrg.orgImg,
     },
 
     contactPersonInformation: {
-      firstName: select.contactPerson.firstName,
-      lastName: select.contactPerson.lastName,
-      role: select.contactPerson.role,
-      contactno: select.contactPerson.contact,
-      email: select.contactPerson.email,
+      firstName: dataLogin.firstName,
+      lastName: dataLogin.lastName,
+      role: dataLogin.role,
+      contactno: selectOrg.contactPerson.contact,
+      email: dataLogin.email,
     },
   };
   const handleFiles = (e: any) => {
@@ -129,12 +129,12 @@ const EditOrganization = () => {
   const onSubmit = async (values: InitialValues, actions: any) => {
     setIsLoading(true)
     const orgprovider = {
-      providerID: select.providerID,
+      providerID: dataLogin.userID,
       firstName: values.contactPersonInformation.firstName,
       lastName: values.contactPersonInformation.lastName,
-      role: values.contactPersonInformation.role,
+      // role: values.contactPersonInformation.role,
       contact: values.contactPersonInformation.contactno,
-      email: select.email,
+      // email: values.contactPersonInformation.email,
     };
     // alert(JSON.stringify(orgprovider, null, 2));
     try {
@@ -175,7 +175,7 @@ const EditOrganization = () => {
         .then((res) => {
           console.log(res.data, "resedit");
           const orgdata = {
-            organizationID: select.organizationID,
+            organizationID: selectOrg.organizationID,
             providerID: values.organizationInformation.providerID,
             organizationName: values.organizationInformation.organizationName,
             orgImg: res.data.data ? res.data.data.filename : image,
