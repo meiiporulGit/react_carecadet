@@ -64,7 +64,7 @@ export default function ViewFacility() {
   const dispatch = useAppDispatch();
   const searchData = useAppSelector((state) => state.homeReducer.searchData);
   console.log(searchData, 'searchdata')
-  
+
   interface forminitialValues {
     Service: string;
     Location: string;
@@ -76,13 +76,13 @@ export default function ViewFacility() {
 
   };
 
- 
+
   const validationSchema = Yup.object().shape({
     Service: Yup.string().required("Required"),
     Location: Yup.string().required("Required"),
   });
   const onSubmit = (values: forminitialValues, actions: any) => {
-  
+
     axiosPrivate
       .get(
         `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
@@ -94,7 +94,7 @@ export default function ViewFacility() {
         console.log("searchi", res);
       })
       .catch((e) => console.log(e));
-    
+
   };
 
   //Table Pagination
@@ -114,7 +114,7 @@ export default function ViewFacility() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
- 
+
   return (
     <Box sx={{ backgroundColor: "primary.light", padding: "1.8rem" }}>
       <Formik
@@ -263,7 +263,7 @@ export default function ViewFacility() {
                     Distance
                   </Paper>
                   <Collapse in={open} timeout="auto" unmountOnExit>
-                
+
                     <ListItemButton sx={{ pl: 4 }} disableRipple>
                       <ListItemIcon>
                         <FormControlLabel
@@ -272,12 +272,12 @@ export default function ViewFacility() {
                               id="1"
                               value="10mi"
                               sx={{ p: 0 }}
-                                checked={distance === "10mi"}
-                           
-                              onChange={(e: any,prev:any) => {
-                                
-                                 setDistance("10mi")
-                                
+                              checked={distance === "10mi"}
+
+                              onChange={(e: any, prev: any) => {
+
+                                setDistance("10mi")
+
                                 axiosPrivate
                                   .get(
                                     `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 10mi`
@@ -292,22 +292,22 @@ export default function ViewFacility() {
                               disableRipple />}
                           label="10 miles" />
                       </ListItemIcon>
-                    
+
                     </ListItemButton>
                     <ListItemButton sx={{ pl: 4 }}>
                       <ListItemIcon>
                         <FormControlLabel
                           control={
-                            <Checkbox 
-                            id="2"
+                            <Checkbox
+                              id="2"
                               value="20mi"
                               sx={{ p: 0 }}
-                               checked={distance === "20mi"}
-                              
-                              onChange={(e: any,prev:any) => {
-                                
+                              checked={distance === "20mi"}
+
+                              onChange={(e: any, prev: any) => {
+
                                 setDistance("20mi")
-                               
+
                                 axiosPrivate
                                   .get(
                                     `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance=20mi`
@@ -318,44 +318,44 @@ export default function ViewFacility() {
                                   })
                                   .catch((e) => console.log(e));
                               }}
-                           
+
                             />} label="20 miles" />
                       </ListItemIcon>
                       {/* <ListItemText primary="Within 10km" /> */}
                     </ListItemButton>
                     <ListItemButton sx={{ pl: 4 }}>
                       <ListItemIcon>
-                      <FormControlLabel
+                        <FormControlLabel
                           control={
-                          <Checkbox
-                            id="3"
-                            value="30mi"
-                            sx={{ p: 0 }}
-                          
-                            checked={distance === "30mi"}
-                            onChange={(e: any,prev:any) => {
-                            
-                              setDistance("30mi")
-                             
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance=30mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "30miles");
-                                  dispatch(dataSearch(res.data.data))
-                                })
-                                .catch((e) => console.log(e));
-                            }}
-                          // onChange={handleChange}
-                          />}
+                            <Checkbox
+                              id="3"
+                              value="30mi"
+                              sx={{ p: 0 }}
+
+                              checked={distance === "30mi"}
+                              onChange={(e: any, prev: any) => {
+
+                                setDistance("30mi")
+
+                                axiosPrivate
+                                  .get(
+                                    `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance=30mi`
+                                  )
+                                  .then((res) => {
+                                    console.log(res.data, "30miles");
+                                    dispatch(dataSearch(res.data.data))
+                                  })
+                                  .catch((e) => console.log(e));
+                              }}
+                            // onChange={handleChange}
+                            />}
                           label="30 miles" />
-                      
+
                       </ListItemIcon>
-                     
+
                     </ListItemButton>
 
-               
+
                   </Collapse>
                 </Box>
                 <Button
@@ -455,7 +455,13 @@ export default function ViewFacility() {
 
                             }
                           </Typography>
-                         
+                          <Typography
+                            sx={{ fontSize: "1rem", color: "blue", mb: "10px" }}
+                          >
+                            Distance: {
+                              dsearch.distance
+                            } miles
+                          </Typography>
                         </Grid>
                         <Grid xs={3}>
                           <Grid
