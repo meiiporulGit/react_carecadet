@@ -20,9 +20,11 @@ import {
   ListItemText,
   Checkbox,
   FormControlLabel,
+  Radio,
+  RadioGroup,
 } from "@mui/material";
 import { Grid, Paper, TextField, Select } from "@mui/material";
-import { Formik, Form, ErrorMessage } from "formik";
+import { Formik, Form, ErrorMessage, Field } from "formik";
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -41,8 +43,9 @@ import { axiosPrivate } from "../../axios/axios";
 import FormTextField from "../../Components/Textfield";
 import SelectField from "../../Components/Select";
 import SearchIcon from "@mui/icons-material/Search";
-import { dataSearch } from "../../Redux/ProviderRedux/HomeSlice";
+import { dataSearch, dataSearchTenMiles, dataSearchTwentyMiles, dataSearchThirtyMiles } from "../../Redux/ProviderRedux/HomeSlice";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
+import { values } from "lodash";
 
 
 
@@ -50,13 +53,18 @@ export default function ViewFacility() {
   const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false)
   const [checked, setChecked] = useState<boolean>(false);
+  const [distance, setDistance] = useState("")
+  const [select, setSelect] = useState("")
+  console.log('select', select)
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [data, setData] = useState([] as forminitialValues[]);
-  console.log(data, "datinfo");
+  const [service, setService] = useState();
+  console.log(distance, "datinfo");
   const dispatch = useAppDispatch();
   const searchData = useAppSelector((state) => state.homeReducer.searchData);
-
+  console.log(searchData, 'searchdata')
+  
   interface forminitialValues {
     Service: string;
     Location: string;
@@ -65,42 +73,16 @@ export default function ViewFacility() {
   const initialValues: forminitialValues = {
     Service: "",
     Location: "",
+
   };
 
-  const options = [
-    { value: "Type1", item: "Type1" },
-    { value: "Type2", item: "Type2" },
-    { value: "Type3", item: "Type3" },
-  ];
-  const optionscheck = [
-        {
-          name: "10 miles",
-          label: "10 miles",
-        },
-        {
-          name: "30 miles",
-          label: "30 miles",
-        },
-        {
-          name: "50 miles",
-          label: "50 miles",
-        },
-      ];
+ 
   const validationSchema = Yup.object().shape({
     Service: Yup.string().required("Required"),
     Location: Yup.string().required("Required"),
   });
   const onSubmit = (values: forminitialValues, actions: any) => {
-    // const facilitydata = {
-    //   Service: values.Service,
-    // };
-    // alert(JSON.stringify(values));
-    // actions.resetForm({
-    //   values: {
-
-    //     Service:""
-    //   },
-    // });
+  
     axiosPrivate
       .get(
         `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
@@ -112,8 +94,7 @@ export default function ViewFacility() {
         console.log("searchi", res);
       })
       .catch((e) => console.log(e));
-    // axiosPrivate
-    // .get(`http://210.18.155.251:5003/org`)
+    
   };
 
   //Table Pagination
@@ -133,9 +114,7 @@ export default function ViewFacility() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
-  };
+ 
   return (
     <Box sx={{ backgroundColor: "primary.light", padding: "1.8rem" }}>
       <Formik
@@ -143,15 +122,8 @@ export default function ViewFacility() {
         validationSchema={validationSchema}
         onSubmit={onSubmit}
       >
-        <Form>
-          {/* <Box
-            sx={{
-              width: "100%",
-              // height: "160vh",
-              backgroundColor: "primary.light",
-            }}
-          > */}
-          {/* <Grid item xs={12} sx={{display:"flex",justifyContent:"center",alignItems:"center",mb:"40px"}}> */}
+        {({ handleChange, setFieldValue, values }) => (<Form>
+
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Grid
               container
@@ -165,7 +137,7 @@ export default function ViewFacility() {
                 // gap:"1rem",
               }}
             >
-             
+
 
               <Grid item xs={6}>
                 <FormTextField
@@ -173,6 +145,7 @@ export default function ViewFacility() {
                   name="Service"
                   placeholder="Search Service"
                   type="text"
+
                   fullWidth={false}
                   sx={{
                     borderRadius: 1,
@@ -220,11 +193,12 @@ export default function ViewFacility() {
                 />
               </Grid>
               <Grid item xs={2}>
-                <Buttoncomponent
+                <Button
                   type="submit"
                   size="large"
                   fullWidth={false}
                   variant="contained"
+                  // onClick={() => { setSelect("searchdata") }}
                   sx={{
                     // marginTop: "-100px",
                     // ml: "350px",
@@ -246,260 +220,304 @@ export default function ViewFacility() {
                   }}
                 >
                   <SearchIcon /> search
-                </Buttoncomponent>
+                </Button>
               </Grid>
             </Grid>
           </Box>
           {/* </Grid> */}
 
           {/* </Box> */}
-        </Form>
-      </Formik>
 
-      <Grid container xs={12} columnGap={5} mt="20px">
-        <Grid
-          item
-          xs={2.5}
-          sx={{
-            padding: "1rem",
-            backgroundColor: "primary.dark",
-            display: "flex",
-            flexDirection: "column",
-            rowGap: "14rem",
-          }}
-        >
-          <Box display={"flex"} flexDirection={"column"}>
-            <Typography variant="h6" sx={{ mb: "30px", fontSize: "2rem" }}>
-              Filters
-            </Typography>
-            {/* <Box
+
+          <Grid container xs={12} columnGap={5} mt="20px">
+            <Grid
+              item
+              xs={2.5}
               sx={{
+                padding: "1rem",
+                backgroundColor: "primary.dark",
                 display: "flex",
                 flexDirection: "column",
-                rowGap: "1rem",
-                alignItems: "center",
+                rowGap: "14rem",
               }}
-            > */}
-              {/* <Button
-                variant="contained"
-                sx={{
-                  width: "250px",
-                  fontSize: "1rem",
-                  color: "white",
-                  borderRadius: "20px",
-                  mb: "20px",
-                  // textAlign: "right",
-                }}
-              >
-                Distance
-              </Button> */}
-              <Box>
-            <Paper sx={{ 
-              fontSize: "1rem",                  
-                  borderRadius: "20px",
-                  backgroundColor:"#CDDBF8",
-                  mb:"10px"
-                 }}>
-                <IconButton
-                aria-label="expand row"
-                size="small"
-                onClick={() => setOpen(!open)}
             >
-                {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-            </IconButton>
-                Distance
-            </Paper>
-            <Collapse in={open} timeout="auto" unmountOnExit>
-            <ListItemButton sx={{ pl: 4 }} disableRipple>
-            <ListItemIcon>
-            <FormControlLabel control={<Checkbox  sx = {{p:0}} onChange={handleChange} disableRipple />} label="10 miles" />
-            </ListItemIcon>
-            {/* <ListItemText primary="Within 10km" /> */}
-          </ListItemButton>
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-            <FormControlLabel control={<Checkbox  sx = {{p:0}} onChange={handleChange}/>} label="30 miles" />
-            </ListItemIcon>
-            {/* <ListItemText primary="Within 10km" /> */}
-          </ListItemButton>
-          <ListItemButton sx={{ pl: 4 }}>
-            <ListItemIcon>
-            <FormControlLabel control={<Checkbox sx = {{p:0}} onChange={handleChange}/>} label="50 miles" />
-            </ListItemIcon>
-            {/* <ListItemText primary="Within 10km" /> */}
-          </ListItemButton>
-         
-            </Collapse>
-        </Box>
-              <Button
-                variant="contained"
-                sx={{
-                  width: "250px",
-                  fontSize: "1rem",
-                  color: "white",
-                  borderRadius: "20px",
-                  mb: "20px",
-                  // textAlign: "right",
-                }}
-              >
-                Quality score
-              </Button>
-              <Button
-                variant="contained"
-                sx={{
-                  width: "250px",
-                  fontSize: "1rem",
-                  color: "white",
-                  borderRadius: "20px",
-                  mb: "20px",
-                  // textAlign: "right",
-                }}
-              >
-                Negotiated rates
-              </Button>
-              <Button
-                variant="contained"
-                sx={{
-                  width: "250px",
-                  fontSize: "1rem",
-                  color: "white",
-                  borderRadius: "20px",
-                  mb: "20px",
-                  // textAlign: "right",
-                }}
-              >
-                Facility Type
-              </Button>
-            {/* </Box> */}
-          </Box>
-          <Box
-            sx={{
-              backgroundColor: "#D9D9D9",
-              height: "35vh",
-              width: "250px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              
-            }}
-          >
-            <Typography sx={{fontSize:"2rem"}} textAlign={"center"}>Map Place holder</Typography>
-          </Box>
-        </Grid>
-        <Grid item xs={9} sx={{ backgroundColor: "#E5EEF7", padding: "4rem" }}>
-          {searchData.map((dsearch: any, i: any) => (
-            <div key={i}>
-              <Paper elevation={3}>
-                <Card
-                  raised
-                  sx={{
+              <Box display={"flex"} flexDirection={"column"}>
+                <Typography variant="h6" sx={{ mb: "30px", fontSize: "2rem" }}>
+                  Filters
+                </Typography>
+
+                <Box>
+                  <Paper sx={{
+                    fontSize: "1rem",
+                    borderRadius: "20px",
                     backgroundColor: "#CDDBF8",
-                    padding: "15px",
-                    // height: "10em",
-                    mb: "2rem",
+                    mb: "10px"
+                  }}>
+                    <IconButton
+                      aria-label="expand row"
+                      size="small"
+                      onClick={() => setOpen(!open)}
+                    >
+                      {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                    </IconButton>
+                    Distance
+                  </Paper>
+                  <Collapse in={open} timeout="auto" unmountOnExit>
+                
+                    <ListItemButton sx={{ pl: 4 }} disableRipple>
+                      <ListItemIcon>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              id="1"
+                              value="10mi"
+                              sx={{ p: 0 }}
+                                checked={distance === "10mi"}
+                           
+                              onChange={(e: any,prev:any) => {
+                                
+                                 setDistance("10mi")
+                                
+                                axiosPrivate
+                                  .get(
+                                    `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 10mi`
+                                  )
+                                  .then((res) => {
+                                    console.log(res.data, "10miles");
+                                    dispatch(dataSearch(res.data.data))
+                                  })
+                                  .catch((e) => console.log(e));
+                              }
+                              }
+                              disableRipple />}
+                          label="10 miles" />
+                      </ListItemIcon>
+                    
+                    </ListItemButton>
+                    <ListItemButton sx={{ pl: 4 }}>
+                      <ListItemIcon>
+                        <FormControlLabel
+                          control={
+                            <Checkbox 
+                            id="2"
+                              value="20mi"
+                              sx={{ p: 0 }}
+                               checked={distance === "20mi"}
+                              
+                              onChange={(e: any,prev:any) => {
+                                
+                                setDistance("20mi")
+                               
+                                axiosPrivate
+                                  .get(
+                                    `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance=20mi`
+                                  )
+                                  .then((res) => {
+                                    console.log(res.data, "20miles");
+                                    dispatch(dataSearchTwentyMiles(res.data.data))
+                                  })
+                                  .catch((e) => console.log(e));
+                              }}
+                           
+                            />} label="20 miles" />
+                      </ListItemIcon>
+                      {/* <ListItemText primary="Within 10km" /> */}
+                    </ListItemButton>
+                    <ListItemButton sx={{ pl: 4 }}>
+                      <ListItemIcon>
+                      <FormControlLabel
+                          control={
+                          <Checkbox
+                            id="3"
+                            value="30mi"
+                            sx={{ p: 0 }}
+                          
+                            checked={distance === "30mi"}
+                            onChange={(e: any,prev:any) => {
+                            
+                              setDistance("30mi")
+                             
+                              axiosPrivate
+                                .get(
+                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance=30mi`
+                                )
+                                .then((res) => {
+                                  console.log(res.data, "30miles");
+                                  dispatch(dataSearch(res.data.data))
+                                })
+                                .catch((e) => console.log(e));
+                            }}
+                          // onChange={handleChange}
+                          />}
+                          label="30 miles" />
+                      
+                      </ListItemIcon>
+                     
+                    </ListItemButton>
+
+               
+                  </Collapse>
+                </Box>
+                <Button
+                  variant="contained"
+                  sx={{
+                    width: "250px",
+                    fontSize: "1rem",
+                    color: "white",
+                    borderRadius: "20px",
+                    mb: "20px",
+                    // textAlign: "right",
                   }}
                 >
-                  <Grid container direction="row">
-                    <Grid xs={9}>
-                      <Typography
-                        sx={{ fontSize: "1.40rem", color: "black", mb: "20px" }}
-                      >
-                        {
-                          dsearch.FacilityName
-                          // + " - " + dsearch.FacilityNPI
-                        }
-                      </Typography>
-                      <Typography
-                        sx={{ fontSize: "1rem", color: "black", mb: "20px" }}
-                      >
-                        {dsearch.FacilityDetails?.addressLine1 +
-                          "," +
-                          dsearch.FacilityDetails?.city +
-                          "," +
-                          dsearch.FacilityDetails?.state +
-                          " - " +
-                          dsearch.FacilityDetails?.zipCode}
-                      </Typography>
-                      <Typography
-                        sx={{ fontSize: "1rem", color: "black", mb: "10px" }}
-                      >
-                        {
-                          dsearch.DiagnosisTestorServiceName
+                  Quality score
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{
+                    width: "250px",
+                    fontSize: "1rem",
+                    color: "white",
+                    borderRadius: "20px",
+                    mb: "20px",
+                    // textAlign: "right",
+                  }}
+                >
+                  Negotiated rates
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{
+                    width: "250px",
+                    fontSize: "1rem",
+                    color: "white",
+                    borderRadius: "20px",
+                    mb: "20px",
+                    // textAlign: "right",
+                  }}
+                >
+                  Facility Type
+                </Button>
+                {/* </Box> */}
+              </Box>
+              <Box
+                sx={{
+                  backgroundColor: "#D9D9D9",
+                  height: "35vh",
+                  width: "250px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Typography sx={{ fontSize: "2rem" }} textAlign={"center"}>Map Place holder</Typography>
+              </Box>
+            </Grid>
+            <Grid item xs={9} sx={{ backgroundColor: "#E5EEF7", padding: "4rem" }}>
+              {/* {select === 'searchdata' ?                */}
+              {searchData.map((dsearch: any, i: any) => (
+                <div key={i}>
+                  <Paper elevation={3}>
+                    <Card
+                      raised
+                      sx={{
+                        backgroundColor: "#CDDBF8",
+                        padding: "15px",
 
-                          //+ " - " +
-                          // dsearch.ServiceCode
-                        }
-                      </Typography>
-                      <Typography
-                        sx={{ fontSize: "1rem", color: "blue", mb: "10px" }}
-                      >
-                       Distance: {
-                          dsearch.distance
-                       
-                        } miles
-                      </Typography>
-                      {/* <Button variant="contained">Humana</Button>
-           <Button variant="contained">Humana</Button>
-           <Button variant="contained">Antenna</Button>
-           <Button variant="contained">others</Button> */}
-                    </Grid>
-                    <Grid xs={3}>
-                      <Grid
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "flex-end",
-                          padding: "10px",
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            borderRadius: "0.5rem",
-                            padding: "0.5rem",
-                            width: "100px",
-                            fontSize: "1.35rem",
-                            backgroundColor: "#1C3988",
-                            color: "white",
-                            mb: "10px",
-                            textAlign: "center",
-                          }}
-                        >
-                          $ {dsearch.FacilityPrices}
-                        </Box>
-                        <Typography
-                          sx={{
-                            fontSize: "15px",
+                        mb: "2rem",
+                      }}
+                    >
+                      <Grid container direction="row">
+                        <Grid xs={9}>
+                          <Typography
+                            sx={{ fontSize: "1.40rem", color: "black", mb: "20px" }}
+                          >
+                            {
+                              dsearch.FacilityName
 
-                            // width: "100px",
-                          }}
-                        >
-                          Average price
-                        </Typography>
+                            }
+                          </Typography>
+                          <Typography
+                            sx={{ fontSize: "1rem", color: "black", mb: "20px" }}
+                          >
+                            {dsearch.FacilityDetails?.addressLine1 +
+                              "," +
+                              dsearch.FacilityDetails?.city +
+                              "," +
+                              dsearch.FacilityDetails?.state +
+                              " - " +
+                              dsearch.FacilityDetails?.zipCode}
+                          </Typography>
+                          <Typography
+                            sx={{ fontSize: "1rem", color: "black", mb: "10px" }}
+                          >
+                            {
+                              dsearch.DiagnosisTestorServiceName
+
+                            }
+                          </Typography>
+                         
+                        </Grid>
+                        <Grid xs={3}>
+                          <Grid
+                            sx={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "flex-end",
+                              padding: "10px",
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                borderRadius: "0.5rem",
+                                padding: "0.5rem",
+                                width: "100px",
+                                fontSize: "1.35rem",
+                                backgroundColor: "#1C3988",
+                                color: "white",
+                                mb: "10px",
+                                textAlign: "center",
+                              }}
+                            >
+                              $ {dsearch.FacilityPrices}
+                            </Box>
+                            <Typography
+                              sx={{
+                                fontSize: "15px",
+
+                                // width: "100px",
+                              }}
+                            >
+                              Average price
+                            </Typography>
+                          </Grid>
+                          <Grid container direction="row" justifyContent="flex-end">
+                            <Typography
+                              sx={{
+                                fontSize: "1.25rem",
+                                color: "black",
+                                mr: "60px",
+                              }}
+                            >
+                              eCQMscore:
+                            </Typography>
+                            <Typography
+                              sx={{ fontSize: "2rem", color: "black", mb: "15px" }}
+                            >
+                              {dsearch.eCQMscore}
+                            </Typography>
+                          </Grid>
+                        </Grid>
                       </Grid>
-                      <Grid container direction="row" justifyContent="flex-end">
-                        <Typography
-                          sx={{
-                            fontSize: "1.25rem",
-                            color: "black",
-                            mr: "60px",
-                          }}
-                        >
-                          eCQMscore:
-                        </Typography>
-                        <Typography
-                          sx={{ fontSize: "2rem", color: "black", mb: "15px" }}
-                        >
-                          {dsearch.eCQMscore}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Card>
-              </Paper>
-            </div>
-          ))}
-        </Grid>
-      </Grid>
+                    </Card>
+                  </Paper>
+                </div>
+              ))}
+
+            </Grid>
+          </Grid>
+        </Form>)}
+
+      </Formik>
     </Box>
   );
 }

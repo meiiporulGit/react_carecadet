@@ -6,12 +6,18 @@ import Cookies from "js-cookie";
 
 // Define a type for the slice state
 interface CounterState {
-searchData:any
+searchData:any;
+searchDataTenMiles:any;
+searchDataTwentyMiles:any;
+searchDataThirtyMiles:any
 }
 
 // Define the initial state using that type
 const initialState: CounterState = {
-searchData:[]
+searchData:[],
+searchDataTenMiles:[],
+searchDataTwentyMiles:[],
+searchDataThirtyMiles:[]
 };
 
 export const homeSlice = createSlice({
@@ -19,12 +25,31 @@ export const homeSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-  
-
     dataSearch: (state, action: PayloadAction<any>) => {
       return {
         ...state,
         searchData: action.payload,
+      };
+    },
+    dataSearchTenMiles: (state, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        searchData: action.payload
+        // searchDataTenMiles: action.payload,
+      };
+    },
+    dataSearchTwentyMiles: (state, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        searchData: action.payload
+        //searchDataTwentyMiles: action.payload,
+      };
+    },
+    dataSearchThirtyMiles: (state, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        searchData: action.payload
+        // searchDataThirtyMiles: action.payload,
       };
     },
     
@@ -32,7 +57,7 @@ export const homeSlice = createSlice({
 });
 
 export const {
- dataSearch
+ dataSearch,dataSearchTenMiles,dataSearchTwentyMiles, dataSearchThirtyMiles
   // editButton
 } = homeSlice.actions;
 // Other code such as selectors can use the imported `RootState` type
