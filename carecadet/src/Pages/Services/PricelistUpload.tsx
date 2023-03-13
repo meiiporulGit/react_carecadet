@@ -367,10 +367,10 @@ export default function PricelistUpload() {
         result.push(obj);
         console.log(result,"rescheck")
         
-        for(i=0; i<headers.length; i++){
+        // for(i=0; i<headers.length; i++){
         
 
-        }
+        // }
       }
        
       }

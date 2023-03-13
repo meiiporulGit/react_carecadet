@@ -180,7 +180,7 @@ const CreateService = () => {
                     mb: "0.5rem",
                   }}
                 >
-                 Service Code *
+                 Service Code <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
                 <Field
               name="ServiceCode"
@@ -301,7 +301,7 @@ filterOptions = {filterOptions}
                     mb: "0.5rem",
                   }}
                 >
-                 DiagnosisTest or Service Name *
+                 DiagnosisTest or Service Name <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
                 <Field
                label="Service Name"
@@ -384,7 +384,7 @@ filterOptions = {filterOptions}
                 mb: "0.5rem",
               }}
               >
-                Facility Name *
+                Facility Name <Typography display="inline" sx={{color:"red"}}>*</Typography>
               </Typography>
               <FormTextField
                 container={TextField}
@@ -413,7 +413,7 @@ filterOptions = {filterOptions}
                   mb: "0.5rem",
                 }}
               >
-                Facility NPI *
+                Facility NPI <Typography display="inline" sx={{color:"red"}}>*</Typography>
               </Typography>
               <FormTextField
                 container={TextField}
@@ -442,7 +442,7 @@ filterOptions = {filterOptions}
                   mb: "0.5rem",
                 }}
               >
-                Facility Prices *
+                Facility Prices <Typography display="inline" sx={{color:"red"}}>*</Typography>
               </Typography>
               <FormTextField
                 container={TextField}

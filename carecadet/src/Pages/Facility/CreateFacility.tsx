@@ -64,6 +64,7 @@ export default function CreateFacility() {
 
   const [checkInfo, setCheckInfo] = useState<any>([])
   const [disabled, setDisabled] = useState<boolean>(false)
+  const [isLoading,setIsLoading]=useState<boolean>(false)
   const data = useAppSelector(state => state.providerAuth.login);
   console.log("datafaciltiy", data);
   const orgID = useAppSelector((state) => state.providerOrganization.orgEditData);
@@ -144,7 +145,7 @@ export default function CreateFacility() {
       .required("Zipcode is required")
       .test("len", (val: any) => val && val.length === 5)
       .matches(/^[A-Za-z0-9]+$/, "Zipcode should be alpha-numeric characters"),
-    state: Yup.string().nullable().required("State is required").matches(/[a-zA-Z]/, 'State name should be alpha-characters').min(2, 'State must be at least 2 characters.')
+    state: Yup.string().nullable().required("State is required").matches(/^[A-Za-z -]+$/, 'State name should be alpha-characters').min(2, 'State must be at least 2 characters.')
     .max(100, 'State has a maximum limit of 100 characters.'),
     contact: Yup.string().required("Phone is required").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/, "only numbers").test("len", " Invalid Contact no", (val: any) => val && val.length === 10),
     email: Yup.string().email().required("Email is required")
@@ -152,6 +153,7 @@ export default function CreateFacility() {
  
 
   const onSubmit = (values: forminitialValues, actions: any) => {
+    setIsLoading(true)
     const facilitydata = {
       providerID: values.providerID,
       organizationID: values.organizationID,
@@ -179,7 +181,7 @@ export default function CreateFacility() {
       }
 
     };
-     alert(JSON.stringify(facilitydata, null, 2));
+    //  alert(JSON.stringify(facilitydata, null, 2));
     actions.resetForm({
       values: initialValues,
     });
@@ -188,10 +190,12 @@ export default function CreateFacility() {
       .then((res) => {
         toast.success(res.data.message);
         console.log("resfacilitypost", res.data);
+        setIsLoading(false)
         dispatch(tabValueNav(1));
         navigate("/provider/facility/viewFacility");
       })
       .catch((err) => {
+        setIsLoading(false)
         toast.error(err.message);
       });
   };
@@ -244,6 +248,7 @@ export default function CreateFacility() {
                   name="facilityNPI"
                   component={Autocomplete}
                   filterOptions={filterOptions}
+                  loading={checkInfo.length === 0}
                   options={checkInfo}
                   PaperComponent={CustomPaper}
                   getOptionLabel={(option: any) => option.facilityNPI || option}
@@ -642,6 +647,7 @@ export default function CreateFacility() {
                   size="large"
                   fullWidth={false}
                   variant="contained"
+                  disable={isLoading}
                   sx={{
                     backgroundColor: "secondary.dark",
                     width: "10vw",

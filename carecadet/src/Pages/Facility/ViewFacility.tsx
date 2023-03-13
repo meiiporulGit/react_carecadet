@@ -299,7 +299,7 @@ export default function ViewFacility() {
                   <TableCell sx={{ fontSize: "0.8rem", textAlign: "center" }}>
                     {facility.email}
                   </TableCell>
-                  <TableCell sx={{ display: "flex", marginLeft: "1rem" }}>
+                  <TableCell sx={{ display: "flex", marginLeft: "1rem",borderBottom:"none" }}>
                     <IconButton
                       style={Pointer}
                       onClick={() => {
@@ -334,7 +334,6 @@ export default function ViewFacility() {
                       open={view}
                       sx={{
                         "& .MuiDialog-container": {
-
                           justifyContent: "flex-center",
                           alignItems: "flex-start"
                         }
