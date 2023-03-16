@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Formik, Form, ErrorMessage } from "formik";
+import { Formik, Form, ErrorMessage, Field } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import healthcare from "../../Images/healthcare.jpg";
@@ -46,6 +46,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 
 interface forminitialValues {
   Service: string;
+  Location: string;
 }
 
 const Patienthomepage = () => {
@@ -53,27 +54,19 @@ const Patienthomepage = () => {
   const dispatch = useAppDispatch();
   const initialValues: forminitialValues = {
     Service: "",
+    Location: ""
   };
   const validationSchema = Yup.object().shape({
     Service: Yup.string().required("Required"),
-  });
+    Location: Yup.string().required("Required")
+  }); 
   const onSubmit = (values: forminitialValues, actions: any) => {
-    // const facilitydata = {
-    //   Service: values.Service,
-    // };
-    // alert(JSON.stringify(values));
-    // actions.resetForm({
-    //   values: {
-
-    //     Service:""
-    //   },
-    // });
-    axiosPrivate
-      .get(`http://210.18.155.251:5003/search/?q=${values.Service}`)
+ 
+    axiosPrivate.get(`http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`)
       .then((res) => {
         console.log(res.data);
         dispatch(dataSearch(res.data.data));
-        navigate("/provider/search");
+        navigate(`/patient/search?q=${values.Service}&location=${values.Location}`);
         console.log("i", res);
       })
       .catch((e) => console.log(e));
@@ -83,161 +76,160 @@ const Patienthomepage = () => {
 
   return (
     <Formik
-    initialValues={initialValues}
-    validationSchema={validationSchema}
-    onSubmit={onSubmit}
-  >
-    <Form>
-   
-      <Box
-        sx={{
-          width: "100%",          
-          backgroundColor: "primary.light",
-        }}
-      >
-        <Grid
-          container
-          spacing={3.5}
-          direction="row"
-         
-        >
-            
-        <Grid item xs= {12} md={7}>
-        
-            <Grid container xs={12} sx={{
-                padding:"1rem",                    
-                background: "#4D77FF",                   
-                // width: "55em",
-                gap:"1.5rem",mb:{xs:5,md:0}
-               
-              }}>
-                <Grid item xs={12} md={7.5} >
-                <FormTextField
-                container={TextField}                   
-                name="Service"
-                placeholder="Search Service"
-                type="text"
-                fullWidth={false}
-               
-                sx={{
-                 borderRadius:1,
-                  ".MuiInputBase-input" : {
-                    background: "white"
-                  },
-                  ".MuiFormLabel-root ": {
-                    letterSpacing: "0.2rem",
-                    fontSize: "0.8rem",
-                
-                  },
-                  ".MuiInputLabel-shrink": {
-                    letterSpacing: 0,
-                  },
-                  '&::placeholder': {
-                    fontSize:{xs:"1rem",md:"1.3rem"},
-                     color: 'black'
-                   }
-                   
-                }}
-              />
-                </Grid>
-                <Grid  item xs ={12} md={4}>
-                <FormTextField
-                container={TextField}                   
-                name="Location"
-                placeholder="Location"
-                type="text"
-                fullWidth={false}
-                sx={{
-                  borderRadius:1,
-                  ".MuiInputBase-input" : {
-                    background: "white"
-                  },
-                  ".MuiFormLabel-root ": {
-                    letterSpacing: "0.2rem",
-                    fontSize: "0.8rem",
-                  },
-                  ".MuiInputLabel-shrink": {
-                    letterSpacing: 0,
-                  },
-                  '&::placeholder': {
-                    fontSize:{xs:"1rem",md:"1.3rem"},
-                     color: 'black'
-                   }
-                }}/>
-                </Grid>                    
-                </Grid>
-              
-          </Grid>
-
-          <Grid item xs={3.75} sx={{ mt: "-250px" , display:{xs:"none" , md:'block'}}}>
-            <img
-              src={healthcare}
-              alt="Home"
-              style={{
-                width: "650px",
-                height: "530px",
-                //  top: "35px",
-                // right: "60%",
-                borderRadius: "13px",
-              }}
-            />
-            
-          </Grid>
-          <Grid>
-          <Buttoncomponent
-            type="submit"
-            size="large"
-            fullWidth={false}
-            variant="contained"
-            sx={{
-              marginTop: {xs:"15px",md:"-100px"},
-              height:"40px",
-              ml: {xs:"150px",md:"350px"},
-              mb:{xs:15,md:0},
-              backgroundColor: "secondary.dark",
-              // width: "20vw",
-              color: "#fff",
-              // display: "flex",
-              justifyContent: "center",
-              // gap:"1.2rem",
-
-              "&:hover": {
-                color: "secondary.dark",
-                border: "1px solid blue",
-                // letterSpacing: "0.2rem",
-                // fontSize: "1rem",
-              },
-            }}
-          >
-            <SearchIcon /> Find care
-          </Buttoncomponent>
-          </Grid>
-          
-          
-        </Grid>
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={onSubmit}
+    >
+      <Form>
 
         <Box
           sx={{
-            backgroundColor: "RGB(217 229 251)",
-            height: {xs:"5em",md:"10em"},
-            mt: "35px",
+            width: "100%",
+            backgroundColor: "primary.light",
           }}
         >
+          <Grid
+            container
+            spacing={3.5}
+            direction="row"
+          >
+            <Grid item xs={12} md={7}>
+              <Grid container xs={12} sx={{
+                padding: "1rem",
+                background: "#4D77FF",
+                // width: "55em",
+                gap: "1.5rem", mb: { xs: 5, md: 0 }
+
+              }}>
+                <Grid item xs={12} md={7.5} >
+                  <Field
+                    as={TextField}
+                    name="Service"
+                    placeholder="Search Service"
+                    type="text"
+                    fullWidth
+                   
+                    sx={{
+                      borderRadius: 1,
+                      ".MuiInputBase-input": {
+                        background: "white"
+                      },
+                      ".MuiFormLabel-root ": {
+                        letterSpacing: "0.2rem",
+                        fontSize: "0.8rem",
+
+                      },
+                      ".MuiInputLabel-shrink": {
+                        letterSpacing: 0,
+                      },
+                      '&::placeholder': {
+                        fontSize: { xs: "1rem", md: "1.3rem" },
+                        color: 'black'
+                      }
+
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Field
+                    as={TextField}
+                    name="Location"
+                    placeholder="Location"
+                    type="text"
+                    fullWidth
+                    // onChange={(e: any) => { dispatch(changeTargetValue(e.target.value)) }}
+                    sx={{
+                      borderRadius: 1,
+                      ".MuiInputBase-input": {
+                        background: "white"
+                      },
+                      ".MuiFormLabel-root ": {
+                        letterSpacing: "0.2rem",
+                        fontSize: "0.8rem",
+                      },
+                      ".MuiInputLabel-shrink": {
+                        letterSpacing: 0,
+                      },
+                      '&::placeholder': {
+                        fontSize: { xs: "1rem", md: "1.3rem" },
+                        color: 'black'
+                      }
+                    }} />
+                </Grid>
+              </Grid>
+
+            </Grid>
+
+            <Grid item xs={3.75} sx={{ mt: "-250px", display: { xs: "none", md: 'block' } }}>
+              <img
+                src={healthcare}
+                alt="Home"
+                style={{
+                  width: "650px",
+                  height: "530px",
+                  //  top: "35px",
+                  // right: "60%",
+                  borderRadius: "13px",
+                }}
+              />
+
+            </Grid>
+            <Grid>
+              <Buttoncomponent
+                type="submit"
+                size="large"
+                fullWidth={false}
+                variant="contained"
+                sx={{
+                  marginTop: { xs: "15px", md: "-100px" },
+                  height: "40px",
+                  ml: { xs: "150px", md: "350px" },
+                  mb: { xs: 15, md: 0 },
+                  backgroundColor: "secondary.dark",
+                  // width: "20vw",
+                  color: "#fff",
+                  // display: "flex",
+                  justifyContent: "center",
+                  // gap:"1.2rem",
+
+                  "&:hover": {
+                    color: "secondary.dark",
+                    border: "1px solid blue",
+                    // letterSpacing: "0.2rem",
+                    // fontSize: "1rem",
+                  },
+                }}
+               
+              >
+                <SearchIcon /> Find care
+              </Buttoncomponent>
+            </Grid>
+
+
+          </Grid>
+
           <Box
             sx={{
-              display: "flex",
-              fontWeight: "bold",
-              fontSize: {xs:"20px",md:"30px"},
-              padding: {xs:"10px",md:"50px"},
+              backgroundColor: "RGB(217 229 251)",
+              height: { xs: "5em", md: "10em" },
+              mt: "35px",
             }}
           >
-            Care<Box sx={{ color: "#4D77FF" }}>Cadet</Box>
+            <Box
+              sx={{
+                display: "flex",
+                fontWeight: "bold",
+                fontSize: { xs: "20px", md: "30px" },
+                padding: { xs: "10px", md: "50px" },
+              }}
+            >
+              Care<Box sx={{ color: "#4D77FF" }}>Cadet</Box>
+            </Box>
           </Box>
         </Box>
-      </Box>
-    </Form>
-  </Formik>
-// </Box>
+      </Form>
+    </Formik>
+    // </Box>
     // <Box
     //   sx={{
     //     background: "transparent",
@@ -259,12 +251,12 @@ const Patienthomepage = () => {
     //                 height: "6em",
     //                 width: "55em",
     //                 gap:"1rem"
-                   
+
     //               }}
     //             >
     //               <FormTextField
     //                 container={TextField}
-                   
+
     //                 name="Service"
     //                 placeholder="Search Service"
     //                 type="text"
@@ -286,7 +278,7 @@ const Patienthomepage = () => {
 
     //               <FormTextField
     //                 container={TextField}
-                   
+
     //                 name="Location"
     //                 placeholder="location"
     //                 type="text"
@@ -321,15 +313,15 @@ const Patienthomepage = () => {
     //           // alignItems="flex-start"
     //           // sx={{ ml: "10px" }}
     //         >
-                
+
     //         <Grid item xs= {12} md={7}>
-            
+
     //             <Grid container xs={12} sx={{
     //                 padding:"1rem",                    
     //                 background: "#4D77FF",                   
     //                 // width: "55em",
     //                 gap:"1.5rem"
-                   
+
     //               }}>
     //                 <Grid item xs={12} md={7.5} >
     //                 <FormTextField
@@ -347,7 +339,7 @@ const Patienthomepage = () => {
     //                   ".MuiFormLabel-root ": {
     //                     letterSpacing: "0.2rem",
     //                     fontSize: "0.8rem",
-                    
+
     //                   },
     //                   ".MuiInputLabel-shrink": {
     //                     letterSpacing: 0,
@@ -356,7 +348,7 @@ const Patienthomepage = () => {
     //                     fontSize:"1.3rem",
     //                      color: 'black'
     //                    }
-                       
+
     //                 }}
     //               />
     //                 </Grid>
@@ -425,10 +417,10 @@ const Patienthomepage = () => {
     //                 borderRadius: "13px",
     //               }}
     //             />
-                
+
     //           </Grid>
 
-              
+
     //         </Grid>
 
     //         <Box
