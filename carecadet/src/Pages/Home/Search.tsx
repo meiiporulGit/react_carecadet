@@ -325,37 +325,63 @@ const [search,setSearch] = useState()
                           labelPlacement="end"/>
                         <FormControlLabel value="20mi"
                           control={<Checkbox
-                            checked={distance === "20mi"}
+                            checked={distance === "20mi" && checkText}
                             onClick={handleInputChange}
                             onChange={() => {
+                              distance != "20mi" ?
                               axiosPrivate
                                 .get(
                                   `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 20mi`
                                 )
                                 .then((res) => {
                                   console.log(res.data, "20miles");
-                                  // dispatch(dataSearch(res.data.data))
-                                  setSearchqueryData(res.data.data)
+                                  dispatch(dataSearch(res.data.data))
+                                  // setSearchqueryData(res.data.data)
                                 })
-                                .catch((e) => console.log(e));
+                                .catch((e) => console.log(e))
+                                :axiosPrivate
+                                .get(
+                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
+                                )
+                                .then((res) => {
+                                  console.log(res.data);
+                                  // setSearchqueryData(res.data.data)
+                                   dispatch(dataSearch(res.data.data));
+                                  // navigate("/patient/search");
+                                  console.log("searchi", res);
+                                })
+                                .catch((e) => console.log(e))
                             }} />}
                           label="20 miles" labelPlacement="end"
                           />
                         <FormControlLabel value="30mi"
                           control={<Checkbox
-                            checked={distance === "30mi"}
+                            checked={distance === "30mi" && checkText}
                             onClick={handleInputChange}
                             onChange={() => {
+                              distance != "30mi" ?
                               axiosPrivate
                                 .get(
                                   `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
                                 )
                                 .then((res) => {
                                   console.log(res.data, "30miles");
-                                  // dispatch(dataSearch(res.data.data))
-                                  setSearchqueryData(res.data.data)
+                                  dispatch(dataSearch(res.data.data))
+                                  // setSearchqueryData(res.data.data)
                                 })
-                                .catch((e) => console.log(e));
+                                .catch((e) => console.log(e))
+                                :axiosPrivate
+                                .get(
+                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
+                                )
+                                .then((res) => {
+                                  console.log(res.data);
+                                  // setSearchqueryData(res.data.data)
+                                   dispatch(dataSearch(res.data.data));
+                                  // navigate("/patient/search");
+                                  console.log("searchi", res);
+                                })
+                                .catch((e) => console.log(e))
                             }} />}
                           label="30 miles" 
                           labelPlacement="end" />
