@@ -528,4 +528,10 @@ export const searchPage=[
     enabled: true,
     component: Search,
   },
+  {
+    key: "patientSearch",
+    path: "/patient/search",
+    enabled: true,
+    component: Search,
+  },
 ]

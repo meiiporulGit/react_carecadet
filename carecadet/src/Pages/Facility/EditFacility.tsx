@@ -97,7 +97,7 @@ export default function UpdateFacility() {
       .required("Zipcode is required")
       .test("len", (val: any) => val && val.length === 5)
       .matches(/^[A-Za-z0-9]+$/, "Zipcode should be alpha-numeric characters"),
-    state: Yup.string().nullable().required("State is required").matches(/[a-zA-Z]/, 'State name should be alpha-characters').min(2, 'State must be at least 2 characters.')
+    state: Yup.string().nullable().required("State is required").matches(/^[A-Za-z -]+$/, 'State name should be alpha-characters').min(2, 'State must be at least 2 characters.')
       .max(100, 'State has a maximum limit of 100 characters.'),
     contact: Yup.string().required("Phone is required").matches(/^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$/, "only numbers").test("len", " Invalid Contact no", (val: any) => val && val.length === 10),
     email: Yup.string().email().required("Email is required")
