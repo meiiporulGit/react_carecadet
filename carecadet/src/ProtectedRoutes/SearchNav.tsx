@@ -110,7 +110,7 @@ const SearchNav = () => {
 
   return (
 
-    <Box sx={{  display: { xs: "flex", md: "none" } }}>
+    <Box sx={{  display: { xs: "block", md: "none" } }}>
        <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -142,9 +142,9 @@ const SearchNav = () => {
           display: { xs: "block", md: "none" },
         }}
       >
- <ClearIcon onClick={handleCloseNavMenu}/>
+ {/* <ClearIcon onClick={handleCloseNavMenu}/> */}
        
-          <MenuItem  sx={{ width: 250,fontSize: "1.25rem" }}>
+          <MenuItem onClick={handleCloseNavMenu} sx={{ width: 250,fontSize: "1.25rem" }}>
          
                <Box>
                   {/* <Paper sx={{
@@ -271,7 +271,7 @@ const SearchNav = () => {
             
           </MenuItem>
      
-          <MenuItem  sx={{ width: 250 }}>
+          <MenuItem onClick={handleCloseNavMenu}  sx={{ width: 250 }}>
             <Typography
               sx={{
                 // color: location === "facility" ? "#4D77FF" : "default",
@@ -286,7 +286,7 @@ const SearchNav = () => {
             </Typography>
           </MenuItem>
       
-          <MenuItem  sx={{ width: 250 }}>
+          <MenuItem onClick={handleCloseNavMenu}  sx={{ width: 250 }}>
             <Typography
               sx={{
                 // color: location === "service" ? "#4D77FF" : "default",
@@ -300,7 +300,7 @@ const SearchNav = () => {
             </Typography>
           </MenuItem>
     
-          <MenuItem  sx={{ width: 250 }}>
+          <MenuItem onClick={handleCloseNavMenu} sx={{ width: 250 }}>
             <Typography
               sx={{
                 // color: location === "serviceView" ? "#4D77FF" : "default",
