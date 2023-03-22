@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../Redux/Hook'
 import { axiosPrivate, baseURL } from '../../axios/axios'
 
 import { Buttoncomponent } from '../../Components/Buttoncomp'
-import {Box,Paper,Grid,Collapse,IconButton,Typography,Button,TextField,TablePagination} from "@mui/material"
+import {Box,Paper,Grid,Collapse,IconButton,Typography,Button,TextField,TablePagination, Table, TableFooter, TableRow} from "@mui/material"
 import {
     DataGrid,
     GridColTypeDef,
@@ -349,7 +349,7 @@ const PublishService = () => {
                 
                 </>
               ))}
-              <TablePagination
+                 <Table><TableFooter><TableRow><TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 count={csvData.length}
                 rowsPerPage={rowsPerPage}
@@ -365,7 +365,7 @@ const PublishService = () => {
                 nextIconButtonProps={{ color: "secondary" }}
                 showFirstButton={true}
                 showLastButton={true}
-                labelRowsPerPage={<Typography sx={{display:{xs:"none",md:"block"}}}>Rows:</Typography>}
+                labelRowsPerPage={<span>Rows:</span>}
                 sx={{
                   ".MuiTablePagination-toolbar": {
                     backgroundColor: "primary.light",
@@ -376,7 +376,7 @@ const PublishService = () => {
                       fontWeight: "bold",
                       color: "#173A5E",
                     },
-                }}/>
+                }}/></TableRow></TableFooter></Table> 
             </Box>
     <Box sx={{ display: "flex", gap: "1.5rem" }}>
      

@@ -1,9 +1,10 @@
 import * as React from "react";
 import { useState } from "react";
-import { Grid, Typography, Button, Paper, Box, Container ,Collapse, IconButton,TablePagination,TextField, CircularProgress} from "@mui/material";
+import { Grid, Typography, Button, Paper, Box, Container ,Collapse, IconButton,TablePagination,TextField, CircularProgress, Table, TableFooter, TableRow} from "@mui/material";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 import { ChangeEvent } from "react";
 import { useNavigate } from "react-router";
+import * as XLSX from "xlsx"
 
 import {
   DataGrid,
@@ -330,49 +331,41 @@ export default function PricelistUploadthroFacility() {
     currency: "USD",
   });
 
-  function csvJSON(csv: any) {
-    console.log("csvdata");
-    var lines = csv.split("\r\n");
 
-    var headers = lines[0].split(",");
-    // console.log(headers, "headers");["sno","facilityPrices"]
-    var result = [];
-    console.log(facilityinput, "fi");
+
+  function csvJSON(csv:any,header:any) {
+    console.log("check",csv)
+    var result=[]
     var facilityNPI = facilityinput.facilityNPI;
     var facilityName = facilityinput.facilityName;
-    console.log(facilityNPI, facilityName);
-    for (var i = 1; i < lines.length - 1; i++) {
-      var obj: any = {};
-      var currentline = lines[i].split(",");
+   
+    for (var i = 0; i <csv.length; i++) {
+      var obj: any = csv[i];
+  
 
       obj["Organisationid"] = orgid[0].organizationID;
-      for (var j = 0; j < headers.length; j++) {
-        obj[headers[j]] = currentline[j];
-      }
+     
       obj["FacilityName"] = facilityName;
       obj["FacilityNPI"] = facilityNPI;
+      
       result.push(obj);
     }
+    
+    console.log(result,"csvData")
     setCsvData(result);
 
     var validateHeaders = knownObj.map((d) => d.headerName);
-    const knownHeaders = validateHeaders.filter((element) =>
-      headers.includes(element)
-     
-    );
+   
+    const knownHeaders = validateHeaders.filter((element) =>header.includes(element));
+    
     const isMatched = knownHeaders.length === validateHeaders.length;
     //&&
     // knownHeaders.every((value, index) => value === validateHeaders[index]);
-    console.log(
-      validateHeaders.length,
-      headers.length,
-      knownHeaders.length,
-      "validateHeaders"
-    );
+   
 
     if (
       knownHeaders.length <= validateHeaders.length - 2 ||
-      headers.length > validateHeaders.length
+      header.length > validateHeaders.length
     ) {
     
       toast.error(
@@ -381,7 +374,8 @@ export default function PricelistUploadthroFacility() {
       );
       
     } else {
-      if (validateHeaders.length === headers.length && isMatched) {
+      if (validateHeaders.length === header.length && isMatched) {
+        setPublishButton(false)
         setUnknownHeader(false);
         setColumns(columnsFormat);
         return JSON.stringify(result);
@@ -391,13 +385,13 @@ export default function PricelistUploadthroFacility() {
         // return { message: "error" };
         setPublishButton(true)
         setUnknownHeader(true);
-        headers.push("FacilityName", "FacilityNPI");
-        console.log(headers, "headers");
-        const unknownFormat = headers.map((da: any) => ({
+        header.push("FacilityName", "FacilityNPI");
+       
+        const unknownFormat = header.map((da: any) => ({
           field: da,
           headerName: da,
           editable: false,
-          width: 100,
+          flex:1,
         }));
 
         setColumns(unknownFormat);
@@ -423,33 +417,23 @@ export default function PricelistUploadthroFacility() {
     console.log("name", name);
     const reader = new FileReader();
     let j: any = [];
-    reader.onload = () => {
-      let text: any = reader.result;
-      // alert(JSON.stringify(text))
-      // console.log('CSV: ', text.substring(0, 100) + '...');
-
-      //convert text to json here
-      csvJSON(text);
-    };
-    // reader.onload = (evt) => {
-    //   if (!evt?.target?.result) {
-    //     return;
-    //   }
-    //   const { result } = evt.target;
-    // alert(JSON.stringify(result))
-    //   const records = parse(result as any, {
-    //     columns: ["id", "value"],
-    //     delimiter: ";",
-    //     trim: true,
-    //     skip_empty_lines: true
-    //   });
-
-    // };
     reader.readAsBinaryString(file);
-    // reader.readAsText(file);
-
-    console.log(csvData);
-  };
+    reader.onload =async (event:any) => {
+      let binarydata =  event.target.result;
+      let workbook  = XLSX.read (binarydata,{type:'binary'})
+      let data:any=[]
+    workbook.SheetNames.forEach(sheet=>{
+      data = XLSX.utils.sheet_to_json(workbook.Sheets[sheet],{defval:""});
+        
+        
+      })
+      
+      const firstSheetName = workbook.SheetNames[0];
+      const columnsArray = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheetName], { header: 1 })[0];
+      console.log(columnsArray)
+      csvJSON(data,columnsArray)
+    };
+  }
 
   const upload = (e: any) => {
     e.preventDefault();
@@ -701,7 +685,7 @@ export default function PricelistUploadthroFacility() {
             Upload CSV
             <input
               type="file"
-              accept=".csv"
+              // accept=".csv"
               hidden
               onChange={handleFileUpload}
             />
@@ -710,6 +694,7 @@ export default function PricelistUploadthroFacility() {
           {/* service pricelist.csv in <i>src dir</i> */}
           <Box sx={{mt:2,fontWeight:"bold"}}>{filename}</Box>
         </Box>
+      
         {columns.length !== 0 ? (
           <Box >
           
@@ -752,16 +737,16 @@ export default function PricelistUploadthroFacility() {
                 )
               : csvData
             ).map((fac: any, i: any) => (
-              <>
+              
                 <TableRowRes
                   key={i}
                   fac={fac}
                   onButtonEdit={(e: any) => onButtonEdit(e)}
                 />
                 
-                </>
+               
               ))}
-              <TablePagination
+             <Table><TableFooter><TableRow><TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 count={csvData.length}
                 rowsPerPage={rowsPerPage}
@@ -788,7 +773,8 @@ export default function PricelistUploadthroFacility() {
                       fontWeight: "bold",
                       color: "#173A5E",
                     },
-                }}/>
+                }}/></TableRow></TableFooter></Table> 
+             
             </Box>
         <Box sx={{ display: "flex", gap: "1.5rem" }}>
             {publishButton  ? (
