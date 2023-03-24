@@ -8,6 +8,7 @@ import {
   GridRowModes,
   DataGrid,
   GridValueFormatterParams,
+  GridPreProcessEditCellProps,
   GridColumns,
   GridColTypeDef,
   GridRowParams,
@@ -532,6 +533,10 @@ export default function ServiceEditpage() {
       flex:1,
       editable: true,
       align: "right",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const invalid = !Number(params.props.value);
+            return { ...params.props, error: invalid };
+      },
       ...usdPrice,
     },
  
@@ -539,10 +544,15 @@ export default function ServiceEditpage() {
       field: "FacilityPrices",
       headerName: "Facility Prices",
       headerClassName: "super-app-theme--header",
+    
       // width: 100,
       flex:1,
       editable: true,
-      align: "right",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const invalid = !Number(params.props.value);
+            return { ...params.props, error: invalid };
+      },
+          align: "right",
       ...usdPrice,
     },
     {

@@ -25,6 +25,7 @@ import {
   GridToolbarContainer,
   GridActionsCellItem,
   GridValueFormatterParams,
+  GridPreProcessEditCellProps,
   GridEventListener,
   GridRowId,
   GridRow,
@@ -436,7 +437,7 @@ export default function PricelistEditpage() {
   });
 
   const usdPrice: GridColTypeDef = {
-    type: "string",
+    type: "number",
     width: 250,
     // valueFormatter: ({ value }) => currencyFormatter.format(parseFloat(value)),
     valueFormatter: (params: GridValueFormatterParams<number>) => {
@@ -541,6 +542,10 @@ export default function PricelistEditpage() {
       flex:1,
       editable: true,
       align: "right",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const invalid = !Number(params.props.value);
+            return { ...params.props, error: invalid };
+      },
       ...usdPrice,
     },
     // {
@@ -557,6 +562,10 @@ export default function PricelistEditpage() {
       flex:1,
       editable: true,
       align: "right",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const invalid = !Number(params.props.value);
+            return { ...params.props, error: invalid };
+      },
       ...usdPrice,
     },
     {

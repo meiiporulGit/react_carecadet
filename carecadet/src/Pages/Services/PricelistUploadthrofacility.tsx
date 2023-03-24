@@ -5,12 +5,13 @@ import { Buttoncomponent } from "../../Components/Buttoncomp";
 import { ChangeEvent } from "react";
 import { useNavigate } from "react-router";
 import * as XLSX from "xlsx"
-
+import ErrorProps from "../../Components/Errorprops";
 import {
   DataGrid,
   GridColTypeDef,
   GridValueFormatterParams,
   GridColumns,
+  GridPreProcessEditCellProps
 } from "@mui/x-data-grid";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
@@ -267,6 +268,7 @@ export default function PricelistUploadthroFacility() {
       headerName: "OrganisationPrices",
       headerType: "string",
       maxLength: 32,
+      
     },
     {
       headerName: "FacilityPrices",
@@ -323,6 +325,11 @@ export default function PricelistUploadthroFacility() {
       headerName: "Organisation Prices",
       editable: true,
       flex:1,
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const invalid = !Number(params.props.value);
+            return { ...params.props, error: invalid };
+      },
+    
       // width: 100,
       align: "right",
       ...usdPrice,
@@ -337,10 +344,16 @@ export default function PricelistUploadthroFacility() {
     {
       field: "FacilityPrices",
       headerName: "Facility Prices",
+        type:"number",
       editable: true,
       flex:1,
       // width: 100,
       align: "right",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const invalid = !Number(params.props.value);
+            return { ...params.props, error: invalid };
+      },
+    
       ...usdPrice,
     },
   ];
@@ -441,12 +454,28 @@ export default function PricelistUploadthroFacility() {
         setUnknownHeader(true);
         header.push("FacilityName", "FacilityNPI");
        
-        const unknownFormat = header.map((da: any) => ({
-          field: da,
-          headerName: da,
-          editable: false,
-          flex:1,
-        }));
+        const unknownFormat = header.map((da: any) => {
+          if(da==="OrganisationPrices"||da==="FacilityPrices")
+          {
+           return{
+             ...usdPrice,
+             field: da,
+           headerName: da,
+           editable: false,
+           flex:1,
+           }
+          }
+          else
+          {
+           return {field: da,
+           headerName: da,
+           editable: false,
+           flex:1,
+           }
+          }
+         
+            
+           });
 
         setColumns(unknownFormat);
 
@@ -775,6 +804,7 @@ export default function PricelistUploadthroFacility() {
               // }}
               // hideFooter
               sx={{ maxWidth: "100%",display:{xs:"none",md:"block"}, mt:1 }}
+              
             />
              < Box
               sx={{
@@ -882,7 +912,7 @@ export default function PricelistUploadthroFacility() {
             </Box>
           </Box>
         ) : null}
-      
+    
     </Box>
   );
 }

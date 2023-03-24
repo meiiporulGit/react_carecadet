@@ -9,6 +9,7 @@ import {
   GridRow,
   GridColTypeDef,
   GridValueFormatterParams,
+  GridPreProcessEditCellProps
 } from "@mui/x-data-grid";
 
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
@@ -243,6 +244,10 @@ export default function Pricelistlandingpage() {
       flex:1,
       type: "number",
       align: "right",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const invalid = !Number(params.props.value);
+            return { ...params.props, error: invalid };
+      },
       ...usdPrice,
     },
     {

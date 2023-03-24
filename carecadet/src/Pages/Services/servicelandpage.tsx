@@ -335,9 +335,8 @@ export default function Servicelandingpage() {
                     }}
                     key={key}
                     onClick={() => {
-                      // dispatch(editButton());
-                      //dispatch(tabValueNav(1));
-                      dispatch(facilitynameInfo(facilityInfo));
+                    
+                   
                       dispatch(serviceInfo(d));
                       navigate("/provider/service/serviceview");
                     }}

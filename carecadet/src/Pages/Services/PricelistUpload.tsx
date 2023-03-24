@@ -1,15 +1,16 @@
 import * as React from "react";
 import { useState } from "react";
-import { Grid, Typography, Button, Paper, Box, Container ,Collapse, IconButton,TablePagination,TextField} from "@mui/material";
+import { Grid, Typography, Button, Paper, Box,Table, TableFooter, TableRow, Container ,Collapse, IconButton,TablePagination,TextField} from "@mui/material";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 import { ChangeEvent } from "react";
 import { useNavigate } from "react-router";
-
+import * as XLSX from "xlsx"
 import {
   DataGrid,
   GridColTypeDef,
   GridValueFormatterParams,
   GridColumns,
+  GridPreProcessEditCellProps
   
 } from "@mui/x-data-grid";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
@@ -245,7 +246,7 @@ export default function PricelistUpload() {
   const [unknownHeader, setUnknownHeader] = useState<boolean>(false);
   const [publishButton, setPublishButton] = useState<boolean>(false);
   const navigate = useNavigate();
-
+  const [isLoading,setIsLoading]=useState<boolean>(false)
   const data = useAppSelector(
     (state: { providerAuth: { login: any } }) => state.providerAuth.login
   );
@@ -372,6 +373,10 @@ export default function PricelistUpload() {
       // width: 100,
       flex: 1,
       align: "right",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const invalid = !Number(params.props.value);
+            return { ...params.props, error: invalid };
+      },
       ...usdPrice,
     },
     {
@@ -389,70 +394,70 @@ export default function PricelistUpload() {
       // width: 100,
       flex: 1,
       align: "right",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const invalid = !Number(params.props.value);
+            return { ...params.props, error: invalid };
+      },
       ...usdPrice,
     },
   ];
 
-  function csvJSON(csv: any) {
+  function csvJSON(csv: any,header:any) {
    
-    var lines = csv.split("\r\n");
+  
     var result = [];
     var facilityExistCheck:any=[]
-    var headers = lines[0].split(",");
-    const mandatoryfield = headers.includes("FacilityNPI") && headers.includes("FacilityName");
+    
+    const mandatoryfield = header.includes("FacilityNPI") && header.includes("FacilityName");
 
     if (mandatoryfield) {
-      let index = headers.indexOf("FacilityNPI");
-     
-      // console.log(index,"index")
-     for (var i = 1; i < lines.length - 1; i++) {
-        var obj: any = {};
-        var currentline = lines[i].split(",");
-       console.log(currentline,"index")
-        let storefacility = facilityinput.filter((data: any) => data.facilityNPI === currentline[index]);
-       
-      if(storefacility[0]===undefined){
-        var facCheck=facilityExistCheck.includes(currentline[index])
-        if(!facCheck){
-          facilityExistCheck.push(currentline[index])
-        }
-     
-        
-      }else{
-        var finalfacility =storefacility[0] == undefined ? "Facility name unavailable": storefacility[0].facilityName;
-        var format = /^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/;
-        obj["Organisationid"] = orgid[0].organizationID;
-        for (var j = 0; j < headers.length; j++) {
-          obj[headers[j]] = currentline[j];
-          
-        }
-        obj["FacilityName"] = finalfacility;
-        result.push(obj);
-        console.log(result,"rescheck")
-        
-        // for(i=0; i<headers.length; i++){
-        
-
-        // }
-      }
-       
-      }
+    
+   	      // console.log(index,"index")
+           for (var i = 0; i < csv.length ; i++) {
+            var obj: any = csv[i];
+            console.log(csv[i])
+          console.log(facilityinput,"input")
+            let storefacility = facilityinput.filter((data: any) => data.facilityNPI === `${csv[i].FacilityNPI}`);
+            console.log(storefacility,"store")
+           
+          if(storefacility[0]===undefined){
+            var facCheck=facilityExistCheck.includes(csv[i].FacilityNPI)
+            if(!facCheck){
+              facilityExistCheck.push(csv[i].FacilityNPI)
+            }
+         
+            
+          }else{
+            var finalfacility =storefacility[0] == undefined ? "Facility name unavailable": storefacility[0].facilityName;
+            obj["Organisationid"] = orgid[0].organizationID;
+           
+            obj["FacilityName"] = finalfacility;
+            obj["FacilityNPI"]=`${csv[i].FacilityNPI}`
+            result.push(obj);
+            console.log(result,"rescheck")
+            
+            // for(i=0; i<headers.length; i++){
+            
+            // }
+          }
+           
+          }
       
       if(facilityExistCheck.length===0){
       setCsvData(result);
       // return JSON.stringify(result); 
       var validateHeaders = knownObj.map((d) => d.headerName);
-      const knownHeaders = validateHeaders.filter((element) => headers.includes(element));
+      const knownHeaders = validateHeaders.filter((element) => header.includes(element));
       const isMatched =knownHeaders.length === validateHeaders.length
       // &&
       // knownHeaders.every((value, index) => value === validateHeaders[index]);
       // console.log(validateHeaders,"validateHeaders")
 
-      if (knownHeaders.length <= validateHeaders.length - 2 ||headers.length > validateHeaders.length) {
+      if (knownHeaders.length <= validateHeaders.length - 2 ||header.length > validateHeaders.length) {
         toast.error("Please check the header name or download the sample csv format");
        
       } else {
-        if (validateHeaders.length === headers.length && isMatched) {
+        if (validateHeaders.length === header.length && isMatched) {
           setUnknownHeader(false);
           setColumns(columnsFormat);
           return JSON.stringify(result);
@@ -462,13 +467,29 @@ export default function PricelistUpload() {
           // return { message: "error" };
           setUnknownHeader(true);
           setPublishButton(true)
-          console.log(headers, "headers");
-          const unknownFormat = headers.map((da: any) => ({
+          console.log(header, "headers");
+          const unknownFormat = header.map((da: any) => {
+         if(da==="OrganisationPrices"||da==="FacilityPrices")
+         {
+          return{
+            ...usdPrice,
             field: da,
-            headerName: da,
-            editable: false,
-            width: 100,
-          }));
+          headerName: da,
+          editable: false,
+          flex:1,
+          }
+         }
+         else
+         {
+          return {field: da,
+          headerName: da,
+          editable: false,
+          flex:1,
+          }
+         }
+        
+           
+          });
 
           setColumns(unknownFormat);
 
@@ -503,38 +524,33 @@ export default function PricelistUpload() {
     console.log("name", name);
     const reader = new FileReader();
     let j: any = [];
-    reader.onload = () => {
-      let text: any = reader.result;
-      // alert(JSON.stringify(text))
-      // console.log('CSV: ', text.substring(0, 100) + '...');
-
-      //convert text to json here
-      csvJSON(text);
-    };
-    // reader.onload = (evt) => {
-    //   if (!evt?.target?.result) {
-    //     return;
-    //   }
-    //   const { result } = evt.target;
-    // alert(JSON.stringify(result))
-    //   const records = parse(result as any, {
-    //     columns: ["id", "value"],
-    //     delimiter: ";",
-    //     trim: true,
-    //     skip_empty_lines: true
-    //   });
-
-    // };
     reader.readAsBinaryString(file);
-    // reader.readAsText(file);
+    reader.onload =async (event:any) => {
+     
+      let binarydata =  event.target.result;
+      let workbook  = XLSX.read (binarydata,{type:'binary'})
+      let data:any=[]
+    workbook.SheetNames.forEach(sheet=>{
+      data = XLSX.utils.sheet_to_json(workbook.Sheets[sheet],{defval:""});
+        
+        
+      })
+      
+      const firstSheetName = workbook.SheetNames[0];
+      const columnsArray = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheetName], { header: 1 })[0];
+      console.log(columnsArray)
+      csvJSON(data,columnsArray)
+      
+    };
 
-    console.log(csvData);
+
   
   };
 
   const upload = (e: any) => {
     console.log("emaildata", data);
     e.preventDefault();
+    setIsLoading(true)
     // if(output){
     //    let formData = new FormData();
     //  formData.append("screenshot", output);
@@ -562,13 +578,14 @@ export default function PricelistUpload() {
           setColumns([]);
           setCsvData([]);
           setPublishButton(false)
-         
+          setIsLoading(false)
           toast.success(res.data.message);
           navigate("/provider/service/listService");
           
         })
         .catch((err) => {
           console.log(err, "cdfjdk");
+          setIsLoading(false)
           toast.error(err.message);
         });
     }
@@ -624,6 +641,7 @@ export default function PricelistUpload() {
 
   const onSubmit = (e: any) => {
     e.preventDefault();
+    setIsLoading(true)
     // if(output){
     //    let formData = new FormData();
     //  formData.append("screenshot", output);
@@ -639,8 +657,10 @@ export default function PricelistUpload() {
         // alert("success"); 
         toast.success(res.data.message);
         navigate("/provider/service/listService");
+        setIsLoading(false)
       })
       .catch((err) => {
+        setIsLoading(false)
         console.log(err, "checkerror");
         toast.error(err.message);
       });
@@ -658,7 +678,7 @@ export default function PricelistUpload() {
   };
 
   return (
-    <>
+
       <Box
 
         sx={{
@@ -776,7 +796,7 @@ export default function PricelistUpload() {
           <Box sx={{ mt: 2, fontWeight: "bold" }}>{filename}</Box>
         </Box>
         {columns.length !== 0 ? (
-          <>
+         <Box>
             <DataGrid
               autoHeight
               rows={csvData}
@@ -784,6 +804,7 @@ export default function PricelistUpload() {
               getRowId={(row: any) => row.SNo}
               pagination={true}
               pageSize={pageSize}
+              loading={isLoading}
               onPageSizeChange={(newPageSize: number) =>
                 setPagesize(newPageSize)
               }
@@ -812,16 +833,16 @@ export default function PricelistUpload() {
                 )
               : csvData
             ).map((fac: any, i: any) => (
-              <>
+          
                 <TableRowRes
                   key={i}
                   fac={fac}
                   onButtonEdit={(e: any) => onButtonEdit(e)}
                 />
                 
-                </>
+          
               ))}
-              <TablePagination
+              <Table><TableFooter><TableRow><TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 count={csvData.length}
                 rowsPerPage={rowsPerPage}
@@ -848,7 +869,7 @@ export default function PricelistUpload() {
                       fontWeight: "bold",
                       color: "#173A5E",
                     },
-                }}/>
+                }}/></TableRow></TableFooter></Table> 
             </Box>
 <Box sx={{ display: "flex", gap: "1.5rem" }}>
 {publishButton  ? (
@@ -858,6 +879,7 @@ export default function PricelistUpload() {
                 variant="contained"
                 size="large"
                 color="primary"
+                disable={isLoading}
                 onClick={upload}
                 sx={{
                   mt: 2,
@@ -899,14 +921,15 @@ export default function PricelistUpload() {
           >
             Publish
           </Buttoncomponent>
-            }
-            
-</Box>
+}
+          </Box>
+          </Box>
+ 
 
 
-          </>
+       
         ) : null}
       </Box>
-    </>
+    
   );
 }
