@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Paper, TextField, Box, Typography,TablePagination,Collapse,IconButton } from "@mui/material";
+import { Paper, Grid,TextField, Box, Typography,TablePagination,Collapse,IconButton } from "@mui/material";
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -53,11 +53,59 @@ return(
         </IconButton>{fac.FacilityName}
         <Collapse in={open} timeout="auto" unmountOnExit>
         <Paper sx={{display:"flex",flexDirection:"column",mt:"0.2rem",padding:"1rem"}}>
-        <Typography sx={{display:"flex"}}> <Typography sx={{color:"blue"}}> ServiceCode </Typography>       :  {fac.ServiceCode}</Typography>
-        
+        <Grid  container item xs={12}>
+            <Grid item xs={6} >
+            
 
-        <Typography sx={{display:"flex"}}><Typography sx={{color:"blue"}}> Organisation Prices </Typography>       :  {fac.OrganisationPrices}</Typography>
-        <Typography sx={{display:"flex"}}><Typography sx={{color:"blue"}}> Facility Prices </Typography>       :  {fac.FacilityPrices}</Typography>
+            <Typography sx={{ color: "blue" }}>ServiceCode </Typography> 
+            </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
+            {fac.ServiceCode}
+          </Typography>
+        </Grid>
+        </Grid>
+        
+        <Grid  container item xs={12}>
+            <Grid item xs={6} >
+            
+
+            <Typography sx={{ color: "blue" }}>Organisation Prices </Typography> 
+            </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
+            {fac.OrganisationPrices}
+          </Typography>
+        </Grid>
+        </Grid>
+        <Grid  container item xs={12}>
+            <Grid item xs={6} >
+            
+
+            <Typography sx={{ color: "blue" }}>Facility Prices </Typography> 
+            </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
+            {fac.FacilityPrices}
+          </Typography>
+        </Grid>
+        </Grid>
+
         </Paper>
       </Collapse>
   </Box>

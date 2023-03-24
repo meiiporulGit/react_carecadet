@@ -105,34 +105,75 @@ function TableRowRes({ fac, onButtonEdit }: rowProps) {
             </Typography>
             </Grid>
             <Grid item xs={4} >
-            <Typography sx={{ color: "blue" }}>
+            <Typography >
             {fac.Organisationid}
             </Typography>
             </Grid>
           </Grid>
 
          
-          <Typography sx={{ display: "flex" }}>
-            {" "}
-            <Typography sx={{ color: "blue" }}>ServiceCode </Typography> :{" "}
+          <Grid  container item xs={12}>
+            <Grid item xs={6} >
+            
+
+            <Typography sx={{ color: "blue" }}>ServiceCode </Typography> 
+            </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
             {fac.ServiceCode}
           </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
-            <Typography sx={{ color: "blue" }}>FacilityNPI </Typography> :{" "}
+        </Grid>
+        </Grid>
+
+        <Grid  container item xs={12}>
+        <Grid item xs={6} >
+        
+            <Typography sx={{ color: "blue" }}>FacilityNPI </Typography> </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+         <Typography >
             {fac.FacilityNPI}
           </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
-            <Typography sx={{ color: "blue" }}>FacilityName </Typography> :{" "}
+          </Grid>
+          </Grid>
+          
+          <Grid  container item xs={12}>
+        <Grid item xs={6} >
+            <Typography sx={{ color: "blue" }}>FacilityName </Typography> </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
             {fac.FacilityName}
           </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
+          </Grid>
+          </Grid>
+          <Grid  container item xs={12}>
+        <Grid item xs={6} >
             <Typography sx={{ color: "blue" }}>
-              OrganisationPrices{" "}
-            </Typography>{" "}
-            :{" "}
+              Organisation Prices{" "}
+            </Typography>
+            </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
+          
             {!edit ? (
               fac.OrganisationPrices
             ) : (
@@ -143,11 +184,22 @@ function TableRowRes({ fac, onButtonEdit }: rowProps) {
               />
             )}
           </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
+          </Grid>
+          </Grid>
+
+
+         <Grid  container item xs={12}>
+        <Grid item xs={6} >
             <Typography sx={{ color: "blue" }}>
               FacilityPrices{" "}
-            </Typography> :{" "}
+            </Typography> </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
             {!edit ? (
               fac.FacilityPrices
             ) : (
@@ -155,9 +207,11 @@ function TableRowRes({ fac, onButtonEdit }: rowProps) {
                 value={data.FacilityPrices}
                 name="FacilityPrices"
                 onChange={(e) => editOnchange(e)}
+                type="number"
               />
             )}
           </Typography>
+          </Grid></Grid>
         </Paper>
       </Collapse>
     </Box>

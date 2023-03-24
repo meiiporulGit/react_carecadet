@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Paper, TextField, Box,Grid,Button, Typography,TablePagination ,Collapse,IconButton, CircularProgress, Table, TableHead, TableRow, TableCell, TableBody, TableFooter} from "@mui/material";
+import { Paper, TextField, Box,Grid,Button, Typography,TablePagination ,Pagination, Collapse,IconButton, CircularProgress, Table, TableHead, TableRow, TableCell, TableBody, TableFooter} from "@mui/material";
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -51,11 +51,75 @@ return(
         </IconButton>{fac.DiagnosisTestorServiceName}
         <Collapse in={open} timeout="auto" unmountOnExit>
         <Paper sx={{display:"flex",flexDirection:"column",mt:"0.2rem",padding:"1rem"}}>
-        <Typography sx={{display:"flex"}}> <Typography sx={{color:"blue"}}> ServiceCode </Typography>       :  {fac.ServiceCode}</Typography>
-        <Typography sx={{display:"flex"}}><Typography sx={{color:"blue"}}>  Facility Name </Typography>         :  {fac.FacilityName}</Typography>
+        <Grid  container item xs={12}>
+            <Grid item xs={6} >
+            
+
+            <Typography sx={{ color: "blue" }}>ServiceCode </Typography> 
+            </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
+            {fac.ServiceCode}
+          </Typography>
+        </Grid>
+        </Grid>
+        <Grid  container item xs={12}>
+            <Grid item xs={6} >
+            
+
+            <Typography sx={{ color: "blue" }}>Facility Name </Typography> 
+            </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
+            {fac.FacilityName}
+          </Typography>
+        </Grid>
+        </Grid>
 {/* <Typography sx={{display:"flex"}}> <Typography sx={{color:"blue"}}>Facility NPI </Typography>  :  {fac.facilityNPI }</Typography> */}
-        <Typography sx={{display:"flex"}}><Typography sx={{color:"blue"}}> Organisation Prices </Typography>       :  {fac.OrganisationPrices}</Typography>
-        <Typography sx={{display:"flex"}}><Typography sx={{color:"blue"}}> Facility Prices </Typography>       :  {fac.FacilityPrices}</Typography>
+<Grid  container item xs={12}>
+            <Grid item xs={6} >
+            
+
+            <Typography sx={{ color: "blue" }}>Organisation Prices </Typography> 
+            </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
+            {fac.OrganisationPrices}
+          </Typography>
+        </Grid>
+        </Grid>
+        <Grid  container item xs={12}>
+            <Grid item xs={6} >
+            
+
+            <Typography sx={{ color: "blue" }}>Facility Prices </Typography> 
+            </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
+            {fac.FacilityPrices}
+          </Typography>
+        </Grid>
+        </Grid>
         </Paper>
       </Collapse>
   </Box>
@@ -69,6 +133,7 @@ export default function Pricelistlandingpage() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
   const [dataCheck,setDataCheck]=useState(false)
+
   const dispatch = useAppDispatch();
   // const facilityid=useAppSelector((state)=>state.editFacility.service);
   // console.log("facilityid", facilityid);
@@ -136,6 +201,8 @@ export default function Pricelistlandingpage() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+
   const columns: GridColumns = [
     // {
     //   field: "SNo",
@@ -456,9 +523,10 @@ export default function Pricelistlandingpage() {
         <Row key={i} fac={fac}/>
     
         ))}
+      
          <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
-                count={data.length}
+                count={Row.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -484,6 +552,7 @@ export default function Pricelistlandingpage() {
                       color: "#173A5E",
                     },
                 }}/>
+                 
         </Box>
         </>
       </Box> :  <Box
