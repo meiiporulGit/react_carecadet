@@ -16,6 +16,7 @@ import Pricelistlandingpage from "./pricelistlandingpage";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ErrorProps from "../../Components/Errorprops";
+import { facilityInfo } from "../../Redux/ProviderRedux/facilitySlice";
 interface InitialValues {
   Organisationid: string;
   ServiceCode: string;
@@ -26,11 +27,18 @@ interface InitialValues {
   FacilityPrices: string;
 }
 
+
 const CreateService = () => {
+  const facilityinput = useAppSelector(
+    (state) => state.providerService.facilityData
+  );
+  console.log("Facilityinput",facilityinput)
+  const [checkInfo, setCheckInfo] = useState<any>([])
   const [query,setQuery] = useState([]);
   console.log(query,'q')
   const [info,setInfo]=useState([])
   console.log(info,'query')
+  const [disabled, setDisabled] = useState<boolean>(false)
   const select = useAppSelector((state) => state.providerAuth.login);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -59,7 +67,23 @@ const CreateService = () => {
         setQuery(res.data)})
       }
       fetchUsers()
-    }, [])
+    }, []);
+
+    // useEffect(() => {
+    //   const fetchFacilityNPI = async () => {
+    //     await axiosPrivate.get(`/facility/findfacilityNPI`)
+    //       .then((res) => {
+    //         console.log(res.data, 'nppes')
+    //         //  dispatch(nppesInfo(res.data))
+    //         setCheckInfo(res.data)
+    //       })
+    //       .catch((e) => console.log(e));
+    //     // .then (res => {setInfo(res.data);
+    //     // setQuery(res.data)})
+    //   }
+    //   fetchFacilityNPI()
+  
+    // }, [])
 
     // const filterOptions1 = (options:any, state:any) => {
     //   return defaultFilterOptions(options, state).slice(0, OPTIONS_LIMIT);
@@ -73,7 +97,7 @@ const CreateService = () => {
       //   }
       //   fetchUsers()
       // }, [])
-
+    
 
   const onSubmit = (values: InitialValues, actions: any) => {
     console.log("test")
@@ -377,34 +401,7 @@ filterOptions = {filterOptions}
               />
             </Grid> */}
 
-            <Grid item xs={12} >
-              <Typography
-              sx={{
-                fontSize: "1.2rem",
-                mb: "0.5rem",
-              }}
-              >
-                Facility Name <Typography display="inline" sx={{color:"red"}}>*</Typography>
-              </Typography>
-              <FormTextField
-                container={TextField}
-                label="Facility Name"
-                name="FacilityName"
-                placeholder="Facility Name"
-                autoComplete="text"
-                type="text"
-                fullWidth={true}
-                sx={{
-                  ".MuiFormLabel-root ": {
-                    letterSpacing: "0.2rem",
-                    fontSize: "0.8rem",
-                  },
-                  ".MuiInputLabel-shrink": {
-                    letterSpacing: 0,
-                  },
-                }}
-              />
-            </Grid>
+
 
             <Grid item xs={12} >
               <Typography
@@ -415,7 +412,7 @@ filterOptions = {filterOptions}
               >
                 Facility NPI <Typography display="inline" sx={{color:"red"}}>*</Typography>
               </Typography>
-              <FormTextField
+              {/* <FormTextField
                 container={TextField}
                 label="Facility NPI"
                 name="FacilityNPI"
@@ -432,9 +429,104 @@ filterOptions = {filterOptions}
                     letterSpacing: 0,
                   },
                 }}
-              />
-            </Grid>
+              /> */}
+             <Field
+                  name="FacilityNPI"
+                  component={Autocomplete}
+                  options = {facilityinput}
+                  loading={facilityinput.length === 0}
+                  PaperComponent={CustomPaper}
+                  filterOptions={filterOptions}
+                  // loading={checkInfo.length === 0}
+                  // options={checkInfo}
+                  
+                  getOptionLabel={(option: any) => option.facilityNPI || option}
+                  freeSolo
+                  onChange={(e: any, value: any) => {
+                    { value !== null ? setDisabled(true) : setDisabled(false) }
+                    console.log(value, "imanualentervalue");
+                    setFieldValue("FacilityName", value !== null ? value.facilityName : "");
+                    setFieldValue("FacilityNPI", value !== null ? value.facilityNPI : "");
+                 
+                  }}
+                  renderInput={(params: AutocompleteRenderInputParams) => (
+                    <TextField
+                      {...params}
+                      name="FacilityNPI"
+                      label="Facility NPI"
+                      onChange={handleChange}
+                      variant="outlined"
+                      helperText={
+                        <ErrorMessage name="FacilityNPI">
+                          {(error) => <ErrorProps>{error}</ErrorProps>}
+                        </ErrorMessage>}
+                      InputProps={{
+                        ...params.InputProps,
+                        endAdornment: (
+                          <React.Fragment>
+                            {/* {info.length === 0 ? <CircularProgress color="inherit" size={20} /> : null} */}
+                            {/* {checkInfo.length === 0 ? <CircularProgress color="inherit" size={20} /> : null} */}
+                            {params.InputProps.endAdornment}
+                          </React.Fragment>),
+                      }}
+                      sx={{
+                        ".MuiFormLabel-root ": {
+                          letterSpacing: "0.2rem",
+                          fontSize: "0.8rem",
+                        },
+                        ".MuiInputLabel-shrink": {
+                          letterSpacing: 0,
+                        },
+                        "& .MuiAutocomplete-popupIndicator": { transform: "none" }
 
+                        // ".MuiInputBase-root":{
+                        //   borderRadius: "50px",
+                        //   // height:"40px"
+                        // },
+
+                      }}
+                    />
+                  )}
+                />
+            </Grid>
+            <Grid item xs={12} >
+              <Typography
+              sx={{
+                fontSize: "1.2rem",
+                mb: "0.5rem",
+              }}
+              >
+                Facility Name <Typography display="inline" sx={{color:"red"}}>*</Typography>
+              </Typography>
+              <Field
+                  as={TextField}
+                  label="Facility Name"
+                  name="FacilityName"
+                  placeholder="FacilityName"
+                  type="text"
+                  fullWidth={true}
+                  autoComplete="new-country-area"
+                  helperText={
+                    <ErrorMessage name="FacilityName">
+                      {(error) => <ErrorProps>{error}</ErrorProps>}
+                    </ErrorMessage>
+                  }
+                  inputProps={{ readOnly: disabled }}
+                  sx={{
+                    ".MuiFormLabel-root ": {
+                      letterSpacing: "0.2rem",
+                      fontSize: "0.8rem",
+                    },
+                    ".MuiInputLabel-shrink": {
+                      letterSpacing: 0,
+                    },
+                    //  ".Mui-focused":{
+                    //     letterSpacing: "0.2rem"
+                    //  }
+                  }}
+                />
+              </Grid>
+            </Grid>
             <Grid item xs={12} >
               <Typography
                 sx={{
@@ -484,8 +576,8 @@ filterOptions = {filterOptions}
               >
                 Submit
               </Buttoncomponent>
-            </Grid>
-          </Grid>
+        </Grid>
+       
         </Form>
 )}
       </Formik>
