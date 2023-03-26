@@ -7,7 +7,7 @@ import login from "../../Images/login.jpg";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import Cookie from "js-cookie";
-
+import { useState } from "react";
 import FormTextField from "../../Components/Textfield";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 
@@ -29,6 +29,7 @@ const schema = yup.object().shape({
     .min(4, "password must be at least 4 characters"),
 });
 export default function Logindentalcare() {
+  const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   return (
@@ -43,6 +44,7 @@ export default function Logindentalcare() {
               userType: "PROVIDER",
             }}
             onSubmit={(values) => {
+              setIsLoading(true)  
               // alert(JSON.stringify(values));
               const Logindata = {
                 userName: values.email,
@@ -55,6 +57,7 @@ export default function Logindentalcare() {
                 .post("/user/login", Logindata)
                 .then((res) => {
                   toast.success(res.data.message);
+                  setIsLoading(false)  
                   //  localStorage.setItem("userType", JSON.stringify(res.data.data.userType));
                   //  localStorage.setItem("token", JSON.stringify(res.data.data.token));
                   // localStorage.setItem("auth",JSON.stringify(res.data.data))
@@ -78,6 +81,7 @@ export default function Logindentalcare() {
                   //   err.response.status >= 400 &&
                   //   err.response.status <= 500
                   // ) {
+                    setIsLoading(false)  
                   toast.error(err.message);
                   // }
                 });
@@ -113,7 +117,7 @@ export default function Logindentalcare() {
                     color: "#728AB7",
                   }}
                 >
-                  Email
+                  Email<Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
 
                 <FormTextField
@@ -141,7 +145,7 @@ export default function Logindentalcare() {
                     color: "#728AB7",
                   }}
                 >
-                  Password
+                  Password<Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
                 <FormTextField
                   container={TextField}
@@ -164,6 +168,7 @@ export default function Logindentalcare() {
                   size="large"
                   fullWidth={false}
                   variant="contained"
+                  disable={isLoading}
                   sx={{
                     mt: 2,
                     backgroundColor: "secondary.dark",
@@ -182,6 +187,9 @@ export default function Logindentalcare() {
               </Grid>
               <Typography sx={{ color: "#728AB7" }}>
                 Don't have an account.<Link to="/provider/signup">Signup</Link>
+              </Typography>
+              <Typography sx={{ color: "#728AB7" }}>
+              <Link to="/provider/forgotpass">Forgot password</Link>
               </Typography>
             </Form>
           </Formik>

@@ -7,9 +7,10 @@ import login from "../../Images/login.jpg";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import Cookie from "js-cookie";
-
+import { useState } from "react";
 import FormTextField from "../../Components/Textfield";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
+import { useLocation } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import {
@@ -17,6 +18,7 @@ import {
   storeLoginInfo,
 } from "../../Redux/ProviderRedux/LoginSlice";
 import { axiosPrivate } from "../../axios/axios";
+import { dataSearchTenMiles } from "../../Redux/ProviderRedux/HomeSlice";
 
 const schema = yup.object().shape({
   email: yup
@@ -28,18 +30,22 @@ const schema = yup.object().shape({
   password: yup
     .string()
     .required("password is a required field")
-    .min(4, "Password must be at least 4 characters")
-    .max(50, 'Too Long!')
-    .required("Password is a required field")
     
-    .matches(/[a-z]+/, "One lowercase character")
-    .matches(/[A-Z]+/, "One uppercase character")
-    .matches(/[@$!%*#?&]+/, "One special character")
-    .matches(/\d+/, "One number")
 });
-export default function Login() {
+export default function Login(props:any) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  
+  const [isLoading, setIsLoading] = useState(false);
+  const location = useLocation();
+  console.log(props, " props");
+  console.log(location, " useLocation Hook");
+ const data = location.state?.data;
+ const data1 = location.state?.data1;
+ const data2 = location.state?.data2;
+ const data3 = location.state?.data3;
+ const data4 = location.state?.data4;
+
   return (
     <Box sx={{ backgroundColor: "#EBF3FA", height: "95vh", mt: "-0.5vh",padding:{xs:"20px",md:"none"} }}>
       <Grid container>
@@ -52,6 +58,7 @@ export default function Login() {
               userType: "PROVIDER",
             }}
             onSubmit={(values) => {
+              setIsLoading(true)
               // alert(JSON.stringify(values));
               const Logindata = {
                 userName: values.email,
@@ -63,6 +70,7 @@ export default function Login() {
               axiosPrivate
                 .post("/user/login", Logindata)
                 .then((res) => {
+                  setIsLoading(false) 
                   toast.success(res.data.message);
                   //  localStorage.setItem("userType", JSON.stringify(res.data.data.userType));
                   //  localStorage.setItem("token", JSON.stringify(res.data.data.token));
@@ -87,6 +95,7 @@ export default function Login() {
                   //   err.response.status >= 400 &&
                   //   err.response.status <= 500
                   // ) {
+                    setIsLoading(false) 
                   toast.error(err.message);
                   // }
                 });
@@ -95,7 +104,8 @@ export default function Login() {
             <Form >
         
               <Typography variant="h4" sx={{ mt: 12, color: "#728AB7" }}>
-                Welcome Provider
+                Welcome {data?data.Link:""}{data1?data1.Link:""}{data2?data2.Link:""}{data3?data3.Link:""}
+                      
               </Typography>
 
               <Grid>
@@ -103,8 +113,8 @@ export default function Login() {
                   variant="h6"
                   sx={{ mt: 1, color: "#728AB7" }}
                   // mb={"0.5rem"}
-                  // sx={{
-                  //   backgroundColor: "secondary.light",
+              
+                  //   bac    // sx={{kgroundColor: "secondary.light",
                   //   padding: "0.7rem",
                   //   textAlign: "center",
                   //   fontSize: "1.5rem",
@@ -123,7 +133,7 @@ export default function Login() {
                     color: "#728AB7",
                   }}
                 >
-                  Email
+                  Email <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
 
                 <FormTextField
@@ -152,7 +162,7 @@ export default function Login() {
                     color: "#728AB7",
                   }}
                 >
-                  Password
+                  Password <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
                 <FormTextField
                   container={TextField}
@@ -176,6 +186,7 @@ export default function Login() {
                   size="large"
                   fullWidth={false}
                   variant="contained"
+                  disable={isLoading}
                   sx={{
                     mt: 2,
                     backgroundColor: "secondary.dark",

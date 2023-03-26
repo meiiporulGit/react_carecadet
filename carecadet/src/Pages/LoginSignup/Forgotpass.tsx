@@ -56,9 +56,8 @@ export default function Forgotpass() {
                 
                 })
                 .catch((err) => {
-                  
-                  toast.error(err.message);
-                 
+                                    toast.error(err.message);
+                  setIsLoading(false) 
                 });
                 // setSubmitting(true);
                 // setSubmitting(false);
@@ -91,7 +90,7 @@ export default function Forgotpass() {
                     color: "#728AB7",
                   }}
                 >
-                  Email
+                  Email <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
 
                 <FormTextField

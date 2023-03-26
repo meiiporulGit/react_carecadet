@@ -55,9 +55,10 @@ const options = [
 ];
 const Providerhomepage = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  // const [state, setState] = React.useState("Provider");
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
+ 
   const initialValues: forminitialValues = {
     Service: "",
     Location: "",
@@ -90,6 +91,20 @@ const Providerhomepage = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+ const [data,setData] = React.useState ({
+   Link:"Urgent Care"
+      
+    });
+ const [data1,setData1] = React.useState ({
+  Link:"Dental Care"
+  });
+ const [data2,setData2] = React.useState ({
+  Link:"Labs"
+    });
+    const [data3,setData3] = React.useState ({
+      Link:"Services"
+      });
+
   return (
     // <Box
     //   // elevation={5}
@@ -415,8 +430,10 @@ const Providerhomepage = () => {
               >
                 <Grid item xs = {10} md={3} justifyContent={"center"} alignItems={"center"}>
                   <Link
-                    to="/provider/urgentcarelogin"
+                    to="/provider/login" state={{data:data}}
+                   
                     style={{ textDecoration: "none" }}
+                    // onClick={(e) => clickHandler(e)}
                   >
                     <Card
                       raised
@@ -451,7 +468,8 @@ const Providerhomepage = () => {
                 <Grid item xs ={10} md={3}>
                   <Link
                     style={{ textDecoration: "none" }}
-                    to="/provider/dentalcarelogin"
+                    to="/provider/login"
+                    state={{data1:data1}}
                   >
                     <Card
                       raised
@@ -486,7 +504,9 @@ const Providerhomepage = () => {
                 <Grid item xs ={10} md={3}>
                   <Link
                     style={{ textDecoration: "none" }}
-                    to="/provider/labcarelogin"
+                    
+                    to="/provider/login"
+                    state={{data2:data2}}
                   >
                     <Card
                       raised
@@ -521,7 +541,9 @@ const Providerhomepage = () => {
                 <Grid item xs ={10} md={3}>
                   <Link
                     style={{ textDecoration: "none" }}
-                    to="/provider/otherslogin"
+                    to="/provider/login"
+                    
+                    state={{data3:data3}}
                   >
                     <Card
                       raised

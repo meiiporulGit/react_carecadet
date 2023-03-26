@@ -42,8 +42,9 @@ const schema = yup.object().shape({
 });
 
 export default function Signup() {
+  const [state, setState] = React.useState("Provider");
   const [text, setText] = useState("");
-
+ const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate();
   return (
     <Box
@@ -63,6 +64,7 @@ export default function Signup() {
         }}
         validationSchema={schema}
         onSubmit={(values) => {
+          setIsLoading(true)
           // alert(JSON.stringify(values));
           console.log(values, "values");
           const Registerdata = {
@@ -77,6 +79,7 @@ export default function Signup() {
             .post(`/provider/createProvider`, Registerdata)
 
             .then((res) => {
+              setIsLoading(false)
               toast.success(res.data.message);
               navigate("/provider/login");
               // alert("Success");
@@ -85,6 +88,8 @@ export default function Signup() {
               console.log(err, "signuperr");
               // toast.error(err.response.data);
               toast.error(err.message);
+              setIsLoading(false)
+              
             });
         }}
       >
@@ -106,7 +111,7 @@ export default function Signup() {
                 minWidth: 300,
               }}
             >
-              <Typography variant="h4">Welcome Provider! </Typography>
+              <Typography variant="h4">Welcome {state}! </Typography>
               <Typography variant="h4" sx={{ ml: 9 }}>
                 Sign Up{" "}
               </Typography>
@@ -122,7 +127,7 @@ export default function Signup() {
                   mt: 4,
                 }}
               >
-                First Name
+                First Name <Typography display="inline" sx={{color:"red"}}>*</Typography>
               </Typography>
               <Formtext
                 name="firstName"
@@ -147,7 +152,7 @@ export default function Signup() {
                   mt: 2,
                 }}
               >
-                Last Name
+                Last Name <Typography display="inline" sx={{color:"red"}}>*</Typography>
               </Typography>
               <Formtext
                 name="lastName"
@@ -172,7 +177,7 @@ export default function Signup() {
                   mt: 2,
                 }}
               >
-                Email
+                Email <Typography display="inline" sx={{color:"red"}}>*</Typography>
               </Typography>
               <Formtext
                 name="email"
@@ -197,7 +202,7 @@ export default function Signup() {
                   mt: 2,
                 }}
               >
-                Password
+                Password <Typography display="inline" sx={{color:"red"}}>*</Typography>
               </Typography>
               <Formtext
                 name="password"
@@ -221,6 +226,7 @@ export default function Signup() {
                   size="large"
                   fullWidth={false}
                   variant="contained"
+                  disable={isLoading}
                   sx={{
                     mt: 2,
                     backgroundColor: "secondary.dark",

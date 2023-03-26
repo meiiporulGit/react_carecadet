@@ -44,7 +44,7 @@ import Admin from "./Pages/Admin/Admin";
 import AdminLogin from "./Pages/Admin/LoginAdmin";
 import AdminSignup from "./Pages/Admin/AdminSignup";
 import OrganizationLandingView from "./Pages/Organization/OrganizationLandingView";
-
+import Providersearch from "./Pages/Home/Providersearch";
 interface Route {
   key: string;
   title?: string;
@@ -526,7 +526,7 @@ export const searchPage=[
     key: "providerSearch",
     path: "/provider/search",
     enabled: true,
-    component: Search,
+    component: Providersearch,
   },
   {
     key: "patientSearch",

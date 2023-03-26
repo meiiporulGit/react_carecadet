@@ -1,5 +1,6 @@
 
 import React from "react";
+
 import { TextField, Box, Typography, Grid } from "@mui/material";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
@@ -8,6 +9,7 @@ import login from "../../Images/login.jpg";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import Cookie from "js-cookie";
+import { useState } from "react";
 
 import FormTextField from "../../Components/Textfield";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
@@ -32,6 +34,7 @@ const schema = yup.object().shape({
 export default function Loginlabs() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   return (
     <Box sx={{ backgroundColor: "#EBF3FA", height: "95vh", mt: "-0.5vh",padding:{xs:"20px",md:"none"} }}>
       <Grid container>
@@ -44,6 +47,7 @@ export default function Loginlabs() {
               userType: "PROVIDER",
             }}
             onSubmit={(values) => {
+              setIsLoading(true)  
               // alert(JSON.stringify(values));
               const Logindata = {
                 userName: values.email,
@@ -55,6 +59,7 @@ export default function Loginlabs() {
               axiosPrivate
                 .post("/user/login", Logindata)
                 .then((res) => {
+                  setIsLoading(false) 
                   toast.success(res.data.message);
                   //  localStorage.setItem("userType", JSON.stringify(res.data.data.userType));
                   //  localStorage.setItem("token", JSON.stringify(res.data.data.token));
@@ -74,6 +79,7 @@ export default function Loginlabs() {
                   navigate("/provider/facility/viewFacility");
                 })
                 .catch((err) => {
+                  setIsLoading(false) 
                   // if (
                   //   err.response &&
                   //   err.response.status >= 400 &&
@@ -114,7 +120,7 @@ export default function Loginlabs() {
                     color: "#728AB7",
                   }}
                 >
-                  Email
+                  Email<Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
 
                 <FormTextField
@@ -142,7 +148,7 @@ export default function Loginlabs() {
                     color: "#728AB7",
                   }}
                 >
-                  Password
+                  Password<Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
                 <FormTextField
                   container={TextField}
@@ -165,6 +171,7 @@ export default function Loginlabs() {
                   size="large"
                   fullWidth={false}
                   variant="contained"
+                  disable={isLoading}
                   sx={{
                     mt: 2,
                     backgroundColor: "secondary.dark",
@@ -183,6 +190,9 @@ export default function Loginlabs() {
               </Grid>
               <Typography sx={{ color: "#728AB7" }}>
                 Don't have an account.<Link to="/provider/signup">Signup</Link>
+              </Typography>
+              <Typography sx={{ color: "#728AB7" }}>
+              <Link to="/provider/forgotpass">Forgot password</Link>
               </Typography>
             </Form>
           </Formik>
