@@ -395,7 +395,7 @@ const Navbar = () => {
               >
 
 <Typography  onClick={handleClickSign} variant="button" sx={{ fontSize: "1.1rem",}}>
-                SIGNIN
+                SIGN IN
               </Typography>
               <Menu
                   id="basic-menu"

@@ -17,7 +17,7 @@ import {
   storeLoginInfo,
 } from "../../Redux/ProviderRedux/LoginSlice";
 import { axiosPrivate } from "../../axios/axios";
-
+import { useState } from "react";
 const schema = yup.object().shape({
   email: yup
     .string()
@@ -31,6 +31,7 @@ const schema = yup.object().shape({
 export default function Loginurgentcare() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(false)
   return (
     <Box sx={{ backgroundColor: "#EBF3FA", height: "95vh", mt: "-0.5vh",padding:{xs:"20px",md:"none"} }}>
       <Grid container>
@@ -43,6 +44,8 @@ export default function Loginurgentcare() {
               userType: "PROVIDER",
             }}
             onSubmit={(values) => {
+              
+              setIsLoading(true) 
               // alert(JSON.stringify(values));
               const Logindata = {
                 userName: values.email,
@@ -55,6 +58,8 @@ export default function Loginurgentcare() {
                 .post("/user/login", Logindata)
                 .then((res) => {
                   toast.success(res.data.message);
+                  
+                  setIsLoading(false) 
                   //  localStorage.setItem("userType", JSON.stringify(res.data.data.userType));
                   //  localStorage.setItem("token", JSON.stringify(res.data.data.token));
                   // localStorage.setItem("auth",JSON.stringify(res.data.data))
@@ -73,6 +78,7 @@ export default function Loginurgentcare() {
                   navigate("/provider/facility/viewFacility");
                 })
                 .catch((err) => {
+                  setIsLoading(false) 
                   // if (
                   //   err.response &&
                   //   err.response.status >= 400 &&
@@ -113,7 +119,7 @@ export default function Loginurgentcare() {
                     color: "#728AB7",
                   }}
                 >
-                  Email
+                  Email<Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
 
                 <FormTextField
@@ -141,7 +147,7 @@ export default function Loginurgentcare() {
                     color: "#728AB7",
                   }}
                 >
-                  Password
+                  Password<Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
                 <FormTextField
                   container={TextField}
@@ -164,6 +170,7 @@ export default function Loginurgentcare() {
                   size="large"
                   fullWidth={false}
                   variant="contained"
+                  disable={isLoading}
                   sx={{
                     mt: 2,
                     backgroundColor: "secondary.dark",
@@ -182,6 +189,9 @@ export default function Loginurgentcare() {
               </Grid>
               <Typography sx={{ color: "#728AB7" }}>
                 Don't have an account.<Link to="/provider/signup">Signup</Link>
+              </Typography>
+              <Typography sx={{ color: "#728AB7" }}>
+              <Link to="/provider/forgotpass">Forgot password</Link>
               </Typography>
             </Form>
           </Formik>

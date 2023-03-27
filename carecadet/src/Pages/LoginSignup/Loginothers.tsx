@@ -7,6 +7,7 @@ import login from "../../Images/login.jpg";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import Cookie from "js-cookie";
+import { useState } from "react";
 
 import FormTextField from "../../Components/Textfield";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
@@ -31,6 +32,7 @@ const schema = yup.object().shape({
 export default function Loginothers() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(false)
   return (
     <Box sx={{ backgroundColor: "#EBF3FA", height: "95vh", mt: "-0.5vh" ,padding:{xs:"20px",md:"none"}}}>
       <Grid container>
@@ -43,6 +45,7 @@ export default function Loginothers() {
               userType: "PROVIDER",
             }}
             onSubmit={(values) => {
+              setIsLoading(true) 
               // alert(JSON.stringify(values));
               const Logindata = {
                 userName: values.email,
@@ -55,6 +58,8 @@ export default function Loginothers() {
                 .post("/user/login", Logindata)
                 .then((res) => {
                   toast.success(res.data.message);
+                  
+                  setIsLoading(false) 
                   //  localStorage.setItem("userType", JSON.stringify(res.data.data.userType));
                   //  localStorage.setItem("token", JSON.stringify(res.data.data.token));
                   // localStorage.setItem("auth",JSON.stringify(res.data.data))
@@ -79,6 +84,8 @@ export default function Loginothers() {
                   //   err.response.status <= 500
                   // ) {
                   toast.error(err.message);
+                  
+                  setIsLoading(false) 
                   // }
                 });
             }}
@@ -113,7 +120,7 @@ export default function Loginothers() {
                     color: "#728AB7",
                   }}
                 >
-                  Email
+                  Email<Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
 
                 <FormTextField
@@ -141,7 +148,7 @@ export default function Loginothers() {
                     color: "#728AB7",
                   }}
                 >
-                  Password
+                  Password<Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
                 <FormTextField
                   container={TextField}
@@ -164,6 +171,7 @@ export default function Loginothers() {
                   size="large"
                   fullWidth={false}
                   variant="contained"
+                  disable={isLoading}
                   sx={{
                     mt: 2,
                     backgroundColor: "secondary.dark",
@@ -182,6 +190,9 @@ export default function Loginothers() {
               </Grid>
               <Typography sx={{ color: "#728AB7" }}>
                 Don't have an account.<Link to="/provider/signup">Signup</Link>
+              </Typography>
+              <Typography sx={{ color: "#728AB7" }}>
+              <Link to="/provider/forgotpass">Forgot password</Link>
               </Typography>
             </Form>
           </Formik>

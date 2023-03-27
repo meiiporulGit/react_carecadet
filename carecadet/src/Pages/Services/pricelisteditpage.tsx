@@ -25,6 +25,7 @@ import {
   GridToolbarContainer,
   GridActionsCellItem,
   GridValueFormatterParams,
+  GridPreProcessEditCellProps,
   GridEventListener,
   GridRowId,
   GridRow,
@@ -151,7 +152,18 @@ function TableRowRes({ fac, onButtonEdit, handleDelete }: rowProps) {
             {edit ? (
               <Grid item justifyContent={"flex-end"}>
                 {" "}
-                <Button onClick={onButton}>save</Button>
+                <Button onClick={onButton} sx={{
+              mt: 2,
+              backgroundColor: "secondary.dark",
+              width: "10vw",
+              color: "#fff",
+              "&:hover": {
+                color: "secondary.dark",
+                border: "1px solid blue",
+                letterSpacing: "0.2rem",
+                fontSize: "1rem",
+              },
+            }}>save</Button>
               </Grid>
             ) : null}
           </Grid>
@@ -169,28 +181,68 @@ function TableRowRes({ fac, onButtonEdit, handleDelete }: rowProps) {
             </Grid>
           </Grid>
 
-          <Typography sx={{ display: "flex" }}>
-            {" "}
-            <Typography sx={{ color: "blue" }}>Service Code </Typography> :{" "}
+          <Grid  container item xs={12}>
+            <Grid item xs={6} >
+            
+
+            <Typography sx={{ color: "blue" }}>ServiceCode </Typography> 
+            </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
             {fac.ServiceCode}
           </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
-            <Typography sx={{ color: "blue" }}>Facility NPI </Typography> :{" "}
+        </Grid>
+        </Grid>
+
+
+                 <Grid  container item xs={12}>
+        <Grid item xs={6} >
+        
+            <Typography sx={{ color: "blue" }}>FacilityNPI </Typography> </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+         <Typography >
             {fac.FacilityNPI}
           </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
+          </Grid>
+          </Grid>
+          <Grid  container item xs={12}>
+        <Grid item xs={6} >
+            <Typography sx={{ color: "blue" }}>FacilityName </Typography> </Grid>
+            <Grid item xs={2} >
             <Typography sx={{ color: "blue" }}>
-              Facility Name{" "}
-            </Typography> : {fac.FacilityName}
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
+            {fac.FacilityName}
           </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
+          </Grid>
+          </Grid>
+          <Grid  container item xs={12}>
+        <Grid item xs={6} >
             <Typography sx={{ color: "blue" }}>
-              Organisation Prices{" "}
-            </Typography>{" "}
-            :{" "}
+              Organisation Prices
+            </Typography>
+            </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
+          
             {!edit ? (
               fac.OrganisationPrices
             ) : (
@@ -201,11 +253,22 @@ function TableRowRes({ fac, onButtonEdit, handleDelete }: rowProps) {
               />
             )}
           </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
+          </Grid>
+          </Grid>
+
+
+         <Grid  container item xs={12}>
+        <Grid item xs={6} >
             <Typography sx={{ color: "blue" }}>
-              Facility Prices{" "}
-            </Typography> :{" "}
+              FacilityPrices{" "}
+            </Typography> </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
             {!edit ? (
               fac.FacilityPrices
             ) : (
@@ -213,9 +276,11 @@ function TableRowRes({ fac, onButtonEdit, handleDelete }: rowProps) {
                 value={data.FacilityPrices}
                 name="FacilityPrices"
                 onChange={(e) => editOnchange(e)}
+                type="number"
               />
             )}
           </Typography>
+          </Grid></Grid>
         </Paper>
       </Collapse>
     </Box>
@@ -372,7 +437,7 @@ export default function PricelistEditpage() {
   });
 
   const usdPrice: GridColTypeDef = {
-    type: "string",
+    type: "number",
     width: 250,
     // valueFormatter: ({ value }) => currencyFormatter.format(parseFloat(value)),
     valueFormatter: (params: GridValueFormatterParams<number>) => {
@@ -477,6 +542,10 @@ export default function PricelistEditpage() {
       flex:1,
       editable: true,
       align: "right",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const invalid = !Number(params.props.value);
+            return { ...params.props, error: invalid };
+      },
       ...usdPrice,
     },
     // {
@@ -493,6 +562,10 @@ export default function PricelistEditpage() {
       flex:1,
       editable: true,
       align: "right",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const invalid = !Number(params.props.value);
+            return { ...params.props, error: invalid };
+      },
       ...usdPrice,
     },
     {

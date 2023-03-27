@@ -5,12 +5,13 @@ import { Buttoncomponent } from "../../Components/Buttoncomp";
 import { ChangeEvent } from "react";
 import { useNavigate } from "react-router";
 import * as XLSX from "xlsx"
-
+import ErrorProps from "../../Components/Errorprops";
 import {
   DataGrid,
   GridColTypeDef,
   GridValueFormatterParams,
   GridColumns,
+  GridPreProcessEditCellProps
 } from "@mui/x-data-grid";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
@@ -105,34 +106,75 @@ function TableRowRes({ fac, onButtonEdit }: rowProps) {
             </Typography>
             </Grid>
             <Grid item xs={4} >
-            <Typography sx={{ color: "blue" }}>
+            <Typography >
             {fac.Organisationid}
             </Typography>
             </Grid>
           </Grid>
 
          
-          <Typography sx={{ display: "flex" }}>
-            {" "}
-            <Typography sx={{ color: "blue" }}>ServiceCode </Typography> :{" "}
+          <Grid  container item xs={12}>
+            <Grid item xs={6} >
+            
+
+            <Typography sx={{ color: "blue" }}>ServiceCode </Typography> 
+            </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
             {fac.ServiceCode}
           </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
-            <Typography sx={{ color: "blue" }}>FacilityNPI </Typography> :{" "}
+        </Grid>
+        </Grid>
+
+        <Grid  container item xs={12}>
+        <Grid item xs={6} >
+        
+            <Typography sx={{ color: "blue" }}>FacilityNPI </Typography> </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+         <Typography >
             {fac.FacilityNPI}
           </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
-            <Typography sx={{ color: "blue" }}>FacilityName </Typography> :{" "}
+          </Grid>
+          </Grid>
+          
+          <Grid  container item xs={12}>
+        <Grid item xs={6} >
+            <Typography sx={{ color: "blue" }}>FacilityName </Typography> </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
             {fac.FacilityName}
           </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
+          </Grid>
+          </Grid>
+          <Grid  container item xs={12}>
+        <Grid item xs={6} >
             <Typography sx={{ color: "blue" }}>
-              OrganisationPrices{" "}
-            </Typography>{" "}
-            :{" "}
+              Organisation Prices{" "}
+            </Typography>
+            </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
+          
             {!edit ? (
               fac.OrganisationPrices
             ) : (
@@ -143,11 +185,22 @@ function TableRowRes({ fac, onButtonEdit }: rowProps) {
               />
             )}
           </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
+          </Grid>
+          </Grid>
+
+
+         <Grid  container item xs={12}>
+        <Grid item xs={6} >
             <Typography sx={{ color: "blue" }}>
               FacilityPrices{" "}
-            </Typography> :{" "}
+            </Typography> </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
             {!edit ? (
               fac.FacilityPrices
             ) : (
@@ -155,9 +208,11 @@ function TableRowRes({ fac, onButtonEdit }: rowProps) {
                 value={data.FacilityPrices}
                 name="FacilityPrices"
                 onChange={(e) => editOnchange(e)}
+                type="number"
               />
             )}
           </Typography>
+          </Grid></Grid>
         </Paper>
       </Collapse>
     </Box>
@@ -213,6 +268,7 @@ export default function PricelistUploadthroFacility() {
       headerName: "OrganisationPrices",
       headerType: "string",
       maxLength: 32,
+      
     },
     {
       headerName: "FacilityPrices",
@@ -269,6 +325,11 @@ export default function PricelistUploadthroFacility() {
       headerName: "Organisation Prices",
       editable: true,
       flex:1,
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const invalid = !Number(params.props.value);
+            return { ...params.props, error: invalid };
+      },
+    
       // width: 100,
       align: "right",
       ...usdPrice,
@@ -283,10 +344,16 @@ export default function PricelistUploadthroFacility() {
     {
       field: "FacilityPrices",
       headerName: "Facility Prices",
+        type:"number",
       editable: true,
       flex:1,
       // width: 100,
       align: "right",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const invalid = !Number(params.props.value);
+            return { ...params.props, error: invalid };
+      },
+    
       ...usdPrice,
     },
   ];
@@ -387,12 +454,28 @@ export default function PricelistUploadthroFacility() {
         setUnknownHeader(true);
         header.push("FacilityName", "FacilityNPI");
        
-        const unknownFormat = header.map((da: any) => ({
-          field: da,
-          headerName: da,
-          editable: false,
-          flex:1,
-        }));
+        const unknownFormat = header.map((da: any) => {
+          if(da==="OrganisationPrices"||da==="FacilityPrices")
+          {
+           return{
+             ...usdPrice,
+             field: da,
+           headerName: da,
+           editable: false,
+           flex:1,
+           }
+          }
+          else
+          {
+           return {field: da,
+           headerName: da,
+           editable: false,
+           flex:1,
+           }
+          }
+         
+            
+           });
 
         setColumns(unknownFormat);
 
@@ -721,6 +804,7 @@ export default function PricelistUploadthroFacility() {
               // }}
               // hideFooter
               sx={{ maxWidth: "100%",display:{xs:"none",md:"block"}, mt:1 }}
+              
             />
              < Box
               sx={{
@@ -828,7 +912,7 @@ export default function PricelistUploadthroFacility() {
             </Box>
           </Box>
         ) : null}
-      
+    
     </Box>
   );
 }

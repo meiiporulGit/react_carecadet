@@ -8,6 +8,7 @@ import {
   GridRowModes,
   DataGrid,
   GridValueFormatterParams,
+  GridPreProcessEditCellProps,
   GridColumns,
   GridColTypeDef,
   GridRowParams,
@@ -134,14 +135,26 @@ function TableRowRes({ fac, onButtonEdit ,handleDelete}: rowProps) {
             padding: "1rem",
           }}
         >
+      
           <Grid container>
           {edit ?
-            <Grid item justifyContent={"flex-end"}> <Button onClick={onButton}>save</Button></Grid> : null}
+            <Grid item justifyContent={"flex-end"}> <Button onClick={onButton}  sx={{
+              mt: 2,
+              backgroundColor: "secondary.dark",
+              width: "10vw",
+              color: "#fff",
+              "&:hover": {
+                color: "secondary.dark",
+                border: "1px solid blue",
+                letterSpacing: "0.2rem",
+                fontSize: "1rem",
+              },
+            }}>save</Button></Grid> : null}
           </Grid>
           <Grid  container item xs={12}>
             <Grid item xs={6} >
             <Typography sx={{ color: "blue" }}>
-              Organization ID{" "}
+              OrganizationID{" "}
             </Typography>
             </Grid>
             <Grid item xs={2} >
@@ -150,34 +163,74 @@ function TableRowRes({ fac, onButtonEdit ,handleDelete}: rowProps) {
             </Typography>
             </Grid>
             <Grid item xs={4} >
-            <Typography sx={{ color: "blue" }}>
+            <Typography >
             {fac.Organisationid}
             </Typography>
             </Grid>
           </Grid>
 
-         
-          <Typography sx={{ display: "flex" }}>
-            {" "}
-            <Typography sx={{ color: "blue" }}>Service Code </Typography> :{" "}
+          <Grid  container item xs={12}>
+            <Grid item xs={6} >
+            
+
+            <Typography sx={{ color: "blue" }}>ServiceCode </Typography> 
+            </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
             {fac.ServiceCode}
           </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
-            <Typography sx={{ color: "blue" }}>Facility NPI </Typography> :{" "}
+        </Grid>
+        </Grid>
+
+        <Grid  container item xs={12}>
+        <Grid item xs={6} >
+        
+            <Typography sx={{ color: "blue" }}>FacilityNPI </Typography> </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+         <Typography >
             {fac.FacilityNPI}
           </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
-            <Typography sx={{ color: "blue" }}>Facility Name </Typography> :{" "}
+          </Grid>
+          </Grid>
+          
+          <Grid  container item xs={12}>
+        <Grid item xs={6} >
+            <Typography sx={{ color: "blue" }}>FacilityName </Typography> </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
             {fac.FacilityName}
           </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
+          </Grid>
+          </Grid>
+          <Grid  container item xs={12}>
+        <Grid item xs={6} >
             <Typography sx={{ color: "blue" }}>
-              Organisation Prices{" "}
-            </Typography>{" "}
-            :{" "}
+              Organisation Prices
+            </Typography>
+            </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
+          
             {!edit ? (
               fac.OrganisationPrices
             ) : (
@@ -188,11 +241,22 @@ function TableRowRes({ fac, onButtonEdit ,handleDelete}: rowProps) {
               />
             )}
           </Typography>
-          <Typography sx={{ display: "flex" }}>
-            {" "}
+          </Grid>
+          </Grid>
+
+
+         <Grid  container item xs={12}>
+        <Grid item xs={6} >
             <Typography sx={{ color: "blue" }}>
-              Facility Prices{" "}
-            </Typography> :{" "}
+              FacilityPrices{" "}
+            </Typography> </Grid>
+            <Grid item xs={2} >
+            <Typography sx={{ color: "blue" }}>
+             :
+            </Typography>
+            </Grid>
+            <Grid item xs={4} >
+              <Typography>
             {!edit ? (
               fac.FacilityPrices
             ) : (
@@ -200,9 +264,11 @@ function TableRowRes({ fac, onButtonEdit ,handleDelete}: rowProps) {
                 value={data.FacilityPrices}
                 name="FacilityPrices"
                 onChange={(e) => editOnchange(e)}
+                type="number"
               />
             )}
           </Typography>
+          </Grid></Grid>
         </Paper>
       </Collapse>
     </Box>
@@ -467,6 +533,10 @@ export default function ServiceEditpage() {
       flex:1,
       editable: true,
       align: "right",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const invalid = !Number(params.props.value);
+            return { ...params.props, error: invalid };
+      },
       ...usdPrice,
     },
  
@@ -474,10 +544,15 @@ export default function ServiceEditpage() {
       field: "FacilityPrices",
       headerName: "Facility Prices",
       headerClassName: "super-app-theme--header",
+    
       // width: 100,
       flex:1,
       editable: true,
-      align: "right",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const invalid = !Number(params.props.value);
+            return { ...params.props, error: invalid };
+      },
+          align: "right",
       ...usdPrice,
     },
     {
@@ -637,6 +712,7 @@ export default function ServiceEditpage() {
                 </>
               ))}
               <TablePagination
+              
                 rowsPerPageOptions={[5, 10, 25]}
                 count={data.length}
                 rowsPerPage={rowsPerPage}
@@ -654,15 +730,22 @@ export default function ServiceEditpage() {
                 showLastButton={true}
                 labelRowsPerPage={<span>Rows:</span>}
                 sx={{
+                  display:"flex",
+                  flexDirection:"row",
+            
                   ".MuiTablePagination-toolbar": {
                     backgroundColor: "primary.light",
+                 
                     // "rgba(100,100,100,0.5)"
                   },
                   ".MuiTablePagination-selectLabel, .MuiTablePagination-input":
                     {
                       fontWeight: "bold",
                       color: "#173A5E",
+                   
                     },
+                   
+                    
                 }}/>
             </Box>
           <Buttoncomponent

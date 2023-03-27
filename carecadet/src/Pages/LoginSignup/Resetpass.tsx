@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { useSearchParams } from 'react-router-dom'
 import Cookie from "js-cookie";
-
+import { useState } from "react";
 import FormTextField from "../../Components/Textfield";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 
@@ -35,7 +35,7 @@ const schema = yup.object().shape({
 });
 export default function Resetpass() {
     const [searchParams, setSearchParams] = useSearchParams();
-
+    const [isLoading, setIsLoading] = useState(false)
     // console.log("searchParams",searchParams.get("resettoken"));
 
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ export default function Resetpass() {
             }}
             
             onSubmit={(values) => {
-
+              setIsLoading(true)
                 let searchquery = searchParams.get("resettoken")
                 console.log("searchquery",searchquery)
               // alert(JSON.stringify(values));
@@ -69,12 +69,13 @@ export default function Resetpass() {
               axiosPrivate
                 .put("/provider/resetpassword", Resetdata)
                 .then((res) => {
+                  setIsLoading(false)
                   toast.success(res.data.message);
                  
                   navigate("/provider/login");
                 })
                 .catch((err) => {
-                 
+                  setIsLoading(false)
                   toast.error(err.message);
                
                 });
@@ -112,7 +113,7 @@ export default function Resetpass() {
                     color: "#728AB7",
                   }}
                 >
-                New  Password
+                New  Password <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
                 <FormTextField
                   container={TextField}
@@ -139,7 +140,7 @@ export default function Resetpass() {
                     color: "#728AB7",
                   }}
                 >
-               Confirm Password
+               Confirm Password <Typography display="inline" sx={{color:"red"}}>*</Typography>
                 </Typography>
                 <FormTextField
                   container={TextField}
@@ -163,6 +164,7 @@ export default function Resetpass() {
                   size="large"
                   fullWidth={false}
                   variant="contained"
+                  disable={isLoading}
                   sx={{
                     mt: 2,
                     backgroundColor: "secondary.dark",
