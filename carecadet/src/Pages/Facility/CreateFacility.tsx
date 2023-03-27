@@ -163,7 +163,7 @@ export default function CreateFacility() {
       // facilityType: values.facilityType === "6- Others" ? (values.othersFacilityType) : values.facilityType,
       facilityType:{
         MainfacilityType:values.MainfacilityType,
-        OthersfacilityType:values.OthersfacilityType
+        OthersfacilityType:values.OthersfacilityType 
         // values.OthersfacilityType === "" ? values.MainfacilityType : values.OthersfacilityType
       },
       address: {
@@ -181,7 +181,7 @@ export default function CreateFacility() {
       }
 
     };
-    //  alert(JSON.stringify(facilitydata, null, 2));
+    alert(JSON.stringify(facilitydata, null, 2));
     actions.resetForm({
       values: initialValues,
     });
@@ -363,7 +363,7 @@ export default function CreateFacility() {
                   <InputLabel sx={{ letterSpacing: "0.2rem", fontSize: "0.8rem", "&.MuiInputLabel-shrink": { letterSpacing: 0 } }}>Facility Type</InputLabel>
                   <Field as={Select} name="MainfacilityType" label="Facility Type">
                     {(options || []).map((select: any, index: any) => (
-                      <MenuItem key={index + 1} value={select.value}>
+                      <MenuItem key={index + 1} value={select.facilityTypeId}>
                         {select.item}
                       </MenuItem>
                     ))}
@@ -378,7 +378,7 @@ export default function CreateFacility() {
                     )}
                   </ErrorMessage>
                 </FormControl>
-                {values.MainfacilityType=== "6- Others" ?
+                {values.MainfacilityType=== "FACT-6" ?
                   (<Field
                     as={TextField}
                     label="Enter Options for Others"
@@ -387,6 +387,7 @@ export default function CreateFacility() {
                     type="text"
                     fullWidth
                     autoComplete="new-country-area"
+                    value = {values.OthersfacilityType}
                     sx={{
                       mt: "0.7rem",
                       ".MuiFormLabel-root ": {

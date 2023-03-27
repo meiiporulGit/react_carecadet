@@ -93,8 +93,7 @@ const Providerhomepage = () => {
   };
  const [data,setData] = React.useState ({
    Link:"Urgent Care"
-      
-    });
+          });
  const [data1,setData1] = React.useState ({
   Link:"Dental Care"
   });
@@ -469,7 +468,7 @@ const Providerhomepage = () => {
                   <Link
                     style={{ textDecoration: "none" }}
                     to="/provider/login"
-                    state={{data1:data1}}
+                    state={{data:data1}}
                   >
                     <Card
                       raised
@@ -506,7 +505,7 @@ const Providerhomepage = () => {
                     style={{ textDecoration: "none" }}
                     
                     to="/provider/login"
-                    state={{data2:data2}}
+                    state={{data:data2}}
                   >
                     <Card
                       raised
@@ -543,7 +542,7 @@ const Providerhomepage = () => {
                     style={{ textDecoration: "none" }}
                     to="/provider/login"
                     
-                    state={{data3:data3}}
+                    state={{data:data3}}
                   >
                     <Card
                       raised

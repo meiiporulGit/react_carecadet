@@ -10,6 +10,7 @@ import { Grid, Box, Typography, TextField, Paper } from "@mui/material";
 import Formtext from "../../Components/Textfield";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 import { axiosPrivate, baseURL } from "../../axios/axios";
+import { useLocation } from "react-router-dom";
 
 // interface Iconprops{
 //  icon: any
@@ -44,7 +45,11 @@ const schema = yup.object().shape({
 export default function Signup() {
   const [state, setState] = React.useState("Provider");
   const [text, setText] = useState("");
- const [isLoading, setIsLoading] = useState(false)
+ const [isLoading, setIsLoading] = useState(false);
+ const location = useLocation();
+
+ console.log(location, " useLocation Hook");
+const data = location.state?.signup;
   const navigate = useNavigate();
   return (
     <Box
@@ -111,7 +116,7 @@ export default function Signup() {
                 minWidth: 300,
               }}
             >
-              <Typography variant="h4">Welcome {state}! </Typography>
+              <Typography variant="h4">Welcome {data}! </Typography>
               <Typography variant="h4" sx={{ ml: 9 }}>
                 Sign Up{" "}
               </Typography>
