@@ -628,7 +628,7 @@ const Navbar = () => {
                 display: "flex",
                 justifyContent: "space-evenly",
                 alignItems: "center",
-                width: "80vw",
+                width: "50vw",
               }}
             >
               {navRoutes.map((page) => (
@@ -675,6 +675,7 @@ const Navbar = () => {
                 display: "flex",
                 justifyContent: "space-evenly",
                 // flexWrap:"nowrap",
+                width:"10vw",
                 cursor: "pointer",
                 ":hover": {
                   color: "blue",
