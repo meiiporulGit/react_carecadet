@@ -75,7 +75,7 @@ const Providerhomepage = () => {
     });
     // axiosPrivate
     //   .get(`http://210.18.155.251:5003/search/?q=`)
-    axiosPrivate.get (`http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`)
+    axiosPrivate.get (`http://210.18.155.251:5003/search/negotiatedSearch?q=FINE%20NEEDLE&location=98133`)
       .then((res) => {
         console.log(res.data);
         dispatch(dataSearch(res.data.data));
