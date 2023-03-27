@@ -32,7 +32,7 @@ import { axiosPrivate } from "../../axios/axios";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 import SelectField from "../../Components/Select";
 import FormTextField from "../../Components/Textfield";
-import { dataSearch } from "../../Redux/ProviderRedux/HomeSlice";
+import { dataProviderSearch, dataSearch } from "../../Redux/ProviderRedux/HomeSlice";
 import { toast } from "react-toastify";
 
 import dashboardicon from "../../Images/dashboardicon.png";
@@ -75,11 +75,11 @@ const Providerhomepage = () => {
     });
     // axiosPrivate
     //   .get(`http://210.18.155.251:5003/search/?q=`)
-    axiosPrivate.get (`http://210.18.155.251:5003/search/negotiatedSearch?q=FINE%20NEEDLE&location=98133`)
+    axiosPrivate.get (`http://210.18.155.251:5003/search/negotiatedSearch?q=${values.Service}&location=${values.Location}&serviceCode=21`)
       .then((res) => {
         console.log(res.data);
-        dispatch(dataSearch(res.data.data));
-        navigate("/provider/search");
+        dispatch(dataProviderSearch(res.data.data));
+        navigate(`/provider/search?q=${values.Service}&location=${values.Location}`);
         console.log("i", res);
       })
       .catch((e) => console.log(e));

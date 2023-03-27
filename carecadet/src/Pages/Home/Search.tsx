@@ -626,7 +626,7 @@ export default function ViewFacility() {
                           <KeyboardArrowDown sx={{ color: "white" }} />
                         )}
                       </IconButton>
-                      Negotiated Rates
+                      Cash Rates
                     </Paper>
                     {/* <Collapse in={open} timeout="auto" unmountOnExit>
                     <Grid item xs={12}>
