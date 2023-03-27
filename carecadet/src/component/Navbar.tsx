@@ -239,7 +239,10 @@ const Navbar = () => {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [anchorElSign, setAnchorElSign] = React.useState<any>(null);
-
+  const [data,setData] = React.useState ({
+    Link:"Provider"
+       
+     });
   const char =
     location.pathname.split("/")[1] === ""
       ? "patient"
@@ -296,6 +299,8 @@ const Navbar = () => {
   const handleCloseSign = () => {
     setAnchorElSign(null);
   };
+
+  
 
   return (
     <Paper
@@ -418,8 +423,8 @@ const Navbar = () => {
                     onClick={() => {
                       handleCloseSign();
                       handleCloseNavMenu()
-                      navigate("/provider/login")
-                      
+                      navigate("/provider/login", { state: { data: data} })
+                     
                     }}
                   >
                     Provider
@@ -429,7 +434,7 @@ const Navbar = () => {
                     onClick={() => {
                       handleCloseSign();
                       handleCloseNavMenu()
-                      navigate("/provider/login")
+                      navigate("/provider/login",{ state: { data: data} })
                       
                     }}
                   >
@@ -668,7 +673,8 @@ const Navbar = () => {
 
               sx={{
                 display: "flex",
-                justifyContent: "space-evenly", 
+                justifyContent: "space-evenly",
+                // flexWrap:"nowrap",
                 cursor: "pointer",
                 ":hover": {
                   color: "blue",
@@ -676,7 +682,7 @@ const Navbar = () => {
               }}
             >
               <Typography  onClick={handleClickSign} variant="button" sx={{ fontSize: "1.2rem" }}>
-                SIGNIN
+                SIGN-IN
               </Typography>
               <Menu
                   id="basic-menu"
@@ -698,7 +704,7 @@ const Navbar = () => {
                 
                     onClick={() => {
                       handleCloseSign();
-                      navigate("/provider/login")
+                      navigate("/provider/login",{ state: { data: data} })
                       
                     }}
                   >
@@ -708,7 +714,7 @@ const Navbar = () => {
                   <MenuItem
                     onClick={() => {
                       handleCloseSign();
-                      navigate("/provider/login")
+                      navigate("/provider/login",{ state: { data: data} })
                       
                     }}
                   >
