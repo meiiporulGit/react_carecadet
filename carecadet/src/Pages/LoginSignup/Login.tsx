@@ -40,11 +40,8 @@ export default function Login(props:any) {
   const location = useLocation();
   console.log(props, " props");
   console.log(location, " useLocation Hook");
- const data = location.state?.data;
- const data1 = location.state?.data1;
- const data2 = location.state?.data2;
- const data3 = location.state?.data3;
- const data4 = location.state?.data4;
+ const data = location.state?.data?.Link;
+
 
   return (
     <Box sx={{ backgroundColor: "#EBF3FA", height: "95vh", mt: "-0.5vh",padding:{xs:"20px",md:"none"} }}>
@@ -104,8 +101,8 @@ export default function Login(props:any) {
             <Form >
         
               <Typography variant="h4" sx={{ mt: 12, color: "#728AB7" }}>
-                Welcome {data?data.Link:""}{data1?data1.Link:""}{data2?data2.Link:""}{data3?data3.Link:""}
-                      
+                Welcome {data}
+                
               </Typography>
 
               <Grid>
@@ -204,7 +201,7 @@ export default function Login(props:any) {
                 </Buttoncomponent>
               </Grid>
               <Typography sx={{ color: "#728AB7" }}>
-                Don't have an account.<Link to="/provider/signup">Signup</Link>
+                Don't have an account.<Link to="/provider/signup" state={{signup:data}}>Signup</Link>
               </Typography>
               <Typography sx={{ color: "#728AB7" }}>
               <Link to="/provider/forgotpass">Forgot password</Link>
