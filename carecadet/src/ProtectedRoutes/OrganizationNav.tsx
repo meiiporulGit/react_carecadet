@@ -135,7 +135,7 @@ const OrganizationNav = () => {
                   cursor: "pointer"
                 }}
               >
-                ServiceDetails
+                Service Details
               </Typography>
             </MenuItem>
           </Link>
@@ -199,7 +199,7 @@ const OrganizationNav = () => {
                 cursor: "pointer"
               }}
             >
-              ServiceDetails
+              Service Details
             </Typography>
           </Link>
         </Box>

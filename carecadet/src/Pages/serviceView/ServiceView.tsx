@@ -107,10 +107,10 @@ const ServiceView = () => {
       )
       .then((res) => {
         var resData = res.data.data;
-        const filterData = resData.filter(
-          (d: any) => d.fileFormat !== "Non-Standard"
-        );
-        setPathData(filterData);
+        // const filterData = resData.filter(
+        //   (d: any) => d.fileFormat !== "Non-Standard"
+        // );
+        setPathData(resData);
         console.log(res.data);
       });
   };
