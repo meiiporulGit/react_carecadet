@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Paper, Grid,TextField, Box, Typography,TablePagination,Collapse,IconButton } from "@mui/material";
+import { Paper, Grid,TextField, Box, Typography,Pagination,Collapse,IconButton } from "@mui/material";
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -83,7 +83,7 @@ return(
             </Typography>
             </Grid>
             <Grid item xs={4} >
-              <Typography>
+              <Typography>$
             {fac.OrganisationPrices}
           </Typography>
         </Grid>
@@ -100,7 +100,7 @@ return(
             </Typography>
             </Grid>
             <Grid item xs={4} >
-              <Typography>
+              <Typography>$
             {fac.FacilityPrices}
           </Typography>
         </Grid>
@@ -119,6 +119,8 @@ export default function ServiceViewPage() {
   const [page, setPage] = useState(0);
   const [tabValue, setTabValue] = useState("foi");
   const dispatch = useAppDispatch();
+  const itemsPerPage = 5;
+  const [page1, setPage1] = useState(1);
   // const facilityid=useAppSelector((state)=>state.editFacility.service);v
   // console.log("facilityid", facilityid);
   // const [totalPages, setTotalPages] = useState(10);
@@ -221,19 +223,26 @@ export default function ServiceViewPage() {
       ...usdPrice,
     },
   ];
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    page: number
-  ) => {
-    setPage(page);
-  };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
   ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setPage1(value);
   };
+  // const handleChangePage = (
+  //   event: React.MouseEvent<HTMLButtonElement> | null,
+  //   page: number
+  // ) => {
+  //   setPage(page);
+  // };
+
+  // const handleChangeRowsPerPage = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   setRowsPerPage(parseInt(event.target.value, 10));
+  //   setPage(0);
+  // };
   const navigateToAdd = () => {
     // This will navigate to second component
     // dispatch(editButton());
@@ -407,40 +416,35 @@ export default function ServiceViewPage() {
             />
           </Box>
           <Box sx={{display:{xs:"flex",md:"none"},flexDirection:"column",gap:"1rem"}}>
-        {data.map((fac:any,i:any)=>(
+          { (rowsPerPage > 0
+              ? data.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                )
+              : data
+            ).map((fac:any,i:any)=>(
          
         <Row key={i} fac={fac}/>
     
         ))}
       
-        <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                count={data.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                labelDisplayedRows={({ from, to, count }) =>
-                  `${from}-${to} of ${count !== -1 ? count : ` ${to}}`}`
-                }
-                backIconButtonProps={{
-                  color: "secondary",
-                }}
-                nextIconButtonProps={{ color: "secondary" }}
-                showFirstButton={true}
-                showLastButton={true}
-                labelRowsPerPage={<span>Rows:</span>}
-                sx={{
-                  ".MuiTablePagination-toolbar": {
-                    backgroundColor: "primary.light",
-                    // "rgba(100,100,100,0.5)"
-                  },
-                  ".MuiTablePagination-selectLabel, .MuiTablePagination-input":
-                    {
-                      fontWeight: "bold",
-                      color: "#173A5E",
-                    },
-                }}/>
+      <Box sx={{ mt: "2rem", }} component="span">
+              <Pagination
+                sx={{ display: "flex", justifyContent: "center"  }}
+                //  count={data.length % 5 === 0 ? Math.ceil(data.length / 5) : Math.ceil(data.length / 5 + 1)}
+        
+                count={Math.ceil(data.length / itemsPerPage)}
+                page={page1}
+                onChange={handlePageChange}
+                defaultPage={6}
+                color="primary"
+                // boundaryCount={3}
+                siblingCount={0}
+               
+                showFirstButton
+                showLastButton
+              />
+            </Box>
                   </Box>
         </>
       </Paper>

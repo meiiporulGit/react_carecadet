@@ -10,6 +10,7 @@ import {
   TablePagination,
   TextField,
   CircularProgress,
+  Pagination
 } from "@mui/material";
 import axios from "axios";
 import {
@@ -241,7 +242,7 @@ function TableRowRes({ fac, onButtonEdit, handleDelete }: rowProps) {
             </Typography>
             </Grid>
             <Grid item xs={4} >
-              <Typography>
+              <Typography>$
           
             {!edit ? (
               fac.OrganisationPrices
@@ -268,7 +269,7 @@ function TableRowRes({ fac, onButtonEdit, handleDelete }: rowProps) {
             </Typography>
             </Grid>
             <Grid item xs={4} >
-              <Typography>
+              <Typography>$
             {!edit ? (
               fac.FacilityPrices
             ) : (
@@ -295,6 +296,8 @@ export default function PricelistEditpage() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const itemsPerPage = 5;
+  const [page1, setPage1] = useState(1);
   const dispatch = useAppDispatch();
   // const facilityid=useAppSelector((state)=>state.editFacility.service);
   // console.log("facilityid", facilityid);
@@ -491,20 +494,25 @@ export default function PricelistEditpage() {
     // var delData = { ...data, [e.target.name]: e.target.value };
     // setData(delData);
   };
-
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    page: number
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
   ) => {
-    setPage(page);
+    setPage1(value);
   };
+  // const handleChangePage = (
+  //   event: React.MouseEvent<HTMLButtonElement> | null,
+  //   page: number
+  // ) => {
+  //   setPage(page);
+  // };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  // const handleChangeRowsPerPage = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   setRowsPerPage(parseInt(event.target.value, 10));
+  //   setPage(0);
+  // };
   const columns: GridColumns = [
     // {
     //   field: "SNo",
@@ -707,8 +715,8 @@ export default function PricelistEditpage() {
               gap: "1rem",
             }}
           >
-            {(rowsPerPage > 0
-              ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+             {(itemsPerPage > 0
+              ? data.slice((page1 - 1) * itemsPerPage, page1 * itemsPerPage)
               : data
             ).map((fac: any, i: any) => (
               <>
@@ -734,34 +742,23 @@ export default function PricelistEditpage() {
                 
               </>
             ))}
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              count={data.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              labelDisplayedRows={({ from, to, count }) =>
-                `${from}-${to} of ${count !== -1 ? count : ` ${to}}`}`
-              }
-              backIconButtonProps={{
-                color: "secondary",
-              }}
-              nextIconButtonProps={{ color: "secondary" }}
-              showFirstButton={true}
-              showLastButton={true}
-              labelRowsPerPage={<span>Rows:</span>}
-              sx={{
-                ".MuiTablePagination-toolbar": {
-                  backgroundColor: "primary.light",
-                  // "rgba(100,100,100,0.5)"
-                },
-                ".MuiTablePagination-selectLabel, .MuiTablePagination-input": {
-                  fontWeight: "bold",
-                  color: "#173A5E",
-                },
-              }}
-            />
+           <Box sx={{ mt: "2rem", }} component="span">
+              <Pagination
+                sx={{ display: "flex", justifyContent: "center"  }}
+                //  count={data.length % 5 === 0 ? Math.ceil(data.length / 5) : Math.ceil(data.length / 5 + 1)}
+        
+                count={Math.ceil(data.length / itemsPerPage)}
+                page={page1}
+                onChange={handlePageChange}
+                defaultPage={6}
+                color="primary"
+                // boundaryCount={3}
+                siblingCount={0}
+               
+                showFirstButton
+                showLastButton
+              />
+            </Box>
           </Box>
           {isLoading?null:<Buttoncomponent
             type="submit"

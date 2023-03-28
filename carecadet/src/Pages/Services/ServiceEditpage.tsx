@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Paper, Grid, Box, Typography,Button, Collapse, IconButton,TablePagination,TextField} from "@mui/material";
+import { Paper, Grid, Box, Typography,Button, Collapse, Pagination,IconButton,TablePagination,TextField} from "@mui/material";
 import axios from "axios";
 import {
   GridRowsProp,
@@ -229,7 +229,7 @@ function TableRowRes({ fac, onButtonEdit ,handleDelete}: rowProps) {
             </Typography>
             </Grid>
             <Grid item xs={4} >
-              <Typography>
+              <Typography>$
           
             {!edit ? (
               fac.OrganisationPrices
@@ -256,7 +256,7 @@ function TableRowRes({ fac, onButtonEdit ,handleDelete}: rowProps) {
             </Typography>
             </Grid>
             <Grid item xs={4} >
-              <Typography>
+              <Typography>$
             {!edit ? (
               fac.FacilityPrices
             ) : (
@@ -282,6 +282,8 @@ export default function ServiceEditpage() {
   const [filename, setFilename] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
+  const itemsPerPage = 5;
+  const [page1, setPage1] = useState(1);
   const dispatch = useAppDispatch();
   // const facilityid=useAppSelector((state)=>state.editFacility.service);
   // console.log("facilityid", facilityid);
@@ -470,18 +472,12 @@ export default function ServiceEditpage() {
       // setData(delData);
         
       };
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    page: number
-  ) => {
-    setPage(page);
-  };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
   ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setPage1(value);
   };
   const columns: GridColumns = [
     // {
@@ -711,42 +707,23 @@ export default function ServiceEditpage() {
                 
                 </>
               ))}
-              <TablePagination
-              
-                rowsPerPageOptions={[5, 10, 25]}
-                count={data.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                labelDisplayedRows={({ from, to, count }) =>
-                  `${from}-${to} of ${count !== -1 ? count : ` ${to}}`}`
-                }
-                backIconButtonProps={{
-                  color: "secondary",
-                }}
-                nextIconButtonProps={{ color: "secondary" }}
-                showFirstButton={true}
-                showLastButton={true}
-                labelRowsPerPage={<span>Rows:</span>}
-                sx={{
-                  display:"flex",
-                  flexDirection:"row",
-            
-                  ".MuiTablePagination-toolbar": {
-                    backgroundColor: "primary.light",
-                 
-                    // "rgba(100,100,100,0.5)"
-                  },
-                  ".MuiTablePagination-selectLabel, .MuiTablePagination-input":
-                    {
-                      fontWeight: "bold",
-                      color: "#173A5E",
-                   
-                    },
-                   
-                    
-                }}/>
+           <Box sx={{ mt: "2rem", }} component="span">
+              <Pagination
+                sx={{ display: "flex", justifyContent: "center"  }}
+                //  count={data.length % 5 === 0 ? Math.ceil(data.length / 5) : Math.ceil(data.length / 5 + 1)}
+        
+                count={Math.ceil(data.length / itemsPerPage)}
+                page={page1}
+                onChange={handlePageChange}
+                defaultPage={6}
+                color="primary"
+                // boundaryCount={3}
+                siblingCount={0}
+               
+                showFirstButton
+                showLastButton
+              />
+            </Box>
             </Box>
           <Buttoncomponent
             type="submit"

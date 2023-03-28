@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { Grid, Typography, Button, Paper, Box, Container ,Collapse, IconButton,TablePagination,TextField, CircularProgress, Table, TableFooter, TableRow} from "@mui/material";
+import { Grid, Typography, Button, Paper, Box, Container ,Pagination,Collapse, IconButton,TablePagination,TextField, CircularProgress, Table, TableFooter, TableRow} from "@mui/material";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 import { ChangeEvent } from "react";
 import { useNavigate } from "react-router";
@@ -92,7 +92,17 @@ function TableRowRes({ fac, onButtonEdit }: rowProps) {
         >
           <Grid container>
           {edit ?
-            <Grid item justifyContent={"flex-end"}> <Button onClick={onButton}>save</Button></Grid> : null}
+            <Grid item justifyContent={"flex-end"}> <Button onClick={onButton} sx={{
+              mt: 2,
+              backgroundColor: "secondary.dark",
+              width: "10vw",
+              color: "#fff",
+              "&:hover": {
+                color: "secondary.dark",
+                border: "1px solid blue",
+                letterSpacing: "0.2rem",
+                fontSize: "1rem",
+              },}}>save</Button></Grid> : null}
           </Grid>
           <Grid  container item xs={12}>
             <Grid item xs={6} >
@@ -173,7 +183,7 @@ function TableRowRes({ fac, onButtonEdit }: rowProps) {
             </Typography>
             </Grid>
             <Grid item xs={4} >
-              <Typography>
+              <Typography>$
           
             {!edit ? (
               fac.OrganisationPrices
@@ -200,7 +210,7 @@ function TableRowRes({ fac, onButtonEdit }: rowProps) {
             </Typography>
             </Grid>
             <Grid item xs={4} >
-              <Typography>
+              <Typography>$
             {!edit ? (
               fac.FacilityPrices
             ) : (
@@ -230,7 +240,8 @@ export default function PricelistUploadthroFacility() {
   const [publishButton, setPublishButton] = useState<boolean>(false);
   const [isLoading,setIsLoading]=useState<boolean>(false)
   const navigate = useNavigate();
-
+  const itemsPerPage = 5;
+  const [page1, setPage1] = useState(1);
   const data = useAppSelector((state) => state.providerAuth.login);
 
   console.log(data, "dat");
@@ -584,21 +595,26 @@ export default function PricelistUploadthroFacility() {
     setCsvData(editData)
       
     };
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    page: number
+  // const handleChangePage = (
+  //   event: React.MouseEvent<HTMLButtonElement> | null,
+  //   page: number
+  // ) => {
+  //   setPage(page);
+  // };
+
+  // const handleChangeRowsPerPage = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   setRowsPerPage(parseInt(event.target.value, 10));
+  //   setPage(0);
+  // };
+
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
   ) => {
-    setPage(page);
+    setPage1(value);
   };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-
   const onSubmit = (e: any) => {
     e.preventDefault();
     setIsLoading(true)
@@ -830,7 +846,7 @@ export default function PricelistUploadthroFacility() {
                 
                
               ))}
-             <Table><TableFooter><TableRow><TablePagination
+             {/* <Table><TableFooter><TableRow><TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 count={csvData.length}
                 rowsPerPage={rowsPerPage}
@@ -857,8 +873,24 @@ export default function PricelistUploadthroFacility() {
                       fontWeight: "bold",
                       color: "#173A5E",
                     },
-                }}/></TableRow></TableFooter></Table> 
-             
+                }}/></TableRow></TableFooter></Table>  */}
+             <Box sx={{ mt: "2rem", }} component="span">
+              <Pagination
+                sx={{ display: "flex", justifyContent: "center"  }}
+                //  count={data.length % 5 === 0 ? Math.ceil(data.length / 5) : Math.ceil(data.length / 5 + 1)}
+        
+                count={Math.ceil(csvData.length / itemsPerPage)}
+                page={page1}
+                onChange={handlePageChange}
+                defaultPage={6}
+                color="primary"
+                // boundaryCount={3}
+                siblingCount={0}
+               
+                showFirstButton
+                showLastButton
+              />
+            </Box>
             </Box>
         <Box sx={{ display: "flex", gap: "1.5rem" }}>
             {publishButton  ? (

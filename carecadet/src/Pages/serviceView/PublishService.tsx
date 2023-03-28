@@ -246,25 +246,25 @@ const PublishService = () => {
         field: "DiagnosisTestorServiceName",
         headerName: "Diagnosis Test/Service Name",
         editable: false,
-        width: 350,
+        flex:1
       },
       {
         field: "Organisationid",
         headerName: "Organisation ID",
         editable: false,
-        width: 100,
+        flex:1
       },
       {
         field: "FacilityName",
         headerName: "FacilityName",
         editable: false,
-        width: 100,
+        flex:2
       },
       {
         field: "OrganisationPrices",
         headerName: "Organisation Prices",
         editable: false,
-        width: 100,
+        flex:1,
         align: "right",
         ...usdPrice,
       },
@@ -272,13 +272,13 @@ const PublishService = () => {
         field: "FacilityNPI",
         headerName: "FacilityNPI",
         editable: false,
-        width: 100,
+        flex:1
       },
       {
         field: "FacilityPrices",
         headerName: "Facility Prices",
         editable: false,
-        width: 100,
+        flex:1,
         align: "right",
         ...usdPrice,
       },

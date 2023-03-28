@@ -100,7 +100,7 @@ return(
             </Grid>
             <Grid item xs={4} >
               <Typography>
-            {fac.OrganisationPrices}
+            ${fac.OrganisationPrices}
           </Typography>
         </Grid>
         </Grid>
@@ -117,7 +117,7 @@ return(
             </Grid>
             <Grid item xs={4} >
               <Typography>
-            {fac.FacilityPrices}
+            ${fac.FacilityPrices}
           </Typography>
         </Grid>
         </Grid>
@@ -134,7 +134,8 @@ export default function Pricelistlandingpage() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
   const [dataCheck,setDataCheck]=useState(false)
-
+  const itemsPerPage = 5;
+  const [page1, setPage1] = useState(1);
   const dispatch = useAppDispatch();
   // const facilityid=useAppSelector((state)=>state.editFacility.service);
   // console.log("facilityid", facilityid);
@@ -278,7 +279,12 @@ export default function Pricelistlandingpage() {
     // This will navigate to second component
     navigate("/provider/facility/PricelistEdit");
   };
-
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setPage1(value);
+  };
   function CustomRow(props: any) {
     const { className, index, ...other } = props;
 
@@ -523,13 +529,35 @@ export default function Pricelistlandingpage() {
               </TableFooter>
             </Table>
           <Box sx={{display:{xs:"flex",md:"none"},flexDirection:"column",gap:"1rem"}}>
-        {data.map((fac:any,i:any)=>(
+       
+          {(itemsPerPage > 0
+              ? data.slice((page1 - 1) * itemsPerPage, page1 * itemsPerPage)
+              : data
+            ).map((fac:any,i:any)=>(
          
         <Row key={i} fac={fac}/>
-    
+       
         ))}
-      
-         <TablePagination
+
+<Box sx={{ mt: "2rem", }} component="span">
+              <Pagination
+                sx={{ display: "flex", justifyContent: "center"  }}
+                //  count={data.length % 5 === 0 ? Math.ceil(data.length / 5) : Math.ceil(data.length / 5 + 1)}
+        
+                count={Math.ceil(data.length / itemsPerPage)}
+                page={page1}
+                onChange={handlePageChange}
+                defaultPage={6}
+                color="primary"
+                // boundaryCount={3}
+                siblingCount={0}
+               
+                showFirstButton
+                showLastButton
+              />
+            </Box>
+            {/* console.log(count, "count") */}
+         {/* <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 count={Row.length}
                 rowsPerPage={rowsPerPage}
@@ -556,7 +584,7 @@ export default function Pricelistlandingpage() {
                       fontWeight: "bold",
                       color: "#173A5E",
                     },
-                }}/>
+                }}/> */}
                  
         </Box>
         </>
