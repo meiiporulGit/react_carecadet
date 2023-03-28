@@ -145,7 +145,7 @@ export default function UpdateFacility() {
       .then((res) => {
         // alert('updated')
         toast.success("Successfully Updated");
-        console.log("i", res.data);
+        console.log("updateFacility", res.data);
         setIsLoading(false)
         navigate("/provider/facility/viewFacility");
       })

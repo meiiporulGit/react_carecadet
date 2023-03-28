@@ -571,8 +571,8 @@ export default function ViewFacility() {
                         sx={{ fontSize: "0.9rem", textAlign: "center" }}
                       >
                         {facility.facilityType.MainfacilityType !== null
-                          ? facility.facilityType.MainfacilityType
-                          : facility.facilityType.OthersfacilityType}
+                          ? getFacilityType(facility.facilityType.MainfacilityType)
+                          : (getFacilityType(facility.facilityType.OthersfacilityType))}
                       </Typography>
                     </Typography>
                     <Typography
@@ -655,16 +655,17 @@ export default function ViewFacility() {
               <Typography>Page: {page}</Typography>
               <Pagination sx={{ display: "flex", justifyContent: "center" }} count={10} page={page} onChange={handleChange} />
             </Stack> */}
-            <Box sx={{ mt: "2rem" }} component="span">
+            <Box sx={{ padding:"1rem" }} component="span">
               <Pagination
                 sx={{ display: "flex", justifyContent: "center" }}
                 //  count={data.length % 5 === 0 ? Math.ceil(data.length / 5) : Math.ceil(data.length / 5 + 1)}
                 count={Math.ceil(data.length / itemsPerPage)}
                 page={page1}
+                siblingCount={0}
                 onChange={handlePageChange}
                 defaultPage={1}
                 color="primary"
-                size="large"
+                size="small"
                 showFirstButton
                 showLastButton
               />
