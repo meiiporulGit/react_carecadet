@@ -49,7 +49,7 @@ import { axiosPrivate } from "../../axios/axios";
 import FormTextField from "../../Components/Textfield";
 import SelectField from "../../Components/Select";
 import SearchIcon from "@mui/icons-material/Search";
-import { dataSearch, dataSearchTenMiles, dataSearchTwentyMiles, dataSearchThirtyMiles } from "../../Redux/ProviderRedux/HomeSlice";
+import { dataSearch, dataSearchTenMiles, dataSearchTwentyMiles, dataSearchThirtyMiles, dataProviderSearch } from "../../Redux/ProviderRedux/HomeSlice";
 import {  ArrowDropDown,KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { values } from "lodash";
 import SearchNav from "../../ProtectedRoutes/SearchNav";
@@ -61,6 +61,8 @@ export default function Providersearch() {
   const [open1, setOpen1] = useState<boolean>(false)
   const [open2, setOpen2] = useState<boolean>(false)
   const [open3, setOpen3] = useState<boolean>(false)
+  const [openScore, setOpenScore] = useState<boolean>(false)
+  const [openRate, setOpenRate] = useState<boolean>(false)
   const [checked, setChecked] = useState<boolean>(false);
   const [anchorElNav, setAnchorElNav] =useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -70,10 +72,10 @@ const [checkText,setCheckText]=useState<boolean>(false)
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [data, setData] = useState([] as forminitialValues[]);
   const [service, setService] = useState();
-  const searchData = useAppSelector((state) => state.homeReducer.searchData);
+  const searchData = useAppSelector((state) => state.homeReducer.providerSearchData);
   console.log(searchData, 'searchdata')
-const serviceValue = useAppSelector((state)=>state.homeReducer)
-console.log('serviceValue',serviceValue)
+// const serviceValue = useAppSelector((state)=>state.homeReducer)
+// console.log('serviceValue',serviceValue)
 const [searchqueryData,setSearchqueryData] = useState(searchData);
 console.log(searchqueryData,'searchquerydata')
 const [search,setSearch] = useState()
@@ -110,12 +112,12 @@ const [search,setSearch] = useState()
 
     axiosPrivate
       .get(
-        `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
+        `http://210.18.155.251:5003/search/negotiatedSearch?q=${values.Service}&location=${values.Location}&serviceCode=21`
       )
       .then((res) => {
-        console.log(res.data);
+        console.log(res.data,"checkT");
         // setSearchqueryData(res.data.data)
-        dispatch(dataSearch(res.data.data));
+        dispatch(dataProviderSearch(res.data.data));
         setSearchParams({q:values.Service,location:values.Location})
         // navigate("/patient/search");
         console.log("searchi", res);
@@ -293,15 +295,19 @@ const [search,setSearch] = useState()
                   <Paper sx={{
                     fontSize: "1rem",
                     borderRadius: "20px",
-                    backgroundColor: "#CDDBF8",
-                    mb: "10px"
+                    backgroundColor: "#687B9E",
+                    color: "white",
+                    mb: "10px",
+                    textTransform: "uppercase",
+                    fontWeight: 500,
+                    padding: "0.2rem",
                   }}>
                     <IconButton
                       aria-label="expand row"
                       size="small"
                       onClick={() => setOpen(!open)}
                     >
-                      {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                      {open ? <KeyboardArrowUp sx={{color:"white"}} /> : <KeyboardArrowDown sx={{color:"white"}} />}
                     </IconButton>
                     Distance
                   </Paper>
@@ -323,7 +329,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "10miles");
-                                  dispatch(dataSearch(res.data.data))
+                                  dispatch(dataProviderSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e)) 
@@ -334,7 +340,7 @@ const [search,setSearch] = useState()
                                   .then((res) => {
                                     console.log(res.data);
                                     // setSearchqueryData(res.data.data)
-                                     dispatch(dataSearch(res.data.data));
+                                     dispatch(dataProviderSearch(res.data.data));
                                     // navigate("/patient/search");
                                     console.log("searchi", res);
                                   })
@@ -355,7 +361,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "20miles");
-                                  dispatch(dataSearch(res.data.data))
+                                  dispatch(dataProviderSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e))
@@ -366,7 +372,7 @@ const [search,setSearch] = useState()
                                 .then((res) => {
                                   console.log(res.data);
                                   // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
+                                   dispatch(dataProviderSearch(res.data.data));
                                   // navigate("/patient/search");
                                   console.log("searchi", res);
                                 })
@@ -386,7 +392,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "30miles");
-                                  dispatch(dataSearch(res.data.data))
+                                  dispatch(dataProviderSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e))
@@ -397,7 +403,7 @@ const [search,setSearch] = useState()
                                 .then((res) => {
                                   console.log(res.data);
                                   // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
+                                   dispatch(dataProviderSearch(res.data.data));
                                   // navigate("/patient/search");
                                   console.log("searchi", res);
                                 })
@@ -411,45 +417,275 @@ const [search,setSearch] = useState()
                  
                   </Collapse>
                 </Box>
-                <Button
-                  variant="contained"
-                  sx={{
-                    width: "250px",
-                    fontSize: "1rem",
-                    color: "white",
-                    borderRadius: "20px",
-                    mb: "20px",
-                    // textAlign: "right",
-                  }}
-                >
-                  Quality score
-                </Button>
-                <Button
-                  variant="contained"
-                  sx={{
-                    width: "250px",
-                    fontSize: "1rem",
-                    color: "white",
-                    borderRadius: "20px",
-                    mb: "20px",
-                    // textAlign: "right",
-                  }}
-                >
-                  Negotiated rates
-                </Button>
                 <Box>
                   <Paper sx={{
                     fontSize: "1rem",
                     borderRadius: "20px",
-                    backgroundColor: "#CDDBF8",
-                    mb: "10px"
+                    backgroundColor: "#687B9E",
+                    color: "white",
+                    mb: "10px",
+                    textTransform: "uppercase",
+                    fontWeight: 500,
+                    padding: "0.2rem",
+                  }}>
+                    <IconButton
+                      aria-label="expand row"
+                      size="small"
+                      onClick={() => setOpenScore(!openScore)}
+                    >
+                      {openScore ? <KeyboardArrowUp sx={{color:"white"}} /> : <KeyboardArrowDown sx={{color:"white"}} />}
+                    </IconButton>
+                    Quality Score
+                  </Paper>
+                  {/* <Collapse in={openScore} timeout="auto" unmountOnExit>
+                    <Grid item xs={12}>
+                      <FormGroup
+                      // name="distancefilter"
+                      // value={distance}
+                      >
+                        <FormControlLabel value="10mi"
+                          control={<Checkbox
+                            checked={distance === "10mi" && checkText }
+                            onClick={handleInputChange}
+                            onChange={() => {
+                              distance != "10mi" ?
+                              axiosPrivate
+                                .get(
+                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 10mi`
+                                )
+                                .then((res) => {
+                                  console.log(res.data, "10miles");
+                                  dispatch(dataProviderSearch(res.data.data))
+                                  // setSearchqueryData(res.data.data)
+                                })
+                                .catch((e) => console.log(e)) 
+                                 : axiosPrivate
+                                  .get(
+                                    `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
+                                  )
+                                  .then((res) => {
+                                    console.log(res.data);
+                                    // setSearchqueryData(res.data.data)
+                                     dispatch(dataProviderSearch(res.data.data));
+                                    // navigate("/patient/search");
+                                    console.log("searchi", res);
+                                  })
+                                  .catch((e) => console.log(e))
+                            }}
+                          />}
+                          label="10 miles" 
+                          labelPlacement="end"/>
+                        <FormControlLabel value="20mi"
+                          control={<Checkbox
+                            checked={distance === "20mi" && checkText}
+                            onClick={handleInputChange}
+                            onChange={() => {
+                              distance != "20mi" ?
+                              axiosPrivate
+                                .get(
+                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 20mi`
+                                )
+                                .then((res) => {
+                                  console.log(res.data, "20miles");
+                                  dispatch(dataProviderSearch(res.data.data))
+                                  // setSearchqueryData(res.data.data)
+                                })
+                                .catch((e) => console.log(e))
+                                :axiosPrivate
+                                .get(
+                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
+                                )
+                                .then((res) => {
+                                  console.log(res.data);
+                                  // setSearchqueryData(res.data.data)
+                                   dispatch(dataProviderSearch(res.data.data));
+                                  // navigate("/patient/search");
+                                  console.log("searchi", res);
+                                })
+                                .catch((e) => console.log(e))
+                            }} />}
+                          label="20 miles" labelPlacement="end"
+                          />
+                        <FormControlLabel value="30mi"
+                          control={<Checkbox
+                            checked={distance === "30mi" && checkText}
+                            onClick={handleInputChange}
+                            onChange={() => {
+                              distance != "30mi" ?
+                              axiosPrivate
+                                .get(
+                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
+                                )
+                                .then((res) => {
+                                  console.log(res.data, "30miles");
+                                  dispatch(dataProviderSearch(res.data.data))
+                                  // setSearchqueryData(res.data.data)
+                                })
+                                .catch((e) => console.log(e))
+                                :axiosPrivate
+                                .get(
+                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
+                                )
+                                .then((res) => {
+                                  console.log(res.data);
+                                  // setSearchqueryData(res.data.data)
+                                   dispatch(dataProviderSearch(res.data.data));
+                                  // navigate("/patient/search");
+                                  console.log("searchi", res);
+                                })
+                                .catch((e) => console.log(e))
+                            }} />}
+                          label="30 miles" 
+                          labelPlacement="end" />
+
+                      </FormGroup>
+                    </Grid>
+                 
+                  </Collapse> */}
+                </Box>
+                <Box>
+                  <Paper sx={{
+                    fontSize: "1rem",
+                    borderRadius: "20px",
+                    backgroundColor: "#687B9E",
+                    color: "white",
+                    mb: "10px",
+                    textTransform: "uppercase",
+                    fontWeight: 500,
+                    padding: "0.2rem",
+                  }}>
+                    <IconButton
+                      aria-label="expand row"
+                      size="small"
+                      onClick={() => setOpenRate(!openRate)}
+                    >
+                      {openRate ? <KeyboardArrowUp sx={{color:"white"}} /> : <KeyboardArrowDown sx={{color:"white"}} />}
+                    </IconButton>
+                    Negotiated Rate
+                  </Paper>
+                  {/* <Collapse in={openScore} timeout="auto" unmountOnExit>
+                    <Grid item xs={12}>
+                      <FormGroup
+                      // name="distancefilter"
+                      // value={distance}
+                      >
+                        <FormControlLabel value="10mi"
+                          control={<Checkbox
+                            checked={distance === "10mi" && checkText }
+                            onClick={handleInputChange}
+                            onChange={() => {
+                              distance != "10mi" ?
+                              axiosPrivate
+                                .get(
+                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 10mi`
+                                )
+                                .then((res) => {
+                                  console.log(res.data, "10miles");
+                                  dispatch(dataProviderSearch(res.data.data))
+                                  // setSearchqueryData(res.data.data)
+                                })
+                                .catch((e) => console.log(e)) 
+                                 : axiosPrivate
+                                  .get(
+                                    `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
+                                  )
+                                  .then((res) => {
+                                    console.log(res.data);
+                                    // setSearchqueryData(res.data.data)
+                                     dispatch(dataProviderSearch(res.data.data));
+                                    // navigate("/patient/search");
+                                    console.log("searchi", res);
+                                  })
+                                  .catch((e) => console.log(e))
+                            }}
+                          />}
+                          label="10 miles" 
+                          labelPlacement="end"/>
+                        <FormControlLabel value="20mi"
+                          control={<Checkbox
+                            checked={distance === "20mi" && checkText}
+                            onClick={handleInputChange}
+                            onChange={() => {
+                              distance != "20mi" ?
+                              axiosPrivate
+                                .get(
+                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 20mi`
+                                )
+                                .then((res) => {
+                                  console.log(res.data, "20miles");
+                                  dispatch(dataProviderSearch(res.data.data))
+                                  // setSearchqueryData(res.data.data)
+                                })
+                                .catch((e) => console.log(e))
+                                :axiosPrivate
+                                .get(
+                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
+                                )
+                                .then((res) => {
+                                  console.log(res.data);
+                                  // setSearchqueryData(res.data.data)
+                                   dispatch(dataProviderSearch(res.data.data));
+                                  // navigate("/patient/search");
+                                  console.log("searchi", res);
+                                })
+                                .catch((e) => console.log(e))
+                            }} />}
+                          label="20 miles" labelPlacement="end"
+                          />
+                        <FormControlLabel value="30mi"
+                          control={<Checkbox
+                            checked={distance === "30mi" && checkText}
+                            onClick={handleInputChange}
+                            onChange={() => {
+                              distance != "30mi" ?
+                              axiosPrivate
+                                .get(
+                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
+                                )
+                                .then((res) => {
+                                  console.log(res.data, "30miles");
+                                  dispatch(dataProviderSearch(res.data.data))
+                                  // setSearchqueryData(res.data.data)
+                                })
+                                .catch((e) => console.log(e))
+                                :axiosPrivate
+                                .get(
+                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
+                                )
+                                .then((res) => {
+                                  console.log(res.data);
+                                  // setSearchqueryData(res.data.data)
+                                   dispatch(dataProviderSearch(res.data.data));
+                                  // navigate("/patient/search");
+                                  console.log("searchi", res);
+                                })
+                                .catch((e) => console.log(e))
+                            }} />}
+                          label="30 miles" 
+                          labelPlacement="end" />
+
+                      </FormGroup>
+                    </Grid>
+                 
+                  </Collapse> */}
+                </Box>
+                <Box>
+                  <Paper sx={{
+                    fontSize: "1rem",
+                    borderRadius: "20px",
+                    backgroundColor: "#687B9E",
+                    color: "white",
+                    mb: "10px",
+                    textTransform: "uppercase",
+                    fontWeight: 500,
+                    padding: "0.2rem",
                   }}>
                     <IconButton
                       aria-label="expand row"
                       size="small"
                       onClick={() => setOpen1(!open1)}
                     >
-                      {open1 ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                      {open1 ? <KeyboardArrowUp sx={{color:"white"}} /> : <KeyboardArrowDown sx={{color:"white"}} />}
                     </IconButton>
                     Insurance Name
                   </Paper>
@@ -471,7 +707,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "10miles");
-                                  dispatch(dataSearch(res.data.data))
+                                  dispatch(dataProviderSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e)) 
@@ -482,7 +718,7 @@ const [search,setSearch] = useState()
                                   .then((res) => {
                                     console.log(res.data);
                                     // setSearchqueryData(res.data.data)
-                                     dispatch(dataSearch(res.data.data));
+                                     dispatch(dataProviderSearch(res.data.data));
                                     // navigate("/patient/search");
                                     console.log("searchi", res);
                                   })
@@ -503,7 +739,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "20miles");
-                                  dispatch(dataSearch(res.data.data))
+                                  dispatch(dataProviderSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e))
@@ -514,7 +750,7 @@ const [search,setSearch] = useState()
                                 .then((res) => {
                                   console.log(res.data);
                                   // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
+                                   dispatch(dataProviderSearch(res.data.data));
                                   // navigate("/patient/search");
                                   console.log("searchi", res);
                                 })
@@ -534,7 +770,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "30miles");
-                                  dispatch(dataSearch(res.data.data))
+                                  dispatch(dataProviderSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e))
@@ -545,7 +781,7 @@ const [search,setSearch] = useState()
                                 .then((res) => {
                                   console.log(res.data);
                                   // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
+                                   dispatch(dataProviderSearch(res.data.data));
                                   // navigate("/patient/search");
                                   console.log("searchi", res);
                                 })
@@ -565,7 +801,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "30miles");
-                                  dispatch(dataSearch(res.data.data))
+                                  dispatch(dataProviderSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e))
@@ -576,7 +812,7 @@ const [search,setSearch] = useState()
                                 .then((res) => {
                                   console.log(res.data);
                                   // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
+                                   dispatch(dataProviderSearch(res.data.data));
                                   // navigate("/patient/search");
                                   console.log("searchi", res);
                                 })
@@ -594,15 +830,19 @@ const [search,setSearch] = useState()
                   <Paper sx={{
                     fontSize: "1rem",
                     borderRadius: "20px",
-                    backgroundColor: "#CDDBF8",
-                    mb: "10px"
+                    backgroundColor: "#687B9E",
+                    color: "white",
+                    mb: "10px",
+                    textTransform: "uppercase",
+                    fontWeight: 500,
+                    padding: "0.2rem",
                   }}>
                     <IconButton
                       aria-label="expand row"
                       size="small"
                       onClick={() => setOpen2(!open2)}
                     >
-                      {open2 ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                      {open2 ? <KeyboardArrowUp sx={{color:"white"}}/> : <KeyboardArrowDown sx={{color:"white"}}/>}
                     </IconButton>
                     Facility Type
                   </Paper>
@@ -624,7 +864,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "10miles");
-                                  dispatch(dataSearch(res.data.data))
+                                  dispatch(dataProviderSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e)) 
@@ -635,7 +875,7 @@ const [search,setSearch] = useState()
                                   .then((res) => {
                                     console.log(res.data);
                                     // setSearchqueryData(res.data.data)
-                                     dispatch(dataSearch(res.data.data));
+                                     dispatch(dataProviderSearch(res.data.data));
                                     // navigate("/patient/search");
                                     console.log("searchi", res);
                                   })
@@ -656,7 +896,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "20miles");
-                                  dispatch(dataSearch(res.data.data))
+                                  dispatch(dataProviderSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e))
@@ -667,7 +907,7 @@ const [search,setSearch] = useState()
                                 .then((res) => {
                                   console.log(res.data);
                                   // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
+                                   dispatch(dataProviderSearch(res.data.data));
                                   // navigate("/patient/search");
                                   console.log("searchi", res);
                                 })
@@ -687,7 +927,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "30miles");
-                                  dispatch(dataSearch(res.data.data))
+                                  dispatch(dataProviderSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e))
@@ -698,7 +938,7 @@ const [search,setSearch] = useState()
                                 .then((res) => {
                                   console.log(res.data);
                                   // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
+                                   dispatch(dataProviderSearch(res.data.data));
                                   // navigate("/patient/search");
                                   console.log("searchi", res);
                                 })
@@ -718,7 +958,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "30miles");
-                                  dispatch(dataSearch(res.data.data))
+                                  dispatch(dataProviderSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e))
@@ -729,7 +969,7 @@ const [search,setSearch] = useState()
                                 .then((res) => {
                                   console.log(res.data);
                                   // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
+                                   dispatch(dataProviderSearch(res.data.data));
                                   // navigate("/patient/search");
                                   console.log("searchi", res);
                                 })
@@ -745,17 +985,21 @@ const [search,setSearch] = useState()
                 </Box>
                 <Box>
                   <Paper sx={{
-                    fontSize: "1rem",
-                    borderRadius: "20px",
-                    backgroundColor: "#CDDBF8",
-                    mb: "10px"
+                   fontSize: "1rem",
+                   borderRadius: "20px",
+                   backgroundColor: "#687B9E",
+                   color: "white",
+                   mb: "10px",
+                   textTransform: "uppercase",
+                   fontWeight: 500,
+                   padding: "0.2rem",
                   }}>
                     <IconButton
                       aria-label="expand row"
                       size="small"
                       onClick={() => setOpen3(!open3)}
                     >
-                      {open3 ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                      {open3 ? <KeyboardArrowUp sx={{color:"white"}} /> : <KeyboardArrowDown sx={{color:"white"}} />}
                     </IconButton>
                     Service Location
                   </Paper>
@@ -777,7 +1021,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "10miles");
-                                  dispatch(dataSearch(res.data.data))
+                                  dispatch(dataProviderSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e)) 
@@ -788,7 +1032,7 @@ const [search,setSearch] = useState()
                                   .then((res) => {
                                     console.log(res.data);
                                     // setSearchqueryData(res.data.data)
-                                     dispatch(dataSearch(res.data.data));
+                                     dispatch(dataProviderSearch(res.data.data));
                                     // navigate("/patient/search");
                                     console.log("searchi", res);
                                   })
@@ -809,7 +1053,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "20miles");
-                                  dispatch(dataSearch(res.data.data))
+                                  dispatch(dataProviderSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e))
@@ -820,7 +1064,7 @@ const [search,setSearch] = useState()
                                 .then((res) => {
                                   console.log(res.data);
                                   // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
+                                   dispatch(dataProviderSearch(res.data.data));
                                   // navigate("/patient/search");
                                   console.log("searchi", res);
                                 })
@@ -840,7 +1084,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "30miles");
-                                  dispatch(dataSearch(res.data.data))
+                                  dispatch(dataProviderSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e))
@@ -851,7 +1095,7 @@ const [search,setSearch] = useState()
                                 .then((res) => {
                                   console.log(res.data);
                                   // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
+                                   dispatch(dataProviderSearch(res.data.data));
                                   // navigate("/patient/search");
                                   console.log("searchi", res);
                                 })
@@ -871,7 +1115,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "30miles");
-                                  dispatch(dataSearch(res.data.data))
+                                  dispatch(dataProviderSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e))
@@ -882,7 +1126,7 @@ const [search,setSearch] = useState()
                                 .then((res) => {
                                   console.log(res.data);
                                   // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
+                                   dispatch(dataProviderSearch(res.data.data));
                                   // navigate("/patient/search");
                                   console.log("searchi", res);
                                 })
@@ -977,7 +1221,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "10miles");
-                                  dispatch(dataSearch(res.data.data))
+                                  dispatch(dataProviderSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e)) 
@@ -988,7 +1232,7 @@ const [search,setSearch] = useState()
                                   .then((res) => {
                                     console.log(res.data);
                                     // setSearchqueryData(res.data.data)
-                                     dispatch(dataSearch(res.data.data));
+                                     dispatch(dataProviderSearch(res.data.data));
                                     // navigate("/patient/search");
                                     console.log("searchi", res);
                                   })
@@ -1009,7 +1253,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "20miles");
-                                  dispatch(dataSearch(res.data.data))
+                                  dispatch(dataProviderSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e))
@@ -1020,7 +1264,7 @@ const [search,setSearch] = useState()
                                 .then((res) => {
                                   console.log(res.data);
                                   // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
+                                   dispatch(dataProviderSearch(res.data.data));
                                   // navigate("/patient/search");
                                   console.log("searchi", res);
                                 })
@@ -1040,7 +1284,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "30miles");
-                                  dispatch(dataSearch(res.data.data))
+                                  dispatch(dataProviderSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e))
@@ -1051,7 +1295,7 @@ const [search,setSearch] = useState()
                                 .then((res) => {
                                   console.log(res.data);
                                   // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
+                                   dispatch(dataProviderSearch(res.data.data));
                                   // navigate("/patient/search");
                                   console.log("searchi", res);
                                 })
@@ -1168,13 +1412,13 @@ const [search,setSearch] = useState()
                           <Typography
                             sx={{ fontSize: "1rem", color: "black", mb: "20px" }}
                           >
-                            {dsearch.FacilityDetails?.addressLine1 +
+                            {dsearch.FacilityDetails?.address?.addressLine1 +
                               "," +
-                              dsearch.FacilityDetails?.city +
+                              dsearch.FacilityDetails?.address?.city +
                               "," +
-                              dsearch.FacilityDetails?.state +
+                              dsearch.FacilityDetails?.address?.state +
                               " - " +
-                              dsearch.FacilityDetails?.zipCode}
+                              dsearch.FacilityDetails?.address?.zipCode}
                           </Typography>
                           <Typography
                             sx={{ fontSize: "1rem", color: "black", mb: "10px" }}
@@ -1206,14 +1450,14 @@ const [search,setSearch] = useState()
                                 borderRadius: "0.5rem",
                                 padding: "0.5rem",
                                 width: "100px",
-                                fontSize: "1.35rem",
+                                fontSize: "1.1rem",
                                 backgroundColor: "#1C3988",
                                 color: "white",
                                 mb: "10px",
                                 textAlign: "center",
                               }}
                             >
-                              $ {dsearch.FacilityPrices}
+                              $ {dsearch?.NegotiatedRates[0]?.negotiated_rates?.negotiated_prices?.negotiated_rate}
                             </Box>
                             <Typography
                               sx={{
@@ -1271,13 +1515,13 @@ const [search,setSearch] = useState()
                           <Typography
                             sx={{ fontSize: "0.8rem", color: "black", mb: "10px" }}
                           >
-                            {dsearch.FacilityDetails?.addressLine1 +
+                            {dsearch.FacilityDetails?.address?.addressLine1 +
                               "," +
-                              dsearch.FacilityDetails?.city +
+                              dsearch.FacilityDetails?.address?.city +
                               "," +
-                              dsearch.FacilityDetails?.state +
+                              dsearch.FacilityDetails?.address?.state +
                               " - " +
-                              dsearch.FacilityDetails?.zipCode}
+                              dsearch.FacilityDetails?.address?.zipCode}
                           </Typography>
                           <Typography
                             sx={{ fontSize: "0.8rem", color: "black", mb: "10px" }}
@@ -1316,7 +1560,7 @@ const [search,setSearch] = useState()
                                 textAlign: "center",
                               }}
                             >
-                              $ {dsearch.FacilityPrices}
+                              $ {dsearch?.NegotiatedRates[0]?.negotiated_rates?.negotiated_prices.negotiated_rate}
                             </Box>
                             <Typography
                               sx={{
