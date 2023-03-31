@@ -69,7 +69,7 @@ export default function ViewFacility() {
   const [open2, setOpen2] = useState<boolean>(false);
   const [open3, setOpen3] = useState<boolean>(false);
   const [open4, setOpen4] = useState<boolean>(false);
-  const [checked, setChecked] = useState<boolean>(false);
+  // const [checked, setChecked] = useState<boolean>(false);
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [distance, setDistance] = useState("");
@@ -79,15 +79,16 @@ export default function ViewFacility() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [data, setData] = useState([] as forminitialValues[]);
-  const [service, setService] = useState();
+  // const [service, setService] = useState();
   const searchData = useAppSelector((state) => state.homeReducer.searchData);
 
-  const serviceValue = useAppSelector((state) => state.homeReducer);
+  // const serviceValue = useAppSelector((state) => state.homeReducer);
 
-  const [searchqueryData, setSearchqueryData] = useState(searchData);
+  // const [searchqueryData, setSearchqueryData] = useState(searchData);
 
-  const [search, setSearch] = useState();
+  // const [search, setSearch] = useState();
   const [facilityType, setFacilityType] = useState<any>([]);
+  const [facilityCheck, setFacilityCheck] = useState<any>("");
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -131,7 +132,7 @@ export default function ViewFacility() {
   const onSubmit = (values: forminitialValues, actions: any) => {
     axiosPrivate
       .get(
-        `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
+        `/search/?q=${values.Service}&location=${values.Location}`
       )
       .then((res) => {
         console.log(res.data);
@@ -161,27 +162,116 @@ export default function ViewFacility() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  const filterFacilityType = (
+    filter: any,
+    dis?: any,
+    type?: any,
+    details?: any
+  ) => {
+    console.log(filter,dis,type,details,"axiosCheck")
+    switch (filter) {
+      case "noDistance":
+        return axiosPrivate.get(
+          `/search/?q=${details.Service}&location=${details.Location}&facilityType=${type}`
+        );
+      case "noFacilityType":
+        return axiosPrivate.get(
+          `/search/?q=${details.Service}&location=${details.Location}&distance=${dis}`
+        );
+      case "facAndDistance":
+        return axiosPrivate.get(
+          `/search/?q=${details.Service}&location=${details.Location}&distance=${dis}&facilityType=${type}`
+        );
 
-  function handleInputChange(event: any) {
+      default:
+        return axiosPrivate.get(
+          `/search/?q=${details.Service}&location=${details.Location}`
+        );
+    }
+  };
+
+  function handleInputChange(event: any,searchValue:any) {
+    let radioDistance = false;
     if (event.target.value === distance) {
       setCheckText(false);
       setDistance("");
+      radioDistance = false;
     } else {
       setCheckText(true);
       setDistance(event.target.value);
+      radioDistance = true;
     }
-  }
+    if (radioDistance){
+      if(facilityCheck===""){         
+        filterFacilityType("noFacilityType",event.target.value,facilityCheck,searchValue).then(res=>{
+          dispatch(dataSearch(res.data.data))
+        }).catch(e=>console.log(e))
+      }else{
+        filterFacilityType("facAndDistance",event.target.value,facilityCheck,searchValue).then(res=>{
+          dispatch(dataSearch(res.data.data))
+        }).catch(e=>console.log(e))
+      }
+      } else {     
+      
+      if(facilityCheck ===""){
+       
+        filterFacilityType("default",event.target.value,facilityCheck,searchValue).then(res=>{
+          dispatch(dataSearch(res.data.data))
+        }).catch(e=>console.log(e))
+      }else{
+        filterFacilityType("noDistance",event.target.value,facilityCheck,searchValue).then(res=>{
+          dispatch(dataSearch(res.data.data))
+        }).catch(e=>console.log(e))
+    }
+     }
+    }
+    
 
-  function handleTypeInputChange(event: any) {
-    console.log(event.target.value,"checkType")
-    if (event.target.value === facType) {
+
+
+  function handleTypeInputChange(event: any,searchValue:any) {
+    var checkFacility=false
+    if (event.target.value === facilityCheck) {
       setCheckFacText(false);
-      setFacType("");
+      setFacilityCheck("");
+      checkFacility=false
     } else {
       setCheckFacText(true);
-      setFacType(event.target.value);
+      setFacilityCheck(event.target.value);
+      checkFacility=true
     }
+    if(checkFacility){
+
+                                       
+        if(distance===""){
+         
+          filterFacilityType("noDistance",distance,event.target.value,searchValue).then(res=>{
+            dispatch(dataSearch(res.data.data))
+          }).catch(e=>console.log(e))
+        }else{
+          filterFacilityType("facAndDistance",distance,event.target.value,searchValue).then(res=>{
+            dispatch(dataSearch(res.data.data))
+          }).catch(e=>console.log(e))
+        }
+        } else {
+        
+        
+        if(distance ===""){
+         
+          filterFacilityType("default",distance,event.target.value,searchValue).then(res=>{
+            dispatch(dataSearch(res.data.data))
+          }).catch(e=>console.log(e))
+        }else{
+          filterFacilityType("noFacilityTy",distance,event.target.value,searchValue).then(res=>{
+            dispatch(dataSearch(res.data.data))
+          }).catch(e=>console.log(e))
+      }
+       }
+       
+    
   }
+
+ 
 
   return (
     <Box sx={{ backgroundColor: "primary.light", padding: "1.8rem" }}>
@@ -216,6 +306,7 @@ export default function ViewFacility() {
                       setCheckText(false);
                       setCheckFacText(false)
                       setFieldValue("Service", e.target.value);
+                      setFacilityCheck("")
                     }}
                     fullWidth={true}
                     sx={{
@@ -248,6 +339,7 @@ export default function ViewFacility() {
                       setCheckText(false);
                       setCheckFacText(false)
                       setFieldValue("Location", e.target.value);
+                      setFacilityCheck("");
                     }}
                     fullWidth={true}
                     sx={{
@@ -361,103 +453,32 @@ export default function ViewFacility() {
                                <RadioGroup
                           name="length"
                           value={distance}
+                          // onChange={handleInputChange}
                         >
                           <FormControlLabel
                             value="10mi"
                             control={<Radio 
                               checked={distance === "10mi" && checkText}
-                              onClick={handleInputChange}
-                              onChange={(e: any) => {
-                                console.log(e.target.checked, 'distancetarget')                               
-                                e.target.checked ?
-                                  axiosPrivate
-                                    .get(
-                                      `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 10mi`
-                                    )
-                                    .then((res) => {
-                                      console.log(res.data, "10miles");
-                                      dispatch(dataSearch(res.data.data))
-                                      // setSearchqueryData(res.data.data)
-                                    })
-                                    .catch((e) => console.log(e))
-                                  : axiosPrivate
-                                    .get(
-                                      `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                    )
-                                    .then((res) => {
-                                      console.log(res.data);
-                                      // setSearchqueryData(res.data.data)  
-                                      dispatch(dataSearch(res.data.data));
-                                      // navigate("/patient/search");
-                                      console.log("searchi", res);
-                                    })
-                                    .catch((e) => console.log(e))
-                              }} />}
+                               onClick={(e: any) => {handleInputChange(e,values)}}
+                              
+                               />}
                             label="10 miles"
                           />
                           <FormControlLabel
                             value="20mi"
                             control={<Radio 
-                              onClick={handleInputChange} 
+                              onClick={(e: any) => {handleInputChange(e,values)}}
                               checked={distance === "20mi" && checkText}
-                              onChange={() => {
-                                distance != "20mi" ?
-                                  axiosPrivate
-                                    .get(
-                                      `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 20mi`
-                                    )
-                                    .then((res) => {
-                                      console.log(res.data, "20miles");
-                                      dispatch(dataSearch(res.data.data))
-                                      // setSearchqueryData(res.data.data)
-                                    })
-                                    .catch((e) => console.log(e))
-                                  : axiosPrivate
-                                    .get(
-                                      `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                    )
-                                    .then((res) => {
-                                      console.log(res.data);
-                                      // setSearchqueryData(res.data.data)
-                                      dispatch(dataSearch(res.data.data));
-                                      // navigate("/patient/search");
-                                      console.log("searchi", res);
-                                    })
-                                    .catch((e) => console.log(e))
-                              }}
+                           
                               />}
                             label="20 miles"
                           />
                           <FormControlLabel
                             value="30mi"
                             control={<Radio 
-                              onClick={handleInputChange}
+                              onClick={(e: any) => {handleInputChange(e,values)}}
                               checked={distance === "30mi" && checkText}
-                              onChange={() => {
-                                distance != "30mi"  ?
-                                  axiosPrivate
-                                    .get(
-                                      `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
-                                    )
-                                    .then((res) => {
-                                      console.log(res.data, "30miles");
-                                      dispatch(dataSearch(res.data.data))
-                                      // setSearchqueryData(res.data.data)
-                                    })
-                                    .catch((e) => console.log(e))
-                                  : axiosPrivate
-                                    .get(
-                                      `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                    )
-                                    .then((res) => {
-                                      console.log(res.data);
-                                      // setSearchqueryData(res.data.data)
-                                      dispatch(dataSearch(res.data.data));
-                                      // navigate("/patient/search");
-                                      console.log("searchi", res);
-                                    })
-                                    .catch((e) => console.log(e))
-                              }}
+                             
                                />}
                             label="30 miles"
                           />
@@ -519,7 +540,7 @@ export default function ViewFacility() {
                           <KeyboardArrowDown sx={{ color: "white" }} />
                         )}
                       </IconButton>
-                      Negotiated Rates
+                     Cash Rates
                     </Paper>
                     
                   </Box>
@@ -557,71 +578,67 @@ export default function ViewFacility() {
                         // name="distancefilter"
                         // value={distance}
                         >
+                         {/* {JSON.stringify(facilityType)} */}
+                         <RadioGroup
+                          name="length"
+                          value={facilityCheck}
+                        >
+                           {/* {JSON.stringify(facilityCheck)} */}
+                          {facilityType.map((type: any, i: any) => (
                           
-                          {facilityType.map((type:any, i:any) => (
-                            <>
-                            
-                            <FormControlLabel
-                            key={i}
-                              value={type.facilityTypeId}
-                              control={
-                                <Checkbox
-                                  checked={facType === type.facilityTypeId && checkFacText}
-                                  onClick={handleTypeInputChange}
-                                  onChange={(e:any) => {
-                                    !e.target.checked?distance!==""?
-                                     axiosPrivate
-                                          .get(
-                                            `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance=${distance}`
-                                          )
-                                          .then((res) => {
-                                            console.log(res.data);
-                                            dispatch(dataSearch(res.data.data));
-                                            // setSearchqueryData(res.data.data)
-                                          })
-                                          .catch((e) => console.log(e))
-                                      :axiosPrivate
-                                      .get(
-                                        `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                      )
-                                      .then((res) => {
-                                        console.log(res.data);
-                                        dispatch(dataSearch(res.data.data));
-                                        // setSearchqueryData(res.data.data)
-                                      })
-                                      .catch((e) => console.log(e))
-                                  : distance!==""?  axiosPrivate
-                                          .get(
-                                            `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&facilityType=${type.facilityTypeId}&distance=${distance}`
-                                         )
-                                          .then((res) => {
-                                            console.log(res.data);
-                                            // setSearchqueryData(res.data.data)
-                                            dispatch(dataSearch(res.data.data));
-                                            // navigate("/patient/search");
-                                            console.log("searchi", res);
-                                          })
-                                          .catch((e) => console.log(e)): axiosPrivate
-                                          .get(
-                                            `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&facilityType=${type.facilityTypeId}`
-                                         )
-                                          .then((res) => {
-                                            console.log(res.data);
-                                            // setSearchqueryData(res.data.data)
-                                            dispatch(dataSearch(res.data.data));
-                                            // navigate("/patient/search");
-                                            console.log("searchi", res);
-                                          })
-                                          .catch((e) => console.log(e));
-                                  }}
-                                />
-                              }
-                              label={type.item}
-                              labelPlacement="end"
-                            />
-                              </>
+                       
+                              <FormControlLabel
+                                key={i}
+                                value={type.facilityTypeId}
+                                control={
+                                  <Radio
+                                    checked={facilityCheck===type.facilityTypeId && checkFacText
+                                    }
+                                    onClick={(e:any)=>{handleTypeInputChange(e,values)}}
+                                    // onChange={(e:any)=>{
+                                    //   console.log(e.target.value,e.target.checked)
+                                     
+                                    // }}
+                                    // onChange={(e: any) => {
+                                    //   setCheckFacText(true)
+                                    //   console.log(e.target.value)
+                                    //   console.log(e.target.checked)
+                                    //   if (facilityCheck!=="") {
+                                       
+                                    //     if(distance===""){
+                                         
+                                    //       filterFacilityType("noDistance",distance,facilityCheck,values).then(res=>{
+                                    //         dispatch(dataSearch(res.data.data))
+                                    //       }).catch(e=>console.log(e))
+                                    //     }else{
+                                    //       filterFacilityType("facAndDistance",distance,facilityCheck,values).then(res=>{
+                                    //         dispatch(dataSearch(res.data.data))
+                                    //       }).catch(e=>console.log(e))
+                                    //     }
+                                    //     } else {
+                                        
+                                        
+                                    //     if(distance ===""){
+                                         
+                                    //       filterFacilityType("default",distance,facilityCheck,values).then(res=>{
+                                    //         dispatch(dataSearch(res.data.data))
+                                    //       }).catch(e=>console.log(e))
+                                    //     }else{
+                                    //       filterFacilityType("noFacilityTy",distance,facilityCheck,values).then(res=>{
+                                    //         dispatch(dataSearch(res.data.data))
+                                    //       }).catch(e=>console.log(e))
+                                    //   }
+                                    //    }
+                                      
+                                    // }}
+                                  />
+                                }
+                                label={type.item.split("-")[1]}
+                                labelPlacement="end"
+                              />
+                           
                           ))}
-                        
+</RadioGroup>
                           {/* <FormControlLabel value="20mi"
                           control={<Checkbox
                             checked={distance === "20mi" && checkText}
@@ -798,36 +815,8 @@ export default function ViewFacility() {
                                 control={
                                   <Checkbox
                                     checked={distance === "10mi" && checkText}
-                                    onClick={handleInputChange}
-                                    onChange={() => {
-                                      distance != "10mi"
-                                        ? axiosPrivate
-                                            .get(
-                                              `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 10mi`
-                                            )
-                                            .then((res) => {
-                                              console.log(res.data, "10miles");
-                                              dispatch(
-                                                dataSearch(res.data.data)
-                                              );
-                                              // setSearchqueryData(res.data.data)
-                                            })
-                                            .catch((e) => console.log(e))
-                                        : axiosPrivate
-                                            .get(
-                                              `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                            )
-                                            .then((res) => {
-                                              console.log(res.data);
-                                              // setSearchqueryData(res.data.data)
-                                              dispatch(
-                                                dataSearch(res.data.data)
-                                              );
-                                              // navigate("/patient/search");
-                                              console.log("searchi", res);
-                                            })
-                                            .catch((e) => console.log(e));
-                                    }}
+                                    onClick={(e: any) => {handleInputChange(e,values)}}
+                                    
                                   />
                                 }
                                 label="10 miles"
@@ -838,36 +827,8 @@ export default function ViewFacility() {
                                 control={
                                   <Checkbox
                                     checked={distance === "20mi" && checkText}
-                                    onClick={handleInputChange}
-                                    onChange={() => {
-                                      distance != "20mi"
-                                        ? axiosPrivate
-                                            .get(
-                                              `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 20mi`
-                                            )
-                                            .then((res) => {
-                                              console.log(res.data, "20miles");
-                                              dispatch(
-                                                dataSearch(res.data.data)
-                                              );
-                                              // setSearchqueryData(res.data.data)
-                                            })
-                                            .catch((e) => console.log(e))
-                                        : axiosPrivate
-                                            .get(
-                                              `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                            )
-                                            .then((res) => {
-                                              console.log(res.data);
-                                              // setSearchqueryData(res.data.data)
-                                              dispatch(
-                                                dataSearch(res.data.data)
-                                              );
-                                              // navigate("/patient/search");
-                                              console.log("searchi", res);
-                                            })
-                                            .catch((e) => console.log(e));
-                                    }}
+                                    onClick={(e: any) => {handleInputChange(e,values)}}
+                                  
                                   />
                                 }
                                 label="20 miles"
@@ -878,36 +839,8 @@ export default function ViewFacility() {
                                 control={
                                   <Checkbox
                                     checked={distance === "30mi" && checkText}
-                                    onClick={handleInputChange}
-                                    onChange={() => {
-                                      distance != "30mi"
-                                        ? axiosPrivate
-                                            .get(
-                                              `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
-                                            )
-                                            .then((res) => {
-                                              console.log(res.data, "30miles");
-                                              dispatch(
-                                                dataSearch(res.data.data)
-                                              );
-                                              // setSearchqueryData(res.data.data)
-                                            })
-                                            .catch((e) => console.log(e))
-                                        : axiosPrivate
-                                            .get(
-                                              `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                            )
-                                            .then((res) => {
-                                              console.log(res.data);
-                                              // setSearchqueryData(res.data.data)
-                                              dispatch(
-                                                dataSearch(res.data.data)
-                                              );
-                                              // navigate("/patient/search");
-                                              console.log("searchi", res);
-                                            })
-                                            .catch((e) => console.log(e));
-                                    }}
+                                    onClick={(e: any) => {handleInputChange(e,values)}}
+                                   
                                   />
                                 }
                                 label="30 miles"
@@ -944,7 +877,7 @@ export default function ViewFacility() {
                           cursor: "pointer",
                         }}
                       >
-                        Negotiated Rates
+                        Cash Rates
                       </Typography>
                     </MenuItem>
 
