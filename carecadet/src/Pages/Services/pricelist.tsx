@@ -8,6 +8,7 @@ import {
   Box,
   Container,
   Divider,
+  Avatar
 } from "@mui/material";
 
 import {
@@ -23,7 +24,7 @@ import { Buttoncomponent } from "../../Components/Buttoncomp";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 
 import CreateService from "./Createmanually";
-
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 interface props {
   textalign: string;
   children: JSX.Element;
@@ -69,7 +70,9 @@ function Pricelist() {
     // This will navigate to second component
     navigate("/provider/service/PricelistUpload");
   };
-
+ const navigateToFacility = ()=>{
+  navigate("/provider/facility/viewfacility");
+ }
   return (
     <Box
    
@@ -87,7 +90,7 @@ function Pricelist() {
         margin={"40px"}
         marginBottom={"5px"}
       >
-        Hello {data.userID},
+      
       </Typography> */}
       {/* <div
         style={{
@@ -96,6 +99,9 @@ function Pricelist() {
           backgroundColor: "darkgray",
         }}
       /> */}
+      <Avatar  variant="rounded" sx={{bgcolor:"secondary.dark"}}>
+      <KeyboardBackspaceIcon onClick={navigateToFacility} fontSize="large" />
+</Avatar>
       <Typography
         variant="h6"
         

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { Grid, Typography, Button, Paper, Box,Table, TableFooter, TableRow, Container ,Collapse, IconButton,TablePagination,TextField} from "@mui/material";
+import { Grid, Typography, Button, Paper, Box,Table, TableFooter, TableRow, Container ,Pagination,Collapse, IconButton,TablePagination,TextField} from "@mui/material";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 import { ChangeEvent } from "react";
 import { useNavigate } from "react-router";
@@ -191,7 +191,7 @@ function TableRowRes({ fac, onButtonEdit }: rowProps) {
             </Typography>
             </Grid>
             <Grid item xs={4} >
-              <Typography>
+              <Typography>$
           
             {!edit ? (
               fac.OrganisationPrices
@@ -218,7 +218,7 @@ function TableRowRes({ fac, onButtonEdit }: rowProps) {
             </Typography>
             </Grid>
             <Grid item xs={4} >
-              <Typography>
+              <Typography>$
             {!edit ? (
               fac.FacilityPrices
             ) : (
@@ -245,6 +245,8 @@ export default function PricelistUpload() {
   const [page, setPage] = useState(0);
   const [unknownHeader, setUnknownHeader] = useState<boolean>(false);
   const [publishButton, setPublishButton] = useState<boolean>(false);
+  const itemsPerPage = 5;
+  const [page1, setPage1] = useState(1);
   const navigate = useNavigate();
   const [isLoading,setIsLoading]=useState<boolean>(false)
   const data = useAppSelector(
@@ -625,20 +627,26 @@ export default function PricelistUpload() {
     setCsvData(editData)
       
     };
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    page: number
-  ) => {
-    setPage(page);
-  };
+  // const handleChangePage = (
+  //   event: React.MouseEvent<HTMLButtonElement> | null,
+  //   page: number
+  // ) => {
+  //   setPage(page);
+  // };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  // const handleChangeRowsPerPage = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   setRowsPerPage(parseInt(event.target.value, 10));
+  //   setPage(0);
+  // };
 
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setPage1(value);
+  };
   const onSubmit = (e: any) => {
     e.preventDefault();
     setIsLoading(true)
@@ -842,7 +850,24 @@ export default function PricelistUpload() {
                 
           
               ))}
-              <Table><TableFooter><TableRow><TablePagination
+               <Box sx={{ mt: "2rem", }} component="span">
+              <Pagination
+                sx={{ display: "flex", justifyContent: "center"  }}
+                //  count={data.length % 5 === 0 ? Math.ceil(data.length / 5) : Math.ceil(data.length / 5 + 1)}
+        
+                count={Math.ceil(csvData.length / itemsPerPage)}
+                page={page1}
+                onChange={handlePageChange}
+                defaultPage={6}
+                color="primary"
+                // boundaryCount={3}
+                siblingCount={0}
+               
+                showFirstButton
+                showLastButton
+              />
+            </Box>
+              {/* <Table><TableFooter><TableRow><TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 count={csvData.length}
                 rowsPerPage={rowsPerPage}
@@ -869,7 +894,7 @@ export default function PricelistUpload() {
                       fontWeight: "bold",
                       color: "#173A5E",
                     },
-                }}/></TableRow></TableFooter></Table> 
+                }}/></TableRow></TableFooter></Table>  */}
             </Box>
 <Box sx={{ display: "flex", gap: "1.5rem" }}>
 {publishButton  ? (

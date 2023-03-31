@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Paper, TextField, Box, Typography, Button, Grid,Divider } from "@mui/material";
+import { Paper, TextField, Box, Typography, Pagination, Button, Grid,Divider } from "@mui/material";
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -41,6 +41,8 @@ export default function Servicelandingpage() {
   const [data, setData] = useState<any>([]);
   const [pageSize, setPagesize] = useState(5);
   const dispatch = useAppDispatch();
+  const itemsPerPage = 5;
+  const [page1, setPage1] = useState(1);
   // const facilityid=useAppSelector((state)=>state.editFacility.service);
   // console.log("facilityid", facilityid);
   // const [totalPages, setTotalPages] = useState(10);
@@ -156,7 +158,12 @@ export default function Servicelandingpage() {
     // This will navigate to second component
     navigate("/provider/service/PricelistEdit");
   };
-
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setPage1(value);
+  };
   function CustomRow(props: any) {
     const { className, index, ...other } = props;
 
@@ -319,7 +326,13 @@ export default function Servicelandingpage() {
           {/* {JSON.stringify(data)} */}
           <Box style={{ display:"flex",flexDirection:"column",rowGap:"0.2rem" }}>
            
-              {data.map((d: any, key: any) => {
+          { (itemsPerPage > 0
+              ? data.slice(
+                  page1 * itemsPerPage,
+                  page1 * itemsPerPage + itemsPerPage
+                )
+              : data
+            ).map((d: any, key: any) => {
                 return (
                   <>
                   <button
@@ -343,11 +356,28 @@ export default function Servicelandingpage() {
                   >
                     {d}{" "}
                   </button>
+  
                   {/* <Divider sx={{backgroundColor:"blue"}}/> */}
                   </>
                 );
               })}
-           
+                           <Box sx={{ mt: "2rem", }} component="span">
+              <Pagination
+                sx={{ display: "flex", justifyContent: "center"  }}
+                //  count={data.length % 5 === 0 ? Math.ceil(data.length / 5) : Math.ceil(data.length / 5 + 1)}
+        
+                count={Math.ceil(data.length / itemsPerPage)}
+                page={page1}
+                onChange={handlePageChange}
+                defaultPage={6}
+                color="primary"
+                // boundaryCount={3}
+                siblingCount={0}
+               
+                showFirstButton
+                showLastButton
+              />
+            </Box>
           </Box>
         </>
       </Box>
