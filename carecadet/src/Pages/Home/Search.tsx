@@ -131,9 +131,7 @@ export default function ViewFacility() {
   });
   const onSubmit = (values: forminitialValues, actions: any) => {
     axiosPrivate
-      .get(
-        `/search/?q=${values.Service}&location=${values.Location}`
-      )
+      .get(`/search/?q=${values.Service}&location=${values.Location}`)
       .then((res) => {
         console.log(res.data);
         // setSearchqueryData(res.data.data)
@@ -168,7 +166,7 @@ export default function ViewFacility() {
     type?: any,
     details?: any
   ) => {
-    console.log(filter,dis,type,details,"axiosCheck")
+    console.log(filter, dis, type, details, "axiosCheck");
     switch (filter) {
       case "noDistance":
         return axiosPrivate.get(
@@ -190,7 +188,7 @@ export default function ViewFacility() {
     }
   };
 
-  function handleInputChange(event: any,searchValue:any) {
+  function handleInputChange(event: any, searchValue: any) {
     let radioDistance = false;
     if (event.target.value === distance) {
       setCheckText(false);
@@ -201,77 +199,113 @@ export default function ViewFacility() {
       setDistance(event.target.value);
       radioDistance = true;
     }
-    if (radioDistance){
-      if(facilityCheck===""){         
-        filterFacilityType("noFacilityType",event.target.value,facilityCheck,searchValue).then(res=>{
-          dispatch(dataSearch(res.data.data))
-        }).catch(e=>console.log(e))
-      }else{
-        filterFacilityType("facAndDistance",event.target.value,facilityCheck,searchValue).then(res=>{
-          dispatch(dataSearch(res.data.data))
-        }).catch(e=>console.log(e))
+    if (radioDistance) {
+      if (facilityCheck === "") {
+        filterFacilityType(
+          "noFacilityType",
+          event.target.value,
+          facilityCheck,
+          searchValue
+        )
+          .then((res) => {
+            dispatch(dataSearch(res.data.data));
+          })
+          .catch((e) => console.log(e));
+      } else {
+        filterFacilityType(
+          "facAndDistance",
+          event.target.value,
+          facilityCheck,
+          searchValue
+        )
+          .then((res) => {
+            dispatch(dataSearch(res.data.data));
+          })
+          .catch((e) => console.log(e));
       }
-      } else {     
-      
-      if(facilityCheck ===""){
-       
-        filterFacilityType("default",event.target.value,facilityCheck,searchValue).then(res=>{
-          dispatch(dataSearch(res.data.data))
-        }).catch(e=>console.log(e))
-      }else{
-        filterFacilityType("noDistance",event.target.value,facilityCheck,searchValue).then(res=>{
-          dispatch(dataSearch(res.data.data))
-        }).catch(e=>console.log(e))
+    } else {
+      if (facilityCheck === "") {
+        filterFacilityType(
+          "default",
+          event.target.value,
+          facilityCheck,
+          searchValue
+        )
+          .then((res) => {
+            dispatch(dataSearch(res.data.data));
+          })
+          .catch((e) => console.log(e));
+      } else {
+        filterFacilityType(
+          "noDistance",
+          event.target.value,
+          facilityCheck,
+          searchValue
+        )
+          .then((res) => {
+            dispatch(dataSearch(res.data.data));
+          })
+          .catch((e) => console.log(e));
+      }
     }
-     }
-    }
-    
+  }
 
-
-
-  function handleTypeInputChange(event: any,searchValue:any) {
-    var checkFacility=false
+  function handleTypeInputChange(event: any, searchValue: any) {
+    var checkFacility = false;
     if (event.target.value === facilityCheck) {
       setCheckFacText(false);
       setFacilityCheck("");
-      checkFacility=false
+      checkFacility = false;
     } else {
       setCheckFacText(true);
       setFacilityCheck(event.target.value);
-      checkFacility=true
+      checkFacility = true;
     }
-    if(checkFacility){
-
-                                       
-        if(distance===""){
-         
-          filterFacilityType("noDistance",distance,event.target.value,searchValue).then(res=>{
-            dispatch(dataSearch(res.data.data))
-          }).catch(e=>console.log(e))
-        }else{
-          filterFacilityType("facAndDistance",distance,event.target.value,searchValue).then(res=>{
-            dispatch(dataSearch(res.data.data))
-          }).catch(e=>console.log(e))
-        }
-        } else {
-        
-        
-        if(distance ===""){
-         
-          filterFacilityType("default",distance,event.target.value,searchValue).then(res=>{
-            dispatch(dataSearch(res.data.data))
-          }).catch(e=>console.log(e))
-        }else{
-          filterFacilityType("noFacilityTy",distance,event.target.value,searchValue).then(res=>{
-            dispatch(dataSearch(res.data.data))
-          }).catch(e=>console.log(e))
+    if (checkFacility) {
+      if (distance === "") {
+        filterFacilityType(
+          "noDistance",
+          distance,
+          event.target.value,
+          searchValue
+        )
+          .then((res) => {
+            dispatch(dataSearch(res.data.data));
+          })
+          .catch((e) => console.log(e));
+      } else {
+        filterFacilityType(
+          "facAndDistance",
+          distance,
+          event.target.value,
+          searchValue
+        )
+          .then((res) => {
+            dispatch(dataSearch(res.data.data));
+          })
+          .catch((e) => console.log(e));
       }
-       }
-       
-    
+    } else {
+      if (distance === "") {
+        filterFacilityType("default", distance, event.target.value, searchValue)
+          .then((res) => {
+            dispatch(dataSearch(res.data.data));
+          })
+          .catch((e) => console.log(e));
+      } else {
+        filterFacilityType(
+          "noFacilityType",
+          distance,
+          event.target.value,
+          searchValue
+        )
+          .then((res) => {
+            dispatch(dataSearch(res.data.data));
+          })
+          .catch((e) => console.log(e));
+      }
+    }
   }
-
- 
 
   return (
     <Box sx={{ backgroundColor: "primary.light", padding: "1.8rem" }}>
@@ -304,9 +338,9 @@ export default function ViewFacility() {
                     type="text"
                     onChange={(e: any) => {
                       setCheckText(false);
-                      setCheckFacText(false)
+                      setCheckFacText(false);
                       setFieldValue("Service", e.target.value);
-                      setFacilityCheck("")
+                      setFacilityCheck("");
                     }}
                     fullWidth={true}
                     sx={{
@@ -337,7 +371,7 @@ export default function ViewFacility() {
                     type="text"
                     onChange={(e: any) => {
                       setCheckText(false);
-                      setCheckFacText(false)
+                      setCheckFacText(false);
                       setFieldValue("Location", e.target.value);
                       setFacilityCheck("");
                     }}
@@ -450,40 +484,48 @@ export default function ViewFacility() {
                         // name="distancefilter"
                         // value={distance}
                         >
-                               <RadioGroup
-                          name="length"
-                          value={distance}
-                          // onChange={handleInputChange}
-                        >
-                          <FormControlLabel
-                            value="10mi"
-                            control={<Radio 
-                              checked={distance === "10mi" && checkText}
-                               onClick={(e: any) => {handleInputChange(e,values)}}
-                              
-                               />}
-                            label="10 miles"
-                          />
-                          <FormControlLabel
-                            value="20mi"
-                            control={<Radio 
-                              onClick={(e: any) => {handleInputChange(e,values)}}
-                              checked={distance === "20mi" && checkText}
-                           
-                              />}
-                            label="20 miles"
-                          />
-                          <FormControlLabel
-                            value="30mi"
-                            control={<Radio 
-                              onClick={(e: any) => {handleInputChange(e,values)}}
-                              checked={distance === "30mi" && checkText}
-                             
-                               />}
-                            label="30 miles"
-                          />
-                        </RadioGroup> 
-                          
+                          <RadioGroup
+                            name="length"
+                            value={distance}
+                            // onChange={handleInputChange}
+                          >
+                            <FormControlLabel
+                              value="10mi"
+                              control={
+                                <Radio
+                                  checked={distance === "10mi" && checkText}
+                                  onClick={(e: any) => {
+                                    handleInputChange(e, values);
+                                  }}
+                                />
+                              }
+                              label="10 miles"
+                            />
+                            <FormControlLabel
+                              value="20mi"
+                              control={
+                                <Radio
+                                  onClick={(e: any) => {
+                                    handleInputChange(e, values);
+                                  }}
+                                  checked={distance === "20mi" && checkText}
+                                />
+                              }
+                              label="20 miles"
+                            />
+                            <FormControlLabel
+                              value="30mi"
+                              control={
+                                <Radio
+                                  onClick={(e: any) => {
+                                    handleInputChange(e, values);
+                                  }}
+                                  checked={distance === "30mi" && checkText}
+                                />
+                              }
+                              label="30 miles"
+                            />
+                          </RadioGroup>
                         </FormGroup>
                       </Grid>
                     </Collapse>
@@ -514,7 +556,6 @@ export default function ViewFacility() {
                       </IconButton>
                       Quality Score
                     </Paper>
-                    
                   </Box>
                   <Box>
                     <Paper
@@ -540,11 +581,9 @@ export default function ViewFacility() {
                           <KeyboardArrowDown sx={{ color: "white" }} />
                         )}
                       </IconButton>
-                     Cash Rates
+                      Cash Rates
                     </Paper>
-                    
                   </Box>
-                  
 
                   <Box>
                     <Paper
@@ -578,35 +617,34 @@ export default function ViewFacility() {
                         // name="distancefilter"
                         // value={distance}
                         >
-                         {/* {JSON.stringify(facilityType)} */}
-                         <RadioGroup
-                          name="length"
-                          value={facilityCheck}
-                        >
-                           {/* {JSON.stringify(facilityCheck)} */}
-                          {facilityType.map((type: any, i: any) => (
-                          
-                       
+                          {/* {JSON.stringify(facilityType)} */}
+                          <RadioGroup name="length" value={facilityCheck}>
+                            {/* {JSON.stringify(facilityCheck)} */}
+                            {facilityType.map((type: any, i: any) => (
                               <FormControlLabel
                                 key={i}
                                 value={type.facilityTypeId}
                                 control={
                                   <Radio
-                                    checked={facilityCheck===type.facilityTypeId && checkFacText
+                                    checked={
+                                      facilityCheck === type.facilityTypeId &&
+                                      checkFacText
                                     }
-                                    onClick={(e:any)=>{handleTypeInputChange(e,values)}}
+                                    onClick={(e: any) => {
+                                      handleTypeInputChange(e, values);
+                                    }}
                                     // onChange={(e:any)=>{
                                     //   console.log(e.target.value,e.target.checked)
-                                     
+
                                     // }}
                                     // onChange={(e: any) => {
                                     //   setCheckFacText(true)
                                     //   console.log(e.target.value)
                                     //   console.log(e.target.checked)
                                     //   if (facilityCheck!=="") {
-                                       
+
                                     //     if(distance===""){
-                                         
+
                                     //       filterFacilityType("noDistance",distance,facilityCheck,values).then(res=>{
                                     //         dispatch(dataSearch(res.data.data))
                                     //       }).catch(e=>console.log(e))
@@ -616,10 +654,9 @@ export default function ViewFacility() {
                                     //       }).catch(e=>console.log(e))
                                     //     }
                                     //     } else {
-                                        
-                                        
+
                                     //     if(distance ===""){
-                                         
+
                                     //       filterFacilityType("default",distance,facilityCheck,values).then(res=>{
                                     //         dispatch(dataSearch(res.data.data))
                                     //       }).catch(e=>console.log(e))
@@ -629,16 +666,15 @@ export default function ViewFacility() {
                                     //       }).catch(e=>console.log(e))
                                     //   }
                                     //    }
-                                      
+
                                     // }}
                                   />
                                 }
                                 label={type.item.split("-")[1]}
                                 labelPlacement="end"
                               />
-                           
-                          ))}
-</RadioGroup>
+                            ))}
+                          </RadioGroup>
                           {/* <FormControlLabel value="20mi"
                           control={<Checkbox
                             checked={distance === "20mi" && checkText}
@@ -815,8 +851,9 @@ export default function ViewFacility() {
                                 control={
                                   <Checkbox
                                     checked={distance === "10mi" && checkText}
-                                    onClick={(e: any) => {handleInputChange(e,values)}}
-                                    
+                                    onClick={(e: any) => {
+                                      handleInputChange(e, values);
+                                    }}
                                   />
                                 }
                                 label="10 miles"
@@ -827,8 +864,9 @@ export default function ViewFacility() {
                                 control={
                                   <Checkbox
                                     checked={distance === "20mi" && checkText}
-                                    onClick={(e: any) => {handleInputChange(e,values)}}
-                                  
+                                    onClick={(e: any) => {
+                                      handleInputChange(e, values);
+                                    }}
                                   />
                                 }
                                 label="20 miles"
@@ -839,8 +877,9 @@ export default function ViewFacility() {
                                 control={
                                   <Checkbox
                                     checked={distance === "30mi" && checkText}
-                                    onClick={(e: any) => {handleInputChange(e,values)}}
-                                   
+                                    onClick={(e: any) => {
+                                      handleInputChange(e, values);
+                                    }}
                                   />
                                 }
                                 label="30 miles"
@@ -929,7 +968,7 @@ export default function ViewFacility() {
                                 mb: "20px",
                               }}
                             >
-                              {dsearch.FacilityName}
+                              {dsearch?.FacilityDetails?.facilityName}
                             </Typography>
                             <Typography
                               sx={{
@@ -938,13 +977,9 @@ export default function ViewFacility() {
                                 mb: "20px",
                               }}
                             >
-                              {dsearch.FacilityDetails?.address?.addressLine1 +
-                                "," +
-                                dsearch.FacilityDetails?.address?.city +
-                                "," +
-                                dsearch.FacilityDetails?.address?.state +
-                                " - " +
-                                dsearch.FacilityDetails?.address?.zipCode}
+                              {dsearch.priceType === "facilityPrice"
+                                ? dsearch.FacilityDetails?.address?.addressLine1 +"," +dsearch.FacilityDetails?.address?.city +"," +dsearch.FacilityDetails?.address?.state +" - " +dsearch.FacilityDetails?.address?.zipCode
+                                : dsearch.FacilityDetails?.addressLine1 +"," +dsearch.FacilityDetails?.city +"," +dsearch.FacilityDetails?.state +" - " +dsearch.FacilityDetails?.zipCode}
                             </Typography>
                             <Typography
                               sx={{
@@ -953,7 +988,7 @@ export default function ViewFacility() {
                                 mb: "10px",
                               }}
                             >
-                              {dsearch.DiagnosisTestorServiceName}
+                              {dsearch.priceType==="facilityPrice"?dsearch.DiagnosisTestorServiceName:dsearch.serviceName}
                             </Typography>
                             <Typography
                               sx={{
@@ -977,8 +1012,8 @@ export default function ViewFacility() {
                               <Box
                                 sx={{
                                   borderRadius: "0.5rem",
-                                  padding: "0.5rem",
-                                  width: "100px",
+                                  padding: "0.8rem",
+                                  // width: "100px",
                                   fontSize: "1.35rem",
                                   backgroundColor: "#1C3988",
                                   color: "white",
@@ -986,7 +1021,7 @@ export default function ViewFacility() {
                                   textAlign: "center",
                                 }}
                               >
-                                $ {dsearch.FacilityPrices}
+                                $ {dsearch.priceType==="facilityPrice"?dsearch.FacilityPrices:dsearch.cashPrice}
                               </Box>
                               <Typography
                                 sx={{
@@ -995,7 +1030,7 @@ export default function ViewFacility() {
                                   // width: "100px",
                                 }}
                               >
-                                Average price
+                                {dsearch.priceType==="facilityPrice"?"Average Price":"Cash Price"}
                               </Typography>
                             </Grid>
                             <Grid
