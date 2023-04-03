@@ -62,14 +62,15 @@ const Patienthomepage = () => {
   }); 
   const onSubmit = (values: forminitialValues, actions: any) => {
  
-    axiosPrivate.get(`http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`)
-      .then((res) => {
-        console.log(res.data);
-        dispatch(dataSearch(res.data.data));
-        navigate(`/patient/search?q=${values.Service}&location=${values.Location}`);
-        console.log("i", res);
-      })
-      .catch((e) => console.log(e));
+    navigate(`/patient/search?q=${values.Service}&location=${values.Location}`);
+    // axiosPrivate.get(`http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`)
+    //   .then((res) => {
+    //     console.log(res.data);
+    //     //dispatch(dataSearch(res.data.data));
+    //     navigate(`/patient/search?q=${values.Service}&location=${values.Location}`);
+    //     console.log("i", res);
+    //   })
+     // .catch((e) => console.log(e));
     // axiosPrivate
     // .get(`http://210.18.155.251:5003/org`)
   };
