@@ -629,6 +629,22 @@ export default function ViewFacility() {
                       </IconButton>
                       Quality Score
                     </Paper>
+                    {/* <Collapse in={open3} timeout="auto" unmountOnExit>
+                    <Box sx={{ width: 250 }}>
+      <Slider
+      getAriaLabel={() => 'Quality score'}
+      value={value}
+       marks
+
+      onChange={sliderChange}
+        min={minPrice}
+        max={maxPrice}
+        valueLabelDisplay="auto"
+        getAriaValueText={valuetext}
+       
+            />
+    </Box>
+    </Collapse> */}
                   </Box>
                   <Box>
                     <Paper
@@ -653,9 +669,26 @@ export default function ViewFacility() {
                         ) : (
                           <KeyboardArrowDown sx={{ color: "white" }} />
                         )}
+         
                       </IconButton>
                       Cash Rates
                     </Paper>
+                    <Collapse in={open3} timeout="auto" unmountOnExit>
+                    <Box sx={{ width: 250 }}>
+      <Slider
+      getAriaLabel={() => 'Price range'}
+      value={value}
+       marks
+
+      onChange={sliderChange}
+        min={minPrice}
+        max={maxPrice}
+        valueLabelDisplay="auto"
+        getAriaValueText={valuetext}
+       
+            />
+    </Box>
+    </Collapse>
                   </Box>
 
                   <Box>
@@ -1009,6 +1042,7 @@ export default function ViewFacility() {
                       >
                         Cash Rates
                       </Typography>
+        
                     </MenuItem>
 
                     <MenuItem sx={{ width: 250, fontSize: "1.25rem" }}>
