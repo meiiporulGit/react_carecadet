@@ -106,18 +106,34 @@ export default function ViewFacility() {
     axiosPrivate
       .post(`/search`, postData)
       .then((res) => {
+        dispatch(dataSearch(res.data.data));
         setSearch(res.data.data);
         const maxFilter = Math.max(
-          ...res.data.data.map((fprice: any) => fprice.FacilityPrices)
+          ...res.data.data.map((fprice: any) => {
+            if(fprice.priceType==="facilityPrice"){
+              return fprice.FacilityPrices
+            }
+            else{
+              return fprice.cashPrice
+            }
+          })
         );
         console.log(maxFilter, "....maxPrice");
         setMaxPrice(maxFilter);
 
         const minFilter = Math.min(
-          ...res.data.data.map((fprice: any) => fprice.FacilityPrices)
+          ...res.data.data.map((fprice: any) =>  {
+            if(fprice.priceType==="facilityPrice"){
+              return fprice.FacilityPrices
+            }
+            else{
+              return fprice.cashPrice
+            }
+          })
         );
         console.log(minFilter, "....minPrice");
         setMinPrice(minFilter);
+
       })
       .catch((e) => console.log(e));
     const getFacilityType = async () => {
@@ -161,18 +177,32 @@ export default function ViewFacility() {
       .then((res) => {
         console.log(res.data);
         // setSearchqueryData(res.data.data)
-        // dispatch(dataSearch(res.data.data));
+        dispatch(dataSearch(res.data.data));
 
         setSearch(res.data.data);
         setSearchParams({ q: values.Service, location: values.Location });
-        const maxFilter = Math.max(
-          ...res.data.data.map((fprice: any) => fprice.FacilityPrices)
+        const maxFilter =     Math.max(
+          ...res.data.data.map((fprice: any) => {
+            if(fprice.priceType==="facilityPrice"){
+              return fprice.FacilityPrices
+            }
+            else{
+              return fprice.cashPrice
+            }
+          })
         );
         console.log(maxFilter, "....maxPrice");
         setMaxPrice(maxFilter);
 
         const minFilter = Math.min(
-          ...res.data.data.map((fprice: any) => fprice.FacilityPrices)
+          ...res.data.data.map((fprice: any) =>  {
+            if(fprice.priceType==="facilityPrice"){
+              return fprice.FacilityPrices
+            }
+            else{
+              return fprice.cashPrice
+            }
+          })
         );
         console.log(minFilter, "....minPrice");
         setMinPrice(minFilter);
@@ -366,9 +396,25 @@ export default function ViewFacility() {
     setValue(newValue as number[]);
     console.log("newValue", newValue);
     const pricefilter = searchData.filter((item: any) => {
-      return (
-        item.FacilityPrices >= newValue[0] && item.FacilityPrices <= newValue[1]
-      );
+      
+      // Math.min(
+      //   ...res.data.data.map((fprice: any) =>  {
+      //     if(fprice.priceType==="facilityPrice"){
+      //       return fprice.FacilityPrices
+      //     }
+      //     else{
+      //       return fprice.cashPrice
+      //     }
+      //   })
+      // );
+      if(item.priceType==="facilityPrice"){
+      return item.FacilityPrices >= newValue[0] && item.FacilityPrices <= newValue[1]
+      }
+      else{
+        console.log(".....",item.cashPrice)
+        return item.cashPrice >= newValue[0] && item.cashPrice <= newValue[1]
+
+      }
       // return item.some((dataItem:any)=> (dataItem.FacilityPrices >= newValue[0] && dataItem.FacilityPrices <= newValue[1]));
     });
     console.log("pricefilter", pricefilter);
@@ -879,18 +925,7 @@ export default function ViewFacility() {
                     </Collapse>
                   </Box>
                   {/* </Box> */}
-                  <Box sx={{ width: 300 }}>
-                    <Slider
-                      getAriaLabel={() => "Price range"}
-                      value={value}
-                      marks
-                      onChange={sliderChange}
-                      min={minPrice}
-                      max={maxPrice}
-                      valueLabelDisplay="auto"
-                      getAriaValueText={valuetext}
-                    />
-                  </Box>
+               
                 </Box>
                 <Grid item sx={{ display: { xs: "none" } }}>
                   <Box
