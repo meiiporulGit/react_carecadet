@@ -72,17 +72,19 @@ const Providerhomepage = () => {
     // alert(JSON.stringify(values, null, 2))
     actions.resetForm({
     values:initialValues
+    
     });
+    navigate(`/provider/search?q=${values.Service}&location=${values.Location}`);
     // axiosPrivate
     //   .get(`http://210.18.155.251:5003/search/?q=`)
-    axiosPrivate.get (`http://210.18.155.251:5003/search/negotiatedSearch?q=${values.Service}&location=${values.Location}&serviceCode=21`)
-      .then((res) => {
-        console.log(res.data);
-        dispatch(dataProviderSearch(res.data.data));
-        navigate(`/provider/search?q=${values.Service}&location=${values.Location}`);
-        console.log("i", res);
-      })
-      .catch((e) => console.log(e));
+    // axiosPrivate.get (`http://210.18.155.251:5003/search/negotiatedSearch?q=${values.Service}&location=${values.Location}&serviceCode=21`)
+    //   .then((res) => {
+    //     console.log(res.data);
+    //     dispatch(dataProviderSearch(res.data.data));
+    //     navigate(`/provider/search?q=${values.Service}&location=${values.Location}`);
+    //     console.log("i", res);
+    //   })
+    //   .catch((e) => console.log(e));
   };
   const open = Boolean(anchorEl);
   const handleClick = (event: any) => {

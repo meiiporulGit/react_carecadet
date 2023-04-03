@@ -78,10 +78,45 @@ const [checkText,setCheckText]=useState<boolean>(false)
 // console.log('serviceValue',serviceValue)
 const [searchqueryData,setSearchqueryData] = useState(searchData);
 console.log(searchqueryData,'searchquerydata')
-const [search,setSearch] = useState()
-  console.log(distance, "datinfo");
+
+
+const [search,setSearch] = useState<any>([])
+const [facilityType,setFacilityType]=useState<any>([])
+const [checkFacText,setCheckFacText]=useState<any>(false)
+const [facilityCheck,setFacilityCheck]=useState<any>("")
+
+
   const dispatch = useAppDispatch();
 
+  const q=searchParams.get('q')
+  const locationQ=searchParams.get('location')
+
+
+  useEffect(() => {
+    const postData = { q: q, location: locationQ };
+
+    axiosPrivate
+      .post(
+        `http://210.18.155.251:5003/search/negotiatedSearch`,postData)
+      .then((res) => {
+        dispatch(dataProviderSearch(res.data.data));
+        setSearch(res.data.data);
+  
+
+      })
+      .catch((e) => console.log(e));
+    const getFacilityType = async () => {
+      await axiosPrivate
+        .get(`/FacilityType/findfacilityType`)
+        .then((res) => {
+          console.log(res.data, "facilityType");
+          setFacilityType(res.data);
+          // dispatch(facilityTypeInfo(res.data))
+        })
+        .catch((e) => console.log(e));
+    };
+    getFacilityType();
+  }, []);
   
   const handleOpenNavMenu = (event: any) => {
     setAnchorElNav(event.currentTarget);
@@ -95,8 +130,7 @@ const [search,setSearch] = useState()
     Location: any;
   }
 
-  const q=searchParams.get('q')
-  const locationQ=searchParams.get('location')
+
 
   const initialValues: forminitialValues = {
     Service: q,
@@ -109,18 +143,17 @@ const [search,setSearch] = useState()
     Location: Yup.string().required("Required"),
   });
   const onSubmit = (values: forminitialValues, actions: any) => {
-
+    const postData={q:values.Service,location:values.Location}
     axiosPrivate
-      .get(
-        `http://210.18.155.251:5003/search/negotiatedSearch?q=${values.Service}&location=${values.Location}&serviceCode=21`
-      )
+      .post(
+        `/search/negotiatedSearch`,postData)
       .then((res) => {
         console.log(res.data,"checkT");
-        // setSearchqueryData(res.data.data)
+      
         dispatch(dataProviderSearch(res.data.data));
+        setSearch(res.data.data)
         setSearchParams({q:values.Service,location:values.Location})
-        // navigate("/patient/search");
-        console.log("searchi", res);
+     
       })
       .catch((e) => console.log(e));
 
@@ -144,16 +177,171 @@ const [search,setSearch] = useState()
     setPage(0);
   };
 
+  const filterFacilityType = (
+    filter: any,
+    dis?: any,
+    type?: any,
+    details?: any
+  ) => {
+    console.log(filter, dis, type, details, "axiosCheck");
+    const noDistance = {
+      q: details.Service,
+      location: details.Location,
+      facilityType: type,
+    };
+    const noFacilityType = {
+      q: details.Service,
+      location: details.Location,
+      distance: dis,
+    };
+    const facAndDistance = {
+      q: details.Service,
+      location: details.Location,
+      distance: dis,
+      facilityType: type,
+    };
+    const noFacAndDistance = { q: details.Service, location: details.Location };
+    switch (filter) {
+      case "noDistance":
+        return axiosPrivate.post(`/search/negotiatedSearch`, noDistance);
+      case "noFacilityType":
+        return axiosPrivate.post(`/search/negotiatedSearch`, noFacilityType);
+      case "facAndDistance":
+        return axiosPrivate.post(`/search/negotiatedSearch`, facAndDistance);
+      default:
+        return axiosPrivate.post(`/search/negotiatedSearch`, noFacAndDistance);
+    }
+  };
 
-  function handleInputChange(event: any) {
+
+  function handleInputChange(event: any, searchValue: any) {
+    let radioDistance = false;
     if (event.target.value === distance) {
-     setCheckText(false)
-      setDistance("");     
+      setCheckText(false);
+      setDistance("");
+      radioDistance = false;
     } else {
-      setCheckText(true)
+      setCheckText(true);
       setDistance(event.target.value);
+      radioDistance = true;
+    }
+    if (radioDistance) {
+      if (facilityCheck === "") {
+        filterFacilityType(
+          "noFacilityType",
+          event.target.value,
+          facilityCheck,
+          searchValue
+        )
+          .then((res) => {
+            // dispatch(dataSearch(res.data.data));
+            setSearch(res.data.data);
+          })
+          .catch((e) => console.log(e));
+      } else {
+        filterFacilityType(
+          "facAndDistance",
+          event.target.value,
+          facilityCheck,
+          searchValue
+        )
+          .then((res) => {
+            // dispatch(dataSearch(res.data.data));
+            setSearch(res.data.data);
+          })
+          .catch((e) => console.log(e));
+      }
+    } else {
+      if (facilityCheck === "") {
+        filterFacilityType(
+          "default",
+          event.target.value,
+          facilityCheck,
+          searchValue
+        )
+          .then((res) => {
+            // dispatch(dataSearch(res.data.data));
+            setSearch(res.data.data);
+          })
+          .catch((e) => console.log(e));
+      } else {
+        filterFacilityType(
+          "noDistance",
+          event.target.value,
+          facilityCheck,
+          searchValue
+        )
+          .then((res) => {
+            // dispatch(dataSearch(res.data.data));
+            setSearch(res.data.data);
+          })
+          .catch((e) => console.log(e));
+      }
     }
   }
+
+  function handleTypeInputChange(event: any, searchValue: any) {
+    var checkFacility = false;
+    if (event.target.value === facilityCheck) {
+      setCheckFacText(false);
+      setFacilityCheck("");
+      checkFacility = false;
+    } else {
+      setCheckFacText(true);
+      setFacilityCheck(event.target.value);
+      checkFacility = true;
+    }
+    if (checkFacility) {
+      if (distance === "") {
+        filterFacilityType(
+          "noDistance",
+          distance,
+          event.target.value,
+          searchValue
+        )
+          .then((res) => {
+            // dispatch(dataSearch(res.data.data));
+            setSearch(res.data.data);
+          })
+          .catch((e) => console.log(e));
+      } else {
+        filterFacilityType(
+          "facAndDistance",
+          distance,
+          event.target.value,
+          searchValue
+        )
+          .then((res) => {
+            // dispatch(dataSearch(res.data.data));
+            setSearch(res.data.data);
+          })
+          .catch((e) => console.log(e));
+      }
+    } else {
+      if (distance === "") {
+        filterFacilityType("default", distance, event.target.value, searchValue)
+          .then((res) => {
+            // dispatch(dataSearch(res.data.data));
+            setSearch(res.data.data);
+          })
+          .catch((e) => console.log(e));
+      } else {
+        filterFacilityType(
+          "noFacilityType",
+          distance,
+          event.target.value,
+          searchValue
+        )
+          .then((res) => {
+            // dispatch(dataSearch(res.data.data));
+            setSearch(res.data.data);
+          })
+          .catch((e) => console.log(e));
+      }
+    }
+  }
+
+
 
   return (
     <Box sx={{ backgroundColor: "primary.light", padding: "1.8rem" }}>
@@ -187,8 +375,10 @@ const [search,setSearch] = useState()
                   placeholder="Search Service"
                   type="text"
                   onChange={(e:any)=>{
-                    setCheckText(false)
-                    setFieldValue("Service",e.target.value)
+                    setCheckText(false);
+                    setCheckFacText(false);
+                    setFieldValue("Service", e.target.value);
+                    setFacilityCheck("");
                   }}
                   fullWidth={true}
                   sx={{
@@ -211,30 +401,37 @@ const [search,setSearch] = useState()
                 />
               </Grid>
               <Grid item md={4}xs={12}>
-                <FormTextField
-                  container={TextField}
-                  name="Location"
-                  placeholder="Location"
-                  type="text"
-                  fullWidth={false}
-                  sx={{
-                    borderRadius: 1,
-                    "&::placeholder": {
-                      fontSize: "1.1rem",
-                      color: "black",
-                    },
-                    ".MuiInputBase-input": {
-                      background: "white",
-                    },
-                    ".MuiFormLabel-root ": {
-                      letterSpacing: "0.2rem",
-                      fontSize: "0.8rem",
-                    },
-                    ".MuiInputLabel-shrink": {
-                      letterSpacing: 0,
-                    },
-                  }}
-                />
+              <Field
+                    as={TextField}
+                    name="Location"
+                    value={values.Location}
+                    placeholder="Location"
+                    type="text"
+                    onChange={(e: any) => {
+                      setCheckText(false);
+                      setCheckFacText(false);
+                      setFieldValue("Location", e.target.value);
+                      setFacilityCheck("");
+                    }}
+                    fullWidth={true}
+                    sx={{
+                      borderRadius: 1,
+                      "&::placeholder": {
+                        fontSize: "1.1rem",
+                        color: "black",
+                      },
+                      ".MuiInputBase-input": {
+                        background: "white",
+                      },
+                      ".MuiFormLabel-root ": {
+                        letterSpacing: "0.2rem",
+                        fontSize: "0.8rem",
+                      },
+                      ".MuiInputLabel-shrink": {
+                        letterSpacing: 0,
+                      },
+                    }}
+                  />
               </Grid>
               <Grid item md={2} xs={12}>
                 <Button
@@ -312,110 +509,56 @@ const [search,setSearch] = useState()
                     Distance
                   </Paper>
                   <Collapse in={open} timeout="auto" unmountOnExit>
-                    <Grid item xs={12}>
-                      <FormGroup
-                      // name="distancefilter"
-                      // value={distance}
-                      >
-                        <FormControlLabel value="10mi"
-                          control={<Checkbox
-                            checked={distance === "10mi" && checkText }
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "10mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 10mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "10miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e)) 
-                                 : axiosPrivate
-                                  .get(
-                                    `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                  )
-                                  .then((res) => {
-                                    console.log(res.data);
-                                    // setSearchqueryData(res.data.data)
-                                     dispatch(dataProviderSearch(res.data.data));
-                                    // navigate("/patient/search");
-                                    console.log("searchi", res);
-                                  })
-                                  .catch((e) => console.log(e))
-                            }}
-                          />}
-                          label="10 miles" 
-                          labelPlacement="end"/>
-                        <FormControlLabel value="20mi"
-                          control={<Checkbox
-                            checked={distance === "20mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "20mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 20mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "20miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataProviderSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="20 miles" labelPlacement="end"
-                          />
-                        <FormControlLabel value="30mi"
-                          control={<Checkbox
-                            checked={distance === "30mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "30mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "30miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataProviderSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="30 miles" 
-                          labelPlacement="end" />
-
-                      </FormGroup>
-                    </Grid>
-                 
-                  </Collapse>
+                      <Grid item xs={12}>
+                        <FormGroup
+                        // name="distancefilter"
+                        // value={distance}
+                        >
+                          <RadioGroup
+                            name="length"
+                            value={distance}
+                            // onChange={handleInputChange}
+                          >
+                            <FormControlLabel
+                              value="10mi"
+                              control={
+                                <Radio
+                                  checked={distance === "10mi" && checkText}
+                                  onClick={(e: any) => {
+                                    handleInputChange(e, values);
+                                  }}
+                                />
+                              }
+                              label="10 miles"
+                            />
+                            <FormControlLabel
+                              value="20mi"
+                              control={
+                                <Radio
+                                  onClick={(e: any) => {
+                                    handleInputChange(e, values);
+                                  }}
+                                  checked={distance === "20mi" && checkText}
+                                />
+                              }
+                              label="20 miles"
+                            />
+                            <FormControlLabel
+                              value="30mi"
+                              control={
+                                <Radio
+                                  onClick={(e: any) => {
+                                    handleInputChange(e, values);
+                                  }}
+                                  checked={distance === "30mi" && checkText}
+                                />
+                              }
+                              label="30 miles"
+                            />
+                          </RadioGroup>
+                        </FormGroup>
+                      </Grid>
+                    </Collapse>
                 </Box>
                 <Box>
                   <Paper sx={{
@@ -689,142 +832,7 @@ const [search,setSearch] = useState()
                     </IconButton>
                     Insurance Name
                   </Paper>
-                  <Collapse in={open1} timeout="auto" unmountOnExit>
-                    <Grid item xs={12}>
-                      <FormGroup
-                      // name="distancefilter"
-                      // value={distance}
-                      >
-                        <FormControlLabel value="10mi"
-                          control={<Checkbox
-                            checked={distance === "10mi" && checkText }
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "10mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 10mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "10miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e)) 
-                                 : axiosPrivate
-                                  .get(
-                                    `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                  )
-                                  .then((res) => {
-                                    console.log(res.data);
-                                    // setSearchqueryData(res.data.data)
-                                     dispatch(dataProviderSearch(res.data.data));
-                                    // navigate("/patient/search");
-                                    console.log("searchi", res);
-                                  })
-                                  .catch((e) => console.log(e))
-                            }}
-                          />}
-                          label="United Health care" 
-                          labelPlacement="end"/>
-                        <FormControlLabel value="20mi"
-                          control={<Checkbox
-                            checked={distance === "20mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "20mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 20mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "20miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataProviderSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="Cigna" labelPlacement="end"
-                          />
-                        <FormControlLabel value="30mi"
-                          control={<Checkbox
-                            checked={distance === "30mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "30mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "30miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataProviderSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="Aetna" 
-                          labelPlacement="end" />
-                           <FormControlLabel value="30mi"
-                          control={<Checkbox
-                            checked={distance === "30mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "30mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "30miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataProviderSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="Anthem" 
-                          labelPlacement="end" />
-
-                      </FormGroup>
-                    </Grid>
-                 
-                  </Collapse>
+                  
                 </Box>
                 <Box>
                   <Paper sx={{
@@ -847,44 +855,70 @@ const [search,setSearch] = useState()
                     Facility Type
                   </Paper>
                   <Collapse in={open2} timeout="auto" unmountOnExit>
-                    <Grid item xs={12}>
-                      <FormGroup
-                      // name="distancefilter"
-                      // value={distance}
-                      >
-                        <FormControlLabel value="10mi"
-                          control={<Checkbox
-                            checked={distance === "10mi" && checkText }
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "10mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 10mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "10miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e)) 
-                                 : axiosPrivate
-                                  .get(
-                                    `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                  )
-                                  .then((res) => {
-                                    console.log(res.data);
-                                    // setSearchqueryData(res.data.data)
-                                     dispatch(dataProviderSearch(res.data.data));
-                                    // navigate("/patient/search");
-                                    console.log("searchi", res);
-                                  })
-                                  .catch((e) => console.log(e))
-                            }}
-                          />}
-                          label="Facility Type" 
-                          labelPlacement="end"/>
-                        <FormControlLabel value="20mi"
+                      <Grid item xs={12}>
+                        <FormGroup
+                        // name="distancefilter"
+                        // value={distance}
+                        >
+                          {/* {JSON.stringify(facilityType)} */}
+                          <RadioGroup name="length" value={facilityCheck}>
+                            {/* {JSON.stringify(facilityCheck)} */}
+                            {facilityType.map((type: any, i: any) => (
+                              <FormControlLabel
+                                key={i}
+                                value={type.facilityTypeId}
+                                control={
+                                  <Radio
+                                    checked={
+                                      facilityCheck === type.facilityTypeId &&
+                                      checkFacText
+                                    }
+                                    onClick={(e: any) => {
+                                      handleTypeInputChange(e, values);
+                                    }}
+                                    // onChange={(e:any)=>{
+                                    //   console.log(e.target.value,e.target.checked)
+
+                                    // }}
+                                    // onChange={(e: any) => {
+                                    //   setCheckFacText(true)
+                                    //   console.log(e.target.value)
+                                    //   console.log(e.target.checked)
+                                    //   if (facilityCheck!=="") {
+
+                                    //     if(distance===""){
+
+                                    //       filterFacilityType("noDistance",distance,facilityCheck,values).then(res=>{
+                                    //         dispatch(dataSearch(res.data.data))
+                                    //       }).catch(e=>console.log(e))
+                                    //     }else{
+                                    //       filterFacilityType("facAndDistance",distance,facilityCheck,values).then(res=>{
+                                    //         dispatch(dataSearch(res.data.data))
+                                    //       }).catch(e=>console.log(e))
+                                    //     }
+                                    //     } else {
+
+                                    //     if(distance ===""){
+
+                                    //       filterFacilityType("default",distance,facilityCheck,values).then(res=>{
+                                    //         dispatch(dataSearch(res.data.data))
+                                    //       }).catch(e=>console.log(e))
+                                    //     }else{
+                                    //       filterFacilityType("noFacilityTy",distance,facilityCheck,values).then(res=>{
+                                    //         dispatch(dataSearch(res.data.data))
+                                    //       }).catch(e=>console.log(e))
+                                    //   }
+                                    //    }
+
+                                    // }}
+                                  />
+                                }
+                                label={type.item.split("-")[1]}
+                                labelPlacement="end"
+                              />
+                            ))}
+                          </RadioGroup>
+                          {/* <FormControlLabel value="20mi"
                           control={<Checkbox
                             checked={distance === "20mi" && checkText}
                             onClick={handleInputChange}
@@ -896,7 +930,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "20miles");
-                                  dispatch(dataProviderSearch(res.data.data))
+                                  dispatch(dataSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e))
@@ -907,7 +941,7 @@ const [search,setSearch] = useState()
                                 .then((res) => {
                                   console.log(res.data);
                                   // setSearchqueryData(res.data.data)
-                                   dispatch(dataProviderSearch(res.data.data));
+                                   dispatch(dataSearch(res.data.data));
                                   // navigate("/patient/search");
                                   console.log("searchi", res);
                                 })
@@ -927,7 +961,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "30miles");
-                                  dispatch(dataProviderSearch(res.data.data))
+                                  dispatch(dataSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e))
@@ -938,7 +972,7 @@ const [search,setSearch] = useState()
                                 .then((res) => {
                                   console.log(res.data);
                                   // setSearchqueryData(res.data.data)
-                                   dispatch(dataProviderSearch(res.data.data));
+                                   dispatch(dataSearch(res.data.data));
                                   // navigate("/patient/search");
                                   console.log("searchi", res);
                                 })
@@ -958,7 +992,7 @@ const [search,setSearch] = useState()
                                 )
                                 .then((res) => {
                                   console.log(res.data, "30miles");
-                                  dispatch(dataProviderSearch(res.data.data))
+                                  dispatch(dataSearch(res.data.data))
                                   // setSearchqueryData(res.data.data)
                                 })
                                 .catch((e) => console.log(e))
@@ -969,19 +1003,17 @@ const [search,setSearch] = useState()
                                 .then((res) => {
                                   console.log(res.data);
                                   // setSearchqueryData(res.data.data)
-                                   dispatch(dataProviderSearch(res.data.data));
+                                   dispatch(dataSearch(res.data.data));
                                   // navigate("/patient/search");
                                   console.log("searchi", res);
                                 })
                                 .catch((e) => console.log(e))
                             }} />}
                           label="Anthem" 
-                          labelPlacement="end" />
-
-                      </FormGroup>
-                    </Grid>
-                 
-                  </Collapse>
+                          labelPlacement="end" /> */}
+                        </FormGroup>
+                      </Grid>
+                    </Collapse>
                 </Box>
                 <Box>
                   <Paper sx={{
@@ -1003,142 +1035,7 @@ const [search,setSearch] = useState()
                     </IconButton>
                     Service Location
                   </Paper>
-                  <Collapse in={open3} timeout="auto" unmountOnExit>
-                    <Grid item xs={12}>
-                      <FormGroup
-                      // name="distancefilter"
-                      // value={distance}
-                      >
-                        <FormControlLabel value="10mi"
-                          control={<Checkbox
-                            checked={distance === "10mi" && checkText }
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "10mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 10mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "10miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e)) 
-                                 : axiosPrivate
-                                  .get(
-                                    `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                  )
-                                  .then((res) => {
-                                    console.log(res.data);
-                                    // setSearchqueryData(res.data.data)
-                                     dispatch(dataProviderSearch(res.data.data));
-                                    // navigate("/patient/search");
-                                    console.log("searchi", res);
-                                  })
-                                  .catch((e) => console.log(e))
-                            }}
-                          />}
-                          label="In-Patient hospital" 
-                          labelPlacement="end"/>
-                        <FormControlLabel value="20mi"
-                          control={<Checkbox
-                            checked={distance === "20mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "20mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 20mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "20miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataProviderSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="Office" labelPlacement="end"
-                          />
-                        <FormControlLabel value="30mi"
-                          control={<Checkbox
-                            checked={distance === "30mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "30mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "30miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataProviderSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="Home" 
-                          labelPlacement="end" />
-                           <FormControlLabel value="30mi"
-                          control={<Checkbox
-                            checked={distance === "30mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "30mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "30miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataProviderSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="Emergency room-Hospital" 
-                          labelPlacement="end" />
-
-                      </FormGroup>
-                    </Grid>
-                 
-                  </Collapse>
+                  
                 </Box>
                 {/* </Box> */}
               </Box>
@@ -1185,7 +1082,7 @@ const [search,setSearch] = useState()
       >
  {/* <ClearIcon onClick={handleCloseNavMenu}/> */}
        
-          <MenuItem onClick={handleCloseNavMenu} sx={{ width: 250,fontSize: "1.25rem" }}>
+          <MenuItem  sx={{ width: 250,fontSize: "1.25rem" }}>
          
                <Box>
                   {/* <Paper sx={{
@@ -1204,110 +1101,59 @@ const [search,setSearch] = useState()
                     Distance
                   {/* </Paper> */}
                   <Collapse in={open} timeout="auto" unmountOnExit>
-                    <Grid item xs={12}>
-                      <FormGroup
-                      // name="distancefilter"
-                      // value={distance}
-                      >
-                        <FormControlLabel value="10mi"
-                          control={<Checkbox
-                            checked={distance === "10mi" && checkText }
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "10mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 10mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "10miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e)) 
-                                 : axiosPrivate
-                                  .get(
-                                    `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                  )
-                                  .then((res) => {
-                                    console.log(res.data);
-                                    // setSearchqueryData(res.data.data)
-                                     dispatch(dataProviderSearch(res.data.data));
-                                    // navigate("/patient/search");
-                                    console.log("searchi", res);
-                                  })
-                                  .catch((e) => console.log(e))
-                            }}
-                          />}
-                          label="10 miles" 
-                          labelPlacement="end"/>
-                        <FormControlLabel value="20mi"
-                          control={<Checkbox
-                            checked={distance === "20mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "20mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 20mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "20miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataProviderSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="20 miles" labelPlacement="end"
-                          />
-                        <FormControlLabel value="30mi"
-                          control={<Checkbox
-                            checked={distance === "30mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "30mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "30miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataProviderSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="30 miles" 
-                          labelPlacement="end" />
-
-                      </FormGroup>
-                    </Grid>
-                 
-                  </Collapse>
+                          <Grid item xs={12}>
+                            <FormGroup
+                            // name="distancefilter"
+                            // value={distance}
+                            >
+                              <RadioGroup
+                                name="length"
+                                value={distance}
+                                // onChange={handleInputChange}
+                              >
+                                <FormControlLabel
+                                  value="10mi"
+                                  control={
+                                    <Radio
+                                      checked={distance === "10mi" && checkText}
+                                      onClick={(e: any) => {
+                                        handleInputChange(e, values);
+                                        handleCloseNavMenu();
+                                      }}
+                                    />
+                                  }
+                                  label="10 miles"
+                                />
+                                <FormControlLabel
+                                  value="20mi"
+                                  control={
+                                    <Radio
+                                      onClick={(e: any) => {
+                                        handleInputChange(e, values);
+                                        handleCloseNavMenu();
+                                      }}
+                                      checked={distance === "20mi" && checkText}
+                                    />
+                                  }
+                                  label="20 miles"
+                                />
+                                <FormControlLabel
+                                  value="30mi"
+                                  control={
+                                    <Radio
+                                      onClick={(e: any) => {
+                                        handleInputChange(e, values);
+                                        handleCloseNavMenu();
+                                      }}
+                                      checked={distance === "30mi" && checkText}
+                                    />
+                                  }
+                                  label="30 miles"
+                                />
+                              </RadioGroup>
+                            </FormGroup>
+                          </Grid>
+                        </Collapse>
                 </Box>
             
           </MenuItem>
@@ -1355,17 +1201,185 @@ const [search,setSearch] = useState()
           </MenuItem>
     
           <MenuItem onClick={handleCloseNavMenu} sx={{ width: 250 }}>
-            <Typography
-              sx={{
-                // color: location === "serviceView" ? "#4D77FF" : "default",
-                fontSize: "1.1rem",
-                // borderBottom: location === "serviceView" ? "3px solid blue" : "none",
-                padding: "0.3rem",
-                cursor: "pointer"
-              }}
-            >
-              Facility Type
-            </Typography>
+          <Box>
+                        {/* <Paper sx={{
+                    fontSize: "1rem",
+                    borderRadius: "20px",
+                    backgroundColor: "#CDDBF8",
+                    mb: "10px"
+                  }}> */}
+                        <IconButton
+                          sx={{ fontSize: "1rem" }}
+                          aria-label="expand row"
+                          size="small"
+                          onClick={() => setOpen2(!open2)}
+                        >
+                          {open2 ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                        </IconButton>
+                        Facility Type
+                        {/* </Paper> */}
+                        <Collapse in={open2} timeout="auto" unmountOnExit>
+                          <Grid item xs={12}>
+                            <FormGroup
+                            // name="distancefilter"
+                            // value={distance}
+                            >
+                              {/* {JSON.stringify(facilityType)} */}
+                              <RadioGroup name="length" value={facilityCheck}>
+                                {/* {JSON.stringify(facilityCheck)} */}
+                                {facilityType.map((type: any, i: any) => (
+                                  <FormControlLabel
+                                    key={i}
+                                    value={type.facilityTypeId}
+                                    control={
+                                      <Radio
+                                        checked={
+                                          facilityCheck ===
+                                            type.facilityTypeId && checkFacText
+                                        }
+                                        onClick={(e: any) => {
+                                          handleTypeInputChange(e, values);
+                                          handleCloseNavMenu();
+                                        }}
+                                        // onChange={(e:any)=>{
+                                        //   console.log(e.target.value,e.target.checked)
+
+                                        // }}
+                                        // onChange={(e: any) => {
+                                        //   setCheckFacText(true)
+                                        //   console.log(e.target.value)
+                                        //   console.log(e.target.checked)
+                                        //   if (facilityCheck!=="") {
+
+                                        //     if(distance===""){
+
+                                        //       filterFacilityType("noDistance",distance,facilityCheck,values).then(res=>{
+                                        //         dispatch(dataSearch(res.data.data))
+                                        //       }).catch(e=>console.log(e))
+                                        //     }else{
+                                        //       filterFacilityType("facAndDistance",distance,facilityCheck,values).then(res=>{
+                                        //         dispatch(dataSearch(res.data.data))
+                                        //       }).catch(e=>console.log(e))
+                                        //     }
+                                        //     } else {
+
+                                        //     if(distance ===""){
+
+                                        //       filterFacilityType("default",distance,facilityCheck,values).then(res=>{
+                                        //         dispatch(dataSearch(res.data.data))
+                                        //       }).catch(e=>console.log(e))
+                                        //     }else{
+                                        //       filterFacilityType("noFacilityTy",distance,facilityCheck,values).then(res=>{
+                                        //         dispatch(dataSearch(res.data.data))
+                                        //       }).catch(e=>console.log(e))
+                                        //   }
+                                        //    }
+
+                                        // }}
+                                      />
+                                    }
+                                    label={type.item.split("-")[1]}
+                                    labelPlacement="end"
+                                  />
+                                ))}
+                              </RadioGroup>
+                              {/* <FormControlLabel value="20mi"
+                          control={<Checkbox
+                            checked={distance === "20mi" && checkText}
+                            onClick={handleInputChange}
+                            onChange={() => {
+                              distance != "20mi" ?
+                              axiosPrivate
+                                .get(
+                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 20mi`
+                                )
+                                .then((res) => {
+                                  console.log(res.data, "20miles");
+                                  dispatch(dataSearch(res.data.data))
+                                  // setSearchqueryData(res.data.data)
+                                })
+                                .catch((e) => console.log(e))
+                                :axiosPrivate
+                                .get(
+                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
+                                )
+                                .then((res) => {
+                                  console.log(res.data);
+                                  // setSearchqueryData(res.data.data)
+                                   dispatch(dataSearch(res.data.data));
+                                  // navigate("/patient/search");
+                                  console.log("searchi", res);
+                                })
+                                .catch((e) => console.log(e))
+                            }} />}
+                          label="Hospital" labelPlacement="end"
+                          />
+                        <FormControlLabel value="30mi"
+                          control={<Checkbox
+                            checked={distance === "30mi" && checkText}
+                            onClick={handleInputChange}
+                            onChange={() => {
+                              distance != "30mi" ?
+                              axiosPrivate
+                                .get(
+                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
+                                )
+                                .then((res) => {
+                                  console.log(res.data, "30miles");
+                                  dispatch(dataSearch(res.data.data))
+                                  // setSearchqueryData(res.data.data)
+                                })
+                                .catch((e) => console.log(e))
+                                :axiosPrivate
+                                .get(
+                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
+                                )
+                                .then((res) => {
+                                  console.log(res.data);
+                                  // setSearchqueryData(res.data.data)
+                                   dispatch(dataSearch(res.data.data));
+                                  // navigate("/patient/search");
+                                  console.log("searchi", res);
+                                })
+                                .catch((e) => console.log(e))
+                            }} />}
+                          label="Urgent care" 
+                          labelPlacement="end" />
+                           <FormControlLabel value="30mi"
+                          control={<Checkbox
+                            checked={distance === "30mi" && checkText}
+                            onClick={handleInputChange}
+                            onChange={() => {
+                              distance != "30mi" ?
+                              axiosPrivate
+                                .get(
+                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
+                                )
+                                .then((res) => {
+                                  console.log(res.data, "30miles");
+                                  dispatch(dataSearch(res.data.data))
+                                  // setSearchqueryData(res.data.data)
+                                })
+                                .catch((e) => console.log(e))
+                                :axiosPrivate
+                                .get(
+                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
+                                )
+                                .then((res) => {
+                                  console.log(res.data);
+                                  // setSearchqueryData(res.data.data)
+                                   dispatch(dataSearch(res.data.data));
+                                  // navigate("/patient/search");
+                                  console.log("searchi", res);
+                                })
+                                .catch((e) => console.log(e))
+                            }} />}
+                          label="Anthem" 
+                          labelPlacement="end" /> */}
+                            </FormGroup>
+                          </Grid>
+                        </Collapse>
+                      </Box>
           </MenuItem>
           <MenuItem onClick={handleCloseNavMenu}  sx={{ width: 250 }}>
             <Typography
@@ -1387,7 +1401,7 @@ const [search,setSearch] = useState()
               </Grid>
             <Grid item md={9} sx={{display:{xs:"none",md:"block"}, backgroundColor: "#E5EEF7", padding: "4rem" }}>
               {/* {select === 'searchdata' ?                */}
-              {searchData.map((dsearch: any, i: any) => (
+              {search.map((dsearch: any, i: any) => (
                 <div key={i}>
                   <Paper elevation={3}>
                     <Card
@@ -1495,7 +1509,7 @@ const [search,setSearch] = useState()
             </Grid>
           </Grid>
           <Box sx={{ display: { xs: "flex", md: "none" }, flexDirection: "column" }}>
-            {searchData.map((dsearch: any, i: any)  => (
+            {search.map((dsearch: any, i: any)  => (
               <><Paper sx={{ padding: "0.5rem", m: "0.2rem", fontSize: "0.9rem" }}>
 
                 <IconButton onClick={() => setOpen(open === i ? -1 : i)}>
