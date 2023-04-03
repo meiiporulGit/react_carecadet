@@ -28,6 +28,7 @@ import {
   Paper,
   Grid,
   TextField,
+  Slider
 } from "@mui/material";
 
 import { Formik, Form, ErrorMessage, Field } from "formik";
@@ -63,6 +64,7 @@ import {
 import { values } from "lodash";
 import SearchNav from "../../ProtectedRoutes/SearchNav";
 
+
 export default function ViewFacility() {
   const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
@@ -79,7 +81,10 @@ export default function ViewFacility() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [data, setData] = useState([] as forminitialValues[]);
-  // const [service, setService] = useState();
+  const [service, setService] = useState(false);
+  
+  const [search, setSearch] = useState();
+
   const searchData = useAppSelector((state) => state.homeReducer.searchData);
 
   // const serviceValue = useAppSelector((state) => state.homeReducer);
@@ -89,6 +94,7 @@ export default function ViewFacility() {
   // const [search, setSearch] = useState();
   const [facilityType, setFacilityType] = useState<any>([]);
   const [facilityCheck, setFacilityCheck] = useState<any>("");
+  const [value, setValue] =useState<number[]>([20, 37]);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -306,7 +312,31 @@ export default function ViewFacility() {
       }
     }
   }
-
+  function sliderChange(event:Event,newValue:any){
+    setService(true)
+    setValue(newValue as number[]);
+    console.log("newValue",newValue)
+   const pricefilter= searchData.filter((item:any)=> {
+     
+      return item.FacilityPrices >= newValue[0] && item.FacilityPrices <= newValue[1]
+      // return item.some((dataItem:any)=> (dataItem.FacilityPrices >= newValue[0] && dataItem.FacilityPrices <= newValue[1])); 
+    })
+  console.log("pricefilter",pricefilter) 
+  setSearch(pricefilter)
+  // dispatch(dataSearch(pricefilter))
+  }
+  
+  function valuetext(userValue: number) {
+    return `${userValue}$`;
+    
+  }
+    
+  const maxPrice = Math.max(...searchData.map((fprice:any)=>fprice.FacilityPrices));
+  console.log(maxPrice,"....maxPrice")
+  
+  const minPrice = Math.min(...searchData.map((fprice:any)=>fprice.FacilityPrices));
+  console.log(minPrice,"....minPrice")
+  
   return (
     <Box sx={{ backgroundColor: "primary.light", padding: "1.8rem" }}>
       <Formik
@@ -773,6 +803,20 @@ export default function ViewFacility() {
                     </Collapse>
                   </Box>
                   {/* </Box> */}
+                  <Box sx={{ width: 300 }}>
+      <Slider
+      getAriaLabel={() => 'Price range'}
+      value={value}
+       marks
+
+      onChange={sliderChange}
+        min={minPrice}
+        max={maxPrice}
+        valueLabelDisplay="auto"
+        getAriaValueText={valuetext}
+       
+            />
+    </Box>
                 </Box>
                 <Grid item sx={{ display: { xs: "none" } }}>
                   <Box
