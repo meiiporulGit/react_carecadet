@@ -95,7 +95,7 @@ export default function ViewFacility() {
   // const [search, setSearch] = useState();
   const [facilityType, setFacilityType] = useState<any>([]);
   const [facilityCheck, setFacilityCheck] = useState<any>("");
-  const [value, setValue] = useState<number[]>([20, 37]);
+  const [value, setValue] = useState<number[]>([0, 0]);
   const dispatch = useAppDispatch();
 
   const q = searchParams.get("q");
@@ -228,9 +228,10 @@ export default function ViewFacility() {
     filter: any,
     dis?: any,
     type?: any,
-    details?: any
+    details?: any,
+    range?: any
   ) => {
-    console.log(filter, dis, type, details, "axiosCheck");
+    console.log(filter, dis, type, details, range, "axiosCheck");
     const noDistance = {
       q: details.Service,
       location: details.Location,
@@ -248,6 +249,21 @@ export default function ViewFacility() {
       facilityType: type,
     };
     const noFacAndDistance = { q: details.Service, location: details.Location };
+    const rangeAndDistance = {
+      q: details.Service,
+      location: details.Location,
+      distance: dis,
+      range: range,
+    };
+
+    const facAndDistanceAndRange = {
+      q: details.Service,
+      location: details.Location,
+      distance: dis,
+      facilityType: type,
+      range: range,
+    };
+
     switch (filter) {
       case "noDistance":
         return axiosPrivate.post(`/search`, noDistance);
@@ -255,6 +271,10 @@ export default function ViewFacility() {
         return axiosPrivate.post(`/search`, noFacilityType);
       case "facAndDistance":
         return axiosPrivate.post(`/search`, facAndDistance);
+      case "facAndDistanceAndRange":
+        return axiosPrivate.post(`/search`, facAndDistanceAndRange);
+      case "rangeAndDistance":
+        return axiosPrivate.post(`/search`, rangeAndDistance);
       default:
         return axiosPrivate.post(`/search`, noFacAndDistance);
     }
@@ -340,25 +360,85 @@ export default function ViewFacility() {
     if (checkFacility) {
       filterFacilityType(
         "facAndDistance",
-        distance,
+        `${distance}mi`,
         event.target.value,
         searchValue
       )
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
+          const maxFilter = Math.max(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+          console.log(maxFilter, "....maxPrice");
+
+          const minFilter = Math.min(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+          console.log(minFilter, "....minPrice");
+          if (res.data.data.length === 0) {
+            setValue([0, 0]);
+            setMinPrice(0);
+            setMaxPrice(0);
+          } else {
+            setValue([minFilter, minFilter]);
+            setMinPrice(minFilter);
+            setMaxPrice(maxFilter);
+          }
         })
         .catch((e) => console.log(e));
     } else {
       filterFacilityType(
         "noFacilityType",
-        distance,
+        `${distance}mi`,
         event.target.value,
         searchValue
       )
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
+          const maxFilter = Math.max(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+          console.log(maxFilter, "....maxPrice");
+
+          const minFilter = Math.min(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+          console.log(minFilter, "....minPrice");
+          if (res.data.data.length === 0) {
+            setValue([0, 0]);
+            setMinPrice(0);
+            setMaxPrice(0);
+          } else {
+            setValue([minFilter, minFilter]);
+            setMinPrice(minFilter);
+            setMaxPrice(maxFilter);
+          }
         })
         .catch((e) => console.log(e));
     }
@@ -393,43 +473,71 @@ export default function ViewFacility() {
     // setSearch(pricefilter);
     // dispatch(dataSearch(pricefilter))
 
-    const checkData = {
-      q: searchValues.Service,
-      location: searchValues.Location,
-      range: newValue,
-    };
-    axiosPrivate
-      .post("/search", checkData)
-      .then((res) => {
-        setSearch(res.data.data);
-        console.log(res.data.data, "checkConsole");
-        // const maxFilter = Math.max(
-        //   ...res.data.data.map((fprice: any) => {
-        //     if(fprice.priceType==="facilityPrice"){
-        //       return fprice.FacilityPrices
-        //     }
-        //     else{
-        //       return fprice.cashPrice
-        //     }
-        //   })
-        // );
-        // console.log(maxFilter, "....maxPrice");
-        // setMaxPrice(maxFilter);
+    // const checkData = {
+    //   q: searchValues.Service,
+    //   location: searchValues.Location,
+    //   range: newValue,
+    // };
+    // axiosPrivate
+    //   .post("/search", checkData)
+    //   .then((res) => {
+    //     setSearch(res.data.data);
+    //     console.log(res.data.data, "checkConsole");
+    //     // const maxFilter = Math.max(
+    //     //   ...res.data.data.map((fprice: any) => {
+    //     //     if(fprice.priceType==="facilityPrice"){
+    //     //       return fprice.FacilityPrices
+    //     //     }
+    //     //     else{
+    //     //       return fprice.cashPrice
+    //     //     }
+    //     //   })
+    //     // );
+    //     // console.log(maxFilter, "....maxPrice");
+    //     // setMaxPrice(maxFilter);
 
-        // const minFilter = Math.min(
-        //   ...res.data.data.map((fprice: any) =>  {
-        //     if(fprice.priceType==="facilityPrice"){
-        //       return fprice.FacilityPrices
-        //     }
-        //     else{
-        //       return fprice.cashPrice
-        //     }
-        //   })
-        // );
-        // console.log(minFilter, "....minPrice");
-        // setMinPrice(minFilter);
-      })
-      .catch((e) => console.log(e));
+    //     // const minFilter = Math.min(
+    //     //   ...res.data.data.map((fprice: any) =>  {
+    //     //     if(fprice.priceType==="facilityPrice"){
+    //     //       return fprice.FacilityPrices
+    //     //     }
+    //     //     else{
+    //     //       return fprice.cashPrice
+    //     //     }
+    //     //   })
+    //     // );
+    //     // console.log(minFilter, "....minPrice");
+    //     // setMinPrice(minFilter);
+    //   })
+    //   .catch((e) => console.log(e));
+
+    if (facilityCheck === "") {
+      filterFacilityType(
+        "rangeAndDistance",
+        `${distance}mi`,
+        facilityCheck,
+        searchValues,
+        newValue
+      )
+        .then((res) => {
+          // dispatch(dataSearch(res.data.data));
+          setSearch(res.data.data);
+        })
+        .catch((e) => console.log(e));
+    } else {
+      filterFacilityType(
+        "facAndDistanceAndRange",
+        `${distance}mi`,
+        facilityCheck,
+        searchValues,
+        newValue
+      )
+        .then((res) => {
+          // dispatch(dataSearch(res.data.data));
+          setSearch(res.data.data);
+        })
+        .catch((e) => console.log(e));
+    }
   }
 
   function valuetext(userValue: number) {
@@ -439,55 +547,104 @@ export default function ViewFacility() {
   const followersMarks = [
     {
       value: 10,
-   
+
       label: "10mi",
     },
 
     {
       value: 50,
-    
+
       label: "50mi",
     },
-   
+
     {
       value: 100,
-    
+
       label: "100mi",
     },
-  //   {
-  //     value:distance,
-  //     label:`${distance}mi`
-  //   }
+    //   {
+    //     value:distance,
+    //     label:`${distance}mi`
+    //   }
   ];
 
-  const distanceSliderChange = (v: any,searchValue:any) => {
+  const distanceSliderChange = (v: any, searchValue: any) => {
     setDistance(v);
     if (facilityCheck === "") {
-            filterFacilityType(
-              "noFacilityType",
-              `${v}mi`,
-              facilityCheck,
-              searchValue
-            )
-              .then((res) => {
-                // dispatch(dataSearch(res.data.data));
-                console.log(res.data.data,"checkDistance")
-                setSearch(res.data.data);
-              })
-              .catch((e) => console.log(e));
+      filterFacilityType("noFacilityType", `${v}mi`, facilityCheck, searchValue)
+        .then((res) => {
+          // dispatch(dataSearch(res.data.data));
+          console.log(res.data.data, "checkDistance");
+          setSearch(res.data.data);
+          const maxFilter = Math.max(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+          console.log(maxFilter, "....maxPrice");
+
+          const minFilter = Math.min(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+          console.log(minFilter, "....minPrice");
+          if (res.data.data.length === 0) {
+            setValue([0, 0]);
+            setMinPrice(0);
+            setMaxPrice(0);
           } else {
-            filterFacilityType(
-              "facAndDistance",
-              `${v}mi`,
-              facilityCheck,
-              searchValue
-            )
-              .then((res) => {
-                // dispatch(dataSearch(res.data.data));
-                setSearch(res.data.data);
-              })
-              .catch((e) => console.log(e));
+            setValue([minFilter, minFilter]);
+            setMinPrice(minFilter);
+            setMaxPrice(maxFilter);
           }
+        })
+        .catch((e) => console.log(e));
+    } else {
+      filterFacilityType("facAndDistance", `${v}mi`, facilityCheck, searchValue)
+        .then((res) => {
+          // dispatch(dataSearch(res.data.data));
+          setSearch(res.data.data);
+          const maxFilter = Math.max(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+
+          const minFilter = Math.min(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+
+          if (res.data.data.length === 0) {
+            setValue([0, 0]);
+            setMinPrice(0);
+            setMaxPrice(0);
+          } else {
+            setValue([minFilter, minFilter]);
+            setMinPrice(minFilter);
+            setMaxPrice(maxFilter);
+          }
+        })
+        .catch((e) => console.log(e));
+    }
   };
 
   return (
@@ -721,9 +878,11 @@ export default function ViewFacility() {
                           marks={followersMarks}
                           min={10}
                           max={100}
-                          onChange={(e,sliderValue:any)=>{setDistance(sliderValue)}}
+                          onChange={(e, sliderValue: any) => {
+                            setDistance(sliderValue);
+                          }}
                           onChangeCommitted={(e, sliderValue) => {
-                            distanceSliderChange(sliderValue,values);
+                            distanceSliderChange(sliderValue, values);
                           }}
                         />
                       </Box>
@@ -818,7 +977,9 @@ export default function ViewFacility() {
                             { value: value[0], label: value[0] },
                             { value: value[1], label: value[1] },
                           ]}
-                          onChange={(e,sliderArray:any)=>{setValue(sliderArray)}}
+                          onChange={(e, sliderArray: any) => {
+                            setValue(sliderArray);
+                          }}
                           onChangeCommitted={(event, v) =>
                             sliderChange(event, v, values)
                           }
@@ -1105,58 +1266,24 @@ export default function ViewFacility() {
                         Distance
                         {/* </Paper> */}
                         <Collapse in={open} timeout="auto" unmountOnExit>
-                          {/* <Grid item xs={12}>
-                            <FormGroup
-                            // name="distancefilter"
-                            // value={distance}
-                            >
-                              <RadioGroup
-                                name="length"
-                                value={distance}
-                                // onChange={handleInputChange}
-                              >
-                                <FormControlLabel
-                                  value="10mi"
-                                  control={
-                                    <Radio
-                                      checked={distance === "10mi" && checkText}
-                                      onClick={(e: any) => {
-                                        handleInputChange(e, values);
-                                        handleCloseNavMenu();
-                                      }}
-                                    />
-                                  }
-                                  label="10 miles"
-                                />
-                                <FormControlLabel
-                                  value="20mi"
-                                  control={
-                                    <Radio
-                                      onClick={(e: any) => {
-                                        handleInputChange(e, values);
-                                        handleCloseNavMenu();
-                                      }}
-                                      checked={distance === "20mi" && checkText}
-                                    />
-                                  }
-                                  label="20 miles"
-                                />
-                                <FormControlLabel
-                                  value="30mi"
-                                  control={
-                                    <Radio
-                                      onClick={(e: any) => {
-                                        handleInputChange(e, values);
-                                        handleCloseNavMenu();
-                                      }}
-                                      checked={distance === "30mi" && checkText}
-                                    />
-                                  }
-                                  label="30 miles"
-                                />
-                              </RadioGroup>
-                            </FormGroup>
-                          </Grid> */}
+                          <Box sx={{ padding: "1rem 1rem 0 1rem" }}>
+                            <Slider
+                              value={distance}
+                              valueLabelDisplay="on"
+                              step={1}
+                              marks={followersMarks}
+                              min={10}
+                              max={100}
+                              onChange={(e, sliderValue: any) => {
+                                setDistance(sliderValue);
+                                
+                              }}
+                              onChangeCommitted={(e, sliderValue) => {
+                                distanceSliderChange(sliderValue, values);
+                                handleCloseNavMenu()
+                              }}
+                            />
+                          </Box>
                         </Collapse>
                       </Box>
                     </MenuItem>
@@ -1176,18 +1303,74 @@ export default function ViewFacility() {
                       </Typography>
                     </MenuItem>
 
-                    <MenuItem onClick={handleCloseNavMenu} sx={{ width: 250 }}>
-                      <Typography
-                        sx={{
-                          // color: location === "service" ? "#4D77FF" : "default",
-                          fontSize: "1.1rem",
-                          // borderBottom: location === "service" ? "3px solid blue" : "none",
-                          padding: "0.3rem",
-                          cursor: "pointer",
-                        }}
+                    <MenuItem >
+                    <Box sx={{display:'flex',flexDirection:"column"}}>
+                      <Box sx={{display:'flex'}}>
+                      <IconButton
+                        sx={{ fontSize: "1rem" }}
+                        aria-label="expand row"
+                        size="small"
+                        onClick={() => setOpen3(!open3)}
                       >
-                        Cash Rates
-                      </Typography>
+                        {open3 ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                      </IconButton>
+                      <Typography sx={{ fontSize: "1.25rem" }}>Cash Rates</Typography>
+                      
+                      </Box>
+                      <Collapse in={open3} timeout="auto" unmountOnExit>
+                        <Box sx={{ padding: "0 1rem" }}>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Typography>Min</Typography>
+                            <Typography>Max</Typography>
+                          </Box>
+
+                          <Slider
+                            size="medium"
+                            getAriaLabel={() => "Price range"}
+                            value={value}
+                            marks={[
+                              { value: value[0], label: value[0] },
+                              { value: value[1], label: value[1] },
+                            ]}
+                            onChange={(e, sliderArray: any) => {
+                              setValue(sliderArray);
+                            }}
+                            onChangeCommitted={(event, v) =>{
+                              sliderChange(event, v, values)
+                              handleCloseNavMenu()
+                            }
+                            }
+                            min={minPrice}
+                            max={maxPrice}
+                            step={1}
+                            valueLabelDisplay="auto"
+                            getAriaValueText={valuetext}
+                            sx={{
+                              ".MuiSlider-thumb": {
+                                height: 15,
+                                width: 15,
+                                backgroundColor: "#fff",
+                                border: "2px solid #687B9E",
+                                boxShadow: "0px 0px 5px  #687B9E",
+                                "&:focus, &:hover, &.Mui-active, &.Mui-focusVisible":
+                                  {
+                                    boxShadow: "0px 0px 5px  #687B9E",
+                                  },
+                                "&:before": {
+                                  display: "none",
+                                },
+                              },
+                              color: "#687B9E",
+                            }}
+                          />
+                        </Box>
+                      </Collapse>
+                      </Box>
                     </MenuItem>
 
                     <MenuItem sx={{ width: 250, fontSize: "1.25rem" }}>
@@ -1406,7 +1589,7 @@ export default function ViewFacility() {
                                 mb: "20px",
                               }}
                             >
-                              {dsearch?.FacilityDetails?.facilityName}
+                              {dsearch?.facilityDetails?.facilityName}
                             </Typography>
                             <Typography
                               sx={{
@@ -1416,21 +1599,21 @@ export default function ViewFacility() {
                               }}
                             >
                               {dsearch.priceType === "facilityPrice"
-                                ? dsearch.FacilityDetails?.address
+                                ? dsearch.facilityDetails?.address
                                     ?.addressLine1 +
                                   "," +
-                                  dsearch.FacilityDetails?.address?.city +
+                                  dsearch.facilityDetails?.address?.city +
                                   "," +
-                                  dsearch.FacilityDetails?.address?.state +
+                                  dsearch.facilityDetails?.address?.state +
                                   " - " +
-                                  dsearch.FacilityDetails?.address?.zipCode
-                                : dsearch.FacilityDetails?.addressLine1 +
+                                  dsearch.facilityDetails?.address?.zipCode
+                                : dsearch.facilityDetails?.addressLine1 +
                                   "," +
-                                  dsearch.FacilityDetails?.city +
+                                  dsearch.facilityDetails?.city +
                                   "," +
-                                  dsearch.FacilityDetails?.state +
+                                  dsearch.facilityDetails?.state +
                                   " - " +
-                                  dsearch.FacilityDetails?.zipCode}
+                                  dsearch.facilityDetails?.zipCode}
                             </Typography>
                             <Typography
                               sx={{
@@ -1560,13 +1743,13 @@ export default function ViewFacility() {
                             mb: "10px",
                           }}
                         >
-                          {dsearch.FacilityDetails?.addressLine1 +
+                          {dsearch.facilityDetails?.address?.addressLine1 +
                             "," +
-                            dsearch.FacilityDetails?.city +
+                            dsearch.facilityDetails?.address?.city +
                             "," +
-                            dsearch.FacilityDetails?.state +
+                            dsearch.facilityDetails?.address?.state +
                             " - " +
-                            dsearch.FacilityDetails?.zipCode}
+                            dsearch.facilityDetails?.address?.zipCode}
                         </Typography>
                         <Typography
                           sx={{
