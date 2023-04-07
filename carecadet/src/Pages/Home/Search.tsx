@@ -96,6 +96,7 @@ export default function ViewFacility() {
   const [facilityType, setFacilityType] = useState<any>([]);
   const [facilityCheck, setFacilityCheck] = useState<any>("");
   const [value, setValue] = useState<number[]>([0, 0]);
+  const [scoreValue, setScoreValue] = useState<number[]>([1, 1]);
   const dispatch = useAppDispatch();
 
   const q = searchParams.get("q");
@@ -229,9 +230,10 @@ export default function ViewFacility() {
     dis?: any,
     type?: any,
     details?: any,
-    range?: any
+    range?: any,
+    score?:any
   ) => {
-    console.log(filter, dis, type, details, range, "axiosCheck");
+    console.log(filter, dis, type, details, range,score, "axiosCheck");
     const noDistance = {
       q: details.Service,
       location: details.Location,
@@ -264,6 +266,22 @@ export default function ViewFacility() {
       range: range,
     };
 
+    const rangeAndDistanceAndScore = {
+      q: details.Service,
+      location: details.Location,
+      distance: dis,
+      // range: range,
+      ratingRange:score
+    };
+    const facAndDistanceAndRangeAndScore = {
+      q: details.Service,
+      location: details.Location,
+      distance: dis,
+      // range: range,
+      ratingRange:score,
+      facilityType:type
+    };
+
     switch (filter) {
       case "noDistance":
         return axiosPrivate.post(`/search`, noDistance);
@@ -275,12 +293,80 @@ export default function ViewFacility() {
         return axiosPrivate.post(`/search`, facAndDistanceAndRange);
       case "rangeAndDistance":
         return axiosPrivate.post(`/search`, rangeAndDistance);
+        case "rangeAndDistanceAndScore":
+          return axiosPrivate.post(`/search`, rangeAndDistanceAndScore);
+          case "facAndDistanceAndRangeAndScore":
+            return axiosPrivate.post(`/search`, facAndDistanceAndRangeAndScore);
       default:
         return axiosPrivate.post(`/search`, noFacAndDistance);
     }
   };
 
- 
+  // function handleInputChange(event: any, searchValue: any) {
+  //   let radioDistance = false;
+  //   if (event.target.value === distance) {
+  //     setCheckText(false);
+  //     setDistance("");
+  //     radioDistance = false;
+  //   } else {
+  //     setCheckText(true);
+  //     setDistance(event.target.value);
+  //     radioDistance = true;
+  //   }
+  //   if (radioDistance) {
+  //     if (facilityCheck === "") {
+  //       filterFacilityType(
+  //         "noFacilityType",
+  //         event.target.value,
+  //         facilityCheck,
+  //         searchValue
+  //       )
+  //         .then((res) => {
+  //           // dispatch(dataSearch(res.data.data));
+  //           setSearch(res.data.data);
+  //         })
+  //         .catch((e) => console.log(e));
+  //     } else {
+  //       filterFacilityType(
+  //         "facAndDistance",
+  //         event.target.value,
+  //         facilityCheck,
+  //         searchValue
+  //       )
+  //         .then((res) => {
+  //           // dispatch(dataSearch(res.data.data));
+  //           setSearch(res.data.data);
+  //         })
+  //         .catch((e) => console.log(e));
+  //     }
+  //   } else {
+  //     if (facilityCheck === "") {
+  //       filterFacilityType(
+  //         "default",
+  //         event.target.value,
+  //         facilityCheck,
+  //         searchValue
+  //       )
+  //         .then((res) => {
+  //           // dispatch(dataSearch(res.data.data));
+  //           setSearch(res.data.data);
+  //         })
+  //         .catch((e) => console.log(e));
+  //     } else {
+  //       filterFacilityType(
+  //         "noDistance",
+  //         event.target.value,
+  //         facilityCheck,
+  //         searchValue
+  //       )
+  //         .then((res) => {
+  //           // dispatch(dataSearch(res.data.data));
+  //           setSearch(res.data.data);
+  //         })
+  //         .catch((e) => console.log(e));
+  //     }
+  //   }
+  // }
 
   function handleTypeInputChange(event: any, searchValue: any) {
     var checkFacility = false;
@@ -329,7 +415,7 @@ export default function ViewFacility() {
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -371,7 +457,7 @@ export default function ViewFacility() {
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -475,6 +561,104 @@ export default function ViewFacility() {
         .catch((e) => console.log(e));
     }
   }
+  function sliderScoreChange(event: any, newValue: any, searchValues: any) {
+    setService(true);
+    // setScoreValue(newValue as number[]);
+    console.log("newValue", newValue);
+    // const pricefilter = searchData.filter((item: any) => {
+
+    //   // Math.min(
+    //   //   ...res.data.data.map((fprice: any) =>  {
+    //   //     if(fprice.priceType==="facilityPrice"){
+    //   //       return fprice.FacilityPrices
+    //   //     }
+    //   //     else{
+    //   //       return fprice.cashPrice
+    //   //     }
+    //   //   })
+    //   // );
+    //   if(item.priceType==="facilityPrice"){
+    //   return item.FacilityPrices >= newValue[0] && item.FacilityPrices <= newValue[1]
+    //   }
+    //   else{
+    //     console.log(".....",item.cashPrice)
+    //     return item.cashPrice >= newValue[0] && item.cashPrice <= newValue[1]
+
+    //   }
+    //   // return item.some((dataItem:any)=> (dataItem.FacilityPrices >= newValue[0] && dataItem.FacilityPrices <= newValue[1]));
+    // });
+    // console.log("pricefilter", pricefilter);
+    // setSearch(pricefilter);
+    // dispatch(dataSearch(pricefilter))
+
+    // const checkData = {
+    //   q: searchValues.Service,
+    //   location: searchValues.Location,
+    //   range: newValue,
+    // };
+    // axiosPrivate
+    //   .post("/search", checkData)
+    //   .then((res) => {
+    //     setSearch(res.data.data);
+    //     console.log(res.data.data, "checkConsole");
+    //     // const maxFilter = Math.max(
+    //     //   ...res.data.data.map((fprice: any) => {
+    //     //     if(fprice.priceType==="facilityPrice"){
+    //     //       return fprice.FacilityPrices
+    //     //     }
+    //     //     else{
+    //     //       return fprice.cashPrice
+    //     //     }
+    //     //   })
+    //     // );
+    //     // console.log(maxFilter, "....maxPrice");
+    //     // setMaxPrice(maxFilter);
+
+    //     // const minFilter = Math.min(
+    //     //   ...res.data.data.map((fprice: any) =>  {
+    //     //     if(fprice.priceType==="facilityPrice"){
+    //     //       return fprice.FacilityPrices
+    //     //     }
+    //     //     else{
+    //     //       return fprice.cashPrice
+    //     //     }
+    //     //   })
+    //     // );
+    //     // console.log(minFilter, "....minPrice");
+    //     // setMinPrice(minFilter);
+    //   })
+    //   .catch((e) => console.log(e));
+
+    if (facilityCheck === "") {
+      filterFacilityType(
+        "rangeAndDistanceAndScore",
+        `${distance}mi`,
+        facilityCheck,
+        searchValues,
+        value,
+        newValue
+      )
+        .then((res) => {
+          // dispatch(dataSearch(res.data.data));
+          setSearch(res.data.data);
+        })
+        .catch((e) => console.log(e));
+    } else {
+      filterFacilityType(
+        "facAndDistanceAndRangeAndScore",
+        `${distance}mi`,
+        facilityCheck,
+        searchValues,
+        value,
+        newValue
+      )
+        .then((res) => {
+          // dispatch(dataSearch(res.data.data));
+          setSearch(res.data.data);
+        })
+        .catch((e) => console.log(e));
+    }
+  }
 
   function valuetext(userValue: number) {
     return `${userValue}$`;
@@ -538,7 +722,7 @@ export default function ViewFacility() {
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -574,7 +758,7 @@ export default function ViewFacility() {
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -824,7 +1008,7 @@ export default function ViewFacility() {
                       </Box>
                     </Collapse>
                   </Box>
-                  <Box>
+                     <Box>
                     <Paper
                       sx={{
                         fontSize: "1rem",
@@ -850,22 +1034,60 @@ export default function ViewFacility() {
                       </IconButton>
                       Quality Score
                     </Paper>
-                    {/* <Collapse in={open3} timeout="auto" unmountOnExit>
-                    <Box sx={{ width: 250 }}>
-      <Slider
-      getAriaLabel={() => 'Quality score'}
-      value={value}
-       marks
+                    <Collapse in={open2} timeout="auto" unmountOnExit>
+                      <Box sx={{ padding: "0 1rem" }}>
+                        {/* <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Typography>Min</Typography>
+                          <Typography>Max</Typography>
+                        </Box> */}
 
-      onChange={sliderChange}
-        min={minPrice}
-        max={maxPrice}
-        valueLabelDisplay="auto"
-        getAriaValueText={valuetext}
-       
-            />
-    </Box>
-    </Collapse> */}
+                        <Slider
+                          size="medium"
+                          getAriaLabel={() => "Quality Score"}
+                          value={scoreValue}
+                          marks={[
+                            { value: 1, label: 1 },
+                            { value: 2, label: 2 },
+                            { value: 3, label: 3 },
+                            { value: 4, label: 4 },
+                            { value: 5, label: 5 },
+                          ]}
+                          onChange={(e, sliderArray: any) => {
+                            setScoreValue(sliderArray);
+                          }}
+                          onChangeCommitted={(event, v) =>
+                            sliderScoreChange(event, v, values)
+                          }
+                          min={1}
+                          max={5}
+                          step={1}
+                          valueLabelDisplay="auto"
+                          getAriaValueText={valuetext}
+                          sx={{
+                            ".MuiSlider-thumb": {
+                              height: 15,
+                              width: 15,
+                              backgroundColor: "#fff",
+                              border: "2px solid #687B9E",
+                              boxShadow: "0px 0px 5px  #687B9E",
+                              "&:focus, &:hover, &.Mui-active, &.Mui-focusVisible":
+                                {
+                                  boxShadow: "0px 0px 5px  #687B9E",
+                                },
+                              "&:before": {
+                                display: "none",
+                              },
+                            },
+                            color: "#687B9E",
+                          }}
+                        />
+                      </Box>
+                    </Collapse>
                   </Box>
                   <Box>
                     <Paper
