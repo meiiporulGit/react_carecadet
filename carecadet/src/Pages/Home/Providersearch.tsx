@@ -121,18 +121,6 @@ const [locationCheck,setLocationCheck]=useState<any>("21")
         })
         .catch((e) => console.log(e));
     };
-    const getServiceLocation = async () => {
-      await axiosPrivate
-        .get(`/servicecode/findservicelocation`)
-        .then((res) => {
-          console.log(res.data, "Serviceloc");
-          setServiceLocationType(res.data);
-          // dispatch(facilityTypeInfo(res.data))
-        })
-        .catch((e) => console.log(e));
-    };
-
-
 
     const getInsuranceProvider = async () => {
       
@@ -146,8 +134,24 @@ const [locationCheck,setLocationCheck]=useState<any>("21")
         })
         .catch((e) => console.log(e));
     };
+    
+    const getServiceLocation = async () => {
+      await axiosPrivate
+        .get(`/servicecode/findservicelocation`)
+        .then((res) => {
+          console.log(res.data, "Serviceloc");
+          setServiceLocationType(res.data);
+          // dispatch(facilityTypeInfo(res.data))
+        })
+        .catch((e) => console.log(e));
+    };
 
+
+
+  
+    
     getFacilityType();
+    getInsuranceProvider();
     getServiceLocation();
   }, 
   
@@ -220,8 +224,9 @@ const [locationCheck,setLocationCheck]=useState<any>("21")
     dis?: any,
     type?: any,
     details?: any,
+    insurance?:any,
     serviceLocation?:any,
-    insurance?:any
+   
   ) => {
     console.log(filter, dis, type, details,serviceLocation,insurance, "axiosCheck");
     const noDistance = {
@@ -430,26 +435,7 @@ const [locationCheck,setLocationCheck]=useState<any>("21")
     }
   }
  
-  function handleServicelocationchange(event: any, searchValue: any) {
-    
-      setLocationCheck(event.target.value)
-      filterFacilityType(
-        "servicecodeLocation",
-        distance,
-        facilityCheck,
-        searchValue,
-        event.target.value
-      )
-      .then((res) => {
-        // dispatch(dataSearch(res.data.data));
-        setSearch(res.data.data);
-      })
-      .catch((e) => console.log(e));
-    
-  }
-
-
-
+  
   function handleInsuranceInputChange(event: any, searchValue: any) {
     var checkInsurance = false;
     {JSON.stringify(checkInsurance)}
@@ -470,7 +456,7 @@ const [locationCheck,setLocationCheck]=useState<any>("21")
         searchValue,
         event.target.value
       )
-                .then((res) => {
+     .then((res) => {
             // dispatch(dataSearch(res.data.data));
             setSearch(res.data.data);
           })
@@ -531,6 +517,27 @@ const [locationCheck,setLocationCheck]=useState<any>("21")
     //   }
     // }
   }
+  function handleServicelocationchange(event: any, searchValue: any) {
+    
+      setLocationCheck(event.target.value)
+      filterFacilityType(
+        "servicecodeLocation",
+        distance,
+        facilityCheck,
+        insuranceCheck,
+        searchValue,
+        event.target.value
+      )
+      .then((res) => {
+        // dispatch(dataSearch(res.data.data));
+        setSearch(res.data.data);
+      })
+      .catch((e) => console.log(e));
+    
+  }
+
+
+
 
   return (
     
