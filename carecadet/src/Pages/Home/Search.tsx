@@ -280,71 +280,7 @@ export default function ViewFacility() {
     }
   };
 
-  // function handleInputChange(event: any, searchValue: any) {
-  //   let radioDistance = false;
-  //   if (event.target.value === distance) {
-  //     setCheckText(false);
-  //     setDistance("");
-  //     radioDistance = false;
-  //   } else {
-  //     setCheckText(true);
-  //     setDistance(event.target.value);
-  //     radioDistance = true;
-  //   }
-  //   if (radioDistance) {
-  //     if (facilityCheck === "") {
-  //       filterFacilityType(
-  //         "noFacilityType",
-  //         event.target.value,
-  //         facilityCheck,
-  //         searchValue
-  //       )
-  //         .then((res) => {
-  //           // dispatch(dataSearch(res.data.data));
-  //           setSearch(res.data.data);
-  //         })
-  //         .catch((e) => console.log(e));
-  //     } else {
-  //       filterFacilityType(
-  //         "facAndDistance",
-  //         event.target.value,
-  //         facilityCheck,
-  //         searchValue
-  //       )
-  //         .then((res) => {
-  //           // dispatch(dataSearch(res.data.data));
-  //           setSearch(res.data.data);
-  //         })
-  //         .catch((e) => console.log(e));
-  //     }
-  //   } else {
-  //     if (facilityCheck === "") {
-  //       filterFacilityType(
-  //         "default",
-  //         event.target.value,
-  //         facilityCheck,
-  //         searchValue
-  //       )
-  //         .then((res) => {
-  //           // dispatch(dataSearch(res.data.data));
-  //           setSearch(res.data.data);
-  //         })
-  //         .catch((e) => console.log(e));
-  //     } else {
-  //       filterFacilityType(
-  //         "noDistance",
-  //         event.target.value,
-  //         facilityCheck,
-  //         searchValue
-  //       )
-  //         .then((res) => {
-  //           // dispatch(dataSearch(res.data.data));
-  //           setSearch(res.data.data);
-  //         })
-  //         .catch((e) => console.log(e));
-  //     }
-  //   }
-  // }
+ 
 
   function handleTypeInputChange(event: any, searchValue: any) {
     var checkFacility = false;

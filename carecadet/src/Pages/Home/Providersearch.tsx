@@ -27,7 +27,8 @@ import {
   Menu,
   Paper,
   Grid,
-  TextField
+  TextField,
+  Slider
 } from "@mui/material";
 
 import { Formik, Form, ErrorMessage, Field } from "formik";
@@ -68,7 +69,7 @@ export default function Providersearch() {
   const [checked, setChecked] = useState<boolean>(false);
   const [anchorElNav, setAnchorElNav] =useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [distance, setDistance] = useState("")
+  const [distance, setDistance] = useState(30)
 const [checkText,setCheckText]=useState<boolean>(false)
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -308,71 +309,71 @@ const [locationCheck,setLocationCheck]=useState<any>("21")
   };
 
 
-  function handleInputChange(event: any, searchValue: any) {
-    let radioDistance = false;
-    if (event.target.value === distance) {
-      setCheckText(false);
-      setDistance("");
-      radioDistance = false;
-    } else {
-      setCheckText(true);
-      setDistance(event.target.value);
-      radioDistance = true;
-    }
-    if (radioDistance) {
-      if (facilityCheck === "") {
-        filterFacilityType(
-          "noFacilityType",
-          event.target.value,
-          facilityCheck,
-          searchValue
-        )
-          .then((res) => {
-            // dispatch(dataSearch(res.data.data));
-            setSearch(res.data.data);
-          })
-          .catch((e) => console.log(e));
-      } else {
-        filterFacilityType(
-          "facAndDistance",
-          event.target.value,
-          facilityCheck,
-          searchValue
-        )
-          .then((res) => {
-            // dispatch(dataSearch(res.data.data));
-            setSearch(res.data.data);
-          })
-          .catch((e) => console.log(e));
-      }
-    } else {
-      if (facilityCheck === "") {
-        filterFacilityType(
-          "default",
-          event.target.value,
-          facilityCheck,
-          searchValue
-        )
-          .then((res) => {
-            // dispatch(dataSearch(res.data.data));
-            setSearch(res.data.data);
-          })
-          .catch((e) => console.log(e));
-      } else {
-        filterFacilityType(
-          "noDistance",
-          event.target.value,
-          facilityCheck,
-          searchValue
-        )
-          .then((res) => {
-            // dispatch(dataSearch(res.data.data));
-            setSearch(res.data.data);
-          })
-          .catch((e) => console.log(e));
-      }
-    }
-  }
+  // function handleInputChange(event: any, searchValue: any) {
+  //   let radioDistance = false;
+  //   if (event.target.value === distance) {
+  //     setCheckText(false);
+  //     setDistance("");
+  //     radioDistance = false;
+  //   } else {
+  //     setCheckText(true);
+  //     setDistance(event.target.value);
+  //     radioDistance = true;
+  //   }
+  //   if (radioDistance) {
+  //     if (facilityCheck === "") {
+  //       filterFacilityType(
+  //         "noFacilityType",
+  //         event.target.value,
+  //         facilityCheck,
+  //         searchValue
+  //       )
+  //         .then((res) => {
+  //           // dispatch(dataSearch(res.data.data));
+  //           setSearch(res.data.data);
+  //         })
+  //         .catch((e) => console.log(e));
+  //     } else {
+  //       filterFacilityType(
+  //         "facAndDistance",
+  //         event.target.value,
+  //         facilityCheck,
+  //         searchValue
+  //       )
+  //         .then((res) => {
+  //           // dispatch(dataSearch(res.data.data));
+  //           setSearch(res.data.data);
+  //         })
+  //         .catch((e) => console.log(e));
+  //     }
+  //   } else {
+  //     if (facilityCheck === "") {
+  //       filterFacilityType(
+  //         "default",
+  //         event.target.value,
+  //         facilityCheck,
+  //         searchValue
+  //       )
+  //         .then((res) => {
+  //           // dispatch(dataSearch(res.data.data));
+  //           setSearch(res.data.data);
+  //         })
+  //         .catch((e) => console.log(e));
+  //     } else {
+  //       filterFacilityType(
+  //         "noDistance",
+  //         event.target.value,
+  //         facilityCheck,
+  //         searchValue
+  //       )
+  //         .then((res) => {
+  //           // dispatch(dataSearch(res.data.data));
+  //           setSearch(res.data.data);
+  //         })
+  //         .catch((e) => console.log(e));
+  //     }
+  //   }
+  // }
 
   function handleTypeInputChange(event: any, searchValue: any) {
     var checkFacility = false;
@@ -386,52 +387,89 @@ const [locationCheck,setLocationCheck]=useState<any>("21")
       checkFacility = true;
     }
     if (checkFacility) {
-      if (distance === "") {
-        filterFacilityType(
-          "noDistance",
-          distance,
-          event.target.value,
-          searchValue
-        )
-          .then((res) => {
-            // dispatch(dataSearch(res.data.data));
-            setSearch(res.data.data);
-          })
-          .catch((e) => console.log(e));
-      } else {
-        filterFacilityType(
-          "facAndDistance",
-          distance,
-          event.target.value,
-          searchValue
-        )
-          .then((res) => {
-            // dispatch(dataSearch(res.data.data));
-            setSearch(res.data.data);
-          })
-          .catch((e) => console.log(e));
-      }
+      filterFacilityType(
+        "facAndDistance",
+        `${distance}mi`,
+        event.target.value,
+        searchValue
+      )
+        .then((res) => {
+          // dispatch(dataSearch(res.data.data));
+          setSearch(res.data.data);
+          const maxFilter = Math.max(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+          console.log(maxFilter, "....maxPrice");
+
+          const minFilter = Math.min(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+          console.log(minFilter, "....minPrice");
+          // if (res.data.data.length === 0) {
+          //   setValue([0, 0]);
+          //   setMinPrice(0);
+          //   setMaxPrice(0);
+          // } else {
+          //   setValue([minFilter, minFilter]);
+          //   setMinPrice(minFilter);
+          //   setMaxPrice(maxFilter);
+          // }
+        })
+        .catch((e) => console.log(e));
     } else {
-      if (distance === "") {
-        filterFacilityType("default", distance, event.target.value, searchValue)
-          .then((res) => {
-            // dispatch(dataSearch(res.data.data));
-            setSearch(res.data.data);
-          })
-          .catch((e) => console.log(e));
-      } else {
-        filterFacilityType(
-          "noFacilityType",
-          distance,
-          event.target.value,
-          searchValue
-        )
-          .then((res) => {
-            // dispatch(dataSearch(res.data.data));
-            setSearch(res.data.data);
-          })
-          .catch((e) => console.log(e));
-      }
+      filterFacilityType(
+        "noFacilityType",
+        `${distance}mi`,
+        event.target.value,
+        searchValue
+      )
+        .then((res) => {
+          // dispatch(dataSearch(res.data.data));
+          setSearch(res.data.data);
+          const maxFilter = Math.max(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+          console.log(maxFilter, "....maxPrice");
+
+          const minFilter = Math.min(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+          console.log(minFilter, "....minPrice");
+          if (res.data.data.length === 0) {
+            // setValue([0, 0]);
+            // setMinPrice(0);
+            // setMaxPrice(0);
+          } else {
+            // setValue([minFilter, minFilter]);
+            // setMinPrice(minFilter);
+            // setMaxPrice(maxFilter);
+          }
+        })
+        .catch((e) => console.log(e));
     }
   }
  
@@ -535,6 +573,109 @@ const [locationCheck,setLocationCheck]=useState<any>("21")
       .catch((e) => console.log(e));
     
   }
+
+  const distanceSliderChange = (v: any, searchValue: any) => {
+    setDistance(v);
+    if (facilityCheck === "") {
+      filterFacilityType("noFacilityType", `${v}mi`, facilityCheck, searchValue)
+        .then((res) => {
+          // dispatch(dataSearch(res.data.data));
+          console.log(res.data.data, "checkDistance");
+          setSearch(res.data.data);
+          const maxFilter = Math.max(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+          console.log(maxFilter, "....maxPrice");
+
+          const minFilter = Math.min(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+          console.log(minFilter, "....minPrice");
+          if (res.data.data.length === 0) {
+            // setValue([0, 0]);
+            // setMinPrice(0);
+            // setMaxPrice(0);
+          } else {
+            // setValue([minFilter, minFilter]);
+            // setMinPrice(minFilter);
+            // setMaxPrice(maxFilter);
+          }
+        })
+        .catch((e) => console.log(e));
+    } else {
+      filterFacilityType("facAndDistance", `${v}mi`, facilityCheck, searchValue)
+        .then((res) => {
+          // dispatch(dataSearch(res.data.data));
+          setSearch(res.data.data);
+          const maxFilter = Math.max(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+
+          const minFilter = Math.min(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+
+          if (res.data.data.length === 0) {
+            // setValue([0, 0]);
+            // setMinPrice(0);
+            // setMaxPrice(0);
+          } else {
+            // setValue([minFilter, minFilter]);
+            // setMinPrice(minFilter);
+            // setMaxPrice(maxFilter);
+          }
+        })
+        .catch((e) => console.log(e));
+    }
+  };
+
+  const followersMarks = [
+    {
+      value: 10,
+
+      label: "10mi",
+    },
+
+    {
+      value: 50,
+
+      label: "50mi",
+    },
+
+    {
+      value: 100,
+
+      label: "100mi",
+    },
+    //   {
+    //     value:distance,
+    //     label:`${distance}mi`
+    //   }
+  ];
 
 
 
@@ -690,28 +831,35 @@ const [locationCheck,setLocationCheck]=useState<any>("21")
                   Filters
                 </Typography>
 
+                
                 <Box>
-                  <Paper sx={{
-                    fontSize: "1rem",
-                    borderRadius: "20px",
-                    backgroundColor: "#687B9E",
-                    color: "white",
-                    mb: "10px",
-                    textTransform: "uppercase",
-                    fontWeight: 500,
-                    padding: "0.2rem",
-                  }}>
-                    <IconButton
-                      aria-label="expand row"
-                      size="small"
-                      onClick={() => setOpen(!open)}
+                    <Paper
+                      sx={{
+                        fontSize: "1rem",
+                        borderRadius: "20px",
+                        backgroundColor: "#687B9E",
+                        color: "white",
+                        mb: "10px",
+                        textTransform: "uppercase",
+                        fontWeight: 500,
+                        padding: "0.2rem",
+                      }}
                     >
-                      {open ? <KeyboardArrowUp sx={{color:"white"}} /> : <KeyboardArrowDown sx={{color:"white"}} />}
-                    </IconButton>
-                    Distance
-                  </Paper>
-                  <Collapse in={open} timeout="auto" unmountOnExit>
-                      <Grid item xs={12}>
+                      <IconButton
+                        aria-label="expand row"
+                        size="small"
+                        onClick={() => setOpen(!open)}
+                      >
+                        {open ? (
+                          <KeyboardArrowUp sx={{ color: "white" }} />
+                        ) : (
+                          <KeyboardArrowDown sx={{ color: "white" }} />
+                        )}
+                      </IconButton>
+                      Distance
+                    </Paper>
+                    <Collapse in={open} timeout="auto" unmountOnExit>
+                      {/* <Grid item xs={12}>
                         <FormGroup
                         // name="distancefilter"
                         // value={distance}
@@ -759,9 +907,25 @@ const [locationCheck,setLocationCheck]=useState<any>("21")
                             />
                           </RadioGroup>
                         </FormGroup>
-                      </Grid>
+                      </Grid> */}
+                      <Box sx={{ padding: "1rem 1rem 0 1rem" }}>
+                        <Slider
+                          value={distance}
+                          valueLabelDisplay="on"
+                          step={1}
+                          marks={followersMarks}
+                          min={10}
+                          max={100}
+                          onChange={(e, sliderValue: any) => {
+                            setDistance(sliderValue);
+                          }}
+                          onChangeCommitted={(e, sliderValue) => {
+                            distanceSliderChange(sliderValue, values);
+                          }}
+                        />
+                      </Box>
                     </Collapse>
-                </Box>
+                  </Box>
                 <Box>
                   <Paper sx={{
                     fontSize: "1rem",
@@ -1363,81 +1527,93 @@ const [locationCheck,setLocationCheck]=useState<any>("21")
       >
  {/* <ClearIcon onClick={handleCloseNavMenu}/> */}
        
-          <MenuItem  sx={{ width: 250,fontSize: "1.25rem" }}>
-         
-               <Box>
-                  {/* <Paper sx={{
+          
+ <MenuItem
+                      // onClick={handleCloseNavMenu}
+                      sx={{ width: 250, fontSize: "1.25rem" }}
+                    >
+                      <Box>
+                        {/* <Paper sx={{
                     fontSize: "1rem",
                     borderRadius: "20px",
                     backgroundColor: "#CDDBF8",
                     mb: "10px"
                   }}> */}
-                    <IconButton sx={{fontSize: "1rem"}}
-                      aria-label="expand row"
-                      size="small"
-                      onClick={() => setOpen(!open)}
-                    >
-                      {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-                    </IconButton>
-                    Distance
-                  {/* </Paper> */}
-                  <Collapse in={open} timeout="auto" unmountOnExit>
-                          <Grid item xs={12}>
-                            <FormGroup
-                            // name="distancefilter"
-                            // value={distance}
-                            >
-                              <RadioGroup
-                                name="length"
-                                value={distance}
-                                // onChange={handleInputChange}
-                              >
-                                <FormControlLabel
-                                  value="10mi"
-                                  control={
-                                    <Radio
-                                      checked={distance === "10mi" && checkText}
-                                      onClick={(e: any) => {
-                                        handleInputChange(e, values);
-                                        handleCloseNavMenu();
-                                      }}
-                                    />
-                                  }
-                                  label="10 miles"
-                                />
-                                <FormControlLabel
-                                  value="20mi"
-                                  control={
-                                    <Radio
-                                      onClick={(e: any) => {
-                                        handleInputChange(e, values);
-                                        handleCloseNavMenu();
-                                      }}
-                                      checked={distance === "20mi" && checkText}
-                                    />
-                                  }
-                                  label="20 miles"
-                                />
-                                <FormControlLabel
-                                  value="30mi"
-                                  control={
-                                    <Radio
-                                      onClick={(e: any) => {
-                                        handleInputChange(e, values);
-                                        handleCloseNavMenu();
-                                      }}
-                                      checked={distance === "30mi" && checkText}
-                                    />
-                                  }
-                                  label="30 miles"
-                                />
-                              </RadioGroup>
-                            </FormGroup>
-                          </Grid>
+                        <IconButton
+                          sx={{ fontSize: "1rem" }}
+                          aria-label="expand row"
+                          size="small"
+                          onClick={() => setOpen(!open)}
+                        >
+                          {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                        </IconButton>
+                        Distance
+                        {/* </Paper> */}
+                        <Collapse in={open} timeout="auto" unmountOnExit>
+                          <Box sx={{ padding: "1rem 1rem 0 1rem" }}>
+                            <Slider
+                              value={distance}
+                              valueLabelDisplay="on"
+                              step={1}
+                              marks={followersMarks}
+                              min={10}
+                              max={100}
+                              onChange={(e, sliderValue: any) => {
+                                setDistance(sliderValue);
+                                
+                              }}
+                              onChangeCommitted={(e, sliderValue) => {
+                                distanceSliderChange(sliderValue, values);
+                                handleCloseNavMenu()
+                              }}
+                            />
+                          </Box>
                         </Collapse>
-                </Box>
-            
-          </MenuItem>
+                      </Box>
+                    </MenuItem>
+                    <MenuItem
+                      // onClick={handleCloseNavMenu}
+                      sx={{ width: 250, fontSize: "1.25rem" }}
+                    >
+                      <Box>
+                        {/* <Paper sx={{
+                    fontSize: "1rem",
+                    borderRadius: "20px",
+                    backgroundColor: "#CDDBF8",
+                    mb: "10px"
+                  }}> */}
+                        <IconButton
+                          sx={{ fontSize: "1rem" }}
+                          aria-label="expand row"
+                          size="small"
+                          onClick={() => setOpen(!open)}
+                        >
+                          {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                        </IconButton>
+                        Distance
+                        {/* </Paper> */}
+                        <Collapse in={open} timeout="auto" unmountOnExit>
+                          <Box sx={{ padding: "1rem 1rem 0 1rem" }}>
+                            <Slider
+                              value={distance}
+                              valueLabelDisplay="on"
+                              step={1}
+                              marks={followersMarks}
+                              min={10}
+                              max={100}
+                              onChange={(e, sliderValue: any) => {
+                                setDistance(sliderValue);
+                                
+                              }}
+                              onChangeCommitted={(e, sliderValue) => {
+                                distanceSliderChange(sliderValue, values);
+                                handleCloseNavMenu()
+                              }}
+                            />
+                          </Box>
+                        </Collapse>
+                      </Box>
+                    </MenuItem>
      
           <MenuItem onClick={handleCloseNavMenu}  sx={{ width: 250 }}>
             <Typography
