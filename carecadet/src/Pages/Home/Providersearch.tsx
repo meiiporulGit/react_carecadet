@@ -61,6 +61,7 @@ export default function Providersearch() {
   const [open1, setOpen1] = useState<boolean>(false)
   const [open2, setOpen2] = useState<boolean>(false)
   const [open3, setOpen3] = useState<boolean>(false)
+  const [open4, setOpen4] = useState<boolean>(false)
   const [openScore, setOpenScore] = useState<boolean>(false)
   const [openRate, setOpenRate] = useState<boolean>(false)
   const [checked, setChecked] = useState<boolean>(false);
@@ -85,6 +86,9 @@ const [facilityType,setFacilityType]=useState<any>([])
 const [checkFacText,setCheckFacText]=useState<any>(false)
 const [facilityCheck,setFacilityCheck]=useState<any>("")
 
+const [servicelocationType,setServiceLocationType]=useState<any>([])
+const [checklocText,setCheckLocText]=useState<any>(true)
+const [locationCheck,setLocationCheck]=useState<any>("21")
 
   const dispatch = useAppDispatch();
 
@@ -97,13 +101,11 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
 
     axiosPrivate
       .post(
-        `http://210.18.155.251:5003/search/negotiatedSearch`,postData)
+        `/search/negotiatedSearch`,postData)
       .then((res) => {
         dispatch(dataProviderSearch(res.data.data));
         setSearch(res.data.data);
-  
-
-      })
+        })
       .catch((e) => console.log(e));
     const getFacilityType = async () => {
       await axiosPrivate
@@ -115,8 +117,22 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
         })
         .catch((e) => console.log(e));
     };
+    const getServiceLocation = async () => {
+      await axiosPrivate
+        .get(`/servicecode/findservicelocation`)
+        .then((res) => {
+          console.log(res.data, "Serviceloc");
+          setServiceLocationType(res.data);
+          // dispatch(facilityTypeInfo(res.data))
+        })
+        .catch((e) => console.log(e));
+    };
     getFacilityType();
-  }, []);
+    getServiceLocation();
+  }, 
+  
+  
+  []);
   
   const handleOpenNavMenu = (event: any) => {
     setAnchorElNav(event.currentTarget);
@@ -128,6 +144,7 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
   interface forminitialValues {
     Service: any;
     Location: any;
+    
   }
 
 
@@ -135,6 +152,7 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
   const initialValues: forminitialValues = {
     Service: q,
     Location:locationQ ,
+
   };
 
 
@@ -181,9 +199,10 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
     filter: any,
     dis?: any,
     type?: any,
-    details?: any
+    details?: any,
+    serviceLocation?:any
   ) => {
-    console.log(filter, dis, type, details, "axiosCheck");
+    console.log(filter, dis, type, details,serviceLocation, "axiosCheck");
     const noDistance = {
       q: details.Service,
       location: details.Location,
@@ -201,6 +220,9 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
       facilityType: type,
     };
     const noFacAndDistance = { q: details.Service, location: details.Location };
+    const servicecodeLocation = { q: details.Service,
+      location: details.Location,serviceCode:serviceLocation}
+
     switch (filter) {
       case "noDistance":
         return axiosPrivate.post(`/search/negotiatedSearch`, noDistance);
@@ -208,8 +230,10 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
         return axiosPrivate.post(`/search/negotiatedSearch`, noFacilityType);
       case "facAndDistance":
         return axiosPrivate.post(`/search/negotiatedSearch`, facAndDistance);
-      default:
+        case "nofacAndDistance":
         return axiosPrivate.post(`/search/negotiatedSearch`, noFacAndDistance);
+      default:
+        return axiosPrivate.post(`/search/negotiatedSearch`, servicecodeLocation);
     }
   };
 
@@ -340,10 +364,28 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
       }
     }
   }
-
+ 
+  function handleServicelocationchange(event: any, searchValue: any) {
+    
+      setLocationCheck(event.target.value)
+      filterFacilityType(
+        "servicecodeLocation",
+        distance,
+        facilityCheck,
+        searchValue,
+        event.target.value
+      )
+      .then((res) => {
+        // dispatch(dataSearch(res.data.data));
+        setSearch(res.data.data);
+      })
+      .catch((e) => console.log(e));
+    
+  }
 
 
   return (
+    
     <Box sx={{ backgroundColor: "primary.light", padding: "1.8rem" }}>
       <Formik
         initialValues={initialValues}
@@ -379,6 +421,8 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
                     setCheckFacText(false);
                     setFieldValue("Service", e.target.value);
                     setFacilityCheck("");
+                  
+                    setLocationCheck("21");
                   }}
                   fullWidth={true}
                   sx={{
@@ -412,6 +456,7 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
                       setCheckFacText(false);
                       setFieldValue("Location", e.target.value);
                       setFacilityCheck("");
+                      setLocationCheck("21")
                     }}
                     fullWidth={true}
                     sx={{
@@ -1035,7 +1080,44 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
                     </IconButton>
                     Service Location
                   </Paper>
-                  
+                  <Collapse in={open3} timeout="auto" unmountOnExit>
+                      <Grid item xs={12}>
+                        <FormGroup
+                        // name="distancefilter"
+                        // value={distance}
+                        >
+                          {/* {JSON.stringify(facilityType)} */}
+                          <RadioGroup name="length" value={locationCheck}>
+                       
+                            {servicelocationType.map((type: any, i: any) => (
+                               <> 
+                                {/* {JSON.stringify(
+                                    checklocText)} */}
+                              <FormControlLabel
+                                key={i}
+                                value={type.service_code}
+                                control={
+                                  <Radio
+                                    checked={
+                                      locationCheck === type.service_code 
+                                    }
+                                    onClick={(e: any) => {
+                                      handleServicelocationchange(e, values);
+                                      // e.target.value
+                                    }}
+                                    
+                                  />
+                                }
+                                label={type.serviceLocationName}
+                                labelPlacement="end"
+                              />
+                              </>
+                            ))}
+                          </RadioGroup>
+                        
+                        </FormGroup>
+                      </Grid>
+                    </Collapse>
                 </Box>
                 {/* </Box> */}
               </Box>
