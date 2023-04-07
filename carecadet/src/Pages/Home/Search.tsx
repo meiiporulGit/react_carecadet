@@ -266,14 +266,14 @@ export default function ViewFacility() {
       range: range,
     };
 
-    const rangeAndDistanceAndScore = {
+    const distanceAndScore = {
       q: details.Service,
       location: details.Location,
       distance: dis,
       // range: range,
       ratingRange:score
     };
-    const facAndDistanceAndRangeAndScore = {
+    const facAndDistanceAndScore = {
       q: details.Service,
       location: details.Location,
       distance: dis,
@@ -294,9 +294,9 @@ export default function ViewFacility() {
       case "rangeAndDistance":
         return axiosPrivate.post(`/search`, rangeAndDistance);
         case "rangeAndDistanceAndScore":
-          return axiosPrivate.post(`/search`, rangeAndDistanceAndScore);
+          return axiosPrivate.post(`/search`, distanceAndScore);
           case "facAndDistanceAndRangeAndScore":
-            return axiosPrivate.post(`/search`, facAndDistanceAndRangeAndScore);
+            return axiosPrivate.post(`/search`, facAndDistanceAndScore);
       default:
         return axiosPrivate.post(`/search`, noFacAndDistance);
     }
