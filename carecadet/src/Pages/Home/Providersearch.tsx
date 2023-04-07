@@ -1606,7 +1606,7 @@ const [locationCheck,setLocationCheck]=useState<any>("21")
                                 
                               }}
                               onChangeCommitted={(e, sliderValue) => {
-                                distanceSliderChange(sliderValue, values);
+                                distanceSliderChange(sliderValue, values);  
                                 handleCloseNavMenu()
                               }}
                             />
