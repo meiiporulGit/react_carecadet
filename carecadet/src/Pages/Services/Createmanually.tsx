@@ -194,7 +194,59 @@ const CreateService = () => {
                 />
               </Grid>
             ))} */}
+<Grid item xs={12}>
+                <Typography
+                  // variant="h6"
+                  sx={{
+                    fontSize: "1.2rem",
+                    mb: "0.5rem",
+                  }}
+                >
+                 DiagnosisTest or Service Name <Typography display="inline" sx={{color:"red"}}>*</Typography>
+                </Typography>
+                <Field
+               label="Service Name"
+               name="DiagnosisTestorServiceName"
+              component={Autocomplete}
+               options = {info}
+               loading={info.length === 0}
+               PaperComponent={CustomPaper}
+filterOptions = {filterOptions}
+               getOptionLabel={(option: any) => option.DiagnosisTestorServiceName || option}         
+              freeSolo    
+             
+              onChange={(e: any, value: any) => {
+                setFieldValue("ServiceCode",value !== null ? value.Code :"");
+               setFieldValue("DiagnosisTestorServiceName",value !== null ? value.DiagnosisTestorServiceName :"");
+                
+                             }}
+                             value={values.DiagnosisTestorServiceName}
+               renderInput={(params: AutocompleteRenderInputParams) => (
+                <TextField
+                  {...params}
+                  name="DiagnosisTestorServiceName"
+                  label="Search Service Name"
+                  onChange={handleChange}
+                   variant="outlined"
+                   helperText={
+                    <ErrorMessage name="DiagnosisTestorServiceName">
+                      {(error) => <ErrorProps>{error}</ErrorProps>}
+                    </ErrorMessage>}
+                  sx={{
+                    ".MuiFormLabel-root ": {
+                      letterSpacing: "0.2rem",
+                      fontSize: "0.8rem",
+                    },
+                    ".MuiInputLabel-shrink": {
+                      letterSpacing: 0,
+                    },
+                    "& .MuiAutocomplete-popupIndicator": { transform: "none" }                  
+                  }}
+                />
+              )}
+            />
 
+              </Grid>
 
             <Grid item xs={12}>
                 <Typography
@@ -317,59 +369,7 @@ filterOptions = {filterOptions}
               />
             </Grid> */}
 
-<Grid item xs={12}>
-                <Typography
-                  // variant="h6"
-                  sx={{
-                    fontSize: "1.2rem",
-                    mb: "0.5rem",
-                  }}
-                >
-                 DiagnosisTest or Service Name <Typography display="inline" sx={{color:"red"}}>*</Typography>
-                </Typography>
-                <Field
-               label="Service Name"
-               name="DiagnosisTestorServiceName"
-              component={Autocomplete}
-               options = {info}
-               loading={info.length === 0}
-               PaperComponent={CustomPaper}
-filterOptions = {filterOptions}
-               getOptionLabel={(option: any) => option.DiagnosisTestorServiceName || option}         
-              freeSolo    
-             
-              onChange={(e: any, value: any) => {
-                setFieldValue("ServiceCode",value !== null ? value.Code :"");
-               setFieldValue("DiagnosisTestorServiceName",value !== null ? value.DiagnosisTestorServiceName :"");
-                
-                             }}
-                             value={values.DiagnosisTestorServiceName}
-               renderInput={(params: AutocompleteRenderInputParams) => (
-                <TextField
-                  {...params}
-                  name="DiagnosisTestorServiceName"
-                  label="Search Service Name"
-                  onChange={handleChange}
-                   variant="outlined"
-                   helperText={
-                    <ErrorMessage name="DiagnosisTestorServiceName">
-                      {(error) => <ErrorProps>{error}</ErrorProps>}
-                    </ErrorMessage>}
-                  sx={{
-                    ".MuiFormLabel-root ": {
-                      letterSpacing: "0.2rem",
-                      fontSize: "0.8rem",
-                    },
-                    ".MuiInputLabel-shrink": {
-                      letterSpacing: 0,
-                    },
-                    "& .MuiAutocomplete-popupIndicator": { transform: "none" }                  
-                  }}
-                />
-              )}
-            />
 
-              </Grid>
             {/* <Grid item xs={12} >
               <Typography
                 sx={{

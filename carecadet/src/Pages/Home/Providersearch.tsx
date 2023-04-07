@@ -53,6 +53,7 @@ import { dataSearch, dataSearchTenMiles, dataSearchTwentyMiles, dataSearchThirty
 import {  ArrowDropDown,KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { values } from "lodash";
 import SearchNav from "../../ProtectedRoutes/SearchNav";
+import { type } from "os";
 
 
 export default function Providersearch() {
@@ -85,6 +86,9 @@ const [facilityType,setFacilityType]=useState<any>([])
 const [checkFacText,setCheckFacText]=useState<any>(false)
 const [facilityCheck,setFacilityCheck]=useState<any>("")
 
+const [insuranceDetails,setInsuranceDetails]=useState<any>([])
+const [insuranceCheck,setInsuranceCheck]=useState<any>("INSP-1")
+const [checkInsText,setCheckInsText]=useState<any>(true)
 
   const dispatch = useAppDispatch();
 
@@ -115,9 +119,27 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
         })
         .catch((e) => console.log(e));
     };
+
+
+
+    const getInsuranceProvider = async () => {
+      
+      await axiosPrivate
+        .get(`/insuranceProvider/findinsuranceProvider`)
+        .then((res) => {
+          console.log(res.data, "insuranceprovider");
+          setInsuranceDetails(res.data);
+          
+          // dispatch(facilityTypeInfo(res.data))
+        })
+        .catch((e) => console.log(e));
+    };
+
     getFacilityType();
+    getInsuranceProvider();
+
   }, []);
-  
+  console.log("insurancedetails",insuranceDetails)
   const handleOpenNavMenu = (event: any) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -181,9 +203,10 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
     filter: any,
     dis?: any,
     type?: any,
-    details?: any
+    details?: any,
+    insurance?:any
   ) => {
-    console.log(filter, dis, type, details, "axiosCheck");
+    console.log(filter, dis, type, details,insurance, "axiosCheck");
     const noDistance = {
       q: details.Service,
       location: details.Location,
@@ -200,7 +223,42 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
       distance: dis,
       facilityType: type,
     };
+
+
     const noFacAndDistance = { q: details.Service, location: details.Location };
+
+    const insuranceprov={
+      q: details.Service,
+      location: details.Location,
+      insuranceProvider:insurance,
+    }
+    //  const noInsuranceAndFacility={
+    //   q: details.Service,
+    //   location: details.Location,
+    //   distance: dis,
+    //   facilityCheck
+    // }
+    // const insuranceAndDistance={
+    //   q: details.Service,
+    //   location: details.Location,
+    //   distance: dis,
+    //   insuranceDetails:insurance,
+    // }
+    // const insuranceAndFacility={
+    //   q: details.Service,
+    //   location: details.Location,
+    //   distance: dis,
+    //   facilityCheck,
+    //   insuranceDetails:insurance,
+    // }
+    // const insuranceFacilityAndDistance={
+    //   q: details.Service,
+    //   location: details.Location,
+    //   distance: dis,
+    //   insuranceDetails:insurance,
+    //   facilityType: type,
+    // }
+
     switch (filter) {
       case "noDistance":
         return axiosPrivate.post(`/search/negotiatedSearch`, noDistance);
@@ -208,8 +266,17 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
         return axiosPrivate.post(`/search/negotiatedSearch`, noFacilityType);
       case "facAndDistance":
         return axiosPrivate.post(`/search/negotiatedSearch`, facAndDistance);
-      default:
-        return axiosPrivate.post(`/search/negotiatedSearch`, noFacAndDistance);
+      // case "noFacAndDistance":
+      //   return axiosPrivate.post(`/search/negotiatedSearch`, noFacAndDistance);
+        case "insurance":
+  return axiosPrivate.post(`/search/negotiatedSearch`, insuranceprov);
+//   case "insuranceAndDistance":
+//   return axiosPrivate.post(`/search/negotiatedSearch`, insuranceAndDistance);
+// case "insuranceAndFacility":
+//   return axiosPrivate.post(`/search/negotiatedSearch`, insuranceAndFacility);
+  
+        default:
+          return axiosPrivate.post(`/search/negotiatedSearch`, noFacAndDistance)
     }
   };
 
@@ -343,6 +410,89 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
 
 
 
+
+  function handleInsuranceInputChange(event: any, searchValue: any) {
+    var checkInsurance = false;
+    {JSON.stringify(checkInsurance)}
+    if (event.target.value === insuranceCheck) {
+      setCheckInsText(false);
+      setInsuranceCheck("");
+      checkInsurance = true;
+    } else {
+      setCheckInsText(true);
+      setInsuranceCheck(event.target.value);
+      checkInsurance = true;
+    }
+    if (checkInsurance) {
+      filterFacilityType(
+        "insurance",
+        distance,
+        facilityCheck,
+        searchValue,
+        event.target.value
+      )
+                .then((res) => {
+            // dispatch(dataSearch(res.data.data));
+            setSearch(res.data.data);
+          })
+          .catch((e) => console.log(e));
+    }
+
+    // if (checkInsurance) {
+    
+    //   if (distance === "") {
+    //     filterFacilityType(
+    //       "noDistance",
+    //       distance,
+    //       facilityCheck,
+    //       event.target.value,
+    //       searchValue
+    //     )
+    //       .then((res) => {
+    //         // dispatch(dataSearch(res.data.data));
+    //         setSearch(res.data.data);
+    //       })
+    //       .catch((e) => console.log(e));
+    //   } else {
+    //     filterFacilityType(
+    //       "insuranceAndDistance",
+    //       distance,
+    //       facilityCheck,
+    //       event.target.value,
+    //       searchValue,
+
+    //     )
+    //       .then((res) => {
+    //         // dispatch(dataSearch(res.data.data));
+    //         setSearch(res.data.data);
+    //       })
+    //       .catch((e) => console.log(e));
+    //   }
+    // } else {
+    //   if (distance === "") {
+    //     filterFacilityType("default", distance,facilityCheck, event.target.value, searchValue)
+    //       .then((res) => {
+    //         // dispatch(dataSearch(res.data.data));
+    //         setSearch(res.data.data);
+    //       })
+    //       .catch((e) => console.log(e));
+    //   } else {
+    //     filterFacilityType(
+    //       "noInsurance",
+    //       distance,
+    //       facilityCheck,
+    //       event.target.value,
+    //       searchValue
+    //     )
+    //       .then((res) => {
+    //         // dispatch(dataSearch(res.data.data));
+    //         setSearch(res.data.data);
+    //       })
+    //       .catch((e) => console.log(e));
+    //   }
+    // }
+  }
+
   return (
     <Box sx={{ backgroundColor: "primary.light", padding: "1.8rem" }}>
       <Formik
@@ -379,6 +529,7 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
                     setCheckFacText(false);
                     setFieldValue("Service", e.target.value);
                     setFacilityCheck("");
+                    setInsuranceCheck("INSP-1")
                   }}
                   fullWidth={true}
                   sx={{
@@ -412,6 +563,7 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
                       setCheckFacText(false);
                       setFieldValue("Location", e.target.value);
                       setFacilityCheck("");
+                      setInsuranceCheck("INSP-1")
                     }}
                     fullWidth={true}
                     sx={{
@@ -832,6 +984,48 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
                     </IconButton>
                     Insurance Name
                   </Paper>
+
+                  <Collapse in={open1} timeout="auto" unmountOnExit>
+                      <Grid item xs={12}>
+                        <FormGroup
+                        // name="distancefilter"
+                        // value={distance}
+                        > 
+                        {/* {JSON.stringify(insuranceDetails)} */}
+                        
+                          <RadioGroup name="length" value={insuranceCheck}>
+                            {JSON.stringify(insuranceCheck)}
+                            {insuranceDetails.map((ins: any, i: any) => (
+                              <FormControlLabel
+                                key={i}
+                               
+                                value={ins.insuranceProviderID}
+                                control={
+                                  <Radio
+                                    checked={  insuranceCheck === ins.insuranceProviderID &&
+                                      checkInsText
+                                      
+                                    }
+                                    onClick={(e: any) => {
+                                      handleInsuranceInputChange(e, values);
+                                    }}
+           
+                                  />
+                                }
+                                label={ins.insuranceProvider}
+                                labelPlacement="end"
+                              />
+                            ))}
+                          </RadioGroup>
+                   
+                        </FormGroup>
+                      </Grid>
+                    </Collapse>
+
+
+
+
+
                   
                 </Box>
                 <Box>
@@ -1187,17 +1381,46 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
             </Typography>
           </MenuItem>
           <MenuItem onClick={handleCloseNavMenu}  sx={{ width: 250 }}>
-            <Typography
-              sx={{
-                // color: location === "service" ? "#4D77FF" : "default",
-                fontSize: "1.1rem",
-                // borderBottom: location === "service" ? "3px solid blue" : "none",
-                padding: "0.3rem",
-                cursor: "pointer"
-              }}
-            >
+          <Box>
+          <IconButton
+                          sx={{ fontSize: "1rem" }}
+                          aria-label="expand row"
+                          size="small"
+                          onClick={() => setOpen1(!open1)}
+                        >
+                          {open1 ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                        </IconButton>
+        
            Insurance Name
-            </Typography>
+            <Collapse in={open1} timeout="auto" unmountOnExit>
+           <Grid item xs={12}>
+            <FormGroup>
+              <RadioGroup name="length" value={insuranceCheck}>
+              {insuranceDetails.map((ins: any, i: any) => (
+                <FormControlLabel key={i}
+                value={ins.insuranceProviderID}
+                control={
+                <Radio
+                  checked={
+                    insuranceCheck ===
+                      ins.insuranceProviderID && checkInsText
+                  }
+                  onClick={(e: any) => {
+                    handleInsuranceInputChange(e, values);
+                    handleCloseNavMenu();
+                  }}
+            
+                />
+              }
+              label={ins.insuranceProvider}
+              labelPlacement="end"
+            />
+            ))}
+              </RadioGroup>
+            </FormGroup>
+           </Grid>
+                        </Collapse>
+                      </Box>
           </MenuItem>
     
           <MenuItem onClick={handleCloseNavMenu} sx={{ width: 250 }}>
