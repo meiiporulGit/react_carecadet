@@ -62,6 +62,7 @@ export default function Providersearch() {
   const [open1, setOpen1] = useState<boolean>(false)
   const [open2, setOpen2] = useState<boolean>(false)
   const [open3, setOpen3] = useState<boolean>(false)
+  const [open4, setOpen4] = useState<boolean>(false)
   const [openScore, setOpenScore] = useState<boolean>(false)
   const [openRate, setOpenRate] = useState<boolean>(false)
   const [checked, setChecked] = useState<boolean>(false);
@@ -89,6 +90,9 @@ const [facilityCheck,setFacilityCheck]=useState<any>("")
 const [insuranceDetails,setInsuranceDetails]=useState<any>([])
 const [insuranceCheck,setInsuranceCheck]=useState<any>("INSP-1")
 const [checkInsText,setCheckInsText]=useState<any>(true)
+const [servicelocationType,setServiceLocationType]=useState<any>([])
+const [checklocText,setCheckLocText]=useState<any>(true)
+const [locationCheck,setLocationCheck]=useState<any>("21")
 
   const dispatch = useAppDispatch();
 
@@ -101,13 +105,11 @@ const [checkInsText,setCheckInsText]=useState<any>(true)
 
     axiosPrivate
       .post(
-        `http://210.18.155.251:5003/search/negotiatedSearch`,postData)
+        `/search/negotiatedSearch`,postData)
       .then((res) => {
         dispatch(dataProviderSearch(res.data.data));
         setSearch(res.data.data);
-  
-
-      })
+        })
       .catch((e) => console.log(e));
     const getFacilityType = async () => {
       await axiosPrivate
@@ -115,6 +117,16 @@ const [checkInsText,setCheckInsText]=useState<any>(true)
         .then((res) => {
           console.log(res.data, "facilityType");
           setFacilityType(res.data);
+          // dispatch(facilityTypeInfo(res.data))
+        })
+        .catch((e) => console.log(e));
+    };
+    const getServiceLocation = async () => {
+      await axiosPrivate
+        .get(`/servicecode/findservicelocation`)
+        .then((res) => {
+          console.log(res.data, "Serviceloc");
+          setServiceLocationType(res.data);
           // dispatch(facilityTypeInfo(res.data))
         })
         .catch((e) => console.log(e));
@@ -136,10 +148,12 @@ const [checkInsText,setCheckInsText]=useState<any>(true)
     };
 
     getFacilityType();
-    getInsuranceProvider();
-
-  }, []);
-  console.log("insurancedetails",insuranceDetails)
+    getServiceLocation();
+  }, 
+  
+  
+  []);
+  
   const handleOpenNavMenu = (event: any) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -150,6 +164,7 @@ const [checkInsText,setCheckInsText]=useState<any>(true)
   interface forminitialValues {
     Service: any;
     Location: any;
+    
   }
 
 
@@ -157,6 +172,7 @@ const [checkInsText,setCheckInsText]=useState<any>(true)
   const initialValues: forminitialValues = {
     Service: q,
     Location:locationQ ,
+
   };
 
 
@@ -204,9 +220,10 @@ const [checkInsText,setCheckInsText]=useState<any>(true)
     dis?: any,
     type?: any,
     details?: any,
+    serviceLocation?:any,
     insurance?:any
   ) => {
-    console.log(filter, dis, type, details,insurance, "axiosCheck");
+    console.log(filter, dis, type, details,serviceLocation,insurance, "axiosCheck");
     const noDistance = {
       q: details.Service,
       location: details.Location,
@@ -226,6 +243,9 @@ const [checkInsText,setCheckInsText]=useState<any>(true)
 
 
     const noFacAndDistance = { q: details.Service, location: details.Location };
+    const servicecodeLocation = { q: details.Service,
+      location: details.Location,serviceCode:serviceLocation}
+
 
     const insuranceprov={
       q: details.Service,
@@ -266,7 +286,7 @@ const [checkInsText,setCheckInsText]=useState<any>(true)
         return axiosPrivate.post(`/search/negotiatedSearch`, noFacilityType);
       case "facAndDistance":
         return axiosPrivate.post(`/search/negotiatedSearch`, facAndDistance);
-      // case "noFacAndDistance":
+        // case "noFacAndDistance":
       //   return axiosPrivate.post(`/search/negotiatedSearch`, noFacAndDistance);
         case "insurance":
   return axiosPrivate.post(`/search/negotiatedSearch`, insuranceprov);
@@ -275,8 +295,10 @@ const [checkInsText,setCheckInsText]=useState<any>(true)
 // case "insuranceAndFacility":
 //   return axiosPrivate.post(`/search/negotiatedSearch`, insuranceAndFacility);
   
-        default:
+        case "nofacAndDistance":
           return axiosPrivate.post(`/search/negotiatedSearch`, noFacAndDistance)
+      default:
+        return axiosPrivate.post(`/search/negotiatedSearch`, servicecodeLocation);
     }
   };
 
@@ -407,7 +429,24 @@ const [checkInsText,setCheckInsText]=useState<any>(true)
       }
     }
   }
-
+ 
+  function handleServicelocationchange(event: any, searchValue: any) {
+    
+      setLocationCheck(event.target.value)
+      filterFacilityType(
+        "servicecodeLocation",
+        distance,
+        facilityCheck,
+        searchValue,
+        event.target.value
+      )
+      .then((res) => {
+        // dispatch(dataSearch(res.data.data));
+        setSearch(res.data.data);
+      })
+      .catch((e) => console.log(e));
+    
+  }
 
 
 
@@ -494,6 +533,7 @@ const [checkInsText,setCheckInsText]=useState<any>(true)
   }
 
   return (
+    
     <Box sx={{ backgroundColor: "primary.light", padding: "1.8rem" }}>
       <Formik
         initialValues={initialValues}
@@ -529,6 +569,8 @@ const [checkInsText,setCheckInsText]=useState<any>(true)
                     setCheckFacText(false);
                     setFieldValue("Service", e.target.value);
                     setFacilityCheck("");
+                  
+                    setLocationCheck("21");
                     setInsuranceCheck("INSP-1")
                   }}
                   fullWidth={true}
@@ -563,6 +605,7 @@ const [checkInsText,setCheckInsText]=useState<any>(true)
                       setCheckFacText(false);
                       setFieldValue("Location", e.target.value);
                       setFacilityCheck("");
+                      setLocationCheck("21")
                       setInsuranceCheck("INSP-1")
                     }}
                     fullWidth={true}
@@ -1229,7 +1272,44 @@ const [checkInsText,setCheckInsText]=useState<any>(true)
                     </IconButton>
                     Service Location
                   </Paper>
-                  
+                  <Collapse in={open3} timeout="auto" unmountOnExit>
+                      <Grid item xs={12}>
+                        <FormGroup
+                        // name="distancefilter"
+                        // value={distance}
+                        >
+                          {/* {JSON.stringify(facilityType)} */}
+                          <RadioGroup name="length" value={locationCheck}>
+                       
+                            {servicelocationType.map((type: any, i: any) => (
+                               <> 
+                                {/* {JSON.stringify(
+                                    checklocText)} */}
+                              <FormControlLabel
+                                key={i}
+                                value={type.service_code}
+                                control={
+                                  <Radio
+                                    checked={
+                                      locationCheck === type.service_code 
+                                    }
+                                    onClick={(e: any) => {
+                                      handleServicelocationchange(e, values);
+                                      // e.target.value
+                                    }}
+                                    
+                                  />
+                                }
+                                label={type.serviceLocationName}
+                                labelPlacement="end"
+                              />
+                              </>
+                            ))}
+                          </RadioGroup>
+                        
+                        </FormGroup>
+                      </Grid>
+                    </Collapse>
                 </Box>
                 {/* </Box> */}
               </Box>
