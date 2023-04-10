@@ -1271,7 +1271,7 @@ export default function Providersearch() {
                           {/* {JSON.stringify(insuranceDetails)} */}
 
                           <RadioGroup name="length" value={insuranceCheck}>
-                            {JSON.stringify(insuranceCheck)}
+                            {/* {JSON.stringify(insuranceCheck)} */}
                             {insuranceDetails.map((ins: any, i: any) => (
                               <FormControlLabel
                                 key={i}
