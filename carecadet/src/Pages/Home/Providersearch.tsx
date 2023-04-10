@@ -56,7 +56,8 @@ import {
   dataSearchTwentyMiles,
   dataSearchThirtyMiles,
   dataProviderSearch,
-  providerDataQuery,
+
+  dataQueryProvider,
 } from "../../Redux/ProviderRedux/HomeSlice";
 import {
   ArrowDropDown,
@@ -89,7 +90,8 @@ export default function Providersearch() {
     (state) => state.homeReducer.providerSearchData
   );
 
-  const providerDataQuery=useAppSelector(state=>state.homeReducer.providerQueryData)
+  const providerDataQuery=useAppSelector(state=>state.homeReducer.providerDataQuery)
+ 
   // console.log(searchData, "searchdata");
   // const serviceValue = useAppSelector((state)=>state.homeReducer)
   // console.log('serviceValue',serviceValue)
@@ -191,7 +193,7 @@ export default function Providersearch() {
         console.log(res.data, "checkT");
 
         dispatch(dataProviderSearch(res.data.data));
-        dispatch(providerDataQuery(values))
+        dispatch(dataQueryProvider(values))
         setSearch(res.data.data);
        
         setSearchParams({ q: values.Service, location: values.Location });
