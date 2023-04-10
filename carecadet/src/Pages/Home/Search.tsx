@@ -96,7 +96,7 @@ export default function ViewFacility() {
   const [facilityType, setFacilityType] = useState<any>([]);
   const [facilityCheck, setFacilityCheck] = useState<any>("");
   const [value, setValue] = useState<number[]>([0, 0]);
-  const [scoreValue, setScoreValue] = useState<number[]>([1, 1]);
+  const [scoreValue, setScoreValue] = useState<number[]>([1, 5]);
   const dispatch = useAppDispatch();
 
   const q = searchParams.get("q");
@@ -119,7 +119,7 @@ export default function ViewFacility() {
           })
         );
         console.log(maxFilter, "....maxPrice");
-        setMaxPrice(maxFilter);
+        
 
         const minFilter = Math.min(
           ...res.data.data.map((fprice: any) => {
@@ -131,7 +131,10 @@ export default function ViewFacility() {
           })
         );
         console.log(minFilter, "....minPrice");
-        setMinPrice(minFilter);
+        if(res.data.data.length!==0){
+          setMaxPrice(maxFilter);
+          setMinPrice(minFilter);
+        }
       })
       .catch((e) => console.log(e));
     const getFacilityType = async () => {
@@ -189,7 +192,7 @@ export default function ViewFacility() {
           })
         );
         console.log(maxFilter, "....maxPrice");
-        setMaxPrice(maxFilter);
+        
 
         const minFilter = Math.min(
           ...res.data.data.map((fprice: any) => {
@@ -201,7 +204,11 @@ export default function ViewFacility() {
           })
         );
         console.log(minFilter, "....minPrice");
-        setMinPrice(minFilter);
+       
+        if(res.data.data.length!==0){
+          setMaxPrice(maxFilter);
+          setMinPrice(minFilter);
+        }
         // navigate("/patient/search");
         console.log("searchi", res);
       })
@@ -234,69 +241,70 @@ export default function ViewFacility() {
     score?:any
   ) => {
     console.log(filter, dis, type, details, range,score, "axiosCheck");
-    const noDistance = {
-      q: details.Service,
-      location: details.Location,
-      facilityType: type,
-    };
+ 
     const noFacilityType = {
       q: details.Service,
       location: details.Location,
       distance: dis,
-    };
-    const facAndDistance = {
-      q: details.Service,
-      location: details.Location,
-      distance: dis,
-      facilityType: type,
-    };
-    const noFacAndDistance = { q: details.Service, location: details.Location };
-    const rangeAndDistance = {
-      q: details.Service,
-      location: details.Location,
-      distance: dis,
-      range: range,
-    };
-
-    const facAndDistanceAndRange = {
-      q: details.Service,
-      location: details.Location,
-      distance: dis,
-      facilityType: type,
-      range: range,
-    };
-
-    const distanceAndScore = {
-      q: details.Service,
-      location: details.Location,
-      distance: dis,
-      // range: range,
+      
       ratingRange:score
     };
-    const facAndDistanceAndScore = {
+    const withFacilityType = {
       q: details.Service,
       location: details.Location,
       distance: dis,
-      // range: range,
-      ratingRange:score,
-      facilityType:type
+      facilityType: type,
+      
+      ratingRange:score
+    };
+    const noFacAndDistance = { q: details.Service, location: details.Location };
+    const noFacilityTypeAndRangeAndDistanceAndScore = {
+      q: details.Service,
+      location: details.Location,
+      distance: dis,
+      range: range,
+      ratingRange:score
     };
 
+    const withFacilityTypeAndDistanceAndRangeAndScore = {
+      q: details.Service,
+      location: details.Location,
+      distance: dis,
+      facilityType: type,
+      range: range,
+      ratingRange:score
+    };
+
+    // const noFacilityTypeAndDistanceAndScore = {
+    //   q: details.Service,
+    //   location: details.Location,
+    //   distance: dis,
+    //   // range: range,
+    //   ratingRange:score
+    // };
+    // const withFacilityTypeAndDistanceAndScore = {
+    //   q: details.Service,
+    //   location: details.Location,
+    //   distance: dis,
+    //   // range: range,
+    //   ratingRange:score,
+    //   facilityType:type
+    // };
+
     switch (filter) {
-      case "noDistance":
-        return axiosPrivate.post(`/search`, noDistance);
+     
       case "noFacilityType":
         return axiosPrivate.post(`/search`, noFacilityType);
-      case "facAndDistance":
-        return axiosPrivate.post(`/search`, facAndDistance);
-      case "facAndDistanceAndRange":
-        return axiosPrivate.post(`/search`, facAndDistanceAndRange);
-      case "rangeAndDistance":
-        return axiosPrivate.post(`/search`, rangeAndDistance);
-        case "rangeAndDistanceAndScore":
-          return axiosPrivate.post(`/search`, distanceAndScore);
-          case "facAndDistanceAndRangeAndScore":
-            return axiosPrivate.post(`/search`, facAndDistanceAndScore);
+      case "withFacilityType":
+        return axiosPrivate.post(`/search`, withFacilityType);
+      case "withFacilityTypeAndDistanceAndRangeAndScore":
+        return axiosPrivate.post(`/search`, withFacilityTypeAndDistanceAndRangeAndScore);
+      case "noFacilityTypeAndRangeAndDistanceAndScore":
+        return axiosPrivate.post(`/search`,noFacilityTypeAndRangeAndDistanceAndScore);
+        // case "noFacilityTypeAndDistanceAndScore":
+        //   return axiosPrivate.post(`/search`, noFacilityTypeAndDistanceAndScore);
+        //   case "withFacilityTypeAndDistanceAndRangeAndScore":
+        //     return axiosPrivate.post(`/search`, withFacilityTypeAndDistanceAndScore);
       default:
         return axiosPrivate.post(`/search`, noFacAndDistance);
     }
@@ -381,10 +389,12 @@ export default function ViewFacility() {
     }
     if (checkFacility) {
       filterFacilityType(
-        "facAndDistance",
+        "withFacilityType",
         `${distance}mi`,
         event.target.value,
-        searchValue
+        searchValue,
+        value,
+        scoreValue
       )
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
@@ -415,7 +425,7 @@ export default function ViewFacility() {
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, maxFilter]);
+            setValue([minFilter, minFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -426,7 +436,9 @@ export default function ViewFacility() {
         "noFacilityType",
         `${distance}mi`,
         event.target.value,
-        searchValue
+        searchValue,
+        value,
+        scoreValue
       )
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
@@ -457,7 +469,7 @@ export default function ViewFacility() {
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, maxFilter]);
+            setValue([minFilter, minFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -535,11 +547,12 @@ export default function ViewFacility() {
 
     if (facilityCheck === "") {
       filterFacilityType(
-        "rangeAndDistance",
+        "noFacilityTypeAndRangeAndDistanceAndScore",
         `${distance}mi`,
         facilityCheck,
         searchValues,
-        newValue
+        newValue,
+        scoreValue
       )
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
@@ -548,11 +561,12 @@ export default function ViewFacility() {
         .catch((e) => console.log(e));
     } else {
       filterFacilityType(
-        "facAndDistanceAndRange",
+        "withFacilityTypeAndDistanceAndRangeAndScore",
         `${distance}mi`,
         facilityCheck,
         searchValues,
-        newValue
+        newValue,
+        scoreValue
       )
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
@@ -631,7 +645,7 @@ export default function ViewFacility() {
 
     if (facilityCheck === "") {
       filterFacilityType(
-        "rangeAndDistanceAndScore",
+        "noFacilityType",
         `${distance}mi`,
         facilityCheck,
         searchValues,
@@ -641,11 +655,42 @@ export default function ViewFacility() {
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
+          const maxFilter = Math.max(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+          console.log(maxFilter, "....maxPrice");
+          
+  
+          const minFilter = Math.min(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+          console.log(minFilter, "....minPrice");
+          if (res.data.data.length === 0) {
+            setValue([0, 0]);
+            setMinPrice(0);
+            setMaxPrice(1);
+          } else {
+            setValue([minFilter, minFilter]);
+            setMinPrice(minFilter);
+            setMaxPrice(maxFilter);
+          }
         })
         .catch((e) => console.log(e));
     } else {
       filterFacilityType(
-        "facAndDistanceAndRangeAndScore",
+        "withFacilityType",
         `${distance}mi`,
         facilityCheck,
         searchValues,
@@ -655,6 +700,37 @@ export default function ViewFacility() {
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
+          const maxFilter = Math.max(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+          console.log(maxFilter, "....maxPrice");
+          
+  
+          const minFilter = Math.min(
+            ...res.data.data.map((fprice: any) => {
+              if (fprice.priceType === "facilityPrice") {
+                return fprice.FacilityPrices;
+              } else {
+                return fprice.cashPrice;
+              }
+            })
+          );
+          console.log(minFilter, "....minPrice");
+          if (res.data.data.length === 0) {
+            setValue([0, 0]);
+            setMinPrice(0);
+            setMaxPrice(1);
+          } else {
+            setValue([minFilter, minFilter]);
+            setMinPrice(minFilter);
+            setMaxPrice(maxFilter);
+          }
         })
         .catch((e) => console.log(e));
     }
@@ -691,7 +767,7 @@ export default function ViewFacility() {
   const distanceSliderChange = (v: any, searchValue: any) => {
     setDistance(v);
     if (facilityCheck === "") {
-      filterFacilityType("noFacilityType", `${v}mi`, facilityCheck, searchValue)
+      filterFacilityType("noFacilityType", `${v}mi`, facilityCheck, searchValue,value,scoreValue)
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           console.log(res.data.data, "checkDistance");
@@ -720,16 +796,16 @@ export default function ViewFacility() {
           if (res.data.data.length === 0) {
             setValue([0, 0]);
             setMinPrice(0);
-            setMaxPrice(0);
+            setMaxPrice(1);
           } else {
-            setValue([minFilter, maxFilter]);
+            setValue([minFilter, minFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
         })
         .catch((e) => console.log(e));
     } else {
-      filterFacilityType("facAndDistance", `${v}mi`, facilityCheck, searchValue)
+      filterFacilityType("withFacilityType", `${v}mi`, facilityCheck, searchValue,value,scoreValue)
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
@@ -756,9 +832,9 @@ export default function ViewFacility() {
           if (res.data.data.length === 0) {
             setValue([0, 0]);
             setMinPrice(0);
-            setMaxPrice(0);
+            setMaxPrice(1);
           } else {
-            setValue([minFilter, maxFilter]);
+            setValue([minFilter, minFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -1725,8 +1801,10 @@ export default function ViewFacility() {
                   padding: "4rem",
                 }}
               >
-                {/* {select === 'searchdata' ?                */}
-                {search.map((dsearch: any, i: any) => (
+                {/* {select === 'searchdata' ?    
+                <            */}
+                
+                { search.length!==0?   search.map((dsearch: any, i: any) => (
                   <div key={i}>
                     <Paper elevation={3}>
                       <Card
@@ -1815,7 +1893,7 @@ export default function ViewFacility() {
                                   textAlign: "center",
                                 }}
                               >
-                                ${" "}
+                                $
                                 {dsearch.priceType === "facilityPrice"
                                   ? dsearch.FacilityPrices
                                   : dsearch.cashPrice}
@@ -1836,24 +1914,26 @@ export default function ViewFacility() {
                               container
                               direction="row"
                               justifyContent="flex-end"
+                              alignItems={"center"}
+                              gap={"1rem"}
                             >
                               <Typography
                                 sx={{
                                   fontSize: "1.25rem",
                                   color: "black",
-                                  mr: "60px",
+                                  // mr: "60px",
                                 }}
                               >
-                                eCQMscore:
+                                Rating :
                               </Typography>
                               <Typography
                                 sx={{
-                                  fontSize: "2rem",
+                                  fontSize: "1.5rem",
                                   color: "black",
-                                  mb: "15px",
+                                  // mb: "15px",
                                 }}
                               >
-                                {dsearch.eCQMscore}
+                                {dsearch?.facilityDetails?.rating}
                               </Typography>
                             </Grid>
                           </Grid>
@@ -1861,7 +1941,8 @@ export default function ViewFacility() {
                       </Card>
                     </Paper>
                   </div>
-                ))}
+                )): <Box sx={{display:"flex",justifyContent:'center',alignItems:"center",height:"10vh"}}><Typography>No result</Typography></Box>
+              }
               </Grid>
             </Grid>
             <Box
@@ -1870,7 +1951,7 @@ export default function ViewFacility() {
                 flexDirection: "column",
               }}
             >
-              {search.map((dsearch: any, i: any) => (
+              {search.length!==0?  search.map((dsearch: any, i: any) => (
                 <>
                   <Paper
                     sx={{ padding: "0.5rem", m: "0.2rem", fontSize: "0.9rem" }}
@@ -1881,7 +1962,7 @@ export default function ViewFacility() {
                       />
                       {open === i ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                     </IconButton>
-                    {dsearch.FacilityName}
+                    {dsearch?.facilityDetails?.facilityName}
                   </Paper>
 
                   <Collapse in={open === i} timeout="auto" unmountOnExit>
@@ -1901,13 +1982,22 @@ export default function ViewFacility() {
                             mb: "10px",
                           }}
                         >
-                          {dsearch.facilityDetails?.address?.addressLine1 +
-                            "," +
-                            dsearch.facilityDetails?.address?.city +
-                            "," +
-                            dsearch.facilityDetails?.address?.state +
-                            " - " +
-                            dsearch.facilityDetails?.address?.zipCode}
+                                    {dsearch.priceType === "facilityPrice"
+                                ? dsearch.facilityDetails?.address
+                                    ?.addressLine1 +
+                                  "," +
+                                  dsearch.facilityDetails?.address?.city +
+                                  "," +
+                                  dsearch.facilityDetails?.address?.state +
+                                  " - " +
+                                  dsearch.facilityDetails?.address?.zipCode
+                                : dsearch.facilityDetails?.addressLine1 +
+                                  "," +
+                                  dsearch.facilityDetails?.city +
+                                  "," +
+                                  dsearch.facilityDetails?.state +
+                                  " - " +
+                                  dsearch.facilityDetails?.zipCode}
                         </Typography>
                         <Typography
                           sx={{
@@ -1916,7 +2006,9 @@ export default function ViewFacility() {
                             mb: "10px",
                           }}
                         >
-                          {dsearch.DiagnosisTestorServiceName}
+                          {dsearch.priceType === "facilityPrice"
+                                ? dsearch.DiagnosisTestorServiceName
+                                : dsearch.serviceName}
                         </Typography>
                         <Typography
                           sx={{ fontSize: "0.9rem", color: "blue", mb: "10px" }}
@@ -1945,7 +2037,9 @@ export default function ViewFacility() {
                               textAlign: "center",
                             }}
                           >
-                            $ {dsearch.FacilityPrices}
+                            $ {dsearch.priceType === "facilityPrice"
+                                  ? dsearch.FacilityPrices
+                                  : dsearch.cashPrice}
                           </Box>
                           <Typography
                             sx={{
@@ -1954,39 +2048,43 @@ export default function ViewFacility() {
                               // width: "100px",
                             }}
                           >
-                            Average price
+                           {dsearch.priceType === "facilityPrice"
+                                  ? "Average Price"
+                                  : "Cash Price"}
                           </Typography>
                         </Grid>
                         <Grid
                           container
                           direction="row"
                           justifyContent="flex-end"
+                          alignItems={"center"}
                         >
                           <Typography
                             sx={{
                               fontSize: "0.8rem",
                               color: "black",
-                              mr: "60px",
-                              mt: "30px",
+                              // mr: "60px",
+                              // mt: "30px",
                             }}
                           >
-                            eCQMscore:
+                            Rating :
                           </Typography>
                           <Typography
                             sx={{
-                              fontSize: "2rem",
+                              fontSize: "1rem",
                               color: "black",
-                              mb: "15px",
+                              // mb: "15px",
                             }}
                           >
-                            {dsearch.eCQMscore}
+                            {dsearch?.facilityDetails?.rating}
                           </Typography>
                         </Grid>
                       </Grid>
                     </Paper>
                   </Collapse>
                 </>
-              ))}
+              )):<Box sx={{display:"flex",justifyContent:'center',alignItems:"center",height:"10vh"}}><Typography>No result</Typography></Box>
+            }
             </Box>
           </Form>
         )}
