@@ -61,8 +61,8 @@ const Patienthomepage = () => {
     Location: Yup.string().required("Required")
   }); 
   const onSubmit = (values: forminitialValues, actions: any) => {
- 
-    navigate(`/patient/search?q=${values.Service}&location=${values.Location}`);
+ const serviceQuery=encodeURIComponent(values.Service)
+    navigate(`/patient/search?q=${serviceQuery}&location=${values.Location}`);
     // axiosPrivate.get(`http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`)
     //   .then((res) => {
     //     console.log(res.data);

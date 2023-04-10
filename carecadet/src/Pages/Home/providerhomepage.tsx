@@ -74,7 +74,8 @@ const Providerhomepage = () => {
     values:initialValues
     
     });
-    navigate(`/provider/search?q=${values.Service}&location=${values.Location}`);
+    const serviceQuery=encodeURIComponent(values.Service)
+    navigate(`/provider/search?q=${serviceQuery}&location=${values.Location}`);
     // axiosPrivate
     //   .get(`http://210.18.155.251:5003/search/?q=`)
     // axiosPrivate.get (`http://210.18.155.251:5003/search/negotiatedSearch?q=${values.Service}&location=${values.Location}&serviceCode=21`)

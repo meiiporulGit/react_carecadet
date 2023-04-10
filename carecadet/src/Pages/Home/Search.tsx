@@ -181,7 +181,8 @@ export default function ViewFacility() {
         dispatch(dataSearch(res.data.data));
 
         setSearch(res.data.data);
-        setSearchParams({ q: values.Service, location: values.Location });
+        const serviceQuery=encodeURIComponent(values.Service)
+        setSearchParams({ q: serviceQuery, location: values.Location });
         const maxFilter = Math.max(
           ...res.data.data.map((fprice: any) => {
             if (fprice.priceType === "facilityPrice") {
@@ -247,7 +248,7 @@ export default function ViewFacility() {
       location: details.Location,
       distance: dis,
       
-      ratingRange:score
+      // ratingRange:score
     };
     const withFacilityType = {
       q: details.Service,
@@ -255,7 +256,7 @@ export default function ViewFacility() {
       distance: dis,
       facilityType: type,
       
-      ratingRange:score
+      // ratingRange:score
     };
     const noFacAndDistance = { q: details.Service, location: details.Location };
     const noFacilityTypeAndRangeAndDistanceAndScore = {

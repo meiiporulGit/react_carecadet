@@ -189,7 +189,8 @@ export default function Providersearch() {
 
         dispatch(dataProviderSearch(res.data.data));
         setSearch(res.data.data);
-        setSearchParams({ q: values.Service, location: values.Location });
+        const serviceQuery=encodeURIComponent(values.Service)
+        setSearchParams({ q: serviceQuery, location: values.Location });
       })
       .catch((e) => console.log(e));
   };
