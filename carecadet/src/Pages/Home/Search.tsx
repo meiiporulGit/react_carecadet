@@ -29,8 +29,11 @@ import {
   Grid,
   TextField,
   Slider,
+  Pagination,
+  CircularProgress,
+  
 } from "@mui/material";
-
+import LinearProgress from '@mui/material/LinearProgress';
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
@@ -64,6 +67,7 @@ import {
 import { values } from "lodash";
 import SearchNav from "../../ProtectedRoutes/SearchNav";
 
+
 export default function ViewFacility() {
   const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
@@ -71,6 +75,7 @@ export default function ViewFacility() {
   const [open3, setOpen3] = useState<boolean>(false);
   const [open4, setOpen4] = useState<boolean>(false);
   // const [checked, setChecked] = useState<boolean>(false);
+ const [LoadingState ,setLoadingState] = useState<boolean>(true)
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [distance, setDistance] = useState(30);
@@ -79,20 +84,19 @@ export default function ViewFacility() {
   const [checkFacText, setCheckFacText] = useState<boolean>(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [data, setData] = useState([] as forminitialValues[]);
+ 
   const [service, setService] = useState(false);
-
+  const itemsPerPage = 5;
+  
   const [search, setSearch] = useState<any>([]);
+  const [page1, setPage1] = useState(1);
+  const [noOfPages] = useState(Math.ceil(search.length / itemsPerPage));
   const [maxPrice, setMaxPrice] = useState<any>(100);
   const [minPrice, setMinPrice] = useState<any>(1);
-
+  const [loading,setLoading] =useState<any>(false);
   const searchData = useAppSelector((state) => state.homeReducer.searchData);
 
-  // const serviceValue = useAppSelector((state) => state.homeReducer);
 
-  // const [searchqueryData, setSearchqueryData] = useState(searchData);
-
-  // const [search, setSearch] = useState();
   const [facilityType, setFacilityType] = useState<any>([]);
   const [facilityCheck, setFacilityCheck] = useState<any>("");
   const [value, setValue] = useState<number[]>([0, 0]);
@@ -103,12 +107,14 @@ export default function ViewFacility() {
   const locationQ = searchParams.get("location");
 
   useEffect(() => {
-    const postData = { q: q, location: locationQ };
+        const postData = { q: q, location: locationQ };
     axiosPrivate
       .post(`/search`, postData)
       .then((res) => {
+        setLoadingState(true)
         dispatch(dataSearch(res.data.data));
         setSearch(res.data.data);
+        setLoadingState(false)
         const maxFilter = Math.max(
           ...res.data.data.map((fprice: any) => {
             if (fprice.priceType === "facilityPrice") {
@@ -169,15 +175,21 @@ export default function ViewFacility() {
     Location: Yup.string().required("Required"),
   });
   const onSubmit = (values: forminitialValues, actions: any) => {
+    
     const postData = { q: values.Service, location: values.Location };
+   
+    setLoading(true)
     axiosPrivate
       .post(`/search`, postData)
       .then((res) => {
         console.log(res.data);
         // setSearchqueryData(res.data.data)
+       
         dispatch(dataSearch(res.data.data));
-
+        
+        setLoading(false)
         setSearch(res.data.data);
+      
         setSearchParams({ q: values.Service, location: values.Location });
         const maxFilter = Math.max(
           ...res.data.data.map((fprice: any) => {
@@ -205,26 +217,23 @@ export default function ViewFacility() {
         // navigate("/patient/search");
         console.log("searchi", res);
       })
-      .catch((e) => console.log(e));
+      .catch((err) => {
+        toast.error(err.message);
+setLoading(false) 
+
+});
   };
 
-  //Table Pagination
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+
 
   const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    page: number
+    event: React.ChangeEvent<unknown>,
+    value: number
   ) => {
-    setPage(page);
+    setPage1(value);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+ 
   const filterFacilityType = (
     filter: any,
     dis?: any,
@@ -302,72 +311,7 @@ export default function ViewFacility() {
     }
   };
 
-  // function handleInputChange(event: any, searchValue: any) {
-  //   let radioDistance = false;
-  //   if (event.target.value === distance) {
-  //     setCheckText(false);
-  //     setDistance("");
-  //     radioDistance = false;
-  //   } else {
-  //     setCheckText(true);
-  //     setDistance(event.target.value);
-  //     radioDistance = true;
-  //   }
-  //   if (radioDistance) {
-  //     if (facilityCheck === "") {
-  //       filterFacilityType(
-  //         "noFacilityType",
-  //         event.target.value,
-  //         facilityCheck,
-  //         searchValue
-  //       )
-  //         .then((res) => {
-  //           // dispatch(dataSearch(res.data.data));
-  //           setSearch(res.data.data);
-  //         })
-  //         .catch((e) => console.log(e));
-  //     } else {
-  //       filterFacilityType(
-  //         "facAndDistance",
-  //         event.target.value,
-  //         facilityCheck,
-  //         searchValue
-  //       )
-  //         .then((res) => {
-  //           // dispatch(dataSearch(res.data.data));
-  //           setSearch(res.data.data);
-  //         })
-  //         .catch((e) => console.log(e));
-  //     }
-  //   } else {
-  //     if (facilityCheck === "") {
-  //       filterFacilityType(
-  //         "default",
-  //         event.target.value,
-  //         facilityCheck,
-  //         searchValue
-  //       )
-  //         .then((res) => {
-  //           // dispatch(dataSearch(res.data.data));
-  //           setSearch(res.data.data);
-  //         })
-  //         .catch((e) => console.log(e));
-  //     } else {
-  //       filterFacilityType(
-  //         "noDistance",
-  //         event.target.value,
-  //         facilityCheck,
-  //         searchValue
-  //       )
-  //         .then((res) => {
-  //           // dispatch(dataSearch(res.data.data));
-  //           setSearch(res.data.data);
-  //         })
-  //         .catch((e) => console.log(e));
-  //     }
-  //   }
-  // }
-
+ 
   function handleTypeInputChange(event: any, searchValue: any) {
     var checkFacility = false;
     if (event.target.value === facilityCheck) {
@@ -469,70 +413,7 @@ export default function ViewFacility() {
     setService(true);
     setValue(newValue as number[]);
     console.log("newValue", newValue);
-    // const pricefilter = searchData.filter((item: any) => {
-
-    //   // Math.min(
-    //   //   ...res.data.data.map((fprice: any) =>  {
-    //   //     if(fprice.priceType==="facilityPrice"){
-    //   //       return fprice.FacilityPrices
-    //   //     }
-    //   //     else{
-    //   //       return fprice.cashPrice
-    //   //     }
-    //   //   })
-    //   // );
-    //   if(item.priceType==="facilityPrice"){
-    //   return item.FacilityPrices >= newValue[0] && item.FacilityPrices <= newValue[1]
-    //   }
-    //   else{
-    //     console.log(".....",item.cashPrice)
-    //     return item.cashPrice >= newValue[0] && item.cashPrice <= newValue[1]
-
-    //   }
-    //   // return item.some((dataItem:any)=> (dataItem.FacilityPrices >= newValue[0] && dataItem.FacilityPrices <= newValue[1]));
-    // });
-    // console.log("pricefilter", pricefilter);
-    // setSearch(pricefilter);
-    // dispatch(dataSearch(pricefilter))
-
-    // const checkData = {
-    //   q: searchValues.Service,
-    //   location: searchValues.Location,
-    //   range: newValue,
-    // };
-    // axiosPrivate
-    //   .post("/search", checkData)
-    //   .then((res) => {
-    //     setSearch(res.data.data);
-    //     console.log(res.data.data, "checkConsole");
-    //     // const maxFilter = Math.max(
-    //     //   ...res.data.data.map((fprice: any) => {
-    //     //     if(fprice.priceType==="facilityPrice"){
-    //     //       return fprice.FacilityPrices
-    //     //     }
-    //     //     else{
-    //     //       return fprice.cashPrice
-    //     //     }
-    //     //   })
-    //     // );
-    //     // console.log(maxFilter, "....maxPrice");
-    //     // setMaxPrice(maxFilter);
-
-    //     // const minFilter = Math.min(
-    //     //   ...res.data.data.map((fprice: any) =>  {
-    //     //     if(fprice.priceType==="facilityPrice"){
-    //     //       return fprice.FacilityPrices
-    //     //     }
-    //     //     else{
-    //     //       return fprice.cashPrice
-    //     //     }
-    //     //   })
-    //     // );
-    //     // console.log(minFilter, "....minPrice");
-    //     // setMinPrice(minFilter);
-    //   })
-    //   .catch((e) => console.log(e));
-
+    
     if (facilityCheck === "") {
       filterFacilityType(
         "rangeAndDistance",
@@ -563,71 +444,9 @@ export default function ViewFacility() {
   }
   function sliderScoreChange(event: any, newValue: any, searchValues: any) {
     setService(true);
-    // setScoreValue(newValue as number[]);
+   
     console.log("newValue", newValue);
-    // const pricefilter = searchData.filter((item: any) => {
-
-    //   // Math.min(
-    //   //   ...res.data.data.map((fprice: any) =>  {
-    //   //     if(fprice.priceType==="facilityPrice"){
-    //   //       return fprice.FacilityPrices
-    //   //     }
-    //   //     else{
-    //   //       return fprice.cashPrice
-    //   //     }
-    //   //   })
-    //   // );
-    //   if(item.priceType==="facilityPrice"){
-    //   return item.FacilityPrices >= newValue[0] && item.FacilityPrices <= newValue[1]
-    //   }
-    //   else{
-    //     console.log(".....",item.cashPrice)
-    //     return item.cashPrice >= newValue[0] && item.cashPrice <= newValue[1]
-
-    //   }
-    //   // return item.some((dataItem:any)=> (dataItem.FacilityPrices >= newValue[0] && dataItem.FacilityPrices <= newValue[1]));
-    // });
-    // console.log("pricefilter", pricefilter);
-    // setSearch(pricefilter);
-    // dispatch(dataSearch(pricefilter))
-
-    // const checkData = {
-    //   q: searchValues.Service,
-    //   location: searchValues.Location,
-    //   range: newValue,
-    // };
-    // axiosPrivate
-    //   .post("/search", checkData)
-    //   .then((res) => {
-    //     setSearch(res.data.data);
-    //     console.log(res.data.data, "checkConsole");
-    //     // const maxFilter = Math.max(
-    //     //   ...res.data.data.map((fprice: any) => {
-    //     //     if(fprice.priceType==="facilityPrice"){
-    //     //       return fprice.FacilityPrices
-    //     //     }
-    //     //     else{
-    //     //       return fprice.cashPrice
-    //     //     }
-    //     //   })
-    //     // );
-    //     // console.log(maxFilter, "....maxPrice");
-    //     // setMaxPrice(maxFilter);
-
-    //     // const minFilter = Math.min(
-    //     //   ...res.data.data.map((fprice: any) =>  {
-    //     //     if(fprice.priceType==="facilityPrice"){
-    //     //       return fprice.FacilityPrices
-    //     //     }
-    //     //     else{
-    //     //       return fprice.cashPrice
-    //     //     }
-    //     //   })
-    //     // );
-    //     // console.log(minFilter, "....minPrice");
-    //     // setMinPrice(minFilter);
-    //   })
-    //   .catch((e) => console.log(e));
+   
 
     if (facilityCheck === "") {
       filterFacilityType(
@@ -682,10 +501,7 @@ export default function ViewFacility() {
 
       label: "100mi",
     },
-    //   {
-    //     value:distance,
-    //     label:`${distance}mi`
-    //   }
+    
   ];
 
   const distanceSliderChange = (v: any, searchValue: any) => {
@@ -693,7 +509,7 @@ export default function ViewFacility() {
     if (facilityCheck === "") {
       filterFacilityType("noFacilityType", `${v}mi`, facilityCheck, searchValue)
         .then((res) => {
-          // dispatch(dataSearch(res.data.data));
+         
           console.log(res.data.data, "checkDistance");
           setSearch(res.data.data);
           const maxFilter = Math.max(
@@ -768,15 +584,38 @@ export default function ViewFacility() {
   };
 
   return (
+  
     <Box sx={{ backgroundColor: "primary.light", padding: "1.8rem" }}>
+
+   
+    
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={onSubmit}
       >
         {({ handleChange, setFieldValue, values }) => (
-          <Form>
+                          <Form>
+         
+    {LoadingState?
+  
+           <Box
+              sx={{
+                backgroundColor:"primary.light",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "84vh",
+              }}
+            >
+              <Box>
+                <CircularProgress color="inherit" size={50} />
+                <Typography>Loading</Typography>
+              </Box>
+            </Box>: 
+            <>
             <Box sx={{ display: "flex", justifyContent: "center" }}>
+                     
               <Grid
                 container
                 columnSpacing={5}
@@ -789,6 +628,7 @@ export default function ViewFacility() {
                   // gap:"1rem",
                 }}
               >
+                 
                 <Grid item md={6} xs={12}>
                   <Field
                     as={TextField}
@@ -863,7 +703,8 @@ export default function ViewFacility() {
                     size="large"
                     fullWidth={false}
                     variant="contained"
-                    // onClick={() => { setSelect("searchdata") }}
+                    disabled={loading}
+                  
                     sx={{
                       // marginTop: "-100px",
                       // ml: "350px",
@@ -884,15 +725,16 @@ export default function ViewFacility() {
                       },
                     }}
                   >
-                    <SearchIcon /> search
+                    
+                     {loading && (
+                   <CircularProgress size={14} />
+                  )}
+                      {loading && <span>searching</span> }
+          {!loading &&<span ><SearchIcon  />Search</span>}      
                   </Button>
                 </Grid>
               </Grid>
             </Box>
-            {/* </Grid> */}
-
-            {/* </Box> */}
-
             <Grid container xs={12} columnGap={5} mt="20px">
               <Grid
                 item
@@ -1036,16 +878,7 @@ export default function ViewFacility() {
                     </Paper>
                     <Collapse in={open2} timeout="auto" unmountOnExit>
                       <Box sx={{ padding: "0 1rem" }}>
-                        {/* <Box
-                          sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <Typography>Min</Typography>
-                          <Typography>Max</Typography>
-                        </Box> */}
-
+                       
                         <Slider
                           size="medium"
                           getAriaLabel={() => "Quality Score"}
@@ -1197,12 +1030,11 @@ export default function ViewFacility() {
                     <Collapse in={open4} timeout="auto" unmountOnExit>
                       <Grid item xs={12}>
                         <FormGroup
-                        // name="distancefilter"
-                        // value={distance}
+                    
                         >
-                          {/* {JSON.stringify(facilityType)} */}
+                          
                           <RadioGroup name="length" value={facilityCheck}>
-                            {/* {JSON.stringify(facilityCheck)} */}
+                         
                             {facilityType.map((type: any, i: any) => (
                               <FormControlLabel
                                 key={i}
@@ -1216,41 +1048,7 @@ export default function ViewFacility() {
                                     onClick={(e: any) => {
                                       handleTypeInputChange(e, values);
                                     }}
-                                    // onChange={(e:any)=>{
-                                    //   console.log(e.target.value,e.target.checked)
-
-                                    // }}
-                                    // onChange={(e: any) => {
-                                    //   setCheckFacText(true)
-                                    //   console.log(e.target.value)
-                                    //   console.log(e.target.checked)
-                                    //   if (facilityCheck!=="") {
-
-                                    //     if(distance===""){
-
-                                    //       filterFacilityType("noDistance",distance,facilityCheck,values).then(res=>{
-                                    //         dispatch(dataSearch(res.data.data))
-                                    //       }).catch(e=>console.log(e))
-                                    //     }else{
-                                    //       filterFacilityType("facAndDistance",distance,facilityCheck,values).then(res=>{
-                                    //         dispatch(dataSearch(res.data.data))
-                                    //       }).catch(e=>console.log(e))
-                                    //     }
-                                    //     } else {
-
-                                    //     if(distance ===""){
-
-                                    //       filterFacilityType("default",distance,facilityCheck,values).then(res=>{
-                                    //         dispatch(dataSearch(res.data.data))
-                                    //       }).catch(e=>console.log(e))
-                                    //     }else{
-                                    //       filterFacilityType("noFacilityTy",distance,facilityCheck,values).then(res=>{
-                                    //         dispatch(dataSearch(res.data.data))
-                                    //       }).catch(e=>console.log(e))
-                                    //   }
-                                    //    }
-
-                                    // }}
+                           
                                   />
                                 }
                                 label={type.item.split("-")[1]}
@@ -1258,104 +1056,12 @@ export default function ViewFacility() {
                               />
                             ))}
                           </RadioGroup>
-                          {/* <FormControlLabel value="20mi"
-                          control={<Checkbox
-                            checked={distance === "20mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "20mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 20mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "20miles");
-                                  dispatch(dataSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="Hospital" labelPlacement="end"
-                          />
-                        <FormControlLabel value="30mi"
-                          control={<Checkbox
-                            checked={distance === "30mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "30mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "30miles");
-                                  dispatch(dataSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="Urgent care" 
-                          labelPlacement="end" />
-                           <FormControlLabel value="30mi"
-                          control={<Checkbox
-                            checked={distance === "30mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "30mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "30miles");
-                                  dispatch(dataSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="Anthem" 
-                          labelPlacement="end" /> */}
+                         
                         </FormGroup>
                       </Grid>
                     </Collapse>
                   </Box>
-                  {/* </Box> */}
+                 
                 </Box>
                 <Grid item sx={{ display: { xs: "none" } }}>
                   <Box
@@ -1374,7 +1080,11 @@ export default function ViewFacility() {
                   </Box>
                 </Grid>
               </Grid>
+
+
+
               <Grid container sx={{ display: { xs: "block", md: "none" } }}>
+
                 <Box>
                   <IconButton
                     size="large"
@@ -1407,12 +1117,7 @@ export default function ViewFacility() {
                       sx={{ width: 250, fontSize: "1.25rem" }}
                     >
                       <Box>
-                        {/* <Paper sx={{
-                    fontSize: "1rem",
-                    borderRadius: "20px",
-                    backgroundColor: "#CDDBF8",
-                    mb: "10px"
-                  }}> */}
+                      
                         <IconButton
                           sx={{ fontSize: "1rem" }}
                           aria-label="expand row"
@@ -1422,7 +1127,7 @@ export default function ViewFacility() {
                           {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                         </IconButton>
                         Distance
-                        {/* </Paper> */}
+                      
                         <Collapse in={open} timeout="auto" unmountOnExit>
                           <Box sx={{ padding: "1rem 1rem 0 1rem" }}>
                             <Slider
@@ -1548,16 +1253,15 @@ export default function ViewFacility() {
                           {open4 ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                         </IconButton>
                         Facility Type
-                        {/* </Paper> */}
+                   
                         <Collapse in={open4} timeout="auto" unmountOnExit>
                           <Grid item xs={12}>
                             <FormGroup
-                            // name="distancefilter"
-                            // value={distance}
+                            
                             >
-                              {/* {JSON.stringify(facilityType)} */}
+                             
                               <RadioGroup name="length" value={facilityCheck}>
-                                {/* {JSON.stringify(facilityCheck)} */}
+                              
                                 {facilityType.map((type: any, i: any) => (
                                   <FormControlLabel
                                     key={i}
@@ -1572,41 +1276,7 @@ export default function ViewFacility() {
                                           handleTypeInputChange(e, values);
                                           handleCloseNavMenu();
                                         }}
-                                        // onChange={(e:any)=>{
-                                        //   console.log(e.target.value,e.target.checked)
-
-                                        // }}
-                                        // onChange={(e: any) => {
-                                        //   setCheckFacText(true)
-                                        //   console.log(e.target.value)
-                                        //   console.log(e.target.checked)
-                                        //   if (facilityCheck!=="") {
-
-                                        //     if(distance===""){
-
-                                        //       filterFacilityType("noDistance",distance,facilityCheck,values).then(res=>{
-                                        //         dispatch(dataSearch(res.data.data))
-                                        //       }).catch(e=>console.log(e))
-                                        //     }else{
-                                        //       filterFacilityType("facAndDistance",distance,facilityCheck,values).then(res=>{
-                                        //         dispatch(dataSearch(res.data.data))
-                                        //       }).catch(e=>console.log(e))
-                                        //     }
-                                        //     } else {
-
-                                        //     if(distance ===""){
-
-                                        //       filterFacilityType("default",distance,facilityCheck,values).then(res=>{
-                                        //         dispatch(dataSearch(res.data.data))
-                                        //       }).catch(e=>console.log(e))
-                                        //     }else{
-                                        //       filterFacilityType("noFacilityTy",distance,facilityCheck,values).then(res=>{
-                                        //         dispatch(dataSearch(res.data.data))
-                                        //       }).catch(e=>console.log(e))
-                                        //   }
-                                        //    }
-
-                                        // }}
+                                       
                                       />
                                     }
                                     label={type.item.split("-")[1]}
@@ -1614,99 +1284,7 @@ export default function ViewFacility() {
                                   />
                                 ))}
                               </RadioGroup>
-                              {/* <FormControlLabel value="20mi"
-                          control={<Checkbox
-                            checked={distance === "20mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "20mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 20mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "20miles");
-                                  dispatch(dataSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="Hospital" labelPlacement="end"
-                          />
-                        <FormControlLabel value="30mi"
-                          control={<Checkbox
-                            checked={distance === "30mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "30mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "30miles");
-                                  dispatch(dataSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="Urgent care" 
-                          labelPlacement="end" />
-                           <FormControlLabel value="30mi"
-                          control={<Checkbox
-                            checked={distance === "30mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "30mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "30miles");
-                                  dispatch(dataSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="Anthem" 
-                          labelPlacement="end" /> */}
+                             
                             </FormGroup>
                           </Grid>
                         </Collapse>
@@ -1716,17 +1294,23 @@ export default function ViewFacility() {
                   {/* <SearchNav/> */}
                 </Box>
               </Grid>
+              
               <Grid
                 item
                 md={9}
                 sx={{
                   display: { xs: "none", md: "block" },
                   backgroundColor: "#E5EEF7",
-                  padding: "4rem",
+                 
                 }}
               >
-                {/* {select === 'searchdata' ?                */}
-                {search.map((dsearch: any, i: any) => (
+             {loading&&<LinearProgress/>}
+             <Box sx={{mt:"2rem", padding: "0 4rem 4rem 4rem"}}>
+              {
+                  (itemsPerPage>0
+                    ?search.slice((page1 - 1) * itemsPerPage, page1 * itemsPerPage):
+                    search)
+                .map((dsearch: any, i: any) => (
                   <div key={i}>
                     <Paper elevation={3}>
                       <Card
@@ -1857,20 +1441,42 @@ export default function ViewFacility() {
                               </Typography>
                             </Grid>
                           </Grid>
+                            
                         </Grid>
                       </Card>
                     </Paper>
                   </div>
                 ))}
+              {LoadingState&&
+                     <Pagination
+                sx={{ display: "flex", justifyContent: "center" }}
+              
+                count={10}
+                page={page1}
+                siblingCount={0}
+                onChange={handleChangePage}
+                defaultPage={1}
+                color="primary"
+                size="large"
+                showFirstButton
+                showLastButton
+              />
+}
+              </Box>
               </Grid>
             </Grid>
+             
             <Box
               sx={{
                 display: { xs: "flex", md: "none" },
                 flexDirection: "column",
               }}
             >
-              {search.map((dsearch: any, i: any) => (
+                
+              {(itemsPerPage>0
+                    ?search.slice((page1 - 1) * itemsPerPage, page1 * itemsPerPage):
+                    search)
+              .map((dsearch: any, i: any) => (
                 <>
                   <Paper
                     sx={{ padding: "0.5rem", m: "0.2rem", fontSize: "0.9rem" }}
@@ -1987,10 +1593,29 @@ export default function ViewFacility() {
                   </Collapse>
                 </>
               ))}
+           <Pagination
+                sx={{ display: "flex", justifyContent: "center" }}
+              
+                count={Math.ceil(search.length / itemsPerPage)}
+                page={page1}
+                siblingCount={0}
+                onChange={handleChangePage}
+                defaultPage={1}
+                color="primary"
+                size="small"
+                showFirstButton
+                showLastButton />
+         
             </Box>
-          </Form>
-        )}
+            </>     
+}     
+    
+</Form>
+                       
+
+  )}
       </Formik>
     </Box>
   );
+
 }
