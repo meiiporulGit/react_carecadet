@@ -10,7 +10,9 @@ searchData:any;
 searchDataTenMiles:any;
 searchDataTwentyMiles:any;
 searchDataThirtyMiles:any
-providerSearchData:any
+providerSearchData:any;
+queryData:any;
+providerQueryData:any;
 }
 
 // Define the initial state using that type
@@ -19,7 +21,10 @@ searchData:[],
 searchDataTenMiles:[],
 searchDataTwentyMiles:[],
 searchDataThirtyMiles:[],
-providerSearchData:[]
+providerSearchData:[],
+queryData:{},
+providerQueryData:{}
+
 };
 
 export const homeSlice = createSlice({
@@ -60,12 +65,26 @@ export const homeSlice = createSlice({
         // searchDataThirtyMiles: action.payload,
       };
     },
+    dataQuery: (state, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        queryData: action.payload
+        // searchDataThirtyMiles: action.payload,
+      };
+    },
+    providerDataQuery: (state, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        providerDataQuery: action.payload
+        // searchDataThirtyMiles: action.payload,
+      };
+    },
     
   },
 });
 
 export const {
- dataSearch,dataSearchTenMiles,dataSearchTwentyMiles, dataSearchThirtyMiles,dataProviderSearch
+ dataSearch,dataSearchTenMiles,dataSearchTwentyMiles, dataSearchThirtyMiles,dataProviderSearch,dataQuery,providerDataQuery
   // editButton
 } = homeSlice.actions;
 // Other code such as selectors can use the imported `RootState` type

@@ -55,6 +55,7 @@ import {
   dataSearchTenMiles,
   dataSearchTwentyMiles,
   dataSearchThirtyMiles,
+  dataQuery,
 } from "../../Redux/ProviderRedux/HomeSlice";
 import {
   ArrowDropDown,
@@ -87,6 +88,7 @@ export default function ViewFacility() {
   const [minPrice, setMinPrice] = useState<any>(1);
 
   const searchData = useAppSelector((state) => state.homeReducer.searchData);
+  const QueryData=useAppSelector(state=>state.homeReducer.queryData)
 
   // const serviceValue = useAppSelector((state) => state.homeReducer);
 
@@ -97,10 +99,12 @@ export default function ViewFacility() {
   const [facilityCheck, setFacilityCheck] = useState<any>("");
   const [value, setValue] = useState<number[]>([0, 0]);
   const [scoreValue, setScoreValue] = useState<number[]>([1, 5]);
+
+
   const dispatch = useAppDispatch();
 
-  const q = searchParams.get("q");
-  const locationQ = searchParams.get("location");
+  const q = QueryData.Service
+  const locationQ = QueryData.Location;
 
   useEffect(() => {
     const postData = { q: q, location: locationQ };
@@ -181,8 +185,8 @@ export default function ViewFacility() {
         dispatch(dataSearch(res.data.data));
 
         setSearch(res.data.data);
-        const serviceQuery=encodeURIComponent(values.Service)
-        setSearchParams({ q: serviceQuery, location: values.Location });
+        dispatch(dataQuery(values))
+        setSearchParams({ q: values.Service, location: values.Location });
         const maxFilter = Math.max(
           ...res.data.data.map((fprice: any) => {
             if (fprice.priceType === "facilityPrice") {
