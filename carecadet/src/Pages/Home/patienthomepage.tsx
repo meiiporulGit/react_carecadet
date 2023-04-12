@@ -1,4 +1,5 @@
 import React from "react";
+
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
@@ -39,7 +40,7 @@ import dentallogo from "../../Images/dentallogo.jpg";
 import lab from "../../Images/lab.png";
 import emergency from "../../Images/emergency.jpg";
 import care from "../../Images/care.jpg";
-import { dataSearch } from "../../Redux/ProviderRedux/HomeSlice";
+import { dataQuery, dataSearch } from "../../Redux/ProviderRedux/HomeSlice";
 // import LocationOnIcon from '@material-ui/icons/LocationOn';
 import InputAdornment from "@mui/material/InputAdornment";
 
@@ -60,7 +61,7 @@ const Patienthomepage = () => {
     Location: Yup.string().required("Required")
   }); 
   const onSubmit = (values: forminitialValues, actions: any) => {
- 
+   dispatch(dataQuery(values))
     navigate(`/patient/search?q=${values.Service}&location=${values.Location}`);
     // axiosPrivate.get(`http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`)
     //   .then((res) => {

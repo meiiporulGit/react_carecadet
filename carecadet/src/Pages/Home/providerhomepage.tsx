@@ -32,7 +32,7 @@ import { axiosPrivate } from "../../axios/axios";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 import SelectField from "../../Components/Select";
 import FormTextField from "../../Components/Textfield";
-import { dataProviderSearch, dataSearch } from "../../Redux/ProviderRedux/HomeSlice";
+import { dataProviderSearch, dataQueryProvider, dataSearch,  } from "../../Redux/ProviderRedux/HomeSlice";
 import { toast } from "react-toastify";
 
 import dashboardicon from "../../Images/dashboardicon.png";
@@ -74,6 +74,7 @@ const Providerhomepage = () => {
     values:initialValues
     
     });
+  dispatch(dataQueryProvider(values))
     navigate(`/provider/search?q=${values.Service}&location=${values.Location}`);
     // axiosPrivate
     //   .get(`http://210.18.155.251:5003/search/?q=`)
