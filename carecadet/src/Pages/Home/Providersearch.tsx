@@ -64,7 +64,7 @@ import {
   KeyboardArrowDown,
   KeyboardArrowUp,
 } from "@mui/icons-material";
-import { values } from "lodash";
+import { range, values } from "lodash";
 import SearchNav from "../../ProtectedRoutes/SearchNav";
 import { type } from "os";
 
@@ -85,7 +85,7 @@ export default function Providersearch() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [data, setData] = useState([] as forminitialValues[]);
-  const [service, setService] = useState();
+  const [service, setService] = useState(false);
   const searchData = useAppSelector(
     (state) => state.homeReducer.providerSearchData
   );
@@ -110,6 +110,9 @@ export default function Providersearch() {
   const [checklocText, setCheckLocText] = useState<any>(true);
   const [locationCheck, setLocationCheck] = useState<any>("21");
 
+  const [maxPrice, setMaxPrice] = useState<any>(100);
+  const [minPrice, setMinPrice] = useState<any>(1);
+  const [value, setValue] = useState<number[]>([0, 0]);
   const dispatch = useAppDispatch();
 
   const q = providerDataQuery.Service;
@@ -123,6 +126,30 @@ export default function Providersearch() {
       .then((res) => {
         dispatch(dataProviderSearch(res.data.data));
         setSearch(res.data.data);
+        const maxFilter = Math.max(
+          ...res.data.data.map((fprice: any) => {
+
+              return fprice.NegotiatedRates[0]?.negotiated_rates
+              ?.negotiated_prices?.negotiated_rate;
+          
+          })
+        );
+        console.log(maxFilter, "....maxPrice");
+        
+
+        const minFilter = Math.min(
+          ...res.data.data.map((fprice: any) => {
+           
+              return fprice.NegotiatedRates[0]?.negotiated_rates
+              ?.negotiated_prices?.negotiated_rate;
+            
+          })
+        );
+        console.log(minFilter, "....minPrice");
+        if(res.data.data.length!==0){
+          setMaxPrice(maxFilter);
+          setMinPrice(minFilter);
+        }
       })
       .catch((e) => console.log(e));
     const getFacilityType = async () => {
@@ -224,6 +251,7 @@ export default function Providersearch() {
     dis?: any,
     type?: any,
     details?: any,
+    negotiatedRates?:any,
     insurance?: any,
     serviceLocation?: any
   ) => {
@@ -233,6 +261,7 @@ export default function Providersearch() {
       type,
       details,
       serviceLocation,
+      negotiatedRates,
       insurance,
       "axiosCheck"
     );
@@ -240,6 +269,7 @@ export default function Providersearch() {
       q: details.Service,
       location: details.Location,
       facilityType: type,
+      negotiatedRates:range,
       serviceCode: serviceLocation,
       insuranceProvider: insurance,
     };
@@ -247,6 +277,7 @@ export default function Providersearch() {
       q: details.Service,
       location: details.Location,
       distance: dis,
+      negotiatedRates:range,
       serviceCode: serviceLocation,
       insuranceProvider: insurance,
     };
@@ -255,6 +286,7 @@ export default function Providersearch() {
       location: details.Location,
       distance: dis,
       facilityType: type,
+      negotiatedRates:range,
       serviceCode: serviceLocation,
       insuranceProvider: insurance,
     };
@@ -425,6 +457,7 @@ export default function Providersearch() {
         `${distance}mi`,
         event.target.value,
         searchValue,
+       value,
         insuranceCheck,
         locationCheck
       )
@@ -433,22 +466,20 @@ export default function Providersearch() {
           setSearch(res.data.data);
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
-              if (fprice.priceType === "facilityPrice") {
-                return fprice.FacilityPrices;
-              } else {
-                return fprice.cashPrice;
-              }
+      
+                return fprice.NegotiatedRates[0]?.negotiated_rates
+                ?.negotiated_prices?.negotiated_rate;
+           
             })
           );
           console.log(maxFilter, "....maxPrice");
 
           const minFilter = Math.min(
             ...res.data.data.map((fprice: any) => {
-              if (fprice.priceType === "facilityPrice") {
-                return fprice.FacilityPrices;
-              } else {
-                return fprice.cashPrice;
-              }
+      
+                return fprice.NegotiatedRates[0]?.negotiated_rates
+                ?.negotiated_prices?.negotiated_rate;
+             
             })
           );
           console.log(minFilter, "....minPrice");
@@ -469,6 +500,7 @@ export default function Providersearch() {
         `${distance}mi`,
         event.target.value,
         searchValue,
+value,
         insuranceCheck,
         locationCheck
       )
@@ -477,22 +509,20 @@ export default function Providersearch() {
           setSearch(res.data.data);
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
-              if (fprice.priceType === "facilityPrice") {
-                return fprice.FacilityPrices;
-              } else {
-                return fprice.cashPrice;
-              }
+       
+                return fprice.NegotiatedRates[0]?.negotiated_rates
+                ?.negotiated_prices?.negotiated_rate;
+           
             })
           );
           console.log(maxFilter, "....maxPrice");
 
           const minFilter = Math.min(
             ...res.data.data.map((fprice: any) => {
-              if (fprice.priceType === "facilityPrice") {
-                return fprice.FacilityPrices;
-              } else {
-                return fprice.cashPrice;
-              }
+     
+                return fprice.NegotiatedRates[0]?.negotiated_rates
+                ?.negotiated_prices?.negotiated_rate;
+     
             })
           );
           console.log(minFilter, "....minPrice");
@@ -509,7 +539,109 @@ export default function Providersearch() {
         .catch((e) => console.log(e));
     }
   }
+  function sliderChange(event: any, newValue: any, searchValues: any) {
+    setService(true);
+    setValue(newValue as number[]);
+    console.log("newValue", newValue);
+    // const pricefilter = searchData.filter((item: any) => {
 
+    //   // Math.min(
+    //   //   ...res.data.data.map((fprice: any) =>  {
+    //   //     if(fprice.priceType==="facilityPrice"){
+    //   //       return fprice.FacilityPrices
+    //   //     }
+    //   //     else{
+    //   //       return fprice.cashPrice
+    //   //     }
+    //   //   })
+    //   // );
+    //   if(item.priceType==="facilityPrice"){
+    //   return item.FacilityPrices >= newValue[0] && item.FacilityPrices <= newValue[1]
+    //   }
+    //   else{
+    //     console.log(".....",item.cashPrice)
+    //     return item.cashPrice >= newValue[0] && item.cashPrice <= newValue[1]
+
+    //   }
+    //   // return item.some((dataItem:any)=> (dataItem.FacilityPrices >= newValue[0] && dataItem.FacilityPrices <= newValue[1]));
+    // });
+    // console.log("pricefilter", pricefilter);
+    // setSearch(pricefilter);
+    // dispatch(dataSearch(pricefilter))
+
+    // const checkData = {
+    //   q: searchValues.Service,
+    //   location: searchValues.Location,
+    //   range: newValue,
+    // };
+    // axiosPrivate
+    //   .post("/search", checkData)
+    //   .then((res) => {
+    //     setSearch(res.data.data);
+    //     console.log(res.data.data, "checkConsole");
+    //     // const maxFilter = Math.max(
+    //     //   ...res.data.data.map((fprice: any) => {
+    //     //     if(fprice.priceType==="facilityPrice"){
+    //     //       return fprice.FacilityPrices
+    //     //     }
+    //     //     else{
+    //     //       return fprice.cashPrice
+    //     //     }
+    //     //   })
+    //     // );
+    //     // console.log(maxFilter, "....maxPrice");
+    //     // setMaxPrice(maxFilter);
+
+    //     // const minFilter = Math.min(
+    //     //   ...res.data.data.map((fprice: any) =>  {
+    //     //     if(fprice.priceType==="facilityPrice"){
+    //     //       return fprice.FacilityPrices
+    //     //     }
+    //     //     else{
+    //     //       return fprice.cashPrice
+    //     //     }
+    //     //   })
+    //     // );
+    //     // console.log(minFilter, "....minPrice");
+    //     // setMinPrice(minFilter);
+    //   })
+    //   .catch((e) => console.log(e));
+
+    if (facilityCheck === "") {
+      filterFacilityType(
+        "noFacilityType",
+        `${distance}mi`,
+        facilityCheck,
+        searchValues,
+        newValue,
+        insuranceCheck,
+        locationCheck
+      )
+        .then((res) => {
+          // dispatch(dataSearch(res.data.data));
+          setSearch(res.data.data);
+        })
+        .catch((e) => console.log(e));
+    } else {
+      filterFacilityType(
+        "withFacilityType",
+        `${distance}mi`,
+        facilityCheck,
+        searchValues,
+        newValue,
+        insuranceCheck,
+        locationCheck
+      )
+        .then((res) => {
+          // dispatch(dataSearch(res.data.data));
+          setSearch(res.data.data);
+        })
+        .catch((e) => console.log(e));
+    }
+  }
+  function valuetext(userValue: number) {
+    return `${userValue}$`;
+  }
   function handleInsuranceInputChange(event: any, searchValue: any) {
     setInsuranceCheck(event.target.value);
     if (facilityCheck === "") {
@@ -518,6 +650,7 @@ export default function Providersearch() {
         `${distance}mi`,
         facilityCheck,
         searchValue,
+        value,
         event.target.value,
         locationCheck,
         
@@ -533,6 +666,7 @@ export default function Providersearch() {
         `${distance}mi`,
         facilityCheck,
         searchValue,
+        value,
         event.target.value,
         locationCheck
       )
@@ -605,6 +739,7 @@ export default function Providersearch() {
         `${distance}mi`,
         facilityCheck,
         searchValue,
+       value,
         insuranceCheck,
         event.target.value
       )
@@ -620,6 +755,7 @@ export default function Providersearch() {
         `${distance}mi`,
         facilityCheck,
         searchValue,
+      value,
         insuranceCheck,
         event.target.value
       )
@@ -634,29 +770,27 @@ export default function Providersearch() {
   const distanceSliderChange = (v: any, searchValue: any) => {
     setDistance(v);
     if (facilityCheck === "") {
-      filterFacilityType("noFacilityType", `${v}mi`, facilityCheck, searchValue,insuranceCheck,locationCheck)
+      filterFacilityType("noFacilityType", `${v}mi`, facilityCheck, searchValue,value,insuranceCheck,locationCheck)
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           console.log(res.data.data, "checkDistance");
           setSearch(res.data.data);
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
-              if (fprice.priceType === "facilityPrice") {
-                return fprice.FacilityPrices;
-              } else {
-                return fprice.cashPrice;
-              }
+          
+                return fprice.NegotiatedRates[0]?.negotiated_rates
+                ?.negotiated_prices?.negotiated_rate;
+            
             })
           );
           console.log(maxFilter, "....maxPrice");
 
           const minFilter = Math.min(
             ...res.data.data.map((fprice: any) => {
-              if (fprice.priceType === "facilityPrice") {
-                return fprice.FacilityPrices;
-              } else {
-                return fprice.cashPrice;
-              }
+        
+                return fprice.NegotiatedRates[0]?.negotiated_rates
+                ?.negotiated_prices?.negotiated_rate;
+             
             })
           );
           console.log(minFilter, "....minPrice");
@@ -672,27 +806,25 @@ export default function Providersearch() {
         })
         .catch((e) => console.log(e));
     } else {
-      filterFacilityType("withFacilityType", `${v}mi`, facilityCheck, searchValue,insuranceCheck,locationCheck)
+      filterFacilityType("withFacilityType", `${v}mi`, facilityCheck, searchValue,value,insuranceCheck,locationCheck)
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
-              if (fprice.priceType === "facilityPrice") {
-                return fprice.FacilityPrices;
-              } else {
-                return fprice.cashPrice;
-              }
+     
+                return fprice.NegotiatedRates[0]?.negotiated_rates
+                ?.negotiated_prices?.negotiated_rate;
+            
             })
           );
 
           const minFilter = Math.min(
             ...res.data.data.map((fprice: any) => {
-              if (fprice.priceType === "facilityPrice") {
-                return fprice.FacilityPrices;
-              } else {
-                return fprice.cashPrice;
-              }
+    
+                return fprice.NegotiatedRates[0]?.negotiated_rates
+                ?.negotiated_prices?.negotiated_rate;
+            
             })
           );
 
@@ -1136,111 +1268,57 @@ export default function Providersearch() {
                       </IconButton>
                       Negotiated Rate
                     </Paper>
-                    {/* <Collapse in={openScore} timeout="auto" unmountOnExit>
-                    <Grid item xs={12}>
-                      <FormGroup
-                      // name="distancefilter"
-                      // value={distance}
-                      >
-                        <FormControlLabel value="10mi"
-                          control={<Checkbox
-                            checked={distance === "10mi" && checkText }
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "10mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 10mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "10miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e)) 
-                                 : axiosPrivate
-                                  .get(
-                                    `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                  )
-                                  .then((res) => {
-                                    console.log(res.data);
-                                    // setSearchqueryData(res.data.data)
-                                     dispatch(dataProviderSearch(res.data.data));
-                                    // navigate("/patient/search");
-                                    console.log("searchi", res);
-                                  })
-                                  .catch((e) => console.log(e))
-                            }}
-                          />}
-                          label="10 miles" 
-                          labelPlacement="end"/>
-                        <FormControlLabel value="20mi"
-                          control={<Checkbox
-                            checked={distance === "20mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "20mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 20mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "20miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataProviderSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="20 miles" labelPlacement="end"
-                          />
-                        <FormControlLabel value="30mi"
-                          control={<Checkbox
-                            checked={distance === "30mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "30mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "30miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataProviderSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="30 miles" 
-                          labelPlacement="end" />
+                    <Collapse in={openRate} timeout="auto" unmountOnExit>
+                      <Box sx={{ padding: "0 1rem" }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Typography>Min</Typography>
+                          <Typography>Max</Typography>
+                        </Box>
 
-                      </FormGroup>
-                    </Grid>
-                 
-                  </Collapse> */}
+                        <Slider
+                          size="medium"
+                          getAriaLabel={() => "Price range"}
+                          value={value}
+                          marks={[
+                            { value: value[0], label: value[0] },
+                            { value: value[1], label: value[1] },
+                          ]}
+                          onChange={(e, sliderArray: any) => {
+                            setValue(sliderArray);
+                          }}
+                          onChangeCommitted={(event, v) =>
+                            sliderChange(event, v, values)
+                          }
+                          min={minPrice}
+                          max={maxPrice}
+                          step={1}
+                          valueLabelDisplay="auto"
+                          getAriaValueText={valuetext}
+                          sx={{
+                            ".MuiSlider-thumb": {
+                              height: 15,
+                              width: 15,
+                              backgroundColor: "#fff",
+                              border: "2px solid #687B9E",
+                              boxShadow: "0px 0px 5px  #687B9E",
+                              "&:focus, &:hover, &.Mui-active, &.Mui-focusVisible":
+                                {
+                                  boxShadow: "0px 0px 5px  #687B9E",
+                                },
+                              "&:before": {
+                                display: "none",
+                              },
+                            },
+                            color: "#687B9E",
+                          }}
+                        />
+                      </Box>
+                    </Collapse>
                   </Box>
                   <Box>
                     <Paper
