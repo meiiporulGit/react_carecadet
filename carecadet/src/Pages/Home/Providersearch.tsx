@@ -29,8 +29,11 @@ import {
   Grid,
   TextField,
   Slider,
+ CircularProgress,
+ Pagination
+  
 } from "@mui/material";
-
+import LinearProgress from '@mui/material/LinearProgress';
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
@@ -50,6 +53,7 @@ import { axiosPrivate } from "../../axios/axios";
 import FormTextField from "../../Components/Textfield";
 import SelectField from "../../Components/Select";
 import SearchIcon from "@mui/icons-material/Search";
+import ClearIcon from '@mui/icons-material/Clear';
 import {
   dataSearch,
   dataSearchTenMiles,
@@ -75,6 +79,7 @@ export default function Providersearch() {
   const [open2, setOpen2] = useState<boolean>(false);
   const [open3, setOpen3] = useState<boolean>(false);
   const [open4, setOpen4] = useState<boolean>(false);
+  const [LoadingState ,setLoadingState] = useState<boolean>(true)
   const [openScore, setOpenScore] = useState<boolean>(false);
   const [openRate, setOpenRate] = useState<boolean>(false);
   const [checked, setChecked] = useState<boolean>(false);
@@ -86,12 +91,15 @@ export default function Providersearch() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [data, setData] = useState([] as forminitialValues[]);
   const [service, setService] = useState(false);
+
   const searchData = useAppSelector(
     (state) => state.homeReducer.providerSearchData
   );
-
+  const [loading,setLoading] =useState<any>(false);
   const providerDataQuery=useAppSelector(state=>state.homeReducer.providerDataQuery)
- 
+  const itemsPerPage = 5;
+  const [page1, setPage1] = useState(1);
+
   // console.log(searchData, "searchdata");
   // const serviceValue = useAppSelector((state)=>state.homeReducer)
   // console.log('serviceValue',serviceValue)
@@ -99,6 +107,8 @@ export default function Providersearch() {
   // console.log(searchqueryData, "searchquerydata");
 
   const [search, setSearch] = useState<any>([]);
+  console.log("search",search)
+  const [noOfPages] = useState(Math.ceil(search.length / itemsPerPage));
   const [facilityType, setFacilityType] = useState<any>([]);
   const [checkFacText, setCheckFacText] = useState<any>(false);
   const [facilityCheck, setFacilityCheck] = useState<any>("");
@@ -120,16 +130,19 @@ export default function Providersearch() {
 
   useEffect(() => {
     const postData = { q: q, location: locationQ,insuranceProvider:insuranceCheck,serviceCode:locationCheck };
-
+   
     axiosPrivate
       .post(`/search/negotiatedSearch`, postData)
       .then((res) => {
+        setLoadingState(true)
         dispatch(dataProviderSearch(res.data.data));
+        
         setSearch(res.data.data);
+        setLoadingState(false)
         const maxFilter = Math.max(
           ...res.data.data.map((fprice: any) => {
 
-              return fprice.NegotiatedRates[0]?.negotiated_rates
+              return fprice.negotiatedRates.negotiated_rates
               ?.negotiated_prices?.negotiated_rate;
           
           })
@@ -140,7 +153,7 @@ export default function Providersearch() {
         const minFilter = Math.min(
           ...res.data.data.map((fprice: any) => {
            
-              return fprice.NegotiatedRates[0]?.negotiated_rates
+              return fprice.negotiatedRates.negotiated_rates
               ?.negotiated_prices?.negotiated_rate;
             
           })
@@ -198,6 +211,12 @@ export default function Providersearch() {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
+  const handleChangePage = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setPage1(value);
+  };
   interface forminitialValues {
     Service: any;
     Location: any;
@@ -214,30 +233,29 @@ export default function Providersearch() {
   });
   const onSubmit = (values: forminitialValues, actions: any) => {
     const postData = { q: values.Service, location: values.Location };
+    setLoading(true)
     axiosPrivate
       .post(`/search/negotiatedSearch`, postData)
       .then((res) => {
+      
         console.log(res.data, "checkT");
 
         dispatch(dataProviderSearch(res.data.data));
         dispatch(dataQueryProvider(values))
-        setSearch(res.data.data);
        
+        setSearch(res.data.data);
+        setLoading(false)
         setSearchParams({ q: values.Service, location: values.Location });
       })
-      .catch((e) => console.log(e));
+      .catch((err) => {
+        toast.error(err.message);
+setLoading(false)})
   };
 
   //Table Pagination
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    page: number
-  ) => {
-    setPage(page);
-  };
 
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -467,7 +485,7 @@ export default function Providersearch() {
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
       
-                return fprice.NegotiatedRates[0]?.negotiated_rates
+                return fprice.negotiatedRates.negotiated_rates
                 ?.negotiated_prices?.negotiated_rate;
            
             })
@@ -477,7 +495,7 @@ export default function Providersearch() {
           const minFilter = Math.min(
             ...res.data.data.map((fprice: any) => {
       
-                return fprice.NegotiatedRates[0]?.negotiated_rates
+                return fprice.negotiatedRates.negotiated_rates
                 ?.negotiated_prices?.negotiated_rate;
              
             })
@@ -510,7 +528,7 @@ value,
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
        
-                return fprice.NegotiatedRates[0]?.negotiated_rates
+                return fprice.negotiatedRates.negotiated_rates
                 ?.negotiated_prices?.negotiated_rate;
            
             })
@@ -520,7 +538,7 @@ value,
           const minFilter = Math.min(
             ...res.data.data.map((fprice: any) => {
      
-                return fprice.NegotiatedRates[0]?.negotiated_rates
+                return fprice.negotiatedRates.negotiated_rates
                 ?.negotiated_prices?.negotiated_rate;
      
             })
@@ -778,7 +796,7 @@ value,
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
           
-                return fprice.NegotiatedRates[0]?.negotiated_rates
+                return fprice.negotiatedRates?.negotiated_rates
                 ?.negotiated_prices?.negotiated_rate;
             
             })
@@ -788,7 +806,7 @@ value,
           const minFilter = Math.min(
             ...res.data.data.map((fprice: any) => {
         
-                return fprice.NegotiatedRates[0]?.negotiated_rates
+                return fprice.negotiatedRates.negotiated_rates
                 ?.negotiated_prices?.negotiated_rate;
              
             })
@@ -813,7 +831,7 @@ value,
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
      
-                return fprice.NegotiatedRates[0]?.negotiated_rates
+                return fprice.negotiatedRates.negotiated_rates
                 ?.negotiated_prices?.negotiated_rate;
             
             })
@@ -822,7 +840,7 @@ value,
           const minFilter = Math.min(
             ...res.data.data.map((fprice: any) => {
     
-                return fprice.NegotiatedRates[0]?.negotiated_rates
+                return fprice.negotiatedRates.negotiated_rates
                 ?.negotiated_prices?.negotiated_rate;
             
             })
@@ -875,6 +893,23 @@ value,
       >
         {({ handleChange, setFieldValue, values }) => (
           <Form>
+            {LoadingState?
+            
+            <Box
+            sx={{
+              backgroundColor:"primary.light",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "84vh",
+            }}
+          >
+            <Box>
+              <CircularProgress color="inherit" size={50} />
+              <Typography>Loading</Typography>
+            </Box>
+          </Box>: 
+            <>
             <Box sx={{ display: "flex", justifyContent: "center" }}>
               <Grid
                 container
@@ -885,7 +920,7 @@ value,
                   background: "#6D90FE",
                   // height: "6em",
                   width: "80%",
-                  // gap:"1rem",
+                  rowGap:{xs:"0.4rem",md:"none"}
                 }}
               >
                 <Grid item md={6} xs={12}>
@@ -965,6 +1000,7 @@ value,
                     size="large"
                     fullWidth={false}
                     variant="contained"
+                    disabled={loading}
                     // onClick={() => { setSelect("searchdata") }}
                     sx={{
                       // marginTop: "-100px",
@@ -986,7 +1022,11 @@ value,
                       },
                     }}
                   >
-                    <SearchIcon /> search
+                   {loading && (
+                   <CircularProgress size={14} />
+                  )}
+                      {loading && <span>searching</span> }
+          {!loading &&<span ><SearchIcon  />Search</span>}  
                   </Button>
                 </Grid>
               </Grid>
@@ -1043,55 +1083,7 @@ value,
                       Distance
                     </Paper>
                     <Collapse in={open} timeout="auto" unmountOnExit>
-                      {/* <Grid item xs={12}>
-                        <FormGroup
-                        // name="distancefilter"
-                        // value={distance}
-                        >
-                          <RadioGroup
-                            name="length"
-                            value={distance}
-                            // onChange={handleInputChange}
-                          >
-                            <FormControlLabel
-                              value="10mi"
-                              control={
-                                <Radio
-                                  checked={distance === "10mi" && checkText}
-                                  onClick={(e: any) => {
-                                    handleInputChange(e, values);
-                                  }}
-                                />
-                              }
-                              label="10 miles"
-                            />
-                            <FormControlLabel
-                              value="20mi"
-                              control={
-                                <Radio
-                                  onClick={(e: any) => {
-                                    handleInputChange(e, values);
-                                  }}
-                                  checked={distance === "20mi" && checkText}
-                                />
-                              }
-                              label="20 miles"
-                            />
-                            <FormControlLabel
-                              value="30mi"
-                              control={
-                                <Radio
-                                  onClick={(e: any) => {
-                                    handleInputChange(e, values);
-                                  }}
-                                  checked={distance === "30mi" && checkText}
-                                />
-                              }
-                              label="30 miles"
-                            />
-                          </RadioGroup>
-                        </FormGroup>
-                      </Grid> */}
+                      
                       <Box sx={{ padding: "1rem 1rem 0 1rem" }}>
                         <Slider
                           value={distance}
@@ -1136,111 +1128,7 @@ value,
                       </IconButton>
                       Quality Score
                     </Paper>
-                    {/* <Collapse in={openScore} timeout="auto" unmountOnExit>
-                    <Grid item xs={12}>
-                      <FormGroup
-                      // name="distancefilter"
-                      // value={distance}
-                      >
-                        <FormControlLabel value="10mi"
-                          control={<Checkbox
-                            checked={distance === "10mi" && checkText }
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "10mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 10mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "10miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e)) 
-                                 : axiosPrivate
-                                  .get(
-                                    `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                  )
-                                  .then((res) => {
-                                    console.log(res.data);
-                                    // setSearchqueryData(res.data.data)
-                                     dispatch(dataProviderSearch(res.data.data));
-                                    // navigate("/patient/search");
-                                    console.log("searchi", res);
-                                  })
-                                  .catch((e) => console.log(e))
-                            }}
-                          />}
-                          label="10 miles" 
-                          labelPlacement="end"/>
-                        <FormControlLabel value="20mi"
-                          control={<Checkbox
-                            checked={distance === "20mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "20mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 20mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "20miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataProviderSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="20 miles" labelPlacement="end"
-                          />
-                        <FormControlLabel value="30mi"
-                          control={<Checkbox
-                            checked={distance === "30mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "30mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "30miles");
-                                  dispatch(dataProviderSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataProviderSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="30 miles" 
-                          labelPlacement="end" />
-
-                      </FormGroup>
-                    </Grid>
                  
-                  </Collapse> */}
                   </Box>
                   <Box>
                     <Paper
@@ -1410,8 +1298,7 @@ value,
                     <Collapse in={open2} timeout="auto" unmountOnExit>
                       <Grid item xs={12}>
                         <FormGroup
-                        // name="distancefilter"
-                        // value={distance}
+                       
                         >
                           {/* {JSON.stringify(facilityType)} */}
                           <RadioGroup name="length" value={facilityCheck}>
@@ -1429,41 +1316,7 @@ value,
                                     onClick={(e: any) => {
                                       handleTypeInputChange(e, values);
                                     }}
-                                    // onChange={(e:any)=>{
-                                    //   console.log(e.target.value,e.target.checked)
-
-                                    // }}
-                                    // onChange={(e: any) => {
-                                    //   setCheckFacText(true)
-                                    //   console.log(e.target.value)
-                                    //   console.log(e.target.checked)
-                                    //   if (facilityCheck!=="") {
-
-                                    //     if(distance===""){
-
-                                    //       filterFacilityType("noDistance",distance,facilityCheck,values).then(res=>{
-                                    //         dispatch(dataSearch(res.data.data))
-                                    //       }).catch(e=>console.log(e))
-                                    //     }else{
-                                    //       filterFacilityType("facAndDistance",distance,facilityCheck,values).then(res=>{
-                                    //         dispatch(dataSearch(res.data.data))
-                                    //       }).catch(e=>console.log(e))
-                                    //     }
-                                    //     } else {
-
-                                    //     if(distance ===""){
-
-                                    //       filterFacilityType("default",distance,facilityCheck,values).then(res=>{
-                                    //         dispatch(dataSearch(res.data.data))
-                                    //       }).catch(e=>console.log(e))
-                                    //     }else{
-                                    //       filterFacilityType("noFacilityTy",distance,facilityCheck,values).then(res=>{
-                                    //         dispatch(dataSearch(res.data.data))
-                                    //       }).catch(e=>console.log(e))
-                                    //   }
-                                    //    }
-
-                                    // }}
+                                 
                                   />
                                 }
                                 label={type.item.split("-")[1]}
@@ -1471,99 +1324,7 @@ value,
                               />
                             ))}
                           </RadioGroup>
-                          {/* <FormControlLabel value="20mi"
-                          control={<Checkbox
-                            checked={distance === "20mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "20mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 20mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "20miles");
-                                  dispatch(dataSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="Hospital" labelPlacement="end"
-                          />
-                        <FormControlLabel value="30mi"
-                          control={<Checkbox
-                            checked={distance === "30mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "30mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "30miles");
-                                  dispatch(dataSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="Urgent care" 
-                          labelPlacement="end" />
-                           <FormControlLabel value="30mi"
-                          control={<Checkbox
-                            checked={distance === "30mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "30mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "30miles");
-                                  dispatch(dataSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="Anthem" 
-                          labelPlacement="end" /> */}
+                          
                         </FormGroup>
                       </Grid>
                     </Collapse>
@@ -1649,399 +1410,28 @@ value,
                   </Box>
                 </Grid>
               </Grid>
-              <Grid container sx={{ display: { xs: "block", md: "none" } }}>
-                <Box>
-                  <IconButton
-                    size="large"
-                    onClick={handleOpenNavMenu}
-                    color="inherit"
-                  >
-                    <MenuIcon />
-                  </IconButton>
-                  <Menu
-                    anchorEl={anchorElNav}
-                    anchorOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                    keepMounted
-                    transformOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                    open={Boolean(anchorElNav)}
-                    onClose={handleCloseNavMenu}
-                    sx={{
-                      display: { xs: "block", md: "none" },
-                    }}
-                  >
-                    {/* <ClearIcon onClick={handleCloseNavMenu}/> */}
-
-                    <MenuItem
-                      // onClick={handleCloseNavMenu}
-                      sx={{ width: 250, fontSize: "1.25rem" }}
-                    >
-                      <Box>
-                        {/* <Paper sx={{
-                    fontSize: "1rem",
-                    borderRadius: "20px",
-                    backgroundColor: "#CDDBF8",
-                    mb: "10px"
-                  }}> */}
-                        <IconButton
-                          sx={{ fontSize: "1rem" }}
-                          aria-label="expand row"
-                          size="small"
-                          onClick={() => setOpen(!open)}
-                        >
-                          {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-                        </IconButton>
-                        Distance
-                        {/* </Paper> */}
-                        <Collapse in={open} timeout="auto" unmountOnExit>
-                          <Box sx={{ padding: "1rem 1rem 0 1rem" }}>
-                            <Slider
-                              value={distance}
-                              valueLabelDisplay="on"
-                              step={1}
-                              marks={followersMarks}
-                              min={10}
-                              max={100}
-                              onChange={(e, sliderValue: any) => {
-                                setDistance(sliderValue);
-                              }}
-                              onChangeCommitted={(e, sliderValue) => {
-                                distanceSliderChange(sliderValue, values);
-                                handleCloseNavMenu();
-                              }}
-                            />
-                          </Box>
-                        </Collapse>
-                      </Box>
-                    </MenuItem>
-                    <MenuItem
-                      // onClick={handleCloseNavMenu}
-                      sx={{ width: 250, fontSize: "1.25rem" }}
-                    >
-                      <Box>
-                        {/* <Paper sx={{
-                    fontSize: "1rem",
-                    borderRadius: "20px",
-                    backgroundColor: "#CDDBF8",
-                    mb: "10px"
-                  }}> */}
-                        <IconButton
-                          sx={{ fontSize: "1rem" }}
-                          aria-label="expand row"
-                          size="small"
-                          onClick={() => setOpen(!open)}
-                        >
-                          {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-                        </IconButton>
-                        Distance
-                        {/* </Paper> */}
-                        <Collapse in={open} timeout="auto" unmountOnExit>
-                          <Box sx={{ padding: "1rem 1rem 0 1rem" }}>
-                            <Slider
-                              value={distance}
-                              valueLabelDisplay="on"
-                              step={1}
-                              marks={followersMarks}
-                              min={10}
-                              max={100}
-                              onChange={(e, sliderValue: any) => {
-                                setDistance(sliderValue);
-                              }}
-                              onChangeCommitted={(e, sliderValue) => {
-                                distanceSliderChange(sliderValue, values);
-                                handleCloseNavMenu();
-                              }}
-                            />
-                          </Box>
-                        </Collapse>
-                      </Box>
-                    </MenuItem>
-
-                    <MenuItem onClick={handleCloseNavMenu} sx={{ width: 250 }}>
-                      <Typography
-                        sx={{
-                          // color: location === "facility" ? "#4D77FF" : "default",
-                          fontSize: "1.1rem",
-                          // borderBottom: location === "facility" ? "3px solid blue" : "none",
-                          // padding: "0.3rem",
-
-                          cursor: "pointer",
-                        }}
-                      >
-                        Quality Score
-                      </Typography>
-                    </MenuItem>
-
-                    <MenuItem onClick={handleCloseNavMenu} sx={{ width: 250 }}>
-                      <Typography
-                        sx={{
-                          // color: location === "service" ? "#4D77FF" : "default",
-                          fontSize: "1.1rem",
-                          // borderBottom: location === "service" ? "3px solid blue" : "none",
-                          padding: "0.3rem",
-                          cursor: "pointer",
-                        }}
-                      >
-                        Negotiated Rates
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem onClick={handleCloseNavMenu} sx={{ width: 250 }}>
-                      <Box>
-                        <IconButton
-                          sx={{ fontSize: "1rem" }}
-                          aria-label="expand row"
-                          size="small"
-                          onClick={() => setOpen1(!open1)}
-                        >
-                          {open1 ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-                        </IconButton>
-                        Insurance Name
-                        <Collapse in={open1} timeout="auto" unmountOnExit>
-                          <Grid item xs={12}>
-                            <FormGroup>
-                              <RadioGroup name="length" value={insuranceCheck}>
-                                {insuranceDetails.map((ins: any, i: any) => (
-                                  <FormControlLabel
-                                    key={i}
-                                    value={ins.insuranceProviderID}
-                                    control={
-                                      <Radio
-                                        checked={
-                                          insuranceCheck ===
-                                            ins.insuranceProviderID &&
-                                          checkInsText
-                                        }
-                                        onClick={(e: any) => {
-                                          handleInsuranceInputChange(e, values);
-                                          handleCloseNavMenu();
-                                        }}
-                                      />
-                                    }
-                                    label={ins.insuranceProvider}
-                                    labelPlacement="end"
-                                  />
-                                ))}
-                              </RadioGroup>
-                            </FormGroup>
-                          </Grid>
-                        </Collapse>
-                      </Box>
-                    </MenuItem>
-
-                    <MenuItem onClick={handleCloseNavMenu} sx={{ width: 250 }}>
-                      <Box>
-                        {/* <Paper sx={{
-                    fontSize: "1rem",
-                    borderRadius: "20px",
-                    backgroundColor: "#CDDBF8",
-                    mb: "10px"
-                  }}> */}
-                        <IconButton
-                          sx={{ fontSize: "1rem" }}
-                          aria-label="expand row"
-                          size="small"
-                          onClick={() => setOpen2(!open2)}
-                        >
-                          {open2 ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-                        </IconButton>
-                        Facility Type
-                        {/* </Paper> */}
-                        <Collapse in={open2} timeout="auto" unmountOnExit>
-                          <Grid item xs={12}>
-                            <FormGroup
-                            // name="distancefilter"
-                            // value={distance}
-                            >
-                              {/* {JSON.stringify(facilityType)} */}
-                              <RadioGroup name="length" value={facilityCheck}>
-                                {/* {JSON.stringify(facilityCheck)} */}
-                                {facilityType.map((type: any, i: any) => (
-                                  <FormControlLabel
-                                    key={i}
-                                    value={type.facilityTypeId}
-                                    control={
-                                      <Radio
-                                        checked={
-                                          facilityCheck ===
-                                            type.facilityTypeId && checkFacText
-                                        }
-                                        onClick={(e: any) => {
-                                          handleTypeInputChange(e, values);
-                                          handleCloseNavMenu();
-                                        }}
-                                        // onChange={(e:any)=>{
-                                        //   console.log(e.target.value,e.target.checked)
-
-                                        // }}
-                                        // onChange={(e: any) => {
-                                        //   setCheckFacText(true)
-                                        //   console.log(e.target.value)
-                                        //   console.log(e.target.checked)
-                                        //   if (facilityCheck!=="") {
-
-                                        //     if(distance===""){
-
-                                        //       filterFacilityType("noDistance",distance,facilityCheck,values).then(res=>{
-                                        //         dispatch(dataSearch(res.data.data))
-                                        //       }).catch(e=>console.log(e))
-                                        //     }else{
-                                        //       filterFacilityType("facAndDistance",distance,facilityCheck,values).then(res=>{
-                                        //         dispatch(dataSearch(res.data.data))
-                                        //       }).catch(e=>console.log(e))
-                                        //     }
-                                        //     } else {
-
-                                        //     if(distance ===""){
-
-                                        //       filterFacilityType("default",distance,facilityCheck,values).then(res=>{
-                                        //         dispatch(dataSearch(res.data.data))
-                                        //       }).catch(e=>console.log(e))
-                                        //     }else{
-                                        //       filterFacilityType("noFacilityTy",distance,facilityCheck,values).then(res=>{
-                                        //         dispatch(dataSearch(res.data.data))
-                                        //       }).catch(e=>console.log(e))
-                                        //   }
-                                        //    }
-
-                                        // }}
-                                      />
-                                    }
-                                    label={type.item.split("-")[1]}
-                                    labelPlacement="end"
-                                  />
-                                ))}
-                              </RadioGroup>
-                              {/* <FormControlLabel value="20mi"
-                          control={<Checkbox
-                            checked={distance === "20mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "20mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 20mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "20miles");
-                                  dispatch(dataSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="Hospital" labelPlacement="end"
-                          />
-                        <FormControlLabel value="30mi"
-                          control={<Checkbox
-                            checked={distance === "30mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "30mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "30miles");
-                                  dispatch(dataSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="Urgent care" 
-                          labelPlacement="end" />
-                           <FormControlLabel value="30mi"
-                          control={<Checkbox
-                            checked={distance === "30mi" && checkText}
-                            onClick={handleInputChange}
-                            onChange={() => {
-                              distance != "30mi" ?
-                              axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
-                                )
-                                .then((res) => {
-                                  console.log(res.data, "30miles");
-                                  dispatch(dataSearch(res.data.data))
-                                  // setSearchqueryData(res.data.data)
-                                })
-                                .catch((e) => console.log(e))
-                                :axiosPrivate
-                                .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
-                                )
-                                .then((res) => {
-                                  console.log(res.data);
-                                  // setSearchqueryData(res.data.data)
-                                   dispatch(dataSearch(res.data.data));
-                                  // navigate("/patient/search");
-                                  console.log("searchi", res);
-                                })
-                                .catch((e) => console.log(e))
-                            }} />}
-                          label="Anthem" 
-                          labelPlacement="end" /> */}
-                            </FormGroup>
-                          </Grid>
-                        </Collapse>
-                      </Box>
-                    </MenuItem>
-                    <MenuItem onClick={handleCloseNavMenu} sx={{ width: 250 }}>
-                      <Typography
-                        sx={{
-                          // color: location === "service" ? "#4D77FF" : "default",
-                          fontSize: "1.1rem",
-                          // borderBottom: location === "service" ? "3px solid blue" : "none",
-                          padding: "0.3rem",
-                          cursor: "pointer",
-                        }}
-                      >
-                        Service Location
-                      </Typography>
-                    </MenuItem>
-                  </Menu>
-                  {/* <SearchNav/> */}
-                </Box>
-              </Grid>
+            
               <Grid
                 item
                 md={9}
                 sx={{
                   display: { xs: "none", md: "block" },
                   backgroundColor: "#E5EEF7",
-                  padding: "4rem",
+                  
                 }}
               >
-                {/* {select === 'searchdata' ?                */}
-                {search.map((dsearch: any, i: any) => (
+
+
+{loading&&<LinearProgress/>}
+             <Box sx={{mt:"2rem", padding: "0 4rem 4rem 4rem"}}>
+              {
+              
+              search.length!==0?
+                  (itemsPerPage>0
+                    ?search.slice((page1 - 1) * itemsPerPage, page1 * itemsPerPage):
+                    search)        
+                
+    .map((dsearch: any, i: any) => (            
                   <div key={i}>
                     <Paper elevation={3}>
                       <Card
@@ -2121,7 +1511,7 @@ value,
                               >
                                 ${" "}
                                 {
-                                  dsearch?.NegotiatedRates[0]?.negotiated_rates
+                                  dsearch?.negotiatedRates?.negotiated_rates
                                     ?.negotiated_prices?.negotiated_rate
                                 }
                               </Box>
@@ -2164,16 +1554,369 @@ value,
                       </Card>
                     </Paper>
                   </div>
-                ))}
+                ))
+                :
+            <Box sx={{display:"flex",justifyContent:'center',alignItems:"center",height:"10vh"}}><Typography>No results found</Typography></Box>
+                              }
+              
+              
+     {search.length!==0?
+                     <Pagination
+                sx={{ display: "flex", justifyContent: "center" }}
+              
+                count={10}
+                page={page1}
+                siblingCount={0}
+                onChange={handleChangePage}
+                defaultPage={1}
+                color="primary"
+                size="large"
+                showFirstButton
+                showLastButton
+              />
+              :null} 
+              
+                </Box>
               </Grid>
             </Grid>
-            <Box
+
+            {/* mobilecards display */}
+         {/* Mobile icon view */}
+
+              <Grid container sx={{ display: { xs: "block", md: "none" } }}>
+                <Box>
+                  <IconButton
+                    size="large"
+                    onClick={handleOpenNavMenu}
+                    color="inherit"
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                  <Menu
+                    anchorEl={anchorElNav}
+                    anchorOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    open={Boolean(anchorElNav)}
+                    onClose={handleCloseNavMenu}
+                    sx={{
+                      display: { xs: "block", md: "none" },
+                    }}
+               >
+                    <MenuItem sx={{display:"flex",justifyContent:"right"}}>
+                    <ClearIcon
+        
+                    onClick={handleCloseNavMenu}/>
+                    </MenuItem>
+                    <MenuItem
+                      // onClick={handleCloseNavMenu}
+                      sx={{ width: 250 }}
+                    >
+                      <Box>
+                 
+                        <IconButton
+                          sx={{ fontSize: "1rem" }}
+                          aria-label="expand row"
+                          size="small"
+                          onClick={() => setOpen(!open)}
+                        >
+                          {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                        </IconButton>
+                        Distance
+                    
+                        <Collapse in={open} timeout="auto" unmountOnExit>
+                          <Box sx={{ padding: "1rem 1rem 0 1rem" }}>
+                            <Slider
+                              value={distance}
+                              valueLabelDisplay="on"
+                              step={1}
+                              marks={followersMarks}
+                              min={10}
+                              max={100}
+                              onChange={(e, sliderValue: any) => {
+                                setDistance(sliderValue);
+                              }}
+                              onChangeCommitted={(e, sliderValue) => {
+                                distanceSliderChange(sliderValue, values);
+                                handleCloseNavMenu();
+                              }}
+                            />
+                          </Box>
+                        </Collapse>
+                      </Box>
+                    </MenuItem>
+                    {/* <MenuItem
+                      // onClick={handleCloseNavMenu}
+                      sx={{ width: 250, fontSize: "1.25rem" }}
+                    >
+                  
+                    </MenuItem> */}
+
+                    {/* <MenuItem 
+                    // onClick={handleCloseNavMenu} 
+                    sx={{ width: 250 }}>
+                      <Typography
+                        sx={{
+                          // color: location === "facility" ? "#4D77FF" : "default",
+                          fontSize: "1.1rem",
+                          // borderBottom: location === "facility" ? "3px solid blue" : "none",
+                          // padding: "0.3rem",
+
+                          cursor: "pointer",
+                        }}
+                      >
+                     check
+                      </Typography>
+                    </MenuItem> */}
+
+                    <MenuItem 
+
+                    // onClick={handleCloseNavMenu} 
+                    sx={{ width: 250 }}>
+                        <Box>
+                        <IconButton
+                          sx={{ fontSize: "1rem" }}
+                          aria-label="expand row"
+                          size="small"
+                          onClick={() =>setOpenRate(!openRate)}
+                        >
+                          {openRate ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                        </IconButton>
+                         Negotiated Rate
+                      <Collapse in={openRate} timeout="auto" unmountOnExit>
+                      <Box sx={{ padding: "0 1rem" }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Typography>Min</Typography>
+                          <Typography>Max</Typography>
+                        </Box>
+
+                        <Slider
+                          size="medium"
+                          getAriaLabel={() => "Price range"}
+                          value={value}
+                          marks={[
+                            { value: value[0], label: value[0] },
+                            { value: value[1], label: value[1] },
+                          ]}
+                          onChange={(e, sliderArray: any) => {
+                            setValue(sliderArray);
+                          }}
+                          onChangeCommitted={(event, v) =>
+                            sliderChange(event, v, values)
+                          }
+                          min={minPrice}
+                          max={maxPrice}
+                          step={1}
+                          valueLabelDisplay="auto"
+                          getAriaValueText={valuetext}
+                          sx={{
+                            ".MuiSlider-thumb": {
+                              height: 15,
+                              width: 15,
+                              backgroundColor: "#fff",
+                              border: "2px solid #687B9E",
+                              boxShadow: "0px 0px 5px  #687B9E",
+                              "&:focus, &:hover, &.Mui-active, &.Mui-focusVisible":
+                                {
+                                  boxShadow: "0px 0px 5px  #687B9E",
+                                },
+                              "&:before": {
+                                display: "none",
+                              },
+                            },
+                            color: "#687B9E",
+                          }}
+                        />
+                      </Box>
+                    </Collapse>
+                      </Box>
+                    </MenuItem>
+                    <MenuItem 
+                    // onClick={handleCloseNavMenu} 
+                    sx={{ width: 250 }}>
+                      <Box>
+                        <IconButton
+                          sx={{ fontSize: "1rem" }}
+                          aria-label="expand row"
+                          size="small"
+                          onClick={() => setOpen1(!open1)}
+                        >
+                          {open1 ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                        </IconButton>
+                        Insurance Name
+                        <Collapse in={open1} timeout="auto" unmountOnExit>
+                          <Grid item xs={12}>
+                            <FormGroup>
+                              <RadioGroup name="length" value={insuranceCheck}>
+                                {insuranceDetails.map((ins: any, i: any) => (
+                                  <FormControlLabel
+                                    key={i}
+                                    value={ins.insuranceProviderID}
+                                    control={
+                                      <Radio
+                                        checked={
+                                          insuranceCheck ===
+                                            ins.insuranceProviderID &&
+                                          checkInsText
+                                        }
+                                        onClick={(e: any) => {
+                                          handleInsuranceInputChange(e, values);
+                                          handleCloseNavMenu();
+                                        }}
+                                      />
+                                    }
+                                    label={ins.insuranceProvider}
+                                    labelPlacement="end"
+                                  />
+                                ))}
+                              </RadioGroup>
+                            </FormGroup>
+                          </Grid>
+                        </Collapse>
+                      </Box>
+                    </MenuItem>
+
+                    <MenuItem 
+                    // onClick={handleCloseNavMenu} 
+                    sx={{ width: 250 }}>
+                      <Box>
+                        {/* <Paper sx={{
+                    fontSize: "1rem",
+                    borderRadius: "20px",
+                    backgroundColor: "#CDDBF8",
+                    mb: "10px"
+                  }}> */}
+                        <IconButton
+                          sx={{ fontSize: "1rem" }}
+                          aria-label="expand row"
+                          size="small"
+                          onClick={() => setOpen2(!open2)}
+                        >
+                          {open2 ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                        </IconButton>
+                        Facility Type
+                        {/* </Paper> */}
+                        <Collapse in={open2} timeout="auto" unmountOnExit>
+                          <Grid item xs={12}>
+                            <FormGroup
+                            // name="distancefilter"
+                            // value={distance}
+                            >
+                              {/* {JSON.stringify(facilityType)} */}
+                              <RadioGroup name="length" value={facilityCheck}>
+                                {/* {JSON.stringify(facilityCheck)} */}
+                                {facilityType.map((type: any, i: any) => (
+                                  <FormControlLabel
+                                    key={i}
+                                    value={type.facilityTypeId}
+                                    control={
+                                      <Radio
+                                        checked={
+                                          facilityCheck ===
+                                            type.facilityTypeId && checkFacText
+                                        }
+                                        onClick={(e: any) => {
+                                          handleTypeInputChange(e, values);
+                                          handleCloseNavMenu();
+                                        }}
+                   
+                                      />
+                                    }
+                                    label={type.item.split("-")[1]}
+                                    labelPlacement="end"
+                                  />
+                                ))}
+                              </RadioGroup>
+                          
+                            </FormGroup>
+                          </Grid>
+                        </Collapse>
+                      </Box>
+                    </MenuItem>
+                    <MenuItem 
+                    // onClick={handleCloseNavMenu} 
+                    sx={{ width: 250 }}>
+                      <Box>
+                        {/* <Paper sx={{
+                    fontSize: "1rem",
+                    borderRadius: "20px",
+                    backgroundColor: "#CDDBF8",
+                    mb: "10px"
+                  }}> */}
+                        <IconButton
+                          sx={{ fontSize: "1rem" }}
+                          aria-label="expand row"
+                          size="small"
+                          onClick={() => setOpen3(!open3)}
+                        >
+                          {open3 ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                        </IconButton>
+                        Service Location
+                        {/* </Paper> */}
+                        <Collapse in={open3} timeout="auto" unmountOnExit>
+                        <Grid item xs={12}>
+                        <FormGroup
+                        // name="distancefilter"
+                        // value={distance}
+                        >
+                          {/* {JSON.stringify(facilityType)} */}
+                          <RadioGroup name="length" value={locationCheck}>
+                            {servicelocationType.map((type: any, i: any) => (
+                              <>
+                                {/* {JSON.stringify(
+                                    checklocText)} */}
+                                <FormControlLabel
+                                  key={i}
+                                  value={type.service_code}
+                                  control={
+                                    <Radio
+                                      checked={
+                                        locationCheck === type.service_code
+                                      }
+                                      onClick={(e: any) => {
+                                        handleServicelocationchange(e, values);
+                                        // e.target.value
+                                      }}
+                                    />
+                                  }
+                                  label={type.serviceLocationName}
+                                  labelPlacement="end"
+                                />
+                              </>
+                            ))}
+                          </RadioGroup>
+                        </FormGroup>
+                      </Grid>
+                        </Collapse>
+                      </Box>
+                    </MenuItem>
+                  </Menu>
+                 
+                </Box>
+              </Grid>
+           <Box
               sx={{
                 display: { xs: "flex", md: "none" },
-                flexDirection: "column",
+                flexDirection: "column"
               }}
             >
-              {search.map((dsearch: any, i: any) => (
+            { search.length!==0?
+                  (itemsPerPage>0
+                    ?search.slice((page1 - 1) * itemsPerPage, page1 * itemsPerPage):
+                    search)        
+                
+    .map((dsearch: any, i: any) => (
                 <>
                   <Paper
                     sx={{ padding: "0.5rem", m: "0.2rem", fontSize: "0.9rem" }}
@@ -2250,7 +1993,7 @@ value,
                           >
                             ${" "}
                             {
-                              dsearch?.NegotiatedRates[0]?.negotiated_rates
+                              dsearch?.negotiatedRates?.negotiated_rates
                                 ?.negotiated_prices.negotiated_rate
                             }
                           </Box>
@@ -2292,10 +2035,33 @@ value,
                       </Grid>
                     </Paper>
                   </Collapse>
+                 
                 </>
-              ))}
-            </Box>
+              ))     :
+              <Box sx={{display:"flex",justifyContent:'center',alignItems:"center",height:"10vh"}}><Typography>No results found</Typography></Box>
+                                }
+ 
+  {search.length!==0?
+           <Pagination
+           sx={{ display: "flex", justifyContent: "center" }}
+           count={10}
+           page={page1}
+           siblingCount={0}
+           onChange={handleChangePage}
+           defaultPage={1}
+           color="primary"
+           size="large"
+           showFirstButton
+           showLastButton
+         />
+         :null} 
+           
+            </Box> 
+                   
+       </>
+        }
           </Form>
+       
         )}
       </Formik>
     </Box>
