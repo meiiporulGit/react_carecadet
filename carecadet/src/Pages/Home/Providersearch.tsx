@@ -388,8 +388,10 @@ setLoading(false)})
       
                 return fprice.negotiatedRates.negotiated_rates
                 ?.negotiated_prices?.negotiated_rate;
-             
+            
+                
             })
+           
           );
           console.log(minFilter, "....minPrice");
           
@@ -416,9 +418,10 @@ setLoading(false)})
                 ?.negotiated_prices?.negotiated_rate;
            
             })
+            
           );
           console.log(maxFilter, "....maxPrice");
-
+          
           const minFilter = Math.min(
             ...res.data.data.map((fprice: any) => {
      
@@ -514,6 +517,34 @@ setLoading(false)})
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
+          const maxFilter = Math.max(
+            ...res.data.data.map((fprice: any) => {
+          
+                return fprice.negotiatedRates?.negotiated_rates
+                ?.negotiated_prices?.negotiated_rate;
+            
+            })
+          );
+          console.log(maxFilter, "....maxPrice");
+
+          const minFilter = Math.min(
+            ...res.data.data.map((fprice: any) => {
+        
+                return fprice.negotiatedRates.negotiated_rates
+                ?.negotiated_prices?.negotiated_rate;
+             
+            })
+          );
+          console.log(minFilter, "....minPrice");
+          if (res.data.data.length === 0) {
+            setValue([0, 0]);
+            setMinPrice(0);
+            setMaxPrice(0);
+          } else {
+            setValue([minFilter, minFilter]);
+            setMinPrice(minFilter);
+            setMaxPrice(maxFilter);
+          }
         })
         .catch((e) => console.log(e));
     }
