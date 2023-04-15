@@ -246,6 +246,32 @@ export default function Providersearch() {
         setSearch(res.data.data);
         setLoading(false)
         setSearchParams({ q: values.Service, location: values.Location });
+        const maxFilter = Math.max(
+          ...res.data.data.map((fprice: any) => {
+
+              return fprice.negotiatedRates.negotiated_rates
+              ?.negotiated_prices?.negotiated_rate;
+          
+          })
+        );
+        console.log(maxFilter, "....maxPrice");
+        
+
+        const minFilter = Math.min(
+          ...res.data.data.map((fprice: any) => {
+           
+              return fprice.negotiatedRates.negotiated_rates
+              ?.negotiated_prices?.negotiated_rate;
+            
+          })
+        );
+        console.log(minFilter, "....minPrice");
+        if(res.data.data.length!==0){
+          setMaxPrice(maxFilter);
+          setMinPrice(minFilter);
+        }
+        console.log("searchpro", res);
+      
       })
       .catch((err) => {
         toast.error(err.message);
@@ -257,12 +283,7 @@ setLoading(false)})
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+
 
   const filterFacilityType = (
     filter: any,
@@ -309,65 +330,7 @@ setLoading(false)})
       insuranceProvider: insurance,
     };
 
-    // const noFacAndDistance = {
-    //   q: details.Service,
-    //   location: details.Location,
-    //   serviceCode: serviceLocation,
-    //   insuranceProvider: insurance,
-    // };
-    // const servicecodeLocation = {
-    //   q: details.Service,
-    //   location: details.Location,
-    //   serviceCode: serviceLocation,
-    // };
-
-    // // const insuranceprov={
-    // //   q: details.Service,
-    // //   location: details.Location,
-    // //   insuranceProvider:insurance,
-    // // }
-    // const insuranceAndDistanceAndServiceLoaction = {
-    //   q: details.Service,
-    //   location: details.Location,
-    //   distance: dis,
-    //   insuranceProvider: insurance,
-    //   serviceCode: serviceLocation,
-    // };
-    // const insuranceAndDistanceAndServiceLoactionAndFacilityType = {
-    //   q: details.Service,
-    //   location: details.Location,
-    //   distance: dis,
-    //   facilityType: type,
-    //   insuranceProvider: insurance,
-    //   serviceCode: serviceLocation,
-    // };
-    //  const noInsuranceAndFacility={
-    //   q: details.Service,
-    //   location: details.Location,
-    //   distance: dis,
-    //   facilityCheck
-    // }
-    // const insuranceAndDistance={
-    //   q: details.Service,
-    //   location: details.Location,
-    //   distance: dis,
-    //   insuranceDetails:insurance,
-    // }
-    // const insuranceAndFacility={
-    //   q: details.Service,
-    //   location: details.Location,
-    //   distance: dis,
-    //   facilityCheck,
-    //   insuranceDetails:insurance,
-    // }
-    // const insuranceFacilityAndDistance={
-    //   q: details.Service,
-    //   location: details.Location,
-    //   distance: dis,
-    //   insuranceDetails:insurance,
-    //   facilityType: type,
-    // }
-
+    
     switch (filter) {
       case "noDistance":
         return axiosPrivate.post(`/search/negotiatedSearch`, noDistance);
@@ -375,14 +338,7 @@ setLoading(false)})
         return axiosPrivate.post(`/search/negotiatedSearch`, noFacilityType);
       case "withFacilityType":
         return axiosPrivate.post(`/search/negotiatedSearch`, withFacilityType);
-      // case "noFacAndDistance":
-      //   return axiosPrivate.post(`/search/negotiatedSearch`, noFacAndDistance);
-     
-      //   case "insuranceAndDistance":
-      //   return axiosPrivate.post(`/search/negotiatedSearch`, insuranceAndDistance);
-      // case "insuranceAndFacility":
-      //   return axiosPrivate.post(`/search/negotiatedSearch`, insuranceAndFacility);
-
+   
    
       default:
         return axiosPrivate.post(
@@ -392,71 +348,6 @@ setLoading(false)})
     }
   };
 
-  // function handleInputChange(event: any, searchValue: any) {
-  //   let radioDistance = false;
-  //   if (event.target.value === distance) {
-  //     setCheckText(false);
-  //     setDistance("");
-  //     radioDistance = false;
-  //   } else {
-  //     setCheckText(true);
-  //     setDistance(event.target.value);
-  //     radioDistance = true;
-  //   }
-  //   if (radioDistance) {
-  //     if (facilityCheck === "") {
-  //       filterFacilityType(
-  //         "noFacilityType",
-  //         event.target.value,
-  //         facilityCheck,
-  //         searchValue
-  //       )
-  //         .then((res) => {
-  //           // dispatch(dataSearch(res.data.data));
-  //           setSearch(res.data.data);
-  //         })
-  //         .catch((e) => console.log(e));
-  //     } else {
-  //       filterFacilityType(
-  //         "facAndDistance",
-  //         event.target.value,
-  //         facilityCheck,
-  //         searchValue
-  //       )
-  //         .then((res) => {
-  //           // dispatch(dataSearch(res.data.data));
-  //           setSearch(res.data.data);
-  //         })
-  //         .catch((e) => console.log(e));
-  //     }
-  //   } else {
-  //     if (facilityCheck === "") {
-  //       filterFacilityType(
-  //         "default",
-  //         event.target.value,
-  //         facilityCheck,
-  //         searchValue
-  //       )
-  //         .then((res) => {
-  //           // dispatch(dataSearch(res.data.data));
-  //           setSearch(res.data.data);
-  //         })
-  //         .catch((e) => console.log(e));
-  //     } else {
-  //       filterFacilityType(
-  //         "noDistance",
-  //         event.target.value,
-  //         facilityCheck,
-  //         searchValue
-  //       )
-  //         .then((res) => {
-  //           // dispatch(dataSearch(res.data.data));
-  //           setSearch(res.data.data);
-  //         })
-  //         .catch((e) => console.log(e));
-  //     }
-  //   }
-  // }
 
   function handleTypeInputChange(event: any, searchValue: any) {
     var checkFacility = false;
@@ -501,15 +392,8 @@ setLoading(false)})
             })
           );
           console.log(minFilter, "....minPrice");
-          // if (res.data.data.length === 0) {
-          //   setValue([0, 0]);
-          //   setMinPrice(0);
-          //   setMaxPrice(0);
-          // } else {
-          //   setValue([minFilter, minFilter]);
-          //   setMinPrice(minFilter);
-          //   setMaxPrice(maxFilter);
-          // }
+          
+        
         })
         .catch((e) => console.log(e));
     } else {
@@ -518,7 +402,7 @@ setLoading(false)})
         `${distance}mi`,
         event.target.value,
         searchValue,
-value,
+        value,
         insuranceCheck,
         locationCheck
       )
@@ -545,13 +429,13 @@ value,
           );
           console.log(minFilter, "....minPrice");
           if (res.data.data.length === 0) {
-            // setValue([0, 0]);
-            // setMinPrice(0);
-            // setMaxPrice(0);
+            setValue([0, 0]);
+            setMinPrice(0);
+            setMaxPrice(0);
           } else {
-            // setValue([minFilter, minFilter]);
-            // setMinPrice(minFilter);
-            // setMaxPrice(maxFilter);
+            setValue([minFilter, minFilter]);
+            setMinPrice(minFilter);
+            setMaxPrice(maxFilter);
           }
         })
         .catch((e) => console.log(e));
@@ -561,69 +445,7 @@ value,
     setService(true);
     setValue(newValue as number[]);
     console.log("newValue", newValue);
-    // const pricefilter = searchData.filter((item: any) => {
-
-    //   // Math.min(
-    //   //   ...res.data.data.map((fprice: any) =>  {
-    //   //     if(fprice.priceType==="facilityPrice"){
-    //   //       return fprice.FacilityPrices
-    //   //     }
-    //   //     else{
-    //   //       return fprice.cashPrice
-    //   //     }
-    //   //   })
-    //   // );
-    //   if(item.priceType==="facilityPrice"){
-    //   return item.FacilityPrices >= newValue[0] && item.FacilityPrices <= newValue[1]
-    //   }
-    //   else{
-    //     console.log(".....",item.cashPrice)
-    //     return item.cashPrice >= newValue[0] && item.cashPrice <= newValue[1]
-
-    //   }
-    //   // return item.some((dataItem:any)=> (dataItem.FacilityPrices >= newValue[0] && dataItem.FacilityPrices <= newValue[1]));
-    // });
-    // console.log("pricefilter", pricefilter);
-    // setSearch(pricefilter);
-    // dispatch(dataSearch(pricefilter))
-
-    // const checkData = {
-    //   q: searchValues.Service,
-    //   location: searchValues.Location,
-    //   range: newValue,
-    // };
-    // axiosPrivate
-    //   .post("/search", checkData)
-    //   .then((res) => {
-    //     setSearch(res.data.data);
-    //     console.log(res.data.data, "checkConsole");
-    //     // const maxFilter = Math.max(
-    //     //   ...res.data.data.map((fprice: any) => {
-    //     //     if(fprice.priceType==="facilityPrice"){
-    //     //       return fprice.FacilityPrices
-    //     //     }
-    //     //     else{
-    //     //       return fprice.cashPrice
-    //     //     }
-    //     //   })
-    //     // );
-    //     // console.log(maxFilter, "....maxPrice");
-    //     // setMaxPrice(maxFilter);
-
-    //     // const minFilter = Math.min(
-    //     //   ...res.data.data.map((fprice: any) =>  {
-    //     //     if(fprice.priceType==="facilityPrice"){
-    //     //       return fprice.FacilityPrices
-    //     //     }
-    //     //     else{
-    //     //       return fprice.cashPrice
-    //     //     }
-    //     //   })
-    //     // );
-    //     // console.log(minFilter, "....minPrice");
-    //     // setMinPrice(minFilter);
-    //   })
-    //   .catch((e) => console.log(e));
+   
 
     if (facilityCheck === "") {
       filterFacilityType(
@@ -638,6 +460,7 @@ value,
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
+          
         })
         .catch((e) => console.log(e));
     } else {
@@ -695,59 +518,7 @@ value,
         .catch((e) => console.log(e));
     }
 
-    // if (checkInsurance) {
-
-    //   if (distance === "") {
-    //     filterFacilityType(
-    //       "noDistance",
-    //       distance,
-    //       facilityCheck,
-    //       event.target.value,
-    //       searchValue
-    //     )
-    //       .then((res) => {
-    //         // dispatch(dataSearch(res.data.data));
-    //         setSearch(res.data.data);
-    //       })
-    //       .catch((e) => console.log(e));
-    //   } else {
-    //     filterFacilityType(
-    //       "insuranceAndDistance",
-    //       distance,
-    //       facilityCheck,
-    //       event.target.value,
-    //       searchValue,
-
-    //     )
-    //       .then((res) => {
-    //         // dispatch(dataSearch(res.data.data));
-    //         setSearch(res.data.data);
-    //       })
-    //       .catch((e) => console.log(e));
-    //   }
-    // } else {
-    //   if (distance === "") {
-    //     filterFacilityType("default", distance,facilityCheck, event.target.value, searchValue)
-    //       .then((res) => {
-    //         // dispatch(dataSearch(res.data.data));
-    //         setSearch(res.data.data);
-    //       })
-    //       .catch((e) => console.log(e));
-    //   } else {
-    //     filterFacilityType(
-    //       "noInsurance",
-    //       distance,
-    //       facilityCheck,
-    //       event.target.value,
-    //       searchValue
-    //     )
-    //       .then((res) => {
-    //         // dispatch(dataSearch(res.data.data));
-    //         setSearch(res.data.data);
-    //       })
-    //       .catch((e) => console.log(e));
-    //   }
-    // }
+    
   }
   function handleServicelocationchange(event: any, searchValue: any) {
     setLocationCheck(event.target.value);
@@ -764,6 +535,34 @@ value,
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
+          const maxFilter = Math.max(
+            ...res.data.data.map((fprice: any) => {
+          
+                return fprice.negotiatedRates?.negotiated_rates
+                ?.negotiated_prices?.negotiated_rate;
+            
+            })
+          );
+          console.log(maxFilter, "....maxPrice");
+
+          const minFilter = Math.min(
+            ...res.data.data.map((fprice: any) => {
+        
+                return fprice.negotiatedRates.negotiated_rates
+                ?.negotiated_prices?.negotiated_rate;
+             
+            })
+          );
+          console.log(minFilter, "....minPrice");
+          if (res.data.data.length === 0) {
+            setValue([0, 0]);
+            setMinPrice(0);
+            setMaxPrice(0);
+          } else {
+            setValue([minFilter, minFilter]);
+            setMinPrice(minFilter);
+            setMaxPrice(maxFilter);
+          }
         })
         .catch((e) => console.log(e));
     
@@ -780,6 +579,34 @@ value,
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
+          const maxFilter = Math.max(
+            ...res.data.data.map((fprice: any) => {
+          
+                return fprice.negotiatedRates?.negotiated_rates
+                ?.negotiated_prices?.negotiated_rate;
+            
+            })
+          );
+          console.log(maxFilter, "....maxPrice");
+
+          const minFilter = Math.min(
+            ...res.data.data.map((fprice: any) => {
+        
+                return fprice.negotiatedRates.negotiated_rates
+                ?.negotiated_prices?.negotiated_rate;
+             
+            })
+          );
+          console.log(minFilter, "....minPrice");
+          if (res.data.data.length === 0) {
+            setValue([0, 0]);
+            setMinPrice(0);
+            setMaxPrice(0);
+          } else {
+            setValue([minFilter, minFilter]);
+            setMinPrice(minFilter);
+            setMaxPrice(maxFilter);
+          }
         })
         .catch((e) => console.log(e));
     }
@@ -813,13 +640,13 @@ value,
           );
           console.log(minFilter, "....minPrice");
           if (res.data.data.length === 0) {
-            // setValue([0, 0]);
-            // setMinPrice(0);
-            // setMaxPrice(0);
+            setValue([0, 0]);
+            setMinPrice(0);
+            setMaxPrice(0);
           } else {
-            // setValue([minFilter, minFilter]);
-            // setMinPrice(minFilter);
-            // setMaxPrice(maxFilter);
+            setValue([minFilter, minFilter]);
+            setMinPrice(minFilter);
+            setMaxPrice(maxFilter);
           }
         })
         .catch((e) => console.log(e));
@@ -847,13 +674,13 @@ value,
           );
 
           if (res.data.data.length === 0) {
-            // setValue([0, 0]);
-            // setMinPrice(0);
-            // setMaxPrice(0);
+            setValue([0, 0]);
+            setMinPrice(0);
+            setMaxPrice(0);
           } else {
-            // setValue([minFilter, minFilter]);
-            // setMinPrice(minFilter);
-            // setMaxPrice(maxFilter);
+            setValue([minFilter, minFilter]);
+            setMinPrice(minFilter);
+            setMaxPrice(maxFilter);
           }
         })
         .catch((e) => console.log(e));
