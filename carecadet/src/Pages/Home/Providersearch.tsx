@@ -174,7 +174,9 @@ export default function Providersearch() {
           // dispatch(facilityTypeInfo(res.data))
         })
         .catch((e) => console.log(e));
-    };
+    
+      };
+      
 
     const getInsuranceProvider = async () => {
       await axiosPrivate
@@ -308,7 +310,7 @@ setLoading(false)})
       q: details.Service,
       location: details.Location,
       facilityType: type,
-      negotiatedRates:range,
+      negotiatedRates:negotiatedRates,
       serviceCode: serviceLocation,
       insuranceProvider: insurance,
     };
@@ -316,7 +318,7 @@ setLoading(false)})
       q: details.Service,
       location: details.Location,
       distance: dis,
-      negotiatedRates:range,
+      negotiatedRates:negotiatedRates,
       serviceCode: serviceLocation,
       insuranceProvider: insurance,
     };
@@ -325,7 +327,7 @@ setLoading(false)})
       location: details.Location,
       distance: dis,
       facilityType: type,
-      negotiatedRates:range,
+      negotiatedRates:negotiatedRates,
       serviceCode: serviceLocation,
       insuranceProvider: insurance,
     };
@@ -396,6 +398,15 @@ setLoading(false)})
            
           );
           console.log(minFilter, "....minPrice");
+          if (res.data.data.length === 0) {
+            setValue([0, 0]);
+            setMinPrice(0);
+            setMaxPrice(0);
+          } else {
+            setValue([minFilter, minFilter]);
+            setMinPrice(minFilter);
+            setMaxPrice(maxFilter);
+          } 
           
         
         })
@@ -466,7 +477,7 @@ setLoading(false)})
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
-          
+          console.log("pricecheck",res.data.data)
         })
         .catch((e) => console.log(e));
     } else {
@@ -482,6 +493,7 @@ setLoading(false)})
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
+          console.log("pricecheck1",res.data.data)
         })
         .catch((e) => console.log(e));
     }
