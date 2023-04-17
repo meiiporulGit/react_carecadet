@@ -181,7 +181,7 @@ export default function CreateFacility() {
       }
 
     };
-    alert(JSON.stringify(facilitydata, null, 2));
+    // alert(JSON.stringify(facilitydata, null, 2));
     actions.resetForm({
       values: initialValues,
     });
