@@ -351,6 +351,7 @@ setLoading(false)})
 
   function handleTypeInputChange(event: any, searchValue: any) {
     var checkFacility = false;
+    setLoading(true)
     if (event.target.value === facilityCheck) {
       setCheckFacText(false);
       setFacilityCheck("");
@@ -373,6 +374,7 @@ setLoading(false)})
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
+          setLoading(false)
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
       
@@ -409,6 +411,7 @@ setLoading(false)})
         locationCheck
       )
         .then((res) => {
+          setLoading(false)
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
           const maxFilter = Math.max(
@@ -487,6 +490,7 @@ setLoading(false)})
     return `${userValue}$`;
   }
   function handleInsuranceInputChange(event: any, searchValue: any) {
+    setLoading(true)
     setInsuranceCheck(event.target.value);
     if (facilityCheck === "") {
       filterFacilityType(
@@ -500,6 +504,7 @@ setLoading(false)})
         
       )
         .then((res) => {
+          setLoading(false)
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
         })
@@ -515,6 +520,7 @@ setLoading(false)})
         locationCheck
       )
         .then((res) => {
+          setLoading(false)
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
           const maxFilter = Math.max(
@@ -552,6 +558,7 @@ setLoading(false)})
     
   }
   function handleServicelocationchange(event: any, searchValue: any) {
+    setLoading(true)
     setLocationCheck(event.target.value);
     if(facilityCheck===""){
       filterFacilityType(
@@ -565,6 +572,7 @@ setLoading(false)})
       )
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
+          setLoading(false)
           setSearch(res.data.data);
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
@@ -608,6 +616,7 @@ setLoading(false)})
         event.target.value
       )
         .then((res) => {
+          setLoading(false)
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
           const maxFilter = Math.max(
@@ -951,10 +960,12 @@ setLoading(false)})
                           min={10}
                           max={100}
                           onChange={(e, sliderValue: any) => {
+                            setLoading(true)
                             setDistance(sliderValue);
                           }}
                           onChangeCommitted={(e, sliderValue) => {
                             distanceSliderChange(sliderValue, values);
+                            setLoading(false)
                           }}
                         />
                       </Box>
@@ -1035,11 +1046,13 @@ setLoading(false)})
                             { value: value[1], label: value[1] },
                           ]}
                           onChange={(e, sliderArray: any) => {
+                            setLoading(true)
                             setValue(sliderArray);
                           }}
-                          onChangeCommitted={(event, v) =>
+                          onChangeCommitted={(event, v) =>{
                             sliderChange(event, v, values)
-                          }
+                            setLoading(false)
+                          }}
                           min={minPrice}
                           max={maxPrice}
                           step={1}

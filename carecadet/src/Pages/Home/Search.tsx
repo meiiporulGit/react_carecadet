@@ -96,6 +96,7 @@ export default function ViewFacility() {
   const [maxPrice, setMaxPrice] = useState<any>(100);
   const [minPrice, setMinPrice] = useState<any>(1);
   const [loading,setLoading] =useState<any>(false);
+  const [loadingbar,setLoadingbar] =useState<any>(false);
   const searchData = useAppSelector((state) => state.homeReducer.searchData);
   const QueryData=useAppSelector(state=>state.homeReducer.queryData)
 
@@ -310,7 +311,9 @@ setLoading(false)
 
  
   function handleTypeInputChange(event: any, searchValue: any) {
+  
     var checkFacility = false;
+    setLoading(true)
     if (event.target.value === facilityCheck) {
       setCheckFacText(false);
       setFacilityCheck("");
@@ -332,6 +335,8 @@ setLoading(false)
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
+          setLoading(false)
+     
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
               if (fprice.priceType === "facilityPrice") {
@@ -376,6 +381,7 @@ setLoading(false)
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
+          setLoading(false)
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
               if (fprice.priceType === "facilityPrice") {
@@ -863,11 +869,15 @@ setLoading(false)
                           min={10}
                           max={100}
                           onChange={(e, sliderValue: any) => {
+                            setLoading(true);
+                             
                             setDistance(sliderValue);
+                           
                           }}
                           onChangeCommitted={(e, sliderValue) => {
+                            
                             distanceSliderChange(sliderValue, values);
-                          }}
+                            setLoading(false);      }}
                         />
                       </Box>
                     </Collapse>
@@ -914,9 +924,13 @@ setLoading(false)
                           ]}
                           onChange={(e, sliderArray: any) => {
                             setScoreValue(sliderArray);
+                            setLoading(true)
                           }}
-                          onChangeCommitted={(event, v) =>
+                          onChangeCommitted={(event, v) =>{
                             sliderScoreChange(event, v, values)
+                            setLoading(false)
+                          }
+                            
                           }
                           min={1}
                           max={5}
@@ -991,11 +1005,13 @@ setLoading(false)
                             { value: value[1], label: value[1] },
                           ]}
                           onChange={(e, sliderArray: any) => {
-                            setValue(sliderArray);
+                            setLoading(true)
+                             setValue(sliderArray);
                           }}
-                          onChangeCommitted={(event, v) =>
+                          onChangeCommitted={(event, v) =>{
                             sliderChange(event, v, values)
-                          }
+                            setLoading(false)
+                           } }
                           min={minPrice}
                           max={maxPrice}
                           step={1}
@@ -1068,7 +1084,9 @@ setLoading(false)
                                       checkFacText
                                     }
                                     onClick={(e: any) => {
+                                      setLoading(true)
                                       handleTypeInputChange(e, values);
+                                     
                                     }}
                            
                                   />
@@ -1523,13 +1541,14 @@ setLoading(false)
                      <Pagination
                 sx={{ display: "flex", justifyContent: "center" }}
               
-                count={10}
+                count={5}
                 page={page1}
                 siblingCount={0}
                 onChange={handleChangePage}
                 defaultPage={1}
                 color="primary"
                 size="large"
+
                 showFirstButton
                 showLastButton
               />
