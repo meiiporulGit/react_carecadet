@@ -1319,13 +1319,13 @@ setLoading(false)})
                                 mb: "20px",
                               }}
                             >
-                              {dsearch.FacilityDetails?.address?.addressLine1 +
+                              {dsearch.facilityDetails?.address?.addressLine1 +
                                 "," +
-                                dsearch.FacilityDetails?.address?.city +
+                                dsearch.facilityDetails?.address?.city +
                                 "," +
-                                dsearch.FacilityDetails?.address?.state +
+                                dsearch.facilityDetails?.address?.state +
                                 " - " +
-                                dsearch.FacilityDetails?.address?.zipCode}
+                                dsearch.facilityDetails?.address?.zipCode}
                             </Typography>
                             <Typography
                               sx={{
@@ -1380,7 +1380,7 @@ setLoading(false)})
                                   // width: "100px",
                                 }}
                               >
-                                Average price
+                                Negotiated price
                               </Typography>
                             </Grid>
                             <Grid
@@ -1805,13 +1805,13 @@ setLoading(false)})
                             mb: "10px",
                           }}
                         >
-                          {dsearch.FacilityDetails?.address?.addressLine1 +
+                          {dsearch.facilityDetails?.address?.addressLine1 +
                             "," +
-                            dsearch.FacilityDetails?.address?.city +
+                            dsearch.facilityDetails?.address?.city +
                             "," +
-                            dsearch.FacilityDetails?.address?.state +
+                            dsearch.facilityDetails?.address?.state +
                             " - " +
-                            dsearch.FacilityDetails?.address?.zipCode}
+                            dsearch.facilityDetails?.address?.zipCode}
                         </Typography>
                         <Typography
                           sx={{
@@ -1862,7 +1862,7 @@ setLoading(false)})
                               // width: "100px",
                             }}
                           >
-                            Average price
+                            Negotiated price
                           </Typography>
                         </Grid>
                         <Grid
