@@ -292,9 +292,9 @@ setLoading(false)})
     dis?: any,
     type?: any,
     details?: any,
-    negotiatedRates?:any,
     insurance?: any,
-    serviceLocation?: any
+    serviceLocation?: any,
+    negotiatedRates?:any
   ) => {
     console.log(
       filter,
@@ -310,7 +310,7 @@ setLoading(false)})
       q: details.Service,
       location: details.Location,
       facilityType: type,
-      negotiatedRates:negotiatedRates,
+     
       serviceCode: serviceLocation,
       insuranceProvider: insurance,
     };
@@ -318,7 +318,7 @@ setLoading(false)})
       q: details.Service,
       location: details.Location,
       distance: dis,
-      negotiatedRates:negotiatedRates,
+      
       serviceCode: serviceLocation,
       insuranceProvider: insurance,
     };
@@ -327,9 +327,30 @@ setLoading(false)})
       location: details.Location,
       distance: dis,
       facilityType: type,
-      negotiatedRates:negotiatedRates,
+      
       serviceCode: serviceLocation,
       insuranceProvider: insurance,
+    };
+
+    const noFacilityTypeforNegotiatedrate ={
+      q: details.Service,
+      location: details.Location,
+      distance: dis,
+      
+      serviceCode: serviceLocation,
+      insuranceProvider: insurance,
+      negotiatedRates:negotiatedRates
+    };
+
+    const withFacilityTypeforNegotiatedrate ={
+      q: details.Service,
+      location: details.Location,
+      distance: dis,
+      facilityType: type,
+      serviceCode: serviceLocation,
+      insuranceProvider: insurance,
+      negotiatedRates:negotiatedRates
+
     };
 
     
@@ -340,7 +361,11 @@ setLoading(false)})
         return axiosPrivate.post(`/search/negotiatedSearch`, noFacilityType);
       case "withFacilityType":
         return axiosPrivate.post(`/search/negotiatedSearch`, withFacilityType);
-   
+      case "noFacilityTypeforNegotiatedrate":
+        return axiosPrivate.post(`/search/negotiatedSearch`, noFacilityTypeforNegotiatedrate);
+        case "withFacilityTypeforNegotiatedrate":
+          return axiosPrivate.post(`/search/negotiatedSearch`, withFacilityTypeforNegotiatedrate);
+       
    
       default:
         return axiosPrivate.post(
@@ -369,9 +394,9 @@ setLoading(false)})
         `${distance}mi`,
         event.target.value,
         searchValue,
-       value,
-        insuranceCheck,
-        locationCheck
+               insuranceCheck,
+        locationCheck,
+        value
       )
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
@@ -417,9 +442,10 @@ setLoading(false)})
         `${distance}mi`,
         event.target.value,
         searchValue,
-        value,
+       
         insuranceCheck,
-        locationCheck
+        locationCheck,
+        value
       )
         .then((res) => {
           setLoading(false)
@@ -463,16 +489,15 @@ setLoading(false)})
     setValue(newValue as number[]);
     console.log("newValue", newValue);
    
-
     if (facilityCheck === "") {
       filterFacilityType(
-        "noFacilityType",
+        "noFacilityTypeforNegotiatedrate",
         `${distance}mi`,
         facilityCheck,
         searchValues,
-        newValue,
         insuranceCheck,
-        locationCheck
+        locationCheck,
+        newValue
       )
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
@@ -482,13 +507,13 @@ setLoading(false)})
         .catch((e) => console.log(e));
     } else {
       filterFacilityType(
-        "withFacilityType",
+        "withFacilityTypeforNegotiatedrate",
         `${distance}mi`,
         facilityCheck,
         searchValues,
-        newValue,
         insuranceCheck,
-        locationCheck
+        locationCheck,
+        newValue
       )
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
@@ -510,9 +535,10 @@ setLoading(false)})
         `${distance}mi`,
         facilityCheck,
         searchValue,
-        value,
+        
         event.target.value,
         locationCheck,
+        value,
         
       )
         .then((res) => {
@@ -527,9 +553,10 @@ setLoading(false)})
         `${distance}mi`,
         facilityCheck,
         searchValue,
-        value,
+       
         event.target.value,
-        locationCheck
+        locationCheck,
+        value
       )
         .then((res) => {
           setLoading(false)
@@ -578,9 +605,10 @@ setLoading(false)})
         `${distance}mi`,
         facilityCheck,
         searchValue,
-       value,
+       
         insuranceCheck,
-        event.target.value
+        event.target.value,
+        value
       )
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
@@ -623,9 +651,10 @@ setLoading(false)})
         `${distance}mi`,
         facilityCheck,
         searchValue,
-      value,
+     
         insuranceCheck,
-        event.target.value
+        event.target.value,
+        value
       )
         .then((res) => {
           setLoading(false)
@@ -667,7 +696,10 @@ setLoading(false)})
   const distanceSliderChange = (v: any, searchValue: any) => {
     setDistance(v);
     if (facilityCheck === "") {
-      filterFacilityType("noFacilityType", `${v}mi`, facilityCheck, searchValue,value,insuranceCheck,locationCheck)
+      filterFacilityType("noFacilityType", `${v}mi`, 
+      facilityCheck, searchValue,insuranceCheck,locationCheck,
+      value
+      )
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           console.log(res.data.data, "checkDistance");
@@ -703,7 +735,10 @@ setLoading(false)})
         })
         .catch((e) => console.log(e));
     } else {
-      filterFacilityType("withFacilityType", `${v}mi`, facilityCheck, searchValue,value,insuranceCheck,locationCheck)
+      filterFacilityType("withFacilityType", `${v}mi`, 
+      facilityCheck, searchValue,
+      insuranceCheck,locationCheck,
+      value)
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
