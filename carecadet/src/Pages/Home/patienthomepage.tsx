@@ -62,7 +62,7 @@ const Patienthomepage = () => {
   }); 
   const onSubmit = (values: forminitialValues, actions: any) => {
    dispatch(dataQuery(values))
-    navigate(`/patient/search?q=${values.Service}&location=${values.Location}`);
+    navigate(`/patient/search?q=${values.Service.trim()}&location=${values.Location.trim()}`);
     // axiosPrivate.get(`http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`)
     //   .then((res) => {
     //     console.log(res.data);

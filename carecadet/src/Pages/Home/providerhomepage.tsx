@@ -75,7 +75,7 @@ const Providerhomepage = () => {
     
     });
   dispatch(dataQueryProvider(values))
-    navigate(`/provider/search?q=${values.Service}&location=${values.Location}`);
+    navigate(`/provider/search?q=${values.Service.trim()}&location=${values.Location.trim()}`);
     // axiosPrivate
     //   .get(`http://210.18.155.251:5003/search/?q=`)
     // axiosPrivate.get (`http://210.18.155.251:5003/search/negotiatedSearch?q=${values.Service}&location=${values.Location}&serviceCode=21`)

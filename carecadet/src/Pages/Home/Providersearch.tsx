@@ -234,20 +234,27 @@ export default function Providersearch() {
     Location: Yup.string().required("Required"),
   });
   const onSubmit = (values: forminitialValues, actions: any) => {
-    const postData = { q: values.Service, location: values.Location };
+    const postData = { q: values.Service.trim(), location: values.Location.trim()};
     setLoading(true)
     axiosPrivate
       .post(`/search/negotiatedSearch`, postData)
       .then((res) => {
       
         console.log(res.data, "checkT");
+        setCheckText(false);
+        setCheckFacText(false);
+        
+        setFacilityCheck("");
+
+        setLocationCheck("21");
+        setInsuranceCheck("INSP-1");
 
         dispatch(dataProviderSearch(res.data.data));
         dispatch(dataQueryProvider(values))
        
         setSearch(res.data.data);
         setLoading(false)
-        setSearchParams({ q: values.Service, location: values.Location });
+        setSearchParams({ q: values.Service.trim(), location: values.Location.trim() });
         const maxFilter = Math.max(
           ...res.data.data.map((fprice: any) => {
 
@@ -307,24 +314,24 @@ setLoading(false)})
       "axiosCheck"
     );
     const noDistance = {
-      q: details.Service,
-      location: details.Location,
+      q: details.Service.trim(),
+      location: details.Location.trim(),
       facilityType: type,
      
       serviceCode: serviceLocation,
       insuranceProvider: insurance,
     };
     const noFacilityType = {
-      q: details.Service,
-      location: details.Location,
+      q: details.Service.trim(),
+      location: details.Location.trim(),
       distance: dis,
       
       serviceCode: serviceLocation,
       insuranceProvider: insurance,
     };
     const withFacilityType = {
-      q: details.Service,
-      location: details.Location,
+      q: details.Service.trim(),
+      location: details.Location.trim(),
       distance: dis,
       facilityType: type,
       
@@ -333,8 +340,8 @@ setLoading(false)})
     };
 
     const noFacilityTypeforNegotiatedrate ={
-      q: details.Service,
-      location: details.Location,
+      q: details.Service.trim(),
+      location: details.Location.trim(),
       distance: dis,
       
       serviceCode: serviceLocation,
@@ -343,8 +350,8 @@ setLoading(false)})
     };
 
     const withFacilityTypeforNegotiatedrate ={
-      q: details.Service,
-      location: details.Location,
+      q: details.Service.trim(),
+      location: details.Location.trim(),
       distance: dis,
       facilityType: type,
       serviceCode: serviceLocation,
@@ -845,9 +852,10 @@ setLoading(false)})
                     placeholder="Search Service"
                     type="text"
                     onChange={(e: any) => {
+                      setFieldValue("Service", e.target.value);
                       setCheckText(false);
                       setCheckFacText(false);
-                      setFieldValue("Service", e.target.value);
+                      
                       setFacilityCheck("");
 
                       setLocationCheck("21");

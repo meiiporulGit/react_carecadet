@@ -109,8 +109,8 @@ export default function ViewFacility() {
 
   const dispatch = useAppDispatch();
 
-  const q = QueryData.Service
-  const locationQ = QueryData.Location;
+  const q = QueryData.Service.trim()
+  const locationQ = QueryData.Location.trim();
 
   useEffect(() => {
         const postData = { q: q, location: locationQ };
@@ -185,7 +185,7 @@ export default function ViewFacility() {
   });
   const onSubmit = (values: forminitialValues, actions: any) => {
     
-    const postData = { q: values.Service, location: values.Location };
+    const postData = { q: values.Service.trim(), location: values.Location.trim() };
    
     setLoading(true)
     axiosPrivate
@@ -193,14 +193,18 @@ export default function ViewFacility() {
       .then((res) => {
         console.log(res.data);
         // setSearchqueryData(res.data.data)
+        setCheckText(false);
+        setCheckFacText(false);
        
+        setFacilityCheck("");
+        setDistance(30);
         dispatch(dataSearch(res.data.data));
         
         
         setSearch(res.data.data);
         setLoading(false)
         dispatch(dataQuery(values))
-        setSearchParams({ q: values.Service, location: values.Location });
+        setSearchParams({ q: values.Service.trim(), location: values.Location.trim() });
         const maxFilter = Math.max(
           ...res.data.data.map((fprice: any) => {
             if (fprice.priceType === "facilityPrice") {
