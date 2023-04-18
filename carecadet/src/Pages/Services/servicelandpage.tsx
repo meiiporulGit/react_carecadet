@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Paper, TextField, Box, Typography, Pagination, Button, Grid,Divider } from "@mui/material";
+import { Paper, TextField, Box, Typography, Pagination, CircularProgress, Button, Grid,Divider } from "@mui/material";
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -46,7 +46,7 @@ export default function Servicelandingpage() {
   // const facilityid=useAppSelector((state)=>state.editFacility.service);
   // console.log("facilityid", facilityid);
   // const [totalPages, setTotalPages] = useState(10);
-
+  const [dataCheck,setDataCheck]=useState(false)
   const orgid = useAppSelector(
     (state) => state.providerOrganization.orgEditData
   );
@@ -68,10 +68,12 @@ export default function Servicelandingpage() {
   useEffect(() => {
     console.log("start");
     getData();
+  
   }, []);
 
   useEffect(() => {}, []);
   const getData = async () => {
+    setDataCheck(true)
     axiosPrivate
       .get(`/service/getPricelistbyOrg?Organisationid=${orgid[0].organizationID}`)
       .then((resp) => {
@@ -85,8 +87,10 @@ export default function Servicelandingpage() {
         });
         console.log(ddd, "ddd");
         if (ddd.length == 0) {
+          setDataCheck(false)
           navigate("/provider/service/pricelist");
         } else {
+          setDataCheck(false)
           setData(ddd);
           // console.log("getpricedata", getpricedata);
         }
@@ -324,7 +328,7 @@ export default function Servicelandingpage() {
             /> */}
 
           {/* {JSON.stringify(data)} */}
-          <Box style={{ display:"flex",flexDirection:"column",rowGap:"0.2rem" }}>
+          {!dataCheck?    <Box style={{ display:"flex",flexDirection:"column",rowGap:"0.2rem" }}>
            
           { (itemsPerPage > 0
               ? data.slice(
@@ -378,7 +382,20 @@ export default function Servicelandingpage() {
                 showLastButton
               />
             </Box>
-          </Box>
+          </Box> : <Box
+              sx={{
+                backgroundColor:"primary.light",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "84vh",
+              }}
+            >
+              <Box>
+                <CircularProgress color="inherit" size={50} />
+                <Typography>Loading</Typography>
+              </Box>
+            </Box>}
         </>
       </Box>
     

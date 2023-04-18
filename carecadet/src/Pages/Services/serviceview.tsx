@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Paper, Grid,TextField, Box, Typography,Pagination,Collapse,IconButton } from "@mui/material";
+import { Paper, Grid,TextField, Box, Typography,Pagination,Collapse,IconButton ,CircularProgress ,TablePagination, Table, TableHead, TableRow, TableCell, TableBody, TableFooter} from "@mui/material";
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -124,7 +124,7 @@ export default function ServiceViewPage() {
   // const facilityid=useAppSelector((state)=>state.editFacility.service);v
   // console.log("facilityid", facilityid);
   // const [totalPages, setTotalPages] = useState(10);
-
+  const [dataCheck,setDataCheck]=useState(false)
   const orgid = useAppSelector((state) => state.providerOrganization.orgEditData);
   const serviceinput = useAppSelector(
     (state: { providerService: { serviceData: any } }) =>
@@ -138,6 +138,7 @@ export default function ServiceViewPage() {
     getData();
   }, []);
   const getData = async () => {
+    setDataCheck(true)
     const pricelistdetails = await axiosPrivate.get(
       `/service/getPriceListbyService?DiagnosisTestorServiceName=${serviceinput}&Organisationid=${orgid[0].organizationID}`
     );
@@ -145,6 +146,7 @@ export default function ServiceViewPage() {
     // if (data.length == 0) {
     //   navigate("/pricelist");
     // } else {
+      setDataCheck(false)
     setData(pricelistdetails.data.data);
     // }
 
@@ -169,7 +171,18 @@ export default function ServiceViewPage() {
     },
     cellClassName: "font-tabular-nums",
   };
-
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    page: number
+  ) => {
+    setPage(page);
+  };
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   const columns: GridColumns = [
     // {
     //   field: "SNo",
@@ -376,6 +389,8 @@ export default function ServiceViewPage() {
               <EditIcon />
             </Avatar>
           </Box>
+          {!dataCheck?
+          <Box>
           <Box
             sx={{
               "& .super-app-theme--header": {
@@ -391,7 +406,134 @@ export default function ServiceViewPage() {
               },
             }}
           >
-            <DataGrid
+            <Table
+              sx={{ maxWidth: "100%", display: { xs: "none", md: "table" } }}
+            >
+              <TableHead sx={{ backgroundColor: "#4D77FF" }}>
+                <TableRow>
+                  {/* <TableCell
+                sx={{
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                providerID
+              </TableCell> */}
+                  <TableCell
+                    sx={{
+                      fontSize: "1rem",
+                      fontWeight: "bold",
+                      textAlign: "left",
+                    }}
+                  >
+                   Service Code
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      fontSize: "1rem",
+                      fontWeight: "bold",
+                      textAlign: "left",
+                    }}
+                  >
+                   DiagnosisTest / ServiceName
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      fontSize: "1rem",
+                      fontWeight: "bold",
+                      textAlign: "left",
+                    }}
+                  >
+                   Organization Prices
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      fontSize: "1rem",
+                      fontWeight: "bold",
+                      textAlign: "left",
+                    }}
+                  >
+                  Facility Prices
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {(rowsPerPage > 0
+                  ? data.slice(
+                      page * rowsPerPage,
+                      page * rowsPerPage + rowsPerPage
+                    )
+                  : data
+                ).map((dataPath: any, i: any) => (
+                  <TableRow
+                    key={i}
+                    sx={{
+                      backgroundColor: (i + 1) % 2 === 0 ? "#B4C8FC" : "white",
+                    }}
+                  >
+                    {/* <TableCell sx={{ fontSize: "0.8rem", textAlign: "center" }}>
+                  {dataPath.providerID}
+                </TableCell> */}
+                    <TableCell sx={{ fontSize: "1rem", textAlign: "left" }}>
+                      {/* {dataPath.filePath.split("/")[2]} */}
+                      {dataPath.ServiceCode}
+                    </TableCell>
+                    <TableCell sx={{ fontSize: "1rem", textAlign: "left" }}>
+                      {/* {dataPath.filePath.split("/")[2]} */}
+                      {dataPath.DiagnosisTestorServiceName}
+                    </TableCell>
+                    <TableCell sx={{ fontSize: "1rem", textAlign: "right" }}>
+                      {/* {dataPath.filePath.split("/")[2]} */}
+                      
+                      {dataPath.OrganisationPrices===null?"":"$"+Number(dataPath.OrganisationPrices).toLocaleString()}
+                    </TableCell>
+                    <TableCell sx={{ fontSize: "1rem", textAlign: "right" }}>
+                      {/* {dataPath.filePath.split("/")[2]} */}
+                      {dataPath.FacilityPrices===null?"":"$"+Number(dataPath.FacilityPrices).toLocaleString()}
+                   
+                    </TableCell>
+
+               
+                  </TableRow>
+                ))}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    count={data.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    labelDisplayedRows={({ from, to, count }) =>
+                      `${from}-${to} of ${count !== -1 ? count : ` ${to}}`}`
+                    }
+                    backIconButtonProps={{
+                      color: "secondary",
+                    }}
+                    nextIconButtonProps={{ color: "secondary" }}
+                    showFirstButton={true}
+                    showLastButton={true}
+                    labelRowsPerPage={<span>Rows:</span>}
+                    sx={{
+                      ".MuiTablePagination-toolbar": {
+                        backgroundColor: "primary.light",
+                        // "rgba(100,100,100,0.5)"
+                      },
+                      ".MuiTablePagination-selectLabel, .MuiTablePagination-input":
+                        {
+                          fontWeight: "bold",
+                          color: "#173A5E",
+                        },
+                    }}
+                  />
+                </TableRow>
+              </TableFooter>
+            </Table>
+            {/* <DataGrid
               autoHeight
               autoPageSize
               getRowId={(row) => row._id}
@@ -413,7 +555,7 @@ export default function ServiceViewPage() {
               }}
               
               components={{ Row: CustomRow }}
-            />
+            /> */}
           </Box>
           <Box sx={{display:{xs:"flex",md:"none"},flexDirection:"column",gap:"1rem"}}>
           { (rowsPerPage > 0
@@ -445,7 +587,22 @@ export default function ServiceViewPage() {
                 showLastButton
               />
             </Box>
+                  </Box> 
+                  </Box>:
+                  <Box
+                  sx={{
+                    backgroundColor:"primary.light",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "84vh",
+                  }}
+                >
+                  <Box>
+                    <CircularProgress color="inherit" size={50} />
+                    <Typography>Loading</Typography>
                   </Box>
+                </Box>}
         </>
       </Paper>
     </>
