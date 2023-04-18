@@ -122,7 +122,7 @@ export default function Providersearch() {
 
   const [maxPrice, setMaxPrice] = useState<any>(100);
   const [minPrice, setMinPrice] = useState<any>(1);
-  const [value, setValue] = useState<number[]>([0, 0]);
+  const [value, setValue] = useState<number[]>([0, 100]);
   const dispatch = useAppDispatch();
 
   const q = providerDataQuery.Service;
@@ -162,6 +162,7 @@ export default function Providersearch() {
         if(res.data.data.length!==0){
           setMaxPrice(maxFilter);
           setMinPrice(minFilter);
+          setValue([minFilter, maxFilter]);
         }
       })
       .catch((e) => console.log(e));
@@ -278,6 +279,7 @@ export default function Providersearch() {
         if(res.data.data.length!==0){
           setMaxPrice(maxFilter);
           setMinPrice(minFilter);
+          setValue([minFilter, maxFilter]);
         }
         console.log("searchpro", res);
       
@@ -435,7 +437,7 @@ setLoading(false)})
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           } 
@@ -483,7 +485,7 @@ setLoading(false)})
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -593,7 +595,7 @@ setLoading(false)})
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -645,7 +647,7 @@ setLoading(false)})
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -691,7 +693,7 @@ setLoading(false)})
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -735,7 +737,7 @@ setLoading(false)})
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -772,7 +774,7 @@ setLoading(false)})
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -1094,7 +1096,10 @@ setLoading(false)})
 
                         <Slider
                           size="medium"
-                          getAriaLabel={() => "Price range"}
+                           getAriaLabel={(index) =>
+          index === 0 ? "Minprice" : "Maxprice"
+        }
+                          track="normal"
                           value={value}
                           marks={[
                             { value: value[0], label: value[0] },
@@ -1113,10 +1118,13 @@ setLoading(false)})
                           step={1}
                           valueLabelDisplay="auto"
                           getAriaValueText={valuetext}
+                          
+                          
                           sx={{
                             ".MuiSlider-thumb": {
                               height: 15,
                               width: 15,
+                              
                               backgroundColor: "#fff",
                               border: "2px solid #687B9E",
                               boxShadow: "0px 0px 5px  #687B9E",
@@ -1127,7 +1135,14 @@ setLoading(false)})
                               "&:before": {
                                 display: "none",
                               },
+                              // "&.second-thumb": {
+                              //   border: "2px dashed purple"
+                              // },
+                              // "& .MuiSlider-track": {
+                              //   height: 3
+                              // }
                             },
+                                                       
                             color: "#687B9E",
                           }}
                         />
@@ -1490,7 +1505,7 @@ setLoading(false)})
                      <Pagination
                 sx={{ display: "flex", justifyContent: "center" }}
               
-                count={10}
+ count={Math.ceil(search.length / itemsPerPage)}  
                 page={page1}
                 siblingCount={0}
                 onChange={handleChangePage}

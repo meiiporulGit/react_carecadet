@@ -146,6 +146,7 @@ export default function ViewFacility() {
         if(res.data.data.length!==0){
           setMaxPrice(maxFilter);
           setMinPrice(minFilter);
+          setValue([minFilter, maxFilter]);
         }
       })
       .catch((e) => console.log(e));
@@ -231,6 +232,7 @@ export default function ViewFacility() {
         if(res.data.data.length!==0){
           setMaxPrice(maxFilter);
           setMinPrice(minFilter);
+          setValue([minFilter, maxFilter]);
         }
         // navigate("/patient/search");
         console.log("searchi", res);
@@ -366,7 +368,7 @@ setLoading(false)
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -411,7 +413,7 @@ setLoading(false)
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -499,7 +501,7 @@ setLoading(false)
             setMinPrice(0);
             setMaxPrice(1);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -544,7 +546,7 @@ setLoading(false)
             setMinPrice(0);
             setMaxPrice(1);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -612,7 +614,7 @@ setLoading(false)
             setMinPrice(0);
             setMaxPrice(1);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -648,7 +650,7 @@ setLoading(false)
             setMinPrice(0);
             setMaxPrice(1);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
