@@ -270,8 +270,7 @@ setLoading(false)
       location: details.Location,
       distance: dis,
       facilityType: type,
-      
-      ratingRange:score
+            ratingRange:score
     };
     const noFacAndDistance = { q: details.Service, location: details.Location };
     const noFacilityTypeAndRangeAndDistanceAndScore = {
