@@ -71,7 +71,7 @@ import {
   KeyboardArrowDown,
   KeyboardArrowUp,
 } from "@mui/icons-material";
-import { range, values } from "lodash";
+import { ceil, range, values } from "lodash";
 import SearchNav from "../../ProtectedRoutes/SearchNav";
 import { type } from "os";
 
@@ -101,6 +101,8 @@ export default function Providersearch() {
   const [loading,setLoading] =useState<any>(false);
   const providerDataQuery=useAppSelector(state=>state.homeReducer.providerDataQuery)
   const itemsPerPage = 5;
+
+
   const [page1, setPage1] = useState(1);
 
   // console.log(searchData, "searchdata");
@@ -125,11 +127,24 @@ export default function Providersearch() {
 
   const [maxPrice, setMaxPrice] = useState<any>(100);
   const [minPrice, setMinPrice] = useState<any>(1);
-  const [value, setValue] = useState<number[]>([0, 0]);
+  const [value, setValue] = useState<number[]>([0, 100]);
   const dispatch = useAppDispatch();
 
   const q = providerDataQuery.Service;
   const locationQ = providerDataQuery.Location;
+
+
+   
+  var pagination = {
+    total:search.length,
+    per_page:itemsPerPage,
+    current_page:page1,
+    last_page:Math.ceil(search.length / itemsPerPage),
+    from: ((page1 -1) * itemsPerPage) + 1,
+    to:page1*itemsPerPage<search.length ? page1*itemsPerPage : search.length
+  }
+
+
 
   const OPTIONS_LIMIT = 10;
   const defaultFilterOptions = createFilterOptions();
@@ -172,6 +187,7 @@ export default function Providersearch() {
         if(res.data.data.length!==0){
           setMaxPrice(maxFilter);
           setMinPrice(minFilter);
+          setValue([minFilter, maxFilter]);
         }
       })
       .catch((e) => console.log(e));
@@ -288,6 +304,7 @@ export default function Providersearch() {
         if(res.data.data.length!==0){
           setMaxPrice(maxFilter);
           setMinPrice(minFilter);
+          setValue([minFilter, maxFilter]);
         }
         console.log("searchpro", res);
       
@@ -445,7 +462,7 @@ setLoading(false)})
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           } 
@@ -493,7 +510,7 @@ setLoading(false)})
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -603,7 +620,7 @@ setLoading(false)})
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -655,7 +672,7 @@ setLoading(false)})
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -701,7 +718,7 @@ setLoading(false)})
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -745,7 +762,7 @@ setLoading(false)})
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -782,7 +799,7 @@ setLoading(false)})
             setMinPrice(0);
             setMaxPrice(0);
           } else {
-            setValue([minFilter, minFilter]);
+            setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
             setMaxPrice(maxFilter);
           }
@@ -1124,7 +1141,10 @@ setLoading(false)})
 
                         <Slider
                           size="medium"
-                          getAriaLabel={() => "Price range"}
+                           getAriaLabel={(index) =>
+          index === 0 ? "Minprice" : "Maxprice"
+        }
+                          track="normal"
                           value={value}
                           marks={[
                             { value: value[0], label: value[0] },
@@ -1143,10 +1163,13 @@ setLoading(false)})
                           step={1}
                           valueLabelDisplay="auto"
                           getAriaValueText={valuetext}
+                          
+                          
                           sx={{
                             ".MuiSlider-thumb": {
                               height: 15,
                               width: 15,
+                              
                               backgroundColor: "#fff",
                               border: "2px solid #687B9E",
                               boxShadow: "0px 0px 5px  #687B9E",
@@ -1157,7 +1180,14 @@ setLoading(false)})
                               "&:before": {
                                 display: "none",
                               },
+                              // "&.second-thumb": {
+                              //   border: "2px dashed purple"
+                              // },
+                              // "& .MuiSlider-track": {
+                              //   height: 3
+                              // }
                             },
+                                                       
                             color: "#687B9E",
                           }}
                         />
@@ -1514,24 +1544,33 @@ setLoading(false)})
                 :
             <Box sx={{display:"flex",justifyContent:'center',alignItems:"center",height:"10vh"}}><Typography>No results found</Typography></Box>
                               }
-              
+            
               
      {search.length!==0?
-                     <Pagination
-                sx={{ display: "flex", justifyContent: "center" }}
+      <>
+      <Grid container  sx={{ display: "flex", justifyContent: "center" }}>
+     <Typography sx={{padding:"10px"}} >
+         Displaying items: {pagination.from}-{pagination.to}<span> </span>of<span> </span>{pagination.total}
+          
+     </Typography>
+               <Pagination
               
-                count={10}
+              
+ count={Math.ceil(search.length / itemsPerPage)}  
                 page={page1}
                 siblingCount={0}
                 onChange={handleChangePage}
                 defaultPage={1}
                 color="primary"
                 size="large"
+                
                 showFirstButton
                 showLastButton
               />
+                </Grid>
+                </>  
               :null} 
-              
+            
                 </Box>
               </Grid>
             </Grid>
@@ -1998,18 +2037,29 @@ setLoading(false)})
                                 }
  
   {search.length!==0?
-           <Pagination
-           sx={{ display: "flex", justifyContent: "center" }}
-           count={10}
-           page={page1}
-           siblingCount={0}
-           onChange={handleChangePage}
-           defaultPage={1}
-           color="primary"
-           size="large"
-           showFirstButton
-           showLastButton
-         />
+
+<>
+<Grid container  sx={{ display: "flex", justifyContent: "center" }}>
+<Typography sx={{padding:"10px"}} >
+   Displaying items: {pagination.from}-{pagination.to}<span> </span>of<span> </span>{pagination.total}
+    
+</Typography>
+         <Pagination
+        
+        
+count={Math.ceil(search.length / itemsPerPage)}  
+          page={page1}
+          siblingCount={0}
+          onChange={handleChangePage}
+          defaultPage={1}
+          color="primary"
+          size="large"
+          
+          showFirstButton
+          showLastButton
+        />
+          </Grid>
+          </>  
          :null} 
            
             </Box> 
