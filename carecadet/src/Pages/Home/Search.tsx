@@ -106,11 +106,24 @@ export default function ViewFacility() {
   const [value, setValue] = useState<number[]>([0, 0]);
   const [scoreValue, setScoreValue] = useState<number[]>([1, 5]);
 
-
+ 
+  const [scoreType, setScoreType] = useState<any>("sortmax");
+  const [qualityScoreCheck, setqualityScoreCheck] = useState<any>("");
   const dispatch = useAppDispatch();
 
   const q = QueryData.Service.trim()
   const locationQ = QueryData.Location.trim();
+
+  const groupItems = [
+    {
+      name: "SortMaximum",
+      label: "Sort Maximum",
+        },
+    {
+      name: "SortMinimum",
+      label: "Sort Minimum",
+      
+    }]
 
   useEffect(() => {
         const postData = { q: q, location: locationQ };
@@ -244,7 +257,14 @@ setLoading(false)
 });
   };
 
-
+  var pagination = {
+    total:search.length,
+    per_page:itemsPerPage,
+    current_page:page1,
+    last_page:Math.ceil(search.length / itemsPerPage),
+    from: ((page1 -1) * itemsPerPage) + 1,
+    to:page1*itemsPerPage<search.length ? page1*itemsPerPage : search.length
+  }
 
   const handleChangePage = (
     event: React.ChangeEvent<unknown>,
@@ -659,6 +679,14 @@ setLoading(false)
     }
   };
 
+// function ratingHandleChange(e:any,value){
+// setScoreType(e.target.value);
+// if(value="sortmax"){
+//   search.sort()
+// }
+
+// }
+
   return (
   
     <Box sx={{ backgroundColor: "primary.light", padding: "1.8rem" }}>
@@ -962,6 +990,49 @@ setLoading(false)
                         />
                       </Box>
                     </Collapse>
+                    {/* <RadioGroup name="length" value={qualityScoreCheck}>
+                         
+                         {scoreType.map((type: any, i: any) => (
+                           <FormControlLabel
+                             key={i}
+                             value={type.facilityTypeId}
+                             control={
+                               <Radio
+                                 checked={
+                                  qualityScoreCheck === type.facilityTypeId &&
+                                   checkFacText
+                                 }
+                                //  onClick={(e: any) => {
+                                //    handleTypeInputChange(e, values);
+                                //  }}
+                        
+                               />
+                             }
+                             label={type.item.split("-")[1]}
+                             labelPlacement="end"
+                           />
+                         ))}
+                       </RadioGroup> */}
+                  {/* <RadioGroup 
+                  value={scoreType}
+                  row 
+                  onChange={ratingHandleChange} 
+                  >
+      <FormControlLabel
+        value="sortmax"
+        control={<Radio color="primary" />}
+        label="Sort Maximum"
+        labelPlacement="top"
+       
+      />
+      <FormControlLabel
+        value="sortmin"
+        control={<Radio color="primary" />}
+        label="Sort Minimum"
+        labelPlacement="top"
+        
+      />
+    </RadioGroup> */}
                   </Box>
                   <Box>
                     <Paper
@@ -1218,6 +1289,7 @@ setLoading(false)
                        Quality Score
                       
                        <Collapse in={open2} timeout="auto" unmountOnExit>
+                       
                       <Box sx={{ padding: "0 1rem" }}>
                        
                         <Slider
@@ -1543,20 +1615,28 @@ setLoading(false)
                   </div>
                 )):<Box sx={{display:"flex",justifyContent:'center',alignItems:"center",height:"10vh"}}><Typography>No results found</Typography></Box>}
                {search.length!==0? 
-                     <Pagination
-                sx={{ display: "flex", justifyContent: "center" }}
-              
-                count={5}
-                page={page1}
-                siblingCount={0}
-                onChange={handleChangePage}
-                defaultPage={1}
-                color="primary"
-                size="large"
-
-                showFirstButton
-                showLastButton
-              />
+                <>
+                <Grid container  sx={{ display: "flex", justifyContent: "center" }}>
+               <Typography sx={{padding:"10px"}} >
+                   Displaying items: {pagination.from}-{pagination.to}<span> </span>of<span> </span>{pagination.total}
+                    
+               </Typography>
+                         <Pagination
+                        
+                        
+           count={Math.ceil(search.length / itemsPerPage)}  
+                          page={page1}
+                          siblingCount={0}
+                          onChange={handleChangePage}
+                          defaultPage={1}
+                          color="primary"
+                          size="large"
+                          
+                          showFirstButton
+                          showLastButton
+                        />
+                          </Grid>
+                          </>  
               :null}
 
               </Box>
@@ -1710,18 +1790,28 @@ setLoading(false)
                 </>
               )):<Box sx={{display:"flex",justifyContent:'center',alignItems:"center",height:"10vh"}}><Typography>No results found</Typography></Box>}
            
-           <Pagination
-                sx={{ display: "flex", justifyContent: "center" }}
+           <>
+      <Grid container  sx={{ display: "flex", justifyContent: "center" }}>
+     <Typography sx={{padding:"10px"}} >
+         Displaying items: {pagination.from}-{pagination.to}<span> </span>of<span> </span>{pagination.total}
+          
+     </Typography>
+               <Pagination
               
-                count={Math.ceil(search.length / itemsPerPage)}
+              
+ count={Math.ceil(search.length / itemsPerPage)}  
                 page={page1}
                 siblingCount={0}
                 onChange={handleChangePage}
                 defaultPage={1}
                 color="primary"
-                size="small"
+                size="large"
+                
                 showFirstButton
-                showLastButton />
+                showLastButton
+              />
+                </Grid>
+                </>  
          
             </Box>
             </>     

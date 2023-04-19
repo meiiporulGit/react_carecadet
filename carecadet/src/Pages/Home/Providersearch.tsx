@@ -68,7 +68,7 @@ import {
   KeyboardArrowDown,
   KeyboardArrowUp,
 } from "@mui/icons-material";
-import { range, values } from "lodash";
+import { ceil, range, values } from "lodash";
 import SearchNav from "../../ProtectedRoutes/SearchNav";
 import { type } from "os";
 
@@ -98,6 +98,8 @@ export default function Providersearch() {
   const [loading,setLoading] =useState<any>(false);
   const providerDataQuery=useAppSelector(state=>state.homeReducer.providerDataQuery)
   const itemsPerPage = 5;
+
+
   const [page1, setPage1] = useState(1);
 
   // console.log(searchData, "searchdata");
@@ -127,6 +129,19 @@ export default function Providersearch() {
 
   const q = providerDataQuery.Service;
   const locationQ = providerDataQuery.Location;
+
+
+   
+  var pagination = {
+    total:search.length,
+    per_page:itemsPerPage,
+    current_page:page1,
+    last_page:Math.ceil(search.length / itemsPerPage),
+    from: ((page1 -1) * itemsPerPage) + 1,
+    to:page1*itemsPerPage<search.length ? page1*itemsPerPage : search.length
+  }
+
+
 
   useEffect(() => {
     const postData = { q: q, location: locationQ,insuranceProvider:insuranceCheck,serviceCode:locationCheck };
@@ -1499,11 +1514,17 @@ setLoading(false)})
                 :
             <Box sx={{display:"flex",justifyContent:'center',alignItems:"center",height:"10vh"}}><Typography>No results found</Typography></Box>
                               }
-              
+            
               
      {search.length!==0?
-                     <Pagination
-                sx={{ display: "flex", justifyContent: "center" }}
+      <>
+      <Grid container  sx={{ display: "flex", justifyContent: "center" }}>
+     <Typography sx={{padding:"10px"}} >
+         Displaying items: {pagination.from}-{pagination.to}<span> </span>of<span> </span>{pagination.total}
+          
+     </Typography>
+               <Pagination
+              
               
  count={Math.ceil(search.length / itemsPerPage)}  
                 page={page1}
@@ -1512,11 +1533,14 @@ setLoading(false)})
                 defaultPage={1}
                 color="primary"
                 size="large"
+                
                 showFirstButton
                 showLastButton
               />
+                </Grid>
+                </>  
               :null} 
-              
+            
                 </Box>
               </Grid>
             </Grid>
@@ -1983,18 +2007,29 @@ setLoading(false)})
                                 }
  
   {search.length!==0?
-           <Pagination
-           sx={{ display: "flex", justifyContent: "center" }}
-           count={10}
-           page={page1}
-           siblingCount={0}
-           onChange={handleChangePage}
-           defaultPage={1}
-           color="primary"
-           size="large"
-           showFirstButton
-           showLastButton
-         />
+
+<>
+<Grid container  sx={{ display: "flex", justifyContent: "center" }}>
+<Typography sx={{padding:"10px"}} >
+   Displaying items: {pagination.from}-{pagination.to}<span> </span>of<span> </span>{pagination.total}
+    
+</Typography>
+         <Pagination
+        
+        
+count={Math.ceil(search.length / itemsPerPage)}  
+          page={page1}
+          siblingCount={0}
+          onChange={handleChangePage}
+          defaultPage={1}
+          color="primary"
+          size="large"
+          
+          showFirstButton
+          showLastButton
+        />
+          </Grid>
+          </>  
          :null} 
            
             </Box> 
