@@ -30,7 +30,10 @@ import {
   TextField,
   Slider,
  CircularProgress,
- Pagination
+ Pagination,
+ Autocomplete,
+ AutocompleteRenderInputParams,
+ createFilterOptions,
   
 } from "@mui/material";
 import LinearProgress from '@mui/material/LinearProgress';
@@ -91,7 +94,7 @@ export default function Providersearch() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [data, setData] = useState([] as forminitialValues[]);
   const [service, setService] = useState(false);
-
+  const [checkInfo, setCheckInfo] = useState<any>([])
   const searchData = useAppSelector(
     (state) => state.homeReducer.providerSearchData
   );
@@ -142,6 +145,13 @@ export default function Providersearch() {
   }
 
 
+
+  const OPTIONS_LIMIT = 10;
+  const defaultFilterOptions = createFilterOptions();
+
+  const filterOptions = (options: any, state: any) => {
+    return defaultFilterOptions(options, state).slice(0, OPTIONS_LIMIT);
+  };
 
   useEffect(() => {
     const postData = { q: q, location: locationQ,insuranceProvider:insuranceCheck,serviceCode:locationCheck };
@@ -862,41 +872,61 @@ setLoading(false)})
                 }}
               >
                 <Grid item md={6} xs={12}>
-                  <Field
-                    as={TextField}
+                <Field
+                    label="Service Name"
                     name="Service"
-                    value={values.Service}
-                    placeholder="Search Service"
-                    type="text"
-                    onChange={(e: any) => {
-                      setFieldValue("Service", e.target.value);
-                      setCheckText(false);
+                    component={Autocomplete}
+                    options={checkInfo ?? []}
+                    loading={checkInfo.length === 0}
+                    //  PaperComponent={CustomPaper}
+                    filterOptions={filterOptions}
+                    freeSolo
+                    onInputChange={(e: any, value: any) => {
+                    const postData = { q:value }
+                    console.log(value,'onchangevalue')
+                    setCheckText(false);
                       setCheckFacText(false);
-                      
+                      setFieldValue("Service", value);
                       setFacilityCheck("");
-
                       setLocationCheck("21");
                       setInsuranceCheck("INSP-1");
+                   axiosPrivate.post(`/search/serviceNamesearch`, postData)
+                      .then((res) => {
+                        console.log(res.data.data, 'servicesearch')
+                        setCheckInfo(res.data.data)
+                      })
+                      .catch((e) => console.log(e));
+
                     }}
-                    fullWidth={true}
-                    sx={{
-                      borderRadius: 1,
-                      "&::placeholder": {
-                        fontSize: "1.1rem",
-                        color: "black",
-                      },
-                      ".MuiInputBase-input": {
-                        background: "white",
-                      },
-                      ".MuiFormLabel-root ": {
-                        letterSpacing: "0.2rem",
-                        fontSize: "0.8rem",
-                      },
-                      ".MuiInputLabel-shrink": {
-                        letterSpacing: 0,
-                      },
-                    }}
+                    value={values.Service}
+                    renderInput={(params: AutocompleteRenderInputParams) => (
+                      <TextField
+                        {...params}
+                        name="Service"
+                        // label="Search Service Name"
+                        onChange={handleChange}
+                        variant="outlined"
+
+                        sx={{
+                          
+                          "& .MuiAutocomplete-popupIndicator": { transform: "none" },
+                          ".MuiInputBase-input": {
+                            background: "white",
+                          },
+                          ".MuiInputBase-root": {
+                            background: "white"
+                          },
+                          borderRadius: 1,
+                          "&::placeholder": {
+                            fontSize: "1.1rem",
+                            color: "black",
+                          }      
+                        
+                        }}
+                      />
+                    )}
                   />
+                 
                 </Grid>
                 <Grid item md={4} xs={12}>
                   <Field

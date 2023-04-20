@@ -1,5 +1,5 @@
 import React from "react";
-
+import { useEffect, useState } from "react";
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
@@ -22,6 +22,9 @@ import {
   MenuItem,
   Menu,
   Link,
+  Autocomplete,
+  AutocompleteRenderInputParams,
+  createFilterOptions,
 } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
@@ -52,6 +55,14 @@ interface forminitialValues {
 const Patienthomepage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [checkInfo, setCheckInfo] = useState<any>([])
+  const OPTIONS_LIMIT = 10;
+  const defaultFilterOptions = createFilterOptions();
+
+  const filterOptions = (options: any, state: any) => {
+    return defaultFilterOptions(options, state).slice(0, OPTIONS_LIMIT);
+  };
+
   const initialValues: forminitialValues = {
     Service: "",
     Location: ""
@@ -81,6 +92,7 @@ const Patienthomepage = () => {
       validationSchema={validationSchema}
       onSubmit={onSubmit}
     >
+       {({ handleChange, setFieldValue, values }) => (
       <Form>
 
         <Box
@@ -103,33 +115,60 @@ const Patienthomepage = () => {
 
               }}>
                 <Grid item xs={12} md={7.5} >
-                  <Field
-                    as={TextField}
-                    name="Service"
+               
+                <Field
+                    label="Service Name"
                     placeholder="Search Service"
-                    type="text"
-                    fullWidth
-                   
-                    sx={{
-                      borderRadius: 1,
-                      ".MuiInputBase-input": {
-                        background: "white"
-                      },
-                      ".MuiFormLabel-root ": {
-                        letterSpacing: "0.2rem",
-                        fontSize: "0.8rem",
-
-                      },
-                      ".MuiInputLabel-shrink": {
-                        letterSpacing: 0,
-                      },
-                      '&::placeholder': {
-                        fontSize: { xs: "1rem", md: "1.3rem" },
-                        color: 'black'
-                      }
+                    name="Service"
+                    component={Autocomplete}
+                    options={checkInfo ?? []}
+                    loading={checkInfo.length === 0}
+                    //  PaperComponent={CustomPaper}
+                    filterOptions={filterOptions}
+                    freeSolo
+                    onInputChange={(e: any, value: any) => {
+                    const postData = { q:value }
+                    console.log(value,'onchangevalue')
+                    setFieldValue("Service", value);
+                   axiosPrivate.post(`/search/serviceNamesearch`, postData)
+                      .then((res) => {
+                        console.log(res.data.data, 'servicesearch')
+                        setCheckInfo(res.data.data)
+                      })
+                      .catch((e) => console.log(e));
 
                     }}
+                    value={values.Service}
+                    renderInput={(params: AutocompleteRenderInputParams) => (
+                      <TextField
+                        {...params}
+                        name="Service"
+                        placeholder="Search Service"
+                        // label="Search Service Name"
+                        onChange={handleChange}
+                        variant="outlined"
+
+                        sx={{
+                          
+                          "& .MuiAutocomplete-popupIndicator": { transform: "none" },
+                          ".MuiInputBase-input": {
+                            background: "white",
+                          },
+                          ".MuiInputBase-root": {
+                            background: "white"
+                          },
+                          borderRadius: 1,
+                          "&::placeholder": {
+                            fontSize: "1.1rem",
+                            color: "black",
+                          }      
+                        
+                        }}
+                      />
+                    )}
                   />
+                 
+           
                 </Grid>
                 <Grid item xs={12} md={4}>
                   <Field
@@ -228,7 +267,7 @@ const Patienthomepage = () => {
             </Box>
           </Box>
         </Box>
-      </Form>
+      </Form>)}
     </Formik>
     // </Box>
     // <Box
