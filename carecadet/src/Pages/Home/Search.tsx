@@ -121,18 +121,15 @@ export default function ViewFacility() {
   const dispatch = useAppDispatch();
 
   const q = QueryData.Service.trim()
-  const locationQ = QueryData.Location.trim();
+  const locationQ = QueryData.Location.trim(); 
+  console.log("scoreType",scoreType)
+   
 
-  const groupItems = [
-    {
-      name: "SortMaximum",
-      label: "Sort Maximum",
-        },
-    {
-      name: "SortMinimum",
-      label: "Sort Minimum",
-      
-    }]
+ function ratingHandleChange(event:any,value:any){
+
+            setScoreType(event.target.value);}
+            
+   
 
   useEffect(() => {
         const postData = { q: q, location: locationQ };
@@ -206,6 +203,7 @@ export default function ViewFacility() {
     Service: Yup.string().required("Required"),
     Location: Yup.string().required("Required"),
   });
+
   const onSubmit = (values: forminitialValues, actions: any) => {
     
     const postData = { q: values.Service.trim(), location: values.Location.trim() };
@@ -688,13 +686,7 @@ setLoading(false)
     }
   };
 
-// function ratingHandleChange(e:any,value){
-// setScoreType(e.target.value);
-// if(value="sortmax"){
-//   search.sort()
-// }
 
-// }
 
   return (
   
@@ -1021,49 +1013,31 @@ setLoading(false)
                         />
                       </Box>
                     </Collapse>
-                    {/* <RadioGroup name="length" value={qualityScoreCheck}>
-                         
-                         {scoreType.map((type: any, i: any) => (
-                           <FormControlLabel
-                             key={i}
-                             value={type.facilityTypeId}
-                             control={
-                               <Radio
-                                 checked={
-                                  qualityScoreCheck === type.facilityTypeId &&
-                                   checkFacText
-                                 }
-                                //  onClick={(e: any) => {
-                                //    handleTypeInputChange(e, values);
-                                //  }}
-                        
-                               />
-                             }
-                             label={type.item.split("-")[1]}
-                             labelPlacement="end"
-                           />
-                         ))}
-                       </RadioGroup> */}
-                  {/* <RadioGroup 
+                   <Box>
+                   <RadioGroup 
                   value={scoreType}
-                  row 
-                  onChange={ratingHandleChange} 
-                  >
+                   onChange={ratingHandleChange}
+                   >
+
       <FormControlLabel
         value="sortmax"
-        control={<Radio color="primary" />}
+        control={<Radio 
+          
+          color="primary" />}
         label="Sort Maximum"
         labelPlacement="top"
-       
+        onClick={ ()=>setSearch( [...search].sort((a, b) => b.facilityDetails.rating - a.facilityDetails.rating))}          
+      
       />
       <FormControlLabel
         value="sortmin"
         control={<Radio color="primary" />}
         label="Sort Minimum"
         labelPlacement="top"
-        
+        onClick={()=>setSearch([...search].sort((a, b) => a.facilityDetails.rating - b.facilityDetails.rating))}    
       />
-    </RadioGroup> */}
+    </RadioGroup> 
+                   </Box>
                   </Box>
                   <Box>
                     <Paper
@@ -1364,8 +1338,31 @@ setLoading(false)
                           }}
                         />
                       </Box>
+                      <Box>
+           <RadioGroup 
+                  value={scoreType}
+                   onChange={ratingHandleChange}>
+                
+      <FormControlLabel
+        value="sortmax"
+        control={<Radio color="primary" />}
+        label="Sort Maximum"
+        labelPlacement="top"
+        onClick={()=>{[...search].sort((a:any,b:any)=>a.facilityDetails?.rating-b.facilityDetails?.rating)}}
+       
+      />
+      <FormControlLabel
+        value="sortmin"
+        control={<Radio color="primary" />}
+        label="Sort Minimum"
+        labelPlacement="top"
+        onClick={()=>{[...search].sort((a:any,b:any)=>b.facilityDetails?.rating-a.facilityDetails?.rating)}}
+      />
+    </RadioGroup>  
+                      </Box>
                     </Collapse>
                       </Box>
+                      
                     </MenuItem>
 
                     <MenuItem >
