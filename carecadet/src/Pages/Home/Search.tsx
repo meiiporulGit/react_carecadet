@@ -1643,7 +1643,9 @@ setLoading(false)
                                   // mb: "15px",
                                 }}
                               >
-                                {dsearch?.facilityDetails?.rating}
+                                {dsearch?.facilityDetails?.rating === null?"N/A":dsearch?.facilityDetails?.rating
+                                
+                                }
                               </Typography>
                             </Grid>
                           </Grid>
@@ -1667,7 +1669,7 @@ setLoading(false)
                           page={page1}
                           siblingCount={0}
                           onChange={handleChangePage}
-                          defaultPage={1}
+                          defaultPage={2}
                           color="primary"
                           size="large"
                           
@@ -1820,7 +1822,9 @@ setLoading(false)
                               // mb: "15px",
                             }}
                           >
-                            {dsearch?.facilityDetails?.rating}
+                            {dsearch?.facilityDetails?.rating === null?"N/A":dsearch?.facilityDetails?.rating
+                                
+                              }
                           </Typography>
                         </Grid>
                       </Grid>
@@ -1842,7 +1846,7 @@ setLoading(false)
                 page={page1}
                 siblingCount={0}
                 onChange={handleChangePage}
-                defaultPage={1}
+                defaultPage={2}
                 color="primary"
                 size="large"
                 
