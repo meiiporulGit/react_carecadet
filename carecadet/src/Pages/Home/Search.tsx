@@ -116,7 +116,7 @@ export default function ViewFacility() {
     return defaultFilterOptions(options, state).slice(0, OPTIONS_LIMIT);
   };
 
-  const [scoreType, setScoreType] = useState<any>("sortmax");
+  const [scoreType, setScoreType] = useState<any>("");
   const [qualityScoreCheck, setqualityScoreCheck] = useState<any>("");
   const dispatch = useAppDispatch();
 
@@ -166,6 +166,10 @@ export default function ViewFacility() {
           setMaxPrice(maxFilter);
           setMinPrice(minFilter);
           setValue([minFilter, maxFilter]);
+        }else{
+          setMaxPrice(0);
+          setMinPrice(0);
+          setValue([0, 0]);
         }
       })
       .catch((e) => console.log(e));
@@ -253,6 +257,12 @@ export default function ViewFacility() {
           setMaxPrice(maxFilter);
           setMinPrice(minFilter);
           setValue([minFilter, maxFilter]);
+        }else{
+         
+            setMaxPrice(0);
+            setMinPrice(0);
+            setValue([0, 0]);
+       
         }
         // navigate("/patient/search");
         console.log("searchi", res);
@@ -639,7 +649,7 @@ setLoading(false)
           if (res.data.data.length === 0) {
             setValue([0, 0]);
             setMinPrice(0);
-            setMaxPrice(1);
+            setMaxPrice(0);
           } else {
             setValue([minFilter, maxFilter]);
             setMinPrice(minFilter);
@@ -1012,9 +1022,8 @@ setLoading(false)
                           }}
                         />
                       </Box>
-                    </Collapse>
-                   <Box>
-                   <RadioGroup 
+                      <Box>
+                   <RadioGroup sx={{display:"flex",flexDirection:"row"}}
                   value={scoreType}
                    onChange={ratingHandleChange}
                    >
@@ -1024,7 +1033,7 @@ setLoading(false)
         control={<Radio 
           
           color="primary" />}
-        label="Sort Maximum"
+        label="Sort Max"
         labelPlacement="top"
         onClick={ ()=>setSearch( [...search].sort((a, b) => b.facilityDetails.rating - a.facilityDetails.rating))}          
       
@@ -1032,12 +1041,14 @@ setLoading(false)
       <FormControlLabel
         value="sortmin"
         control={<Radio color="primary" />}
-        label="Sort Minimum"
+        label="Sort Min"
         labelPlacement="top"
         onClick={()=>setSearch([...search].sort((a, b) => a.facilityDetails.rating - b.facilityDetails.rating))}    
       />
     </RadioGroup> 
                    </Box>
+                    </Collapse>
+           
                   </Box>
                   <Box>
                     <Paper
