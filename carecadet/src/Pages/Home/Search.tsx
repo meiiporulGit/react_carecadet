@@ -20,6 +20,7 @@ import {
   ListItemText,
   Checkbox,
   FormControlLabel,
+  InputLabel,FormControl,
   Radio,
   RadioGroup,
   FormGroup,
@@ -28,6 +29,7 @@ import {
   Paper,
   Grid,
   TextField,
+  Select,
   Slider,
   Pagination,
   CircularProgress,
@@ -103,7 +105,7 @@ export default function ViewFacility() {
   const [loadingbar,setLoadingbar] =useState<any>(false);
   const searchData = useAppSelector((state) => state.homeReducer.searchData);
   const QueryData=useAppSelector(state=>state.homeReducer.queryData)
-
+  const [sort,setSort] =useState('');
 
   const [facilityType, setFacilityType] = useState<any>([]);
   const [facilityCheck, setFacilityCheck] = useState<any>("");
@@ -186,6 +188,10 @@ export default function ViewFacility() {
     };
     getFacilityType();
   }, []);
+
+  const handleSortChange = (event: any) => {
+    setSort(event.target.value);
+  };
 
   const handleOpenNavMenu = (event: any) => {
     setAnchorElNav(event.currentTarget);
@@ -1026,7 +1032,7 @@ setLoading(false)
                         />
                       </Box>
                       <Box>
-                   <RadioGroup sx={{display:"flex",flexDirection:"row"}}
+                   {/* <RadioGroup sx={{display:"flex",flexDirection:"row"}}
                   value={scoreType}
                    onChange={ratingHandleChange}
                    >
@@ -1048,7 +1054,7 @@ setLoading(false)
         labelPlacement="top"
         onClick={()=>setSearch([...search].sort((a, b) => a.facilityDetails.rating - b.facilityDetails.rating))}    
       />
-    </RadioGroup> 
+    </RadioGroup>  */}
                    </Box>
                     </Collapse>
            
@@ -1513,6 +1519,26 @@ setLoading(false)
               >
              {loading&&<LinearProgress/>}
              <Box sx={{mt:"2rem", padding: "0 4rem 4rem 4rem"}}>
+             {/* {JSON.stringify(search)} */}
+             <FormControl  sx={{ml:"42vw" , mb:"5vh", height:"3vh", width:"18vw"}} >
+             <InputLabel   id="demo-simple-select-label">Sort by</InputLabel>
+  <Select
+
+  labelId="demo-simple-select-label"
+    id="demo-simple-select"
+    
+    label="Sort by"
+    onChange={handleSortChange}
+  >
+    
+    <MenuItem value="ratinglowtohigh" onClick={ ()=>setSearch( [...search].sort((a, b) => b.facilityDetails.rating - a.facilityDetails.rating))}>Rating high to low</MenuItem>
+    <MenuItem value="ratinghightolow" onClick={()=>setSearch([...search].sort((a, b) => a.facilityDetails.rating - b.facilityDetails.rating))} >Rating low to high</MenuItem>
+    {/* <MenuItem value="ratinghightolow" onClick={()=>setSearch([...search].find(facilityDetails.rating === "null"))} >Rating Null</MenuItem> */}
+    {/* <MenuItem value="pricelowtohigh" onClick={ ()=>setSearch( [...search].sort((a, b) => b.cashPrice - a.cashPrice))}>Price low to high</MenuItem>
+    <MenuItem value="pricehightolow" onClick={()=>setSearch([...search].sort((a, b) => a.cashPrice - b.cashPrice))} >Price high to low</MenuItem> */}
+  </Select>
+</FormControl>
+           
               {search.length!==0?
                   (itemsPerPage>0
                     ?search.slice((page1 - 1) * itemsPerPage, page1 * itemsPerPage):
