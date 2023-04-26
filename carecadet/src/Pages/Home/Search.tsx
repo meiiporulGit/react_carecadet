@@ -66,7 +66,8 @@ import {
 import {
   ArrowDropDown,
   KeyboardArrowDown,
-  KeyboardArrowUp,
+  KeyboardArrowUp
+
 } from "@mui/icons-material";
 import { values } from "lodash";
 import SearchNav from "../../ProtectedRoutes/SearchNav";
@@ -129,8 +130,8 @@ export default function ViewFacility() {
 
             setScoreType(event.target.value);}
             
-   
-
+         
+         
   useEffect(() => {
         const postData = { q: q, location: locationQ };
     axiosPrivate
@@ -211,16 +212,18 @@ export default function ViewFacility() {
   const onSubmit = (values: forminitialValues, actions: any) => {
     
     const postData = { q: values.Service.trim(), location: values.Location.trim() };
-   
+    
     setLoading(true)
     axiosPrivate
       .post(`/search`, postData)
+     
       .then((res) => {
+       
         console.log(res.data);
         // setSearchqueryData(res.data.data)
         setCheckText(false);
         setCheckFacText(false);
-       
+        setPage1(1)
         setFacilityCheck("");
         setDistance(30);
         dispatch(dataSearch(res.data.data));
@@ -1664,12 +1667,12 @@ setLoading(false)
                </Typography>
                          <Pagination
                         
-                        
+               
            count={Math.ceil(search.length / itemsPerPage)}  
                           page={page1}
                           siblingCount={0}
                           onChange={handleChangePage}
-                          defaultPage={2}
+                          defaultPage={1}
                           color="primary"
                           size="large"
                           
@@ -1846,7 +1849,7 @@ setLoading(false)
                 page={page1}
                 siblingCount={0}
                 onChange={handleChangePage}
-                defaultPage={2}
+                // defaultPage=2
                 color="primary"
                 size="large"
                 
