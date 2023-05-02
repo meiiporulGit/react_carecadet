@@ -1571,13 +1571,12 @@ setLoading(false)
              <Box sx={{mt:"2rem", padding: "0 4rem 4rem 4rem"}}>
         
 
-             <FormControl  sx={{ml:"42vw" , mb:"5vh", height:"3vh", width:"18vw"}} >
+             <FormControl  sx={{ml:"42vw" , mb:"7vh", height:"3vh", width:"18vw"}} >
              <InputLabel   id="demo-simple-select-label">Sort by</InputLabel>
   <Select
 
   labelId="demo-simple-select-label"
     id="demo-simple-select"
-
     label="Sort by"
     onChange={handleSortChange}
   >
