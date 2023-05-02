@@ -132,7 +132,7 @@ export default function Providersearch() {
 
   const q = providerDataQuery.Service;
   const locationQ = providerDataQuery.Location;
-
+  console.log("search",search)
 
    
   var pagination = {

@@ -47,21 +47,48 @@ import { dataQuery, dataSearch } from "../../Redux/ProviderRedux/HomeSlice";
 // import LocationOnIcon from '@material-ui/icons/LocationOn';
 import InputAdornment from "@mui/material/InputAdornment";
 
+
 interface forminitialValues {
   Service: string;
   Location: string;
 }
 
+
 const Patienthomepage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [checkInfo, setCheckInfo] = useState<any>([])
+  const [locaInfo, setLocaInfo] = useState<any>([])
   const OPTIONS_LIMIT = 10;
   const defaultFilterOptions = createFilterOptions();
+
+//   const[lat,setLatitude] = useState<number>();
+//   const [lon,setLongitude] = useState<any>();
+  
+//   console.log("locaInfo",locaInfo)
+
+
+//        navigator.geolocation.getCurrentPosition((position) =>{
+//      setLatitude(position.coords.latitude);
+//      setLongitude(position.coords.longitude)
+//      const zipCode = {lat,lon}
+//      console.log("zipCode",zipCode)
+//      axiosPrivate.post(`/search/serviceLocationSearch`,zipCode)
+//    .then((res)=>{
+// setLocaInfo(res.data.data)
+//    })
+//    .catch((e)=>console.log(e));
+//     })
+  
+  
+  // console.log(lat,'latitude');
+  // console.log(lon,'longitude');
 
   const filterOptions = (options: any, state: any) => {
     return defaultFilterOptions(options, state).slice(0, OPTIONS_LIMIT);
   };
+
+
 
   const initialValues: forminitialValues = {
     Service: "",
@@ -171,17 +198,30 @@ const Patienthomepage = () => {
            
                 </Grid>
                 <Grid item xs={12} md={4}>
-                  <Field
+                <Field
                     as={TextField}
                     name="Location"
+                    // value= {locaInfo}
                     placeholder="Location"
                     type="text"
-                    fullWidth
-                    // onChange={(e: any) => { dispatch(changeTargetValue(e.target.value)) }}
+                    // onChange={((e:any,value:any)=>{
+                    //   if(!locaInfo){
+                    //   e.target.value
+                    //   console.log(e.target.value,".............k")}
+                    //   else{
+                    //     value={locaInfo}
+                    //   }
+                    //                     })}
+           
+                    fullWidth={true}
                     sx={{
                       borderRadius: 1,
+                      "&::placeholder": {
+                        fontSize: "1.1rem",
+                        color: "black",
+                      },
                       ".MuiInputBase-input": {
-                        background: "white"
+                        background: "white",
                       },
                       ".MuiFormLabel-root ": {
                         letterSpacing: "0.2rem",
@@ -190,11 +230,8 @@ const Patienthomepage = () => {
                       ".MuiInputLabel-shrink": {
                         letterSpacing: 0,
                       },
-                      '&::placeholder': {
-                        fontSize: { xs: "1rem", md: "1.3rem" },
-                        color: 'black'
-                      }
-                    }} />
+                    }}
+                  />
                 </Grid>
               </Grid>
 

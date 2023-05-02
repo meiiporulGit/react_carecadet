@@ -102,7 +102,7 @@ export default function ViewFacility() {
   const [maxPrice, setMaxPrice] = useState<any>(100);
   const [minPrice, setMinPrice] = useState<any>(1);
   const [loading,setLoading] =useState<any>(false);
-  const [loadingbar,setLoadingbar] =useState<any>(false);
+
   const searchData = useAppSelector((state) => state.homeReducer.searchData);
   const QueryData=useAppSelector(state=>state.homeReducer.queryData)
   const [sort,setSort] =useState('');
@@ -123,6 +123,9 @@ export default function ViewFacility() {
   const [qualityScoreCheck, setqualityScoreCheck] = useState<any>("");
   const dispatch = useAppDispatch();
 
+  const[latitude,setLatitude] = useState<number>();
+  const [longitude,setLongitude] = useState<any>();
+
   const q = QueryData.Service.trim()
   const locationQ = QueryData.Location.trim(); 
   console.log("scoreType",scoreType)
@@ -135,6 +138,15 @@ export default function ViewFacility() {
          
          
   useEffect(() => {
+   
+
+    navigator.geolocation.getCurrentPosition((position) =>{
+     setLatitude(position.coords.latitude);
+     setLongitude(position.coords.longitude)
+    })
+
+console.log(latitude,'latitude');
+console.log(longitude,'longitude');
         const postData = { q: q, location: locationQ };
     axiosPrivate
       .post(`/search`, postData)
@@ -195,6 +207,7 @@ export default function ViewFacility() {
   }, []);
 
   const handleSortChange = (event: any) => {
+    setPage1(1)
     setSort(event.target.value);
   };
 
