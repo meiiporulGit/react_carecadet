@@ -68,7 +68,8 @@ import {
 import {
   ArrowDropDown,
   KeyboardArrowDown,
-  KeyboardArrowUp,
+  KeyboardArrowUp
+
 } from "@mui/icons-material";
 import { values } from "lodash";
 import SearchNav from "../../ProtectedRoutes/SearchNav";
@@ -101,7 +102,7 @@ export default function ViewFacility() {
   const [maxPrice, setMaxPrice] = useState<any>(100);
   const [minPrice, setMinPrice] = useState<any>(1);
   const [loading,setLoading] =useState<any>(false);
-  const [loadingbar,setLoadingbar] =useState<any>(false);
+
   const searchData = useAppSelector((state) => state.homeReducer.searchData);
   const QueryData=useAppSelector(state=>state.homeReducer.queryData)
   const [sort,setSort] =useState('');
@@ -122,6 +123,9 @@ export default function ViewFacility() {
   const [qualityScoreCheck, setqualityScoreCheck] = useState<any>("");
   const dispatch = useAppDispatch();
 
+  const[latitude,setLatitude] = useState<number>();
+  const [longitude,setLongitude] = useState<any>();
+
   const q = QueryData.Service.trim()
   const locationQ = QueryData.Location.trim(); 
   console.log("scoreType",scoreType)
@@ -131,9 +135,18 @@ export default function ViewFacility() {
 
             setScoreType(event.target.value);}
             
+         
+         
+  useEffect(() => {
    
 
-  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((position) =>{
+     setLatitude(position.coords.latitude);
+     setLongitude(position.coords.longitude)
+    })
+
+console.log(latitude,'latitude');
+console.log(longitude,'longitude');
         const postData = { q: q, location: locationQ };
     axiosPrivate
       .post(`/search`, postData)
@@ -142,6 +155,8 @@ export default function ViewFacility() {
         dispatch(dataSearch(res.data.data));
         setSearch(res.data.data);
         setLoadingState(false)
+
+
         const maxFilter = Math.max(
           ...res.data.data.map((fprice: any) => {
             if (fprice.priceType === "facilityPrice") {
@@ -175,6 +190,9 @@ export default function ViewFacility() {
         }
       })
       .catch((e) => console.log(e));
+
+    
+
     const getFacilityType = async () => {
       await axiosPrivate
         .get(`/FacilityType/findfacilityType`)
@@ -189,6 +207,7 @@ export default function ViewFacility() {
   }, []);
 
   const handleSortChange = (event: any) => {
+    setPage1(1)
     setSort(event.target.value);
   };
 
@@ -217,16 +236,18 @@ export default function ViewFacility() {
   const onSubmit = (values: forminitialValues, actions: any) => {
     
     const postData = { q: values.Service.trim(), location: values.Location.trim() };
-   
+    
     setLoading(true)
     axiosPrivate
       .post(`/search`, postData)
+     
       .then((res) => {
+       
         console.log(res.data);
         // setSearchqueryData(res.data.data)
         setCheckText(false);
         setCheckFacText(false);
-       
+        setPage1(1)
         setFacilityCheck("");
         setDistance(30);
         dispatch(dataSearch(res.data.data));
@@ -572,8 +593,7 @@ setLoading(false)
             })
           );
           console.log(maxFilter, "....maxPrice");
-          
-  
+
           const minFilter = Math.min(
             ...res.data.data.map((fprice: any) => {
               if (fprice.priceType === "facilityPrice") {
@@ -597,7 +617,28 @@ setLoading(false)
         .catch((e) => console.log(e));
     }
   }
+//   const pricesort=search.map((p:any)=> {
+//     const price =[search.facilityPrice]
+//     const cprice=[search.cashPrice]
+//    price.push(search.cashPrice)
+//     return price;
+//     console.log(price, "price1")
+//  })
 
+
+//  function splitIntoSubArray(search:any, cashPrice:any) {
+//    var newArray = [];
+//    while (search.length > 0) {
+//      newArray.push(search.splice(0, cashPrice)); 
+//    }
+//    return newArray;
+//    console.log(newArray,"cash")
+//  }
+// // console.log(price, "price1")   
+
+// function (){
+  
+// }
   function valuetext(userValue: number) {
     return `${userValue}$`;
   }
@@ -702,8 +743,20 @@ setLoading(false)
     }
   };
 
+  console.log(search, "searchcheck")
 
+//   const sortprice = (
+//    search.map((fprice: any) => {
+//       return fprice.cashPrice || parseInt(fprice.FacilityPrices)
+// setSearch(sortprice)
 
+//     }
+//     )
+//   )
+//   console.log("sortprice", sortprice)
+// const asc =   [...sortprice].sort((a:any, b:any) => a - b);
+
+// console.log("asc", asc)
   return (
   
     <Box sx={{ backgroundColor: "primary.light", padding: "1.8rem" }}>
@@ -1518,23 +1571,38 @@ setLoading(false)
               >
              {loading&&<LinearProgress/>}
              <Box sx={{mt:"2rem", padding: "0 4rem 4rem 4rem"}}>
-             {/* {JSON.stringify(search)} */}
-             <FormControl  sx={{ml:"42vw" , mb:"5vh", height:"3vh", width:"18vw"}} >
+        
+
+             <FormControl  sx={{ml:"42vw" , mb:"7vh", height:"3vh", width:"18vw"}} >
              <InputLabel   id="demo-simple-select-label">Sort by</InputLabel>
   <Select
 
   labelId="demo-simple-select-label"
     id="demo-simple-select"
-    
     label="Sort by"
     onChange={handleSortChange}
   >
-    
+
+
     <MenuItem value="ratinglowtohigh" onClick={ ()=>setSearch( [...search].sort((a, b) => b.facilityDetails.rating - a.facilityDetails.rating))}>Rating high to low</MenuItem>
     <MenuItem value="ratinghightolow" onClick={()=>setSearch([...search].sort((a, b) => a.facilityDetails.rating - b.facilityDetails.rating))} >Rating low to high</MenuItem>
-    {/* <MenuItem value="ratinghightolow" onClick={()=>setSearch([...search].find(facilityDetails.rating === "null"))} >Rating Null</MenuItem> */}
-    {/* <MenuItem value="pricelowtohigh" onClick={ ()=>setSearch( [...search].sort((a, b) => b.cashPrice - a.cashPrice))}>Price low to high</MenuItem>
-    <MenuItem value="pricehightolow" onClick={()=>setSearch([...search].sort((a, b) => a.cashPrice - b.cashPrice))} >Price high to low</MenuItem> */}
+    <MenuItem value="ratingnull" onClick={()=>setSearch(search.filter((a: any) => a.facilityDetails.rating === null))} >No Rating</MenuItem>
+    <MenuItem value="pricehightolow" onClick={ ()=>setSearch([...search].sort((a,b)=>Math.round(b.price)-Math.round(a.price)))}>Price high to low</MenuItem>
+    <MenuItem value="pricelowtohigh" onClick={()=>setSearch([...search].sort((a:any, b:any) =>Math.round(a.price)-Math.round(b.price)))} >Price lowtohigh</MenuItem>
+     
+     
+      {/* // if (priceType === "facilityPrice") {
+      //           return FacilityPrices;
+      //         } else {
+      //           return cashPrice;
+      //         }
+// console.log(a.FacilityPrices=== null ||a.FacilityPrices=== undefined ? Math.round(a.cashPrice) : Math.round(a.FacilityPrices) , b.FacilityPrices === null || b.FacilityPrices ===undefined? Math.round(b.cashPrice) : Math.round(b.FacilityPrices), "tttttttttttt")
+// console.log(Math.round(a.FacilityPrices),Math.round(b.FacilityPrices),Math.round(a.cashPrice), Math.round(b.cashPrice),  "testtt")
+      // return a.FacilityPrices=== null ||a.FacilityPrices=== undefined ? Math.round(a.cashPrice) : Math.round(a.FacilityPrices)- b.FacilityPrices === null || b.FacilityPrices ===undefined? Math.round(b.cashPrice) : Math.round(b.FacilityPrices)
+            //  return Math.round(a.cashPrice)-Math.round(b.cashPrice) || Math.round(a.FacilityPrices)-Math.round(b.FacilityPrices)
+            //  }
+            //  ))}>Price high to low</MenuItem> */}
+   
   </Select>
 </FormControl>
            
@@ -1634,7 +1702,7 @@ setLoading(false)
                                 $
                                 {dsearch.priceType === "facilityPrice"
                                   ? dsearch.FacilityPrices
-                                  : dsearch.cashPrice}
+                                  : dsearch.cashPrice.toFixed()} 
                               </Box>
                               <Typography
                                 sx={{
@@ -1692,12 +1760,12 @@ setLoading(false)
                </Typography>
                          <Pagination
                         
-                        
+               
            count={Math.ceil(search.length / itemsPerPage)}  
                           page={page1}
                           siblingCount={0}
                           onChange={handleChangePage}
-                          defaultPage={2}
+                          defaultPage={1}
                           color="primary"
                           size="large"
                           
@@ -1874,7 +1942,7 @@ setLoading(false)
                 page={page1}
                 siblingCount={0}
                 onChange={handleChangePage}
-                defaultPage={2}
+                // defaultPage=2
                 color="primary"
                 size="large"
                 
