@@ -30,7 +30,7 @@ import { useAppDispatch, useAppSelector } from "../Redux/Hook";
 import { logoutButton } from "../Redux/ProviderRedux/LoginSlice";
 import { refrestState } from "../Redux/ProviderRedux/orgSlice";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
-import { axiosPrivate } from "../axios/axios";
+import { axiosPrivate, baseURL } from "../axios/axios";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { Formik, Form, ErrorMessage, Field } from "formik";
@@ -90,7 +90,7 @@ const SearchNav = () => {
 
     axiosPrivate
       .get(
-        `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
+        `${baseURL}/search/?q=${values.Service}&location=${values.Location}`
       )
       .then((res) => {
         console.log(res.data);
@@ -176,7 +176,7 @@ const SearchNav = () => {
                               distance != "10mi" ?
                               axiosPrivate
                                 .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 10mi`
+                                  `${baseURL}/search/?q=${values.Service}&location=${values.Location}&distance= 10mi`
                                 )
                                 .then((res) => {
                                   console.log(res.data, "10miles");
@@ -186,7 +186,7 @@ const SearchNav = () => {
                                 .catch((e) => console.log(e)) 
                                  : axiosPrivate
                                   .get(
-                                    `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
+                                    `${baseURL}/search/?q=${values.Service}&location=${values.Location}`
                                   )
                                   .then((res) => {
                                     console.log(res.data);
@@ -208,7 +208,7 @@ const SearchNav = () => {
                               distance != "20mi" ?
                               axiosPrivate
                                 .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 20mi`
+                                  `${baseURL}/search/?q=${values.Service}&location=${values.Location}&distance= 20mi`
                                 )
                                 .then((res) => {
                                   console.log(res.data, "20miles");
@@ -218,7 +218,7 @@ const SearchNav = () => {
                                 .catch((e) => console.log(e))
                                 :axiosPrivate
                                 .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
+                                  `${baseURL}/search/?q=${values.Service}&location=${values.Location}`
                                 )
                                 .then((res) => {
                                   console.log(res.data);
@@ -239,7 +239,7 @@ const SearchNav = () => {
                               distance != "30mi" ?
                               axiosPrivate
                                 .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
+                                  `${baseURL}/search/?q=${values.Service}&location=${values.Location}&distance= 30mi`
                                 )
                                 .then((res) => {
                                   console.log(res.data, "30miles");
@@ -249,7 +249,7 @@ const SearchNav = () => {
                                 .catch((e) => console.log(e))
                                 :axiosPrivate
                                 .get(
-                                  `http://210.18.155.251:5003/search/?q=${values.Service}&location=${values.Location}`
+                                  `${baseURL}/search/?q=${values.Service}&location=${values.Location}`
                                 )
                                 .then((res) => {
                                   console.log(res.data);
