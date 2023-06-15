@@ -110,7 +110,7 @@ export default function ViewFacility() {
   const [facilityType, setFacilityType] = useState<any>([]);
   const [facilityCheck, setFacilityCheck] = useState<any>("");
   const [value, setValue] = useState<number[]>([0, 0]);
-  const [scoreValue, setScoreValue] = useState<number[]>([1, 5]);
+  const [scoreValue, setScoreValue] = useState<number[]>([0, 5]);
   const [checkInfo, setCheckInfo] = useState<any>([])
   const OPTIONS_LIMIT = 10;
   const defaultFilterOptions = createFilterOptions();
@@ -1041,6 +1041,7 @@ setLoading(false)
                           getAriaLabel={() => "Quality Score"}
                           value={scoreValue}
                           marks={[
+                            { value: 0, label: 0 },
                             { value: 1, label: 1 },
                             { value: 2, label: 2 },
                             { value: 3, label: 3 },
@@ -1057,7 +1058,7 @@ setLoading(false)
                           }
                             
                           }
-                          min={1}
+                          min={0}
                           max={5}
                           step={1}
                           valueLabelDisplay="auto"
@@ -1372,6 +1373,7 @@ setLoading(false)
                           getAriaLabel={() => "Quality Score"}
                           value={scoreValue}
                           marks={[
+                            {value:0,label:"null"},
                             { value: 1, label: 1 },
                             { value: 2, label: 2 },
                             { value: 3, label: 3 },
@@ -1384,7 +1386,7 @@ setLoading(false)
                           onChangeCommitted={(event, v) =>
                             sliderScoreChange(event, v, values)
                           }
-                          min={1}
+                          min={0}
                           max={5}
                           step={1}
                           valueLabelDisplay="auto"
