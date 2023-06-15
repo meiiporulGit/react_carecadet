@@ -74,6 +74,8 @@ import {
 import { values } from "lodash";
 import SearchNav from "../../ProtectedRoutes/SearchNav";
 import ClearIcon from '@mui/icons-material/Clear';
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import Tooltip from '@mui/material/Tooltip';
 
 export default function ViewFacility() {
   const navigate = useNavigate();
@@ -1683,8 +1685,9 @@ setLoading(false)
                               sx={{
                                 display: "flex",
                                 flexDirection: "column",
-                                alignItems: "flex-end",
+                               //alignItems: "flex-end",
                                 padding: "10px",
+                               
                               }}
                             >
                               <Box
@@ -1704,9 +1707,32 @@ setLoading(false)
                                   ? dsearch.FacilityPrices
                                   : dsearch.cashPrice.toFixed()} 
                               </Box>
+                          {dsearch.priceType==="cashPrice" ?
                               <Typography
                                 sx={{
                                   fontSize: "15px",
+
+                                  // width: "1000px",
+                                }}
+                              > 
+                               
+                               ( Min:{dsearch.dis_min} - Max:{dsearch.dis_max} )  <Tooltip  title={<Typography sx={{fontSize:"1rem"}}>The price varies based on the modifers</Typography>}>
+      <IconButton>
+    <RemoveRedEyeOutlinedIcon />
+      </IconButton>
+    </Tooltip> 
+                              </Typography> : "" }
+                              <Grid
+                              container
+                              direction="row"
+                              justifyContent="flex-end"
+                              alignItems={"center"}
+                              gap={"1rem"}
+                            >
+                              <Typography
+                                sx={{
+                              
+                                  fontSize: "1.1rem",
 
                                   // width: "100px",
                                 }}
@@ -1715,6 +1741,7 @@ setLoading(false)
                                   ? "Average Price"
                                   : "Cash Price"}
                               </Typography>
+                              </Grid>
                             </Grid>
                             <Grid
                               container
