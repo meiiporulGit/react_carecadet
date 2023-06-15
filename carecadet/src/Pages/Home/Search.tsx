@@ -68,7 +68,8 @@ import {
 import {
   ArrowDropDown,
   KeyboardArrowDown,
-  KeyboardArrowUp
+  KeyboardArrowUp,
+  Replay
 
 } from "@mui/icons-material";
 import { values } from "lodash";
@@ -235,6 +236,75 @@ console.log(longitude,'longitude');
     Location: Yup.string().required("Required"),
   });
 
+  const onReSetFilters=()=>{
+    const postData = { q: q, location: locationQ };
+    
+    setLoading(true)
+    axiosPrivate
+      .post(`/search`, postData)
+     
+      .then((res) => {
+       
+        console.log(res.data);
+        // setSearchqueryData(res.data.data)
+        setCheckText(false);
+        setCheckFacText(false);
+        setPage1(1)
+        setFacilityCheck("");
+        setDistance(30);
+        setScoreValue([0,5])
+        setSort('')
+        dispatch(dataSearch(res.data.data));
+        
+        
+        setSearch(res.data.data);
+        setLoading(false)
+        // dispatch(dataQuery(values))
+        // setSearchParams({ q: values.Service.trim(), location: values.Location.trim() });
+        const maxFilter = Math.max(
+          ...res.data.data.map((fprice: any) => {
+            if (fprice.priceType === "facilityPrice") {
+              return fprice.FacilityPrices;
+            } else {
+              return fprice.cashPrice;
+            }
+          })
+        );
+        console.log(maxFilter, "....maxPrice");
+        
+
+        const minFilter = Math.min(
+          ...res.data.data.map((fprice: any) => {
+            if (fprice.priceType === "facilityPrice") {
+              return fprice.FacilityPrices;
+            } else {
+              return fprice.cashPrice;
+            }
+          })
+        );
+        console.log(minFilter, "....minPrice");
+       
+        if(res.data.data.length!==0){
+          setMaxPrice(maxFilter);
+          setMinPrice(minFilter);
+          setValue([minFilter, maxFilter]);
+        }else{
+         
+            setMaxPrice(0);
+            setMinPrice(0);
+            setValue([0, 0]);
+       
+        }
+        // navigate("/patient/search");
+        console.log("searchi", res);
+      })
+      .catch((err) => {
+        toast.error(err.message);
+setLoading(false) 
+
+});
+  }
+
   const onSubmit = (values: forminitialValues, actions: any) => {
     
     const postData = { q: values.Service.trim(), location: values.Location.trim() };
@@ -252,8 +322,9 @@ console.log(longitude,'longitude');
         setPage1(1)
         setFacilityCheck("");
         setDistance(30);
+        setScoreValue([0,5])
         dispatch(dataSearch(res.data.data));
-        
+        setSort('')
         
         setSearch(res.data.data);
         setLoading(false)
@@ -952,13 +1023,44 @@ setLoading(false)
                 }}
               >
                 <Box display={"flex"} flexDirection={"column"}>
+                  <Box sx={{display:"flex",justifyContent:"space-between",alignItems:"center",mb:"30px"}}>
                   <Typography
                     variant="h6"
-                    sx={{ mb: "30px", fontSize: "2rem" }}
+                    sx={{ fontSize: "2rem" }}
                   >
                     Filters
                   </Typography>
+                  {/* <IconButton 
+                  size={"small"}
+                  sx={{border:"1px solid black",padding:"0.2em",":hover":{ backgroundColor: "#687B9E",
+                  color: "white"}}} 
+                  onClick={()=>{
+                    onReSetFilters()
+                  }}>
+                    <Replay/>
+                    </IconButton> */}
+                    <Button sx={{
+                      // marginTop: "-100px",
+                      // ml: "350px",
+                      backgroundColor: "#1C3988",
 
+                      // height: "7.3vh",
+                      // width: "20vw",
+                      color: "#fff",
+                      display: "flex",
+                      justifyContent: "center",
+                      // gap:"1.2rem",
+
+                      "&:hover": {
+                        color: "secondary.dark",
+                        border: "1px solid blue",
+                        // letterSpacing: "0.2rem",
+                        // fontSize: "1rem",
+                      },
+                    }} onClick={()=>{onReSetFilters()}}>
+                      Reset All
+                    </Button>
+                  </Box>
                   <Box>
                     <Paper
                       sx={{
@@ -1304,10 +1406,22 @@ setLoading(false)
                       display: { xs: "block", md: "none" },
                     }}
                   > <MenuItem sx={{display:"flex",justifyContent:"right"}}>
-                    
+                     <Replay  onClick={()=>{
+                         handleCloseNavMenu()
+                         onReSetFilters()
+                  }}/>
                     <ClearIcon 
                    
                     onClick={handleCloseNavMenu}/>
+                
+                  {/* <IconButton 
+                  size={"small"}
+                  sx={{border:"1px solid black",padding:"0.2em",":hover":{ backgroundColor: "#687B9E",
+                  color: "white"}}} 
+                 > */}
+                   
+                    {/* </IconButton> */}
+                 
                     
                </MenuItem>
                     <MenuItem
@@ -1583,6 +1697,7 @@ setLoading(false)
     id="demo-simple-select"
     label="Sort by"
     onChange={handleSortChange}
+    value={sort}
   >
 
 

@@ -70,6 +70,7 @@ import {
   ArrowDropDown,
   KeyboardArrowDown,
   KeyboardArrowUp,
+  Replay,
 } from "@mui/icons-material";
 import { ceil, range, values } from "lodash";
 import SearchNav from "../../ProtectedRoutes/SearchNav";
@@ -259,6 +260,62 @@ export default function Providersearch() {
     Service: Yup.string().required("Required"),
     Location: Yup.string().required("Required"),
   });
+
+const onReSetFilters=()=>{
+  const postData = { q: q, location:locationQ};
+    setLoading(true)
+    axiosPrivate
+      .post(`/search/negotiatedSearch`, postData)
+      .then((res) => {
+      
+        console.log(res.data, "checkT");
+        setCheckText(false);
+        setCheckFacText(false);
+        
+        setFacilityCheck("");
+        setDistance(30)
+        setLocationCheck("21");
+        setInsuranceCheck("INSP-1");
+
+        dispatch(dataProviderSearch(res.data.data));
+        // dispatch(dataQueryProvider(values))
+       
+        setSearch(res.data.data);
+        setLoading(false)
+        // setSearchParams({ q: values.Service.trim(), location: values.Location.trim() });
+        const maxFilter = Math.max(
+          ...res.data.data.map((fprice: any) => {
+
+              return fprice.negotiatedRates.negotiated_rates
+              ?.negotiated_prices?.negotiated_rate;
+          
+          })
+        );
+        console.log(maxFilter, "....maxPrice");
+        
+
+        const minFilter = Math.min(
+          ...res.data.data.map((fprice: any) => {
+           
+              return fprice.negotiatedRates.negotiated_rates
+              ?.negotiated_prices?.negotiated_rate;
+            
+          })
+        );
+        console.log(minFilter, "....minPrice");
+        if(res.data.data.length!==0){
+          setMaxPrice(maxFilter);
+          setMinPrice(minFilter);
+          setValue([minFilter, maxFilter]);
+        }
+        console.log("searchpro", res);
+      
+      })
+      .catch((err) => {
+        toast.error(err.message);
+setLoading(false)})
+}
+
   const onSubmit = (values: forminitialValues, actions: any) => {
     const postData = { q: values.Service.trim(), location: values.Location.trim()};
     setLoading(true)
@@ -271,7 +328,7 @@ export default function Providersearch() {
         setCheckFacText(false);
         
         setFacilityCheck("");
-
+        setDistance(30)
         setLocationCheck("21");
         setInsuranceCheck("INSP-1");
 
@@ -1018,12 +1075,44 @@ setLoading(false)})
                 }}
               >
                 <Box display={"flex"} flexDirection={"column"}>
+                <Box sx={{display:"flex",justifyContent:"space-between",alignItems:"center",mb:"30px"}}>
                   <Typography
                     variant="h6"
-                    sx={{ mb: "30px", fontSize: "2rem" }}
+                    sx={{ fontSize: "2rem" }}
                   >
                     Filters
                   </Typography>
+                  {/* <IconButton 
+                  size={"small"}
+                  sx={{border:"1px solid black",padding:"0.2em",":hover":{ backgroundColor: "#687B9E",
+                  color: "white"}}} 
+                  onClick={()=>{
+                    onReSetFilters()
+                  }}>
+                    <Replay/>
+                    </IconButton> */}
+                    <Button sx={{
+                      // marginTop: "-100px",
+                      // ml: "350px",
+                      backgroundColor: "#1C3988",
+
+                      // height: "7.3vh",
+                      // width: "20vw",
+                      color: "#fff",
+                      display: "flex",
+                      justifyContent: "center",
+                      // gap:"1.2rem",
+
+                      "&:hover": {
+                        color: "secondary.dark",
+                        border: "1px solid blue",
+                        // letterSpacing: "0.2rem",
+                        // fontSize: "1rem",
+                      },
+                    }} onClick={()=>{onReSetFilters()}}>
+                      Reset All
+                    </Button>
+                  </Box>
 
                   <Box>
                     <Paper
@@ -1605,6 +1694,10 @@ setLoading(false)})
                     }}
                >
                     <MenuItem sx={{display:"flex",justifyContent:"right"}}>
+                    <Replay  onClick={()=>{
+                         handleCloseNavMenu()
+                         onReSetFilters()
+                  }}/>
                     <ClearIcon
         
                     onClick={handleCloseNavMenu}/>
