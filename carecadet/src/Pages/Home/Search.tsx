@@ -1719,7 +1719,7 @@ setLoading(false)
                                ( Min:{dsearch.dis_min} - Max:{dsearch.dis_max} )  <Tooltip  title={<Typography sx={{fontSize:"1rem"}}>The price varies based on the modifers</Typography>}>
       <IconButton>
     <RemoveRedEyeOutlinedIcon />
-      </IconButton>
+  </IconButton>
     </Tooltip> 
                               </Typography> : "" }
                               <Grid
