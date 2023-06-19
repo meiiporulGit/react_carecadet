@@ -58,6 +58,7 @@ import { axiosPrivate } from "../../axios/axios";
 import FormTextField from "../../Components/Textfield";
 import SelectField from "../../Components/Select";
 import SearchIcon from "@mui/icons-material/Search";
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import {
   dataSearch,
   dataSearchTenMiles,
@@ -75,7 +76,7 @@ import {
 import { values } from "lodash";
 import SearchNav from "../../ProtectedRoutes/SearchNav";
 import ClearIcon from '@mui/icons-material/Clear';
-import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+
 import Tooltip from '@mui/material/Tooltip';
 
 export default function ViewFacility() {
@@ -1833,7 +1834,7 @@ setLoading(false)
                                
                                ( Min:{dsearch.dis_min} - Max:{dsearch.dis_max} )  <Tooltip  title={<Typography sx={{fontSize:"1rem"}}>The price varies based on the modifers</Typography>}>
       <IconButton>
-    <RemoveRedEyeOutlinedIcon />
+    <InfoOutlinedIcon />
   </IconButton>
     </Tooltip> 
                               </Typography> : "" }
