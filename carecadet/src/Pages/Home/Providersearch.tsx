@@ -156,7 +156,7 @@ export default function Providersearch() {
 
   useEffect(() => {
     const postData = { q: q, location: locationQ,insuranceProvider:insuranceCheck,serviceCode:locationCheck };
-   
+   console.log(postData,"PostData")
     axiosPrivate
       .post(`/search/negotiatedSearch`, postData)
       .then((res) => {
@@ -168,8 +168,7 @@ export default function Providersearch() {
         const maxFilter = Math.max(
           ...res.data.data.map((fprice: any) => {
 
-              return fprice.negotiatedRates.negotiated_rates
-              ?.negotiated_prices?.negotiated_rate;
+              return fprice.negotiatedRates.negotiated_rate;
           
           })
         );
@@ -179,8 +178,7 @@ export default function Providersearch() {
         const minFilter = Math.min(
           ...res.data.data.map((fprice: any) => {
            
-              return fprice.negotiatedRates.negotiated_rates
-              ?.negotiated_prices?.negotiated_rate;
+              return fprice.negotiatedRates.negotiated_rate;
             
           })
         );
@@ -286,8 +284,7 @@ const onReSetFilters=()=>{
         const maxFilter = Math.max(
           ...res.data.data.map((fprice: any) => {
 
-              return fprice.negotiatedRates.negotiated_rates
-              ?.negotiated_prices?.negotiated_rate;
+              return fprice.negotiatedRates.negotiated_rate;
           
           })
         );
@@ -297,8 +294,7 @@ const onReSetFilters=()=>{
         const minFilter = Math.min(
           ...res.data.data.map((fprice: any) => {
            
-              return fprice.negotiatedRates.negotiated_rates
-              ?.negotiated_prices?.negotiated_rate;
+              return fprice.negotiatedRates.negotiated_rate;
             
           })
         );
@@ -317,7 +313,7 @@ setLoading(false)})
 }
 
   const onSubmit = (values: forminitialValues, actions: any) => {
-    const postData = { q: values.Service.trim(), location: values.Location.trim()};
+    const postData = { q: values.Service.trim(), location: values.Location.trim(),insuranceProvider:insuranceCheck,serviceCode:locationCheck};
     setLoading(true)
     axiosPrivate
       .post(`/search/negotiatedSearch`, postData)
@@ -341,8 +337,7 @@ setLoading(false)})
         const maxFilter = Math.max(
           ...res.data.data.map((fprice: any) => {
 
-              return fprice.negotiatedRates.negotiated_rates
-              ?.negotiated_prices?.negotiated_rate;
+              return fprice.negotiatedRates.negotiated_rate;
           
           })
         );
@@ -352,8 +347,7 @@ setLoading(false)})
         const minFilter = Math.min(
           ...res.data.data.map((fprice: any) => {
            
-              return fprice.negotiatedRates.negotiated_rates
-              ?.negotiated_prices?.negotiated_rate;
+              return fprice.negotiatedRates.negotiated_rate;
             
           })
         );
@@ -496,8 +490,7 @@ setLoading(false)})
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
       
-                return fprice.negotiatedRates.negotiated_rates
-                ?.negotiated_prices?.negotiated_rate;
+                return fprice.negotiatedRates.negotiated_rate;
            
             })
           );
@@ -506,8 +499,7 @@ setLoading(false)})
           const minFilter = Math.min(
             ...res.data.data.map((fprice: any) => {
       
-                return fprice.negotiatedRates.negotiated_rates
-                ?.negotiated_prices?.negotiated_rate;
+                return fprice.negotiatedRates.negotiated_rate;
             
                 
             })
@@ -545,8 +537,7 @@ setLoading(false)})
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
        
-                return fprice.negotiatedRates.negotiated_rates
-                ?.negotiated_prices?.negotiated_rate;
+                return fprice.negotiatedRates.negotiated_rate;
            
             })
             
@@ -556,8 +547,7 @@ setLoading(false)})
           const minFilter = Math.min(
             ...res.data.data.map((fprice: any) => {
      
-                return fprice.negotiatedRates.negotiated_rates
-                ?.negotiated_prices?.negotiated_rate;
+                return fprice.negotiatedRates.negotiated_rate;
      
             })
           );
@@ -656,8 +646,7 @@ setLoading(false)})
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
           
-                return fprice.negotiatedRates?.negotiated_rates
-                ?.negotiated_prices?.negotiated_rate;
+                return fprice.negotiatedRates?.negotiated_rate;
             
             })
           );
@@ -666,8 +655,7 @@ setLoading(false)})
           const minFilter = Math.min(
             ...res.data.data.map((fprice: any) => {
         
-                return fprice.negotiatedRates.negotiated_rates
-                ?.negotiated_prices?.negotiated_rate;
+                return fprice.negotiatedRates.negotiated_rate;
              
             })
           );
@@ -708,8 +696,7 @@ setLoading(false)})
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
           
-                return fprice.negotiatedRates?.negotiated_rates
-                ?.negotiated_prices?.negotiated_rate;
+                return fprice.negotiatedRates?.negotiated_rate;
             
             })
           );
@@ -718,8 +705,7 @@ setLoading(false)})
           const minFilter = Math.min(
             ...res.data.data.map((fprice: any) => {
         
-                return fprice.negotiatedRates.negotiated_rates
-                ?.negotiated_prices?.negotiated_rate;
+                return fprice.negotiatedRates.negotiated_rate;
              
             })
           );
@@ -754,8 +740,7 @@ setLoading(false)})
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
           
-                return fprice.negotiatedRates?.negotiated_rates
-                ?.negotiated_prices?.negotiated_rate;
+                return fprice.negotiatedRates?.negotiated_rate;
             
             })
           );
@@ -764,8 +749,7 @@ setLoading(false)})
           const minFilter = Math.min(
             ...res.data.data.map((fprice: any) => {
         
-                return fprice.negotiatedRates.negotiated_rates
-                ?.negotiated_prices?.negotiated_rate;
+                return fprice.negotiatedRates.negotiated_rate;
              
             })
           );
@@ -798,8 +782,7 @@ setLoading(false)})
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
           
-                return fprice.negotiatedRates?.negotiated_rates
-                ?.negotiated_prices?.negotiated_rate;
+                return fprice.negotiatedRates?.negotiated_rate;
             
             })
           );
@@ -808,8 +791,7 @@ setLoading(false)})
           const minFilter = Math.min(
             ...res.data.data.map((fprice: any) => {
         
-                return fprice.negotiatedRates.negotiated_rates
-                ?.negotiated_prices?.negotiated_rate;
+                return fprice.negotiatedRates.negotiated_rate;
              
             })
           );
@@ -836,8 +818,7 @@ setLoading(false)})
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
      
-                return fprice.negotiatedRates.negotiated_rates
-                ?.negotiated_prices?.negotiated_rate;
+                return fprice.negotiatedRates.negotiated_rate;
             
             })
           );
@@ -845,8 +826,7 @@ setLoading(false)})
           const minFilter = Math.min(
             ...res.data.data.map((fprice: any) => {
     
-                return fprice.negotiatedRates.negotiated_rates
-                ?.negotiated_prices?.negotiated_rate;
+                return fprice.negotiatedRates.negotiated_rate;
             
             })
           );
@@ -1586,8 +1566,7 @@ setLoading(false)})
                               >
                                 ${" "}
                                 {
-                                  dsearch?.negotiatedRates?.negotiated_rates
-                                    ?.negotiated_prices?.negotiated_rate
+                                  dsearch?.negotiatedRates?.negotiated_rate
                                 }
                               </Box>
                               <Typography
@@ -2081,8 +2060,8 @@ setLoading(false)})
                           >
                             ${" "}
                             {
-                              dsearch?.negotiatedRates?.negotiated_rates
-                                ?.negotiated_prices.negotiated_rate
+                              dsearch?.negotiatedRates?.negotiated_rate
+                               
                             }
                           </Box>
                           <Typography
