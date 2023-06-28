@@ -1704,7 +1704,7 @@ setLoading(false)
 
     <MenuItem value="ratinglowtohigh" onClick={ ()=>setSearch( [...search].sort((a, b) => b.facilityDetails.rating - a.facilityDetails.rating))}>Rating high to low</MenuItem>
     <MenuItem value="ratinghightolow" onClick={()=>setSearch([...search].sort((a, b) => a.facilityDetails.rating - b.facilityDetails.rating))} >Rating low to high</MenuItem>
-    <MenuItem value="ratingnull" onClick={()=>setSearch(search.filter((a: any) => a.facilityDetails.rating === null))} >No Rating</MenuItem>
+    {/* <MenuItem value="ratingnull" onClick={()=>setSearch(search.filter((a: any) => a.facilityDetails.rating === null))} >No Rating</MenuItem> */}
     <MenuItem value="pricehightolow" onClick={ ()=>setSearch([...search].sort((a,b)=>Math.round(b.price)-Math.round(a.price)))}>Price high to low</MenuItem>
     <MenuItem value="pricelowtohigh" onClick={()=>setSearch([...search].sort((a:any, b:any) =>Math.round(a.price)-Math.round(b.price)))} >Price lowtohigh</MenuItem>
      
