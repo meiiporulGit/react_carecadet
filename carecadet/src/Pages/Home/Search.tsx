@@ -223,7 +223,6 @@ export default function ViewFacility() {
   const onReSetFilters = () => {
     const postData = { q: q, location: locationQ };
 
-  
     axiosPrivate
       .post(`/search`, postData)
 
@@ -555,10 +554,9 @@ export default function ViewFacility() {
         scoreValue
       )
         .then((res) => {
-          
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
-          setLoading(false)
+          setLoading(false);
         })
         .catch((e) => console.log(e));
     } else {
@@ -572,9 +570,9 @@ export default function ViewFacility() {
       )
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
-         
+
           setSearch(res.data.data);
-          setLoading(false)
+          setLoading(false);
         })
         .catch((e) => console.log(e));
     }
@@ -736,7 +734,7 @@ export default function ViewFacility() {
         .then((res) => {
           console.log(res.data.data, "checkDistance");
           setSearch(res.data.data);
-          setLoading(false)
+          setLoading(false);
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
               if (fprice.priceType === "facilityPrice") {
@@ -781,7 +779,7 @@ export default function ViewFacility() {
         .then((res) => {
           // dispatch(dataSearch(res.data.data));
           setSearch(res.data.data);
-          setLoading(false)
+          setLoading(false);
           const maxFilter = Math.max(
             ...res.data.data.map((fprice: any) => {
               if (fprice.priceType === "facilityPrice") {
@@ -1101,7 +1099,6 @@ export default function ViewFacility() {
                               }}
                               onChangeCommitted={(e, sliderValue) => {
                                 distanceSliderChange(sliderValue, values);
-                                
                               }}
                             />
                           </Box>
@@ -1152,9 +1149,7 @@ export default function ViewFacility() {
                                 setLoading(true);
                               }}
                               onChangeCommitted={(event, v) => {
-                                
                                 sliderScoreChange(event, v, values);
-                                
                               }}
                               min={0}
                               max={5}
@@ -1259,7 +1254,6 @@ export default function ViewFacility() {
                               }}
                               onChangeCommitted={(event, v) => {
                                 sliderChange(event, v, values);
-                                
                               }}
                               min={minPrice}
                               max={maxPrice}
@@ -1748,6 +1742,62 @@ export default function ViewFacility() {
                           >
                             No Rating
                           </MenuItem>
+                          <MenuItem
+                            value="pricehightolow"
+                            onClick={() =>
+                              setSearch(
+                                [...search].sort(
+                                  (a, b) =>
+                                    Math.round(b.price) - Math.round(a.price)
+                                )
+                              )
+                            }
+                          >
+                            Price high to low
+                          </MenuItem>
+                          <MenuItem
+                            value="pricelowtohigh"
+                            onClick={() =>
+                              setSearch(
+                                [...search].sort(
+                                  (a: any, b: any) =>
+                                    Math.round(a.price) - Math.round(b.price)
+                                )
+                              )
+                            }
+                          >
+                            Price lowtohigh
+                          </MenuItem>
+
+                          <MenuItem
+                            value="ratinglowtohigh"
+                            onClick={() =>
+                              setSearch(
+                                [...search].sort(
+                                  (a, b) =>
+                                    b.facilityDetails.rating -
+                                    a.facilityDetails.rating
+                                )
+                              )
+                            }
+                          >
+                            Rating high to low
+                          </MenuItem>
+                          <MenuItem
+                            value="ratinghightolow"
+                            onClick={() =>
+                              setSearch(
+                                [...search].sort(
+                                  (a, b) =>
+                                    a.facilityDetails.rating -
+                                    b.facilityDetails.rating
+                                )
+                              )
+                            }
+                          >
+                            Rating low to high
+                          </MenuItem>
+                          {/* <MenuItem value="ratingnull" onClick={()=>setSearch(search.filter((a: any) => a.facilityDetails.rating === null))} >No Rating</MenuItem> */}
                           <MenuItem
                             value="pricehightolow"
                             onClick={() =>
