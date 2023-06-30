@@ -24,7 +24,6 @@ import {
   Autocomplete,
   AutocompleteRenderInputParams,
   createFilterOptions,
-  
 } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
@@ -36,7 +35,11 @@ import { axiosPrivate } from "../../axios/axios";
 import { Buttoncomponent } from "../../Components/Buttoncomp";
 import SelectField from "../../Components/Select";
 import FormTextField from "../../Components/Textfield";
-import { dataProviderSearch, dataQueryProvider, dataSearch,  } from "../../Redux/ProviderRedux/HomeSlice";
+import {
+  dataProviderSearch,
+  dataQueryProvider,
+  dataSearch,
+} from "../../Redux/ProviderRedux/HomeSlice";
 import { toast } from "react-toastify";
 
 import dashboardicon from "../../Images/dashboardicon.png";
@@ -62,9 +65,36 @@ const Providerhomepage = () => {
   // const [state, setState] = React.useState("Provider");
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const [checkInfo, setCheckInfo] = useState<any>([])
+  const [locaInfo1, setLocaInfo1] = useState<any>();
+  const [checkInfo, setCheckInfo] = useState<any>([]);
   const OPTIONS_LIMIT = 10;
   const defaultFilterOptions = createFilterOptions();
+  console.log("locaInfo1", locaInfo1);
+
+  function getLocationUpdate() {
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition((position) => {
+        const Lat = position.coords.latitude;
+        const Lon = position.coords.longitude;
+        const zipCode1 = { lat: Lat, lon: Lon };
+        console.log("zipCode1", zipCode1);
+        axiosPrivate
+          .post(`/search/serviceLocationSearch`, zipCode1)
+          .then((res) => {
+            console.log("providerloc");
+            setLocaInfo1(res.data.data);
+            // valRef.current = locaInfo
+          })
+          .catch((e) => console.log(e));
+      });
+    } else {
+      alert("sorry,browser does not support geolocation");
+    }
+  }
+  useEffect(() => {
+    // navigator.geolocation.watchPosition(showLocation,errorHandler)
+    getLocationUpdate();
+  }, []);
 
   const filterOptions = (options: any, state: any) => {
     return defaultFilterOptions(options, state).slice(0, OPTIONS_LIMIT);
@@ -72,7 +102,7 @@ const Providerhomepage = () => {
 
   const initialValues: forminitialValues = {
     Service: "",
-    Location: "",
+    Location: locaInfo1,
   };
   const validationSchema = Yup.object().shape({
     Service: Yup.string().required("Required"),
@@ -81,12 +111,14 @@ const Providerhomepage = () => {
   const onSubmit = (values: forminitialValues, actions: any) => {
     // alert(JSON.stringify(facilitydata, null, 2));
     // alert(JSON.stringify(values, null, 2))
+    dispatch(dataQueryProvider(values));
+    navigate(
+      `/provider/search?q=${values.Service.trim()}&location=${values.Location.trim()}`
+    );
     actions.resetForm({
-    values:initialValues
-    
+      values: initialValues,
     });
-  dispatch(dataQueryProvider(values))
-    navigate(`/provider/search?q=${values.Service.trim()}&location=${values.Location.trim()}`);
+
     // axiosPrivate
     //   .get(`http://210.18.155.251:5003/search/?q=`)
     // axiosPrivate.get (`http://210.18.155.251:5003/search/negotiatedSearch?q=${values.Service}&location=${values.Location}&serviceCode=21`)
@@ -105,18 +137,18 @@ const Providerhomepage = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
- const [data,setData] = React.useState ({
-   Link:"Urgent Care"
-          });
- const [data1,setData1] = React.useState ({
-  Link:"Dental Care"
+  const [data, setData] = React.useState({
+    Link: "Urgent Care",
   });
- const [data2,setData2] = React.useState ({
-  Link:"Labs"
-    });
-    const [data3,setData3] = React.useState ({
-      Link:"Services"
-      });
+  const [data1, setData1] = React.useState({
+    Link: "Dental Care",
+  });
+  const [data2, setData2] = React.useState({
+    Link: "Labs",
+  });
+  const [data3, setData3] = React.useState({
+    Link: "Services",
+  });
 
   return (
     // <Box
@@ -125,12 +157,13 @@ const Providerhomepage = () => {
     //     background: "transparent",
     //   }}
     // >
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={onSubmit}
-      >
-         {({ handleChange, setFieldValue, values }) => (
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={onSubmit}
+      enableReinitialize
+    >
+      {({ handleChange, setFieldValue, values }) => (
         <Form>
           <Box
             sx={{
@@ -165,8 +198,6 @@ const Providerhomepage = () => {
               </Buttoncomponent>
             </Grid> */}
 
-        
-
             <Grid
               container
               spacing={3.5}
@@ -175,108 +206,113 @@ const Providerhomepage = () => {
               // alignItems="flex-start"
               // sx={{ ml: "10px" }}
             >
-              <Grid  item xs = {12} md={7} >
-              
-                <Grid container xs={12} sx={{
-                    padding:"1rem",
-                    
-                    background: "#4D77FF",
-                   
-                    // width: "55em",
-                    gap:"1.5rem",mb:{xs:5,md:0}
-                   
-                  }}>
-                <Grid item xs = {12} md={7.5}  >
-             
-                <Field
-                    label="Service Name"
-                    name="Service"
-                
-                    component={Autocomplete}
-                    options={checkInfo ?? []}
-                    loading={checkInfo.length === 0}
-                    //  PaperComponent={CustomPaper}
-                    filterOptions={filterOptions}
-                    freeSolo
-                    onInputChange={(e: any, value: any) => {
-                    const postData = { q:value }
-                    console.log(value,'onchangevalue')
-                   
-                      setFieldValue("Service", value);
-                 
-                   axiosPrivate.post(`/search/serviceNamesearch`, postData)
-                      .then((res) => {
-                        console.log(res.data.data, 'servicesearch')
-                        setCheckInfo(res.data.data)
-                      })
-                      .catch((e) => console.log(e));
+              <Grid item xs={12} md={7}>
+                <Grid
+                  container
+                  xs={12}
+                  sx={{
+                    padding: "1rem",
 
-                    }}
-                    value={values.Service}
-                    renderInput={(params: AutocompleteRenderInputParams) => (
-                      <TextField
-                        {...params}
-                        name="Service"
-                        // label="Search Service Name"
-                        onChange={handleChange}
-                        variant="outlined"
-                        placeholder="Search Service"
-                        sx={{
-                          
-                          "& .MuiAutocomplete-popupIndicator": { transform: "none" },
-                          ".MuiInputBase-input": {
-                            background: "white",
-                          },
-                          ".MuiInputBase-root": {
-                            background: "white"
-                          },
-                          ".MuiFormLabel-root ": {
-                            letterSpacing: "0.2rem",
-                            fontSize: "0.8rem",
-                          },
-                          borderRadius: 1,
-                          "&::placeholder": {
-                            fontSize:{xs:"1rem",md:"1.3rem"},
-                            color: 'black'
-                          }   
-                        
-                        }}
-                      />
-                    )}
-                  />
-                 
-              
-                </Grid>
-                <Grid item xs = {12} md={4.1}>
-                  <FormTextField
-                    container={TextField}
-                    name="Location"
-                    placeholder="Location"
-                    type="text"
-                    fullWidth={false}
-                    sx={{
-                      borderRadius: 1,
-                      ".MuiInputBase-input": {
-                        background: "white",
-                      },
-                      ".MuiFormLabel-root ": {
-                        letterSpacing: "0.2rem",
-                        fontSize: "0.8rem",
-                      },
-                      ".MuiInputLabel-shrink": {
-                        letterSpacing: 0,
-                      },
-                      '&::placeholder': {
-                        fontSize:{xs:"1rem",md:"1.3rem"},
-                         color: 'black'
-                       }
-                    }}
-                  />
-                </Grid>
+                    background: "#4D77FF",
+
+                    // width: "55em",
+                    gap: "1.5rem",
+                    mb: { xs: 5, md: 0 },
+                  }}
+                >
+                  <Grid item xs={12} md={7.5}>
+                    <Field
+                      label="Service Name"
+                      name="Service"
+                      placeholder="Search Service"
+                      component={Autocomplete}
+                      options={checkInfo ?? []}
+                      loading={checkInfo.length === 0}
+                      //  PaperComponent={CustomPaper}
+                      filterOptions={filterOptions}
+                      freeSolo
+                      onInputChange={(e: any, value: any) => {
+                        const postData = { q: value };
+                        console.log(value, "onchangevalue");
+
+                        setFieldValue("Service", value);
+
+                        axiosPrivate
+                          .post(`/search/serviceNamesearch`, postData)
+                          .then((res) => {
+                            console.log(res.data.data, "servicesearch");
+                            setCheckInfo(res.data.data);
+                          })
+                          .catch((e) => console.log(e));
+                      }}
+                      value={values.Service}
+                      renderInput={(params: AutocompleteRenderInputParams) => (
+                        <TextField
+                          {...params}
+                          name="Service"
+                          // label="Search Service Name"
+                          onChange={handleChange}
+                          variant="outlined"
+                          placeholder="Search Service"
+                          sx={{
+                            "& .MuiAutocomplete-popupIndicator": {
+                              transform: "none",
+                            },
+                            ".MuiInputBase-input": {
+                              background: "white",
+                            },
+                            ".MuiInputBase-root": {
+                              background: "white",
+                            },
+                            ".MuiFormLabel-root ": {
+                              letterSpacing: "0.2rem",
+                              fontSize: "0.8rem",
+                            },
+                            borderRadius: 1,
+                            "&::placeholder": {
+                              fontSize: { xs: "1rem", md: "1.3rem" },
+                              color: "black",
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={4.1}>
+                    <Field
+                      as={TextField}
+                      name="Location"
+                      placeholder="Location"
+                      type="text"
+                      value={values.Location}
+                      fullWidth={false}
+                      sx={{
+                        borderRadius: 1,
+                        ".MuiInputBase-input": {
+                          background: "white",
+                        },
+                        ".MuiFormLabel-root ": {
+                          letterSpacing: "0.2rem",
+                          fontSize: "0.8rem",
+                        },
+                        ".MuiInputLabel-shrink": {
+                          letterSpacing: 0,
+                        },
+                        "&::placeholder": {
+                          fontSize: { xs: "1rem", md: "1.3rem" },
+                          color: "black",
+                        },
+                      }}
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
 
-              <Grid item xs={5} sx={{ mt: "-250px" , display:{xs:"none" , md:'block'}}}>
+              <Grid
+                item
+                xs={5}
+                sx={{ mt: "-250px", display: { xs: "none", md: "block" } }}
+              >
                 <img
                   src={healthcare}
                   alt="Home"
@@ -290,57 +326,67 @@ const Providerhomepage = () => {
                 />
               </Grid>
               <Grid>
-              <Buttoncomponent
-                type="submit"
-                size="large"
-                fullWidth={false}
-                variant="contained"
-                sx={{
-                  marginTop: {xs:"15px",md:"-100px"},
-                  ml: {xs:"80px",md:"350px"},
-                  mb:{xs:10,md:20},
-                  backgroundColor: "secondary.dark",
-                  // width: "20vw",
-                  color: "#fff",
-                  // display: "flex",
-                  // justifyContent: "center",
-                  // gap:"1.2rem",
+                <Buttoncomponent
+                  type="submit"
+                  size="large"
+                  fullWidth={false}
+                  variant="contained"
+                  sx={{
+                    marginTop: { xs: "15px", md: "-100px" },
+                    ml: { xs: "80px", md: "350px" },
+                    mb: { xs: 10, md: 20 },
+                    backgroundColor: "secondary.dark",
+                    // width: "20vw",
+                    color: "#fff",
+                    // display: "flex",
+                    // justifyContent: "center",
+                    // gap:"1.2rem",
 
-                  "&:hover": {
-                    color: "#000",
-                    border: "1px solid blue",
-                    // letterSpacing: "0.2rem",
-                    // fontSize: "1rem",
-                  },
-                }}
-              >
-                <SearchIcon /> Find Negotiated rates
-              </Buttoncomponent>
+                    "&:hover": {
+                      color: "#000",
+                      border: "1px solid blue",
+                      // letterSpacing: "0.2rem",
+                      // fontSize: "1rem",
+                    },
+                  }}
+                >
+                  <SearchIcon /> Find Negotiated rates
+                </Buttoncomponent>
               </Grid>
-             
             </Grid>
 
             <Card
               raised
               sx={{
                 backgroundColor: "RGB(217 229 251)",
-                padding: {md:"10px"},
-                marginTop: {md:"5px"},
-                height: {md:"35em"},
-                marginBottom: {md:"80px"},
+                padding: { md: "10px" },
+                marginTop: { md: "5px" },
+                height: { md: "35em" },
+                marginBottom: { md: "80px" },
               }}
             >
-              <Grid container sx={{ padding: {md:"10px"},mb: "30px", ml:{xs:"-20px"}}}>
+              <Grid
+                container
+                sx={{
+                  padding: { md: "10px" },
+                  mb: "30px",
+                  ml: { xs: "-20px" },
+                }}
+              >
                 <Grid
                   container
                   direction="row"
                   justifyContent="center"
                   alignItems="center"
-                  
                 >
                   <Typography
                     // variant={{md:"h3"}}
-                    sx={{   fontSize:{xs:"1.8rem",sm:"2rem",md:"4rem"},color: "#728AB7", padding: "10px", mb: "40px" }}
+                    sx={{
+                      fontSize: { xs: "1.8rem", sm: "2rem", md: "4rem" },
+                      color: "#728AB7",
+                      padding: "10px",
+                      mb: "40px",
+                    }}
                   >
                     Products
                   </Typography>
@@ -350,48 +396,10 @@ const Providerhomepage = () => {
                   container
                   // direction="row"
                   justifyContent="center"
-                 alignItems="center"
-                 
-                  spacing={{xs:1, md:30}}
+                  alignItems="center"
+                  spacing={{ xs: 1, md: 30 }}
                 >
-                  <Grid item xs={12} md={4} >
-                    <Card
-                      raised
-                      sx={{
-                        display: "flex",
-                         flexDirection:"column" ,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        // padding: "10px",
-                        height: "15em",
-                        ml:{xs:"3rem",md:0}                   
-
-                        // ,width:"18em"
-                      }}
-                    >
-                      <CardMedia
-                        sx={{ width: "100px", 
-                        height: "90px",
-                    
-                      }}
-                        component="img"
-                        image={dashboardicon}
-                        title="payer dashboard"
-                        
-                      />
-                      <CardContent>
-                        <Typography
-                          // variant="h6"
-                          color="textSecondary"
-                          sx={{ textAlign: "center",fontSize:{xs:"1 rem",md:"1.2rem"} }}
-                        >
-                          Dashboards for Payer<br></br> negotiated rates
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-
-                  <Grid item xs={12} md={4} justifyContent={"center"}alignItems={"center"}>
+                  <Grid item xs={12} md={4}>
                     <Card
                       raised
                       sx={{
@@ -400,19 +408,14 @@ const Providerhomepage = () => {
                         justifyContent: "center",
                         alignItems: "center",
                         // padding: "10px",
-                        ml:{xs:"3rem",md:0},
                         height: "15em",
-                        // mb: "30px",
-                       
+                        ml: { xs: "3rem", md: 0 },
+
+                        // ,width:"18em"
                       }}
                     >
                       <CardMedia
-                        sx={{ 
-                          width: "100px", 
-                      
-                        // height: "90px",
-                        
-                      }}
+                        sx={{ width: "100px", height: "90px" }}
                         component="img"
                         image={dashboardicon}
                         title="payer dashboard"
@@ -421,7 +424,55 @@ const Providerhomepage = () => {
                         <Typography
                           // variant="h6"
                           color="textSecondary"
-                          sx={{ textAlign: "center",fontSize:{xs:"1 rem",md:"1.2rem"} }}
+                          sx={{
+                            textAlign: "center",
+                            fontSize: { xs: "1 rem", md: "1.2rem" },
+                          }}
+                        >
+                          Dashboards for Payer<br></br> negotiated rates
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+
+                  <Grid
+                    item
+                    xs={12}
+                    md={4}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                  >
+                    <Card
+                      raised
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        // padding: "10px",
+                        ml: { xs: "3rem", md: 0 },
+                        height: "15em",
+                        // mb: "30px",
+                      }}
+                    >
+                      <CardMedia
+                        sx={{
+                          width: "100px",
+
+                          // height: "90px",
+                        }}
+                        component="img"
+                        image={dashboardicon}
+                        title="payer dashboard"
+                      />
+                      <CardContent>
+                        <Typography
+                          // variant="h6"
+                          color="textSecondary"
+                          sx={{
+                            textAlign: "center",
+                            fontSize: { xs: "1 rem", md: "1.2rem" },
+                          }}
                         >
                           Customized Rate report
                         </Typography>
@@ -431,9 +482,6 @@ const Providerhomepage = () => {
                 </Grid>
               </Grid>
             </Card>
-
-
-
 
             <Grid container sx={{ padding: "10px" }}>
               <Grid
@@ -456,8 +504,8 @@ const Providerhomepage = () => {
                     color: "#728AB7",
                     padding: "5px",
                     letterSpacing: "0.2rem",
-                    textAlign:"center",
-                    fontSize:{xs:"1.8rem",sm:"2rem",md:"4rem"}
+                    textAlign: "center",
+                    fontSize: { xs: "1.8rem", sm: "2rem", md: "4rem" },
                   }}
                 >
                   HELP PATIENTS FIND YOU
@@ -470,17 +518,22 @@ const Providerhomepage = () => {
               </Grid>
               <Grid
                 container
-                direction={{md:"row"}}
+                direction={{ md: "row" }}
                 // flexWrap={"wrap"}
                 // justifyContent="center"
                 // alignItems="center"
                 spacing={3}
-        
               >
-                <Grid item xs = {10} md={3} justifyContent={"center"} alignItems={"center"}>
+                <Grid
+                  item
+                  xs={10}
+                  md={3}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
                   <Link
-                    to="/provider/login" state={{data:data}}
-                   
+                    to="/provider/login"
+                    state={{ data: data }}
                     style={{ textDecoration: "none" }}
                     // onClick={(e) => clickHandler(e)}
                   >
@@ -492,12 +545,16 @@ const Providerhomepage = () => {
                         justifyContent: "center",
                         alignItems: "center",
                         padding: "5px",
-                        ml:{xs:5,md:0},
-                        height: {xs:"8em",md:"15em"},
+                        ml: { xs: 5, md: 0 },
+                        height: { xs: "8em", md: "15em" },
                       }}
                     >
                       <CardMedia
-                        sx={{ padding:{xs:"5px"},width: {xs:"40px",md:"100px"}, height: {md:"90px"} }}
+                        sx={{
+                          padding: { xs: "5px" },
+                          width: { xs: "40px", md: "100px" },
+                          height: { md: "90px" },
+                        }}
                         component="img"
                         image={emergency}
                         title="emergency"
@@ -506,7 +563,10 @@ const Providerhomepage = () => {
                         <Typography
                           // variant="h6"
                           color="textSecondary"
-                          sx={{ textAlign: "center",fontSize:{xs:"1 rem",md:"1.6rem"} }}
+                          sx={{
+                            textAlign: "center",
+                            fontSize: { xs: "1 rem", md: "1.6rem" },
+                          }}
                         >
                           Urgent care
                         </Typography>
@@ -514,11 +574,11 @@ const Providerhomepage = () => {
                     </Card>
                   </Link>
                 </Grid>
-                <Grid item xs ={10} md={3}>
+                <Grid item xs={10} md={3}>
                   <Link
                     style={{ textDecoration: "none" }}
                     to="/provider/login"
-                    state={{data:data1}}
+                    state={{ data: data1 }}
                   >
                     <Card
                       raised
@@ -528,12 +588,16 @@ const Providerhomepage = () => {
                         justifyContent: "center",
                         alignItems: "center",
                         padding: "5px",
-                        ml:{xs:5,md:0},
-                        height: {xs:"8em",md:"15em"},
+                        ml: { xs: 5, md: 0 },
+                        height: { xs: "8em", md: "15em" },
                       }}
                     >
                       <CardMedia
-                         sx={{ padding:{xs:"5px"},width: {xs:"60px",md:"100px"}, height: {md:"90px"} }}
+                        sx={{
+                          padding: { xs: "5px" },
+                          width: { xs: "60px", md: "100px" },
+                          height: { md: "90px" },
+                        }}
                         component="img"
                         image={dentallogo}
                         title="dentalcarelogo"
@@ -542,7 +606,10 @@ const Providerhomepage = () => {
                         <Typography
                           // variant="h6"
                           color="textSecondary"
-                          sx={{ textAlign: "center",fontSize:{xs:"1 rem",md:"1.6rem"} }}
+                          sx={{
+                            textAlign: "center",
+                            fontSize: { xs: "1 rem", md: "1.6rem" },
+                          }}
                         >
                           Dental care
                         </Typography>
@@ -550,12 +617,11 @@ const Providerhomepage = () => {
                     </Card>
                   </Link>
                 </Grid>
-                <Grid item xs ={10} md={3}>
+                <Grid item xs={10} md={3}>
                   <Link
                     style={{ textDecoration: "none" }}
-                    
                     to="/provider/login"
-                    state={{data:data2}}
+                    state={{ data: data2 }}
                   >
                     <Card
                       raised
@@ -564,13 +630,17 @@ const Providerhomepage = () => {
                         flexDirection: "column",
                         justifyContent: "center",
                         alignItems: "center",
-                        ml:{xs:5,md:0},
+                        ml: { xs: 5, md: 0 },
                         padding: "5px",
-                        height: {xs:"8em",md:"15em"},
+                        height: { xs: "8em", md: "15em" },
                       }}
                     >
                       <CardMedia
-                       sx={{ padding:{xs:"5px"},width: {xs:"60px",md:"100px"}, height: {md:"90px"} }}
+                        sx={{
+                          padding: { xs: "5px" },
+                          width: { xs: "60px", md: "100px" },
+                          height: { md: "90px" },
+                        }}
                         component="img"
                         image={lab}
                         title="lab"
@@ -579,7 +649,10 @@ const Providerhomepage = () => {
                         <Typography
                           // variant="h6"
                           color="textSecondary"
-                          sx={{ textAlign: "center",fontSize:{xs:"1 rem",md:"1.6rem"} }}
+                          sx={{
+                            textAlign: "center",
+                            fontSize: { xs: "1 rem", md: "1.6rem" },
+                          }}
                         >
                           Labs
                         </Typography>
@@ -587,12 +660,11 @@ const Providerhomepage = () => {
                     </Card>
                   </Link>
                 </Grid>
-                <Grid item xs ={10} md={3}>
+                <Grid item xs={10} md={3}>
                   <Link
                     style={{ textDecoration: "none" }}
                     to="/provider/login"
-                    
-                    state={{data:data3}}
+                    state={{ data: data3 }}
                   >
                     <Card
                       raised
@@ -602,12 +674,16 @@ const Providerhomepage = () => {
                         justifyContent: "center",
                         alignItems: "center",
                         padding: "5px",
-                        ml:{xs:5,md:0},
-                        height: {xs:"8em",md:"15em"},
+                        ml: { xs: 5, md: 0 },
+                        height: { xs: "8em", md: "15em" },
                       }}
                     >
                       <CardMedia
-                        sx={{ padding:{xs:"5px"},width: {xs:"80px",md:"100px"}, height: {md:"90px"} }}
+                        sx={{
+                          padding: { xs: "5px" },
+                          width: { xs: "80px", md: "100px" },
+                          height: { md: "90px" },
+                        }}
                         component="img"
                         image={care}
                         title="care"
@@ -616,7 +692,10 @@ const Providerhomepage = () => {
                         <Typography
                           // variant="h6"
                           color="textSecondary"
-                          sx={{ textAlign: "center",fontSize:{xs:"1 rem",md:"1.6rem"} }}
+                          sx={{
+                            textAlign: "center",
+                            fontSize: { xs: "1 rem", md: "1.6rem" },
+                          }}
                         >
                           others
                         </Typography>
@@ -645,8 +724,9 @@ const Providerhomepage = () => {
               </Box>
             </Box>
           </Box>
-        </Form>)}
-      </Formik>
+        </Form>
+      )}
+    </Formik>
     // </Box>
   );
 };
