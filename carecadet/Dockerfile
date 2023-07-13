@@ -2,7 +2,7 @@
 FROM node:16.15.1-alpine
 # FROM node:14.17.6-alpine
 # set working directory
-WORKDIR /app
+WORKDIR /usr/src/app
 
 # install app dependencies
 COPY package.json ./
