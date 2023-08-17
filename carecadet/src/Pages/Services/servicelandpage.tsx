@@ -46,7 +46,8 @@ export default function Servicelandingpage() {
   // const facilityid=useAppSelector((state)=>state.editFacility.service);
   // console.log("facilityid", facilityid);
   // const [totalPages, setTotalPages] = useState(10);
-  const [dataCheck,setDataCheck]=useState(false)
+  const [dataCheck,setDataCheck]=useState(false);
+  console.log("servicepricelist",data)
   const orgid = useAppSelector(
     (state) => state.providerOrganization.orgEditData
   );
@@ -331,10 +332,7 @@ export default function Servicelandingpage() {
           {!dataCheck?    <Box style={{ display:"flex",flexDirection:"column",rowGap:"0.2rem" }}>
            
           { (itemsPerPage > 0
-              ? data.slice(
-                  page1 * itemsPerPage,
-                  page1 * itemsPerPage + itemsPerPage
-                )
+              ? data.slice((page1 - 1) * itemsPerPage, page1 * itemsPerPage)
               : data
             ).map((d: any, key: any) => {
                 return (
@@ -373,7 +371,7 @@ export default function Servicelandingpage() {
                 count={Math.ceil(data.length / itemsPerPage)}
                 page={page1}
                 onChange={handlePageChange}
-                defaultPage={6}
+              
                 color="primary"
                 // boundaryCount={3}
                 siblingCount={0}

@@ -194,8 +194,11 @@ export default function ViewFacility() {
   }, []);
 
   const handleSortChange = (event: any) => {
+    
     setPage1(1);
+    
     setSort(event.target.value);
+    
   };
 
   const handleOpenNavMenu = (event: any) => {
@@ -1704,7 +1707,8 @@ export default function ViewFacility() {
                         >
                           <MenuItem
                             value="ratinglowtohigh"
-                            onClick={() =>
+                            onClick={() =>{
+                              setLoading(true)
                               setSearch(
                                 [...search].sort(
                                   (a, b) =>
@@ -1712,13 +1716,17 @@ export default function ViewFacility() {
                                     a.facilityDetails.rating
                                 )
                               )
-                            }
+                              setLoading(false)
+                                }
+                               }
+
                           >
-                            Rating high to low
+                          Rating high to low
                           </MenuItem>
                           <MenuItem
                             value="ratinghightolow"
-                            onClick={() =>
+                            onClick={() =>{
+                              setLoading(true)
                               setSearch(
                                 [...search].sort(
                                   (a, b) =>
@@ -1726,34 +1734,39 @@ export default function ViewFacility() {
                                     b.facilityDetails.rating
                                 )
                               )
-                            }
+                              setLoading(false)}}
                           >
                             Rating low to high
                           </MenuItem>
                         
                           <MenuItem
                             value="pricehightolow"
-                            onClick={() =>
+                            onClick={() =>{
+                              setLoading(true)
                               setSearch(
                                 [...search].sort(
                                   (a, b) =>
                                     Math.round(b.price) - Math.round(a.price)
                                 )
                               )
+                            setLoading(false)
+                            }
                             }
                           >
                             Price high to low
                           </MenuItem>
                           <MenuItem
                             value="pricelowtohigh"
-                            onClick={() =>
+                            onClick={() =>{
+                              setLoading(true)
                               setSearch(
                                 [...search].sort(
                                   (a: any, b: any) =>
                                     Math.round(a.price) - Math.round(b.price)
                                 )
                               )
-                            }
+                              setLoading(false)
+                            }}
                           >
                             Price lowtohigh
                           </MenuItem>

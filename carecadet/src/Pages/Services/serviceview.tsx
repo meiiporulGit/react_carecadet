@@ -436,7 +436,16 @@ export default function ServiceViewPage() {
                       textAlign: "left",
                     }}
                   >
-                   DiagnosisTest / ServiceName
+                   Facility Name
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      fontSize: "1rem",
+                      fontWeight: "bold",
+                      textAlign: "left",
+                    }}
+                  >
+                   FacilityNPI
                   </TableCell>
                   <TableCell
                     sx={{
@@ -461,10 +470,7 @@ export default function ServiceViewPage() {
 
               <TableBody>
                 {(rowsPerPage > 0
-                  ? data.slice(
-                      page * rowsPerPage,
-                      page * rowsPerPage + rowsPerPage
-                    )
+                 ? data.slice((page1 - 1) * itemsPerPage, page1 * itemsPerPage)
                   : data
                 ).map((dataPath: any, i: any) => (
                   <TableRow
@@ -482,7 +488,11 @@ export default function ServiceViewPage() {
                     </TableCell>
                     <TableCell sx={{ fontSize: "1rem", textAlign: "left" }}>
                       {/* {dataPath.filePath.split("/")[2]} */}
-                      {dataPath.DiagnosisTestorServiceName}
+                      {dataPath.FacilityName}
+                    </TableCell>
+                    <TableCell sx={{ fontSize: "1rem", textAlign: "left" }}>
+                      {/* {dataPath.filePath.split("/")[2]} */}
+                      {dataPath.FacilityNPI}
                     </TableCell>
                     <TableCell sx={{ fontSize: "1rem", textAlign: "right" }}>
                       {/* {dataPath.filePath.split("/")[2]} */}

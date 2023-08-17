@@ -216,7 +216,7 @@ filterOptions = {filterOptions}
               freeSolo    
              
               onChange={(e: any, value: any) => {
-                setFieldValue("ServiceCode",value !== null ? value.Code :"");
+                setFieldValue("ServiceCode",value !== null ? value.CODE :"");
                setFieldValue("DiagnosisTestorServiceName",value !== null ? value.DiagnosisTestorServiceName :"");
                 
                              }}
@@ -265,11 +265,11 @@ filterOptions = {filterOptions}
                loading={info.length === 0}
                PaperComponent={CustomPaper}
 filterOptions = {filterOptions}
-               getOptionLabel={(option: any) => option.Code || option}         
+               getOptionLabel={(option: any) => option.CODE || option}         
               freeSolo    
              
               onChange={(e: any, value: any) => {
-                setFieldValue("ServiceCode",value !== null ? value.Code :"");
+                setFieldValue("ServiceCode",value !== null ? value.CODE :"");
                setFieldValue("DiagnosisTestorServiceName",value !== null ? value.DiagnosisTestorServiceName :"");
                 
                              }}
