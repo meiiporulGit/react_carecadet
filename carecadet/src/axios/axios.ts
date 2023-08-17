@@ -7,7 +7,7 @@ import { store } from "../Redux/Store";
 import { accessTokentest } from "../Redux/ProviderRedux/LoginSlice";
 import { adminAccessTokentest } from "../Redux/Admin/adminLogin";
 // http://210.18.155.251:5003  http://localhost:5200
-export const baseURL="http://localhost:5200"
+export const baseURL="http://69.116.205.228:5003"
 
 export const axiosPrivate = axios.create({
 
