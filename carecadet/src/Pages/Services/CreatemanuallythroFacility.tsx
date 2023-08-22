@@ -147,9 +147,9 @@ const CreateServicethroFacility = () => {
                options = {info}
                loading={info.length === 0}
                PaperComponent={CustomPaper}
-filterOptions = {filterOptions}
+               filterOptions = {filterOptions}
                getOptionLabel={(option: any) => option.DiagnosisTestorServiceName || option}         
-              freeSolo    
+               freeSolo    
              
               onChange={(e: any, value: any) => {
                 setFieldValue("ServiceCode",value !== null ? value.CODE :"");
